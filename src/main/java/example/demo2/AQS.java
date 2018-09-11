@@ -1,4 +1,4 @@
-package com.example.demo2;
+package example.demo2;
 
 import sun.misc.Unsafe;
 
