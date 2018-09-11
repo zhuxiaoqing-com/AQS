@@ -657,7 +657,7 @@ public class ConditionObject implements Condition {
 
         @Override
         public void awaitUninterruptibly() {
-
+            System.out.println("");
         }
 
         @Override
