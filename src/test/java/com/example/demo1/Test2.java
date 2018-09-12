@@ -1,4 +1,8 @@
-package example.demo1;
+package com.example.demo1;
+
+import org.junit.Test;
+
+import java.util.concurrent.locks.AbstractQueuedSynchronizer;
 
 public class Test2 {
     volatile String firstNode = "1";

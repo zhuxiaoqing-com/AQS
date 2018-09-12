@@ -1,9 +1,13 @@
-package example.demo1;
+package com.example.demo1;
+
+import org.junit.Test;
 
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.LockSupport;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class Test3 {
