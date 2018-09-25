@@ -4,7 +4,10 @@ import org.junit.Test;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.Tuple;
 
+import java.security.SecureRandom;
+import java.time.Instant;
 import java.util.*;
+import java.util.concurrent.*;
 import java.util.stream.IntStream;
 
 public class Test2List {
@@ -106,9 +109,78 @@ public class Test2List {
 
     @Test
     public void fun7() {
-        ArrayList<Object> list = new ArrayList<>();
-        list.add(null);
-        System.out.println(list);
+        double i = (2+0.0 - 1) / 2;
+        System.out.println(i);
     }
 
+    @Test
+    public void fun8() {
+        while (true) {
+            int randomInt = random.nextInt(2);
+            System.out.println(randomInt);
+        }
+    }
+
+    @Test
+    public void fun9() {
+        boolean i = 1 == 2-1*0.5;
+        System.out.println(i);
+    }
+
+    @Test
+    public void fun10() {
+        Random random = new Random();
+    }
+
+    @Test
+    public void fun11() {
+        Random random = new Random();
+    }
+    //Random random1 = new Random(10000);
+    //Random random1 = ThreadLocalRandom.current();
+
+    /**
+     * 测试出来了  ThreadLocalRandom  341 286 285 306 267
+     *          random   几乎卡死
+     *          SecureRandom  真随机Random
+     */
+    Random random1 = new Random();
+    @Test
+    public void fun12() throws InterruptedException {
+        Instant instant1 = Instant.now();
+        int end = 1111;
+        CountDownLatch countDownLatch = new CountDownLatch(end);
+        ExecutorService executorService = Executors.newFixedThreadPool(20);
+        int index = 0;
+        while (index < end) {
+            executorService.execute(()-> {
+                for (int i=0; i<500000; i++) {
+                    // 341 286 285 306 267
+                    ThreadLocalRandom.current().nextInt(1000);//731
+                    // 几乎卡死
+                    //random1.nextInt(1000);// 1501
+                }
+                SecureRandom secureRandom = new SecureRandom();
+
+                countDownLatch.countDown();
+            });
+            index++;
+        }
+        countDownLatch.await();
+        System.out.println("xxxxxxxxxxxxxxxxxxxx  "+index);
+        executorService.shutdown();
+        Instant instant2 = Instant.now();
+        System.out.println(instant2.toEpochMilli() - instant1.toEpochMilli());
+
+    }
+
+    @Test
+    public void fun13() throws InterruptedException {
+        Instant instant1 = Instant.now();
+        long nano = instant1.getEpochSecond();
+        long nano2 = instant1.toEpochMilli();
+        long nano1 = instant1.getNano();
+        System.out.println(nano2);
+        System.out.println(System.currentTimeMillis());
+    }
 }

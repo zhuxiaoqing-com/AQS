@@ -5,6 +5,8 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.ScanResult;
 import redis.clients.jedis.Tuple;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 public class Test1Jedis {
@@ -48,6 +50,62 @@ public class Test1Jedis {
     public void fun5(){
         double s = 11.11;
         System.out.println((int)s);
+    }
+
+    List list = new ArrayList<>();
+
+    {
+        for(int i = 0; i <= 10000; i++) {
+            list.add(i);
+        }
+    }
+    @Test
+    public void fun6() throws InterruptedException {
+        new Thread(()-> {
+            try {
+                Thread.yield();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            List list2 = new ArrayList<>();
+            list2.iterator();
+            for(int i = 0; i <= 10000; i++) {
+                list2.add(i+"ss");
+            }
+            System.out.println("------------------------");
+            list = list2;
+        }).start();
+
+        System.out.println(list.size());
+
+        for (Object s: list) {
+            Thread.yield();
+            System.out.println(s.toString());
+        }
+      /*  for(int i = 0; i < list.size(); i++) {
+            Thread.yield();
+            System.out.println(list.get(i));
+        }*/
+    }
+
+    /**
+     * 通过 value 取 sorted
+     */
+    @Test
+    public void fun7(){
+        Long zscore = jedis.zrank("zset", "dd");
+        System.out.println(zscore);
+    }
+    @Test
+    public void fun8(){
+        Long zrem = jedis.zrem("zset", "ddddddd");
+        System.out.println(zrem);
+    }
+
+    @Test
+    public void fun9(){
+        int s = 123/100;
+        System.out.println(s);
     }
 
 

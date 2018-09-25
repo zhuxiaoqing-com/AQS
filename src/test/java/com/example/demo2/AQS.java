@@ -506,6 +506,45 @@ public class ConditionObject implements Condition {
             }
         }
 
+        /**
+         * 1、使用变量记录有效节点
+         * 2、如果变量没有值先尝试使用 firstWaiter 记录变量，这样的话如果 trail 有了变量，那么 firstWaiter 也就有了值
+         * 3、如果 trail 有了变量，那么就 firstWaiter 也赋值好了; 接下来就使用 trail.nextWaiter 来记录前一个值;
+         * 这样的话等到 next 是有效的值 将其直接赋值给 trail.next 也就提前赋值好了
+         */
+        public void unlinkCancelledWaiter2() {
+            Node t = firstWaiter;
+            Node trail = null;
+            // 单项列表 你只能选择记住前一个
+            while (t != null) {
+                Node next = t.nextWaiter;
+                // 如果 不是 CONDITION 说明是取消节点
+                if(next.waitStatus != Node.CONDITION) {
+                    // 如果 next == null 说明结束了就不进行循环了
+                    if(next == null) {
+                        lastWaiter = trail;
+                    }
+                } else
+                    // 如果是 CONDITION 说明是有效节点
+                    trail = next;
+                // 循环判断
+                t = next;
+            }
+        }
+
+        public void findQueue() {
+            Node t = firstWaiter;
+            Node trail = t;
+            while (t != null) {
+                if(t.waitStatus > 0) {
+                    do{
+                        t = t.prev;
+                    }while (t.waitStatus > 0);
+                }
+                trail.nextWaiter = t;
+            }
+        }
+
         public int fullyRelease(Node node) {
             boolean failed = true;
             try{
