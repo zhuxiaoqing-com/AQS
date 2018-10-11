@@ -6,6 +6,7 @@ import redis.clients.jedis.ScanResult;
 import redis.clients.jedis.Tuple;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -100,6 +101,12 @@ public class Test1Jedis {
     public void fun8(){
         Long zrem = jedis.zrem("zset", "ddddddd");
         System.out.println(zrem);
+        Set<Tuple> xx = jedis.zrangeWithScores("xx",1,2);
+        Iterator<Tuple> iterator = xx.iterator();
+        iterator.hasNext();
+        Tuple next = iterator.next();
+        next.getScore();
+        next.getElement();
     }
 
     @Test
@@ -108,5 +115,29 @@ public class Test1Jedis {
         System.out.println(s);
     }
 
+    // arena:ArenaRank:1:1
+    @Test
+    public void fun10(){
+        jedis.zadd("a", 1, "c");
+        jedis.zadd("a", 2, "b");
+        jedis.zadd("a", 3, "a");
+        Set<Tuple> xx = jedis.zrangeWithScores("a",0,3);
+        Iterator<Tuple> iterator = xx.iterator();
+        while (iterator.hasNext()) {
+            Tuple next = iterator.next();
+            System.out.println(next.getElement());
+            System.out.println(next.getScore());
+        }
+    }
+    @Test
+    public void fun11(){
+        Set<Tuple> xx = jedis.zrangeByScoreWithScores("arena:1:1:1", -1, -1);
+        Iterator<Tuple> iterator = xx.iterator();
+        while (iterator.hasNext()) {
+            Tuple next = iterator.next();
+            System.out.println(next.getElement());
+            System.out.println(next.getScore());
+        }
+    }
 
 }

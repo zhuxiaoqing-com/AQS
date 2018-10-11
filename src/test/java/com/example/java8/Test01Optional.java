@@ -52,8 +52,8 @@ public class Test01Optional {
                 set.add(i);
         }
         System.out.println(set);
-        List<Integer> rankRanges = set.stream().sorted((x,y)->x>y?-1:1).collect(Collectors.toList());
-
+        List<Integer> rankRanges = set.stream().sorted((x,y)->x>y?1:-1).collect(Collectors.toList());
+        System.out.println(rankRanges);
         int rank = 4;
         int prevKey = 9999;
         for (int rankRange : rankRanges) {
