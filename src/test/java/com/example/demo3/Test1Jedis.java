@@ -1,10 +1,10 @@
 package com.example.demo3;
 
 import org.junit.Test;
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.ScanResult;
-import redis.clients.jedis.Tuple;
+import redis.clients.jedis.*;
 
+import java.lang.instrument.Instrumentation;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -130,14 +130,27 @@ public class Test1Jedis {
         }
     }
     @Test
-    public void fun11(){
-        Set<Tuple> xx = jedis.zrangeByScoreWithScores("arena:1:1:1", -1, -1);
-        Iterator<Tuple> iterator = xx.iterator();
-        while (iterator.hasNext()) {
-            Tuple next = iterator.next();
-            System.out.println(next.getElement());
-            System.out.println(next.getScore());
+    public void fun11() throws InterruptedException {
+        JedisPool jedisPool = new JedisPool();
+        Jedis jedis = jedisPool.getResource();
+        Thread.sleep(4444);
+        String key = "haha";
+        Instant start = Instant.now();
+        Pipeline pipelined = jedis.pipelined();
+        for(int i = 0; i < 52220; i++) {
+            Response<Long> haha = pipelined.zadd("haha", i, i + key);
+            if(i == 995) {
+                throw new RuntimeException("11");
+            }
         }
+        Instant end = Instant.now();
+       /* pipelined.sync();
+        //pipelined.syncAndReturnAll();
+        jedis.close();*/
+
+        System.out.println(end.toEpochMilli() - start.toEpochMilli());
     }
+
+    public void fun12() {}
 
 }
