@@ -254,8 +254,51 @@ public class Test06 {
 
     }
 
-}
+    /**
+     * 位移操作不能对小数 double float 使用
+     */
+    @Test
+    public void fun22() {
+        Map<Long,Long> map = new HashMap<>();
+        map.put(1L,1L);
+        Long aLong = map.get(1L);
+        System.out.println(aLong);
+        map.clear();
+        System.out.println(aLong);
+    }
 
+
+
+
+    @Test
+    public void fun23() {
+        System.out.println(-1L^(-1L<<20));
+    }
+
+    @Test
+    public void fun25() {
+        String s = (123456789123L+"."+1234567891123456789L);
+        String s2 = (123456789123L+"."+1234567891123456787L);
+        //String s = (123478123L+"");
+        System.out.println(s);
+        System.out.println(Double.MAX_VALUE);
+        System.out.println(Double.parseDouble(s2)>Double.parseDouble(s));
+    }
+
+    @Test
+    public void fun24() {
+        System.out.println(countDecimalBits());
+    }
+
+    private long countDecimalBits() {
+        long  decimalBits = 1;
+        long temp = 2111L;
+        while ((temp = temp / 10) != 0) {
+            decimalBits *= 10;
+        }
+        return  decimalBits;
+    }
+}
 
 
 

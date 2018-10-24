@@ -9,6 +9,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Test07 {
     @Test
@@ -124,7 +126,15 @@ public class Test07 {
 
     @Test
     public void test15() {
+        Map map  = new HashMap<>();
+        map.put(Integer.parseInt("1"), 2);
+        System.out.println(map.get(1));
+    }
 
+    @Test
+    public void test16() {
+        Long l = 1L;
+        System.out.println(l.equals(1));
     }
 }
 
