@@ -1,7 +1,6 @@
 package com.example.snowflakeIdWorker;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * int 类型的 位数组
@@ -30,21 +29,22 @@ import java.util.HashMap;
  * <p>
  * -1L ^ (-1L << n) n 的最大位  ^ 相同为 0 不相同为 1
  */
-public class bitMap {
+public class BitMap {
 
-    public void add(int[] bitMap, int num) {
+    public static void add(int[] bitMap, int num) {
         int index = num >> 5; // num / 32
         int bit = num & 0x1F; // num % 32
-        bitMap[index] |= 1 << bit;
+        //bitMap[index] |= 1 << bit;
+        bitMap[index] |= 1 << num; // 优化  1<< 32 = 1  1<<33 = 2
     }
 
-    public void remove(int[] bitMap, int num) {
+    public static void remove(int[] bitMap, int num) {
         int index = num >> 5; // num/32;
         int bit = num & 0x1F; // num%32;
         bitMap[index] &= ~(1 << bit);
     }
 
-    public boolean contain(int[] bitMap, int num) {
+    public static boolean contain(int[] bitMap, int num) {
         int index = num >> 5; // num/32
         int bit = num & 0x1F; // num%32
         return (bitMap[index] | 1 << bit) != 0;
@@ -52,27 +52,34 @@ public class bitMap {
 
     /**
      * 要存储的最大的值
+     * 最大能存储 32 个数(0-31)  和 要存 32 这个数是不一样的
+     *
      *
      * @param num
      * @return
      */
-    public int[] create(int num) {
-        int index = num >> 5;// 求出的是下标 所以还需要 +1
+    public static int[] create(int num) {
+        // 如果 num 不 -1 的话 传进来 32 index 就是 1; 加上 1+1=2 就要int[2];
+        // 但是其实 32 是 0-31 不需要 int[2] 只需要 int[1] 就可以了
+        // 如果 num = 0 的话那么这就是 -1  -1+1 =0
+        int index = (num-1) >> 5;// 求出的是下标 所以还需要 +1
         int[] bitMap = new int[1 + index];
         return bitMap;
     }
 
-    public void print(int[] bitMap) {
+    public static void print(int[] bitMap) {
         /**
          * 将 int 转换为 32 的 byte[]
          */
         for (int i = 0; i < bitMap.length; i++) {
-            ArrayList<Byte> bitList = new ArrayList<>();
-            for (int x = 0; i <= 0x1F; i++) {
-                bitList.add((byte) (x & 1)); // x & 1 就把 位数 1 给拿下来了
-                x >>= 1;
+            ArrayList<Byte> bitList = new ArrayList<>(32);
+            int bit = bitMap[i];
+            if(bit == 0) continue;
+            for (int x = 0; x <= 0x1F; x++) {
+                bitList.add((byte) (bit & 1)); // x & 1 就把 位数 1 给拿下来了
+                bit >>= 1;
             }
-            System.out.println(bitList);
+            System.out.println("[" + i + "] " + bitList);
         }
     }
 }

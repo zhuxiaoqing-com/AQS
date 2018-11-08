@@ -5,27 +5,24 @@ import redis.clients.jedis.*;
 
 import java.lang.instrument.Instrumentation;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class Test1Jedis {
 
     Jedis jedis = new Jedis("127.0.0.1", 6379);
 
     @Test
-    public void fun1(){
-        jedis.zadd("zset1", 22,"a");
-        jedis.zadd("zset1", 23,"b");
+    public void fun1() {
+        jedis.zadd("zset1", 22, "a");
+        jedis.zadd("zset1", 23, "b");
     }
 
     /**
      * 通过 区间取值
      */
     @Test
-    public void fun2(){
-        Set<Tuple> zset1 = jedis.zrangeByScoreWithScores("zset1",22, 23);
+    public void fun2() {
+        Set<Tuple> zset1 = jedis.zrangeByScoreWithScores("zset1", 22, 23);
         System.out.println(zset1);
     }
 
@@ -33,7 +30,7 @@ public class Test1Jedis {
      * 通过 value 取 sorted
      */
     @Test
-    public void fun3(){
+    public void fun3() {
         Double zscore = jedis.zscore("zset1", "a");
         System.out.println(zscore);
     }
@@ -42,27 +39,28 @@ public class Test1Jedis {
      * 替换  只要将 value 重新存取就会替换新的 分数;
      */
     @Test
-    public void fun4(){
-        jedis.zadd("zset1", 23,"a");
-        System.out.println(jedis.zrangeByScoreWithScores("zset1", 23,23));
+    public void fun4() {
+        jedis.zadd("zset1", 23, "a");
+        System.out.println(jedis.zrangeByScoreWithScores("zset1", 23, 23));
     }
 
     @Test
-    public void fun5(){
+    public void fun5() {
         double s = 11.11;
-        System.out.println((int)s);
+        System.out.println((int) s);
     }
 
     List list = new ArrayList<>();
 
     {
-        for(int i = 0; i <= 10000; i++) {
+        for (int i = 0; i <= 10000; i++) {
             list.add(i);
         }
     }
+
     @Test
     public void fun6() throws InterruptedException {
-        new Thread(()-> {
+        new Thread(() -> {
             try {
                 Thread.yield();
             } catch (Exception e) {
@@ -70,8 +68,8 @@ public class Test1Jedis {
             }
             List list2 = new ArrayList<>();
             list2.iterator();
-            for(int i = 0; i <= 10000; i++) {
-                list2.add(i+"ss");
+            for (int i = 0; i <= 10000; i++) {
+                list2.add(i + "ss");
             }
             System.out.println("------------------------");
             list = list2;
@@ -79,7 +77,7 @@ public class Test1Jedis {
 
         System.out.println(list.size());
 
-        for (Object s: list) {
+        for (Object s : list) {
             Thread.yield();
             System.out.println(s.toString());
         }
@@ -93,15 +91,16 @@ public class Test1Jedis {
      * 通过 value 取 sorted
      */
     @Test
-    public void fun7(){
+    public void fun7() {
         Long zscore = jedis.zrank("zset", "dd");
         System.out.println(zscore);
     }
+
     @Test
-    public void fun8(){
+    public void fun8() {
         Long zrem = jedis.zrem("zset", "ddddddd");
         System.out.println(zrem);
-        Set<Tuple> xx = jedis.zrangeWithScores("xx",1,2);
+        Set<Tuple> xx = jedis.zrangeWithScores("xx", 1, 2);
         Iterator<Tuple> iterator = xx.iterator();
         iterator.hasNext();
         Tuple next = iterator.next();
@@ -110,18 +109,18 @@ public class Test1Jedis {
     }
 
     @Test
-    public void fun9(){
-        int s = 123/100;
+    public void fun9() {
+        int s = 123 / 100;
         System.out.println(s);
     }
 
     // arena:ArenaRank:1:1
     @Test
-    public void fun10(){
+    public void fun10() {
         jedis.zadd("a", 1, "c");
         jedis.zadd("a", 2, "b");
         jedis.zadd("a", 3, "a");
-        Set<Tuple> xx = jedis.zrangeWithScores("a",0,3);
+        Set<Tuple> xx = jedis.zrangeWithScores("a", 0, 3);
         Iterator<Tuple> iterator = xx.iterator();
         while (iterator.hasNext()) {
             Tuple next = iterator.next();
@@ -129,6 +128,7 @@ public class Test1Jedis {
             System.out.println(next.getScore());
         }
     }
+
     @Test
     public void fun11() throws InterruptedException {
         JedisPool jedisPool = new JedisPool();
@@ -137,9 +137,9 @@ public class Test1Jedis {
         String key = "haha";
         Instant start = Instant.now();
         Pipeline pipelined = jedis.pipelined();
-        for(int i = 0; i < 52220; i++) {
+        for (int i = 0; i < 52220; i++) {
             Response<Long> haha = pipelined.zadd("haha", i, i + key);
-            if(i == 995) {
+            if (i == 995) {
                 throw new RuntimeException("11");
             }
         }
@@ -151,6 +151,22 @@ public class Test1Jedis {
         System.out.println(end.toEpochMilli() - start.toEpochMilli());
     }
 
-    public void fun12() {}
+    @Test
+    public void fun12() {
+        JedisPool jedisPool = new JedisPool("192.168.5.83", 6379);
+        Jedis jedis = jedisPool.getResource();
+        String index = "0";
+        ScanParams scanParams = new ScanParams().count(1000);
+        List<Map.Entry<String, String>> result = null;
+        while (true) {
+            ScanResult<Map.Entry<String, String>> hscan = jedis.hscan("arena_robot:4", index, scanParams);
+            result = hscan.getResult();
+            index = hscan.getStringCursor();
+            System.out.println(result.size());
+            if("0".equals(index)) {
+                return;
+            }
+        }
+    }
 
 }

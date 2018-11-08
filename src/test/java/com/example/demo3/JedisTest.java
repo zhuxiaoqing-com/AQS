@@ -3,6 +3,7 @@ package com.example.demo3;
 import org.junit.Test;
 import redis.clients.jedis.*;
 
+import java.io.IOException;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Set;
@@ -28,7 +29,7 @@ public class JedisTest {
     }
 
     @Test
-    public void TestJedisPool2(){
+    public void TestJedisPool2() throws IOException {
         JedisPool jedisPool = new JedisPool();
         Jedis jedis = jedisPool.getResource();
         jedis.flushDB();
@@ -44,6 +45,7 @@ public class JedisTest {
         }
         Instant end = Instant.now();
         pipelined.sync();
+        pipelined.close();
         //pipelined.syncAndReturnAll();
         jedis.close();
 
