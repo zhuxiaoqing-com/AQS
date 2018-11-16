@@ -1,8 +1,10 @@
 package com.example.demo1.hah;
 
+import org.springframework.stereotype.Service;
+
 import java.io.Serializable;
 import java.util.Date;
-
+@Service
 public class Role implements Serializable {
     /**
      * 上一次退出的时间

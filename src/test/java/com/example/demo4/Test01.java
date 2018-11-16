@@ -2,6 +2,7 @@ package com.example.demo4;
 
 import com.example.snowflakeIdWorker.BitMap;
 import org.junit.Test;
+import redis.clients.jedis.JedisPool;
 
 import java.time.*;
 import java.time.format.DateTimeFormatter;
@@ -72,6 +73,60 @@ public class Test01 {
         Integer s = 2;
         s.compareTo(null);
     }
+
+    @Test
+    public void test8() {
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        executorService.execute(new s() {
+            @Override
+            public void run() {
+                System.out.println("run");
+            }
+
+            @Override
+            public Object call() throws Exception {
+                System.out.println("call");
+                return 1;
+            }
+        });
+    }
+    interface s extends Runnable, Callable{
+
+    }
+
+    @Test
+    public void test9() {
+        System.out.println(Integer.toBinaryString(-2));
+        System.out.println(Integer.toBinaryString(Integer.MIN_VALUE));
+        System.out.println(Integer.MIN_VALUE);
+        System.out.println(0xFFFFFFFF);
+        System.out.println(Integer.toBinaryString(-1));
+    }
+
+    @Test
+    public void test10() {
+        A b = new B();
+        if(b instanceof B){
+            System.out.println("B通过了");
+        }
+
+        if(b instanceof A){
+            System.out.println("A通过了");
+        }
+    }
+
+    @Test
+    public void test11() {
+        String s = "电话";
+        char[] chars = s.toCharArray();
+        System.out.println(Arrays.toString(chars));
+    }
+    @Test
+    public void test12() {
+        String s = "电话";
+        char[] chars = s.toCharArray();
+        System.out.println((long)chars[0]);
+    }
 }
 
 class A {
@@ -80,6 +135,12 @@ class A {
         return 1;
     }
 }
+
+class B extends A {
+
+}
+
+
 
 
 

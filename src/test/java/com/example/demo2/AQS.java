@@ -7,6 +7,10 @@ import java.util.Date;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.LockSupport;
+/**
+ * 突然发现 park 以后 thread.interrupt(); 竟然会瞬间醒过来
+ * 运行结果 1 2 醒过来了啦！
+ */
 
 public class AQS {
     static final class Node {

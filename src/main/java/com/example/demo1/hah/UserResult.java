@@ -3,10 +3,12 @@ package com.example.demo1.hah;
 
 
 
+import org.springframework.stereotype.Service;
+
 import java.io.Serializable;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
+@Service
 public  class UserResult<T> implements Serializable {
     private  Map<Integer, String> errorMap = new ConcurrentHashMap<Integer, String>(){
         {

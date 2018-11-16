@@ -1,8 +1,10 @@
 package com.example.demo1.hah;
 
 
-import java.io.Serializable;
+import org.springframework.stereotype.Service;
 
+import java.io.Serializable;
+@Service
 public  class UserResult2 implements Serializable {
 
     private Integer errorCode;
