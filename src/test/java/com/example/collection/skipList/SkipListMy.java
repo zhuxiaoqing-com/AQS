@@ -5,15 +5,15 @@ import java.util.concurrent.ThreadLocalRandom;
 /**
  * 跳跃表的节点，包括 key-value 和上下左右4个节点
  */
-public class SkipList<T> {
-    private SkipListNode<T> head;
+public class SkipListMy<T> {
+    private SkipListNode<T> head, tail;
     private int nodes; // 节点总数
     private int listLevel; // 层数
     private static final double PROBABILITY = 0.5;
     public static int HEAD_KEY = 0x80000000; // 负无穷
-    //public static int TAIL_KEY = 0x7FFFFFFF; // 正无穷
+    public static int TAIL_KEY = 0x7FFFFFFF; // 正无穷
 
-    public SkipList() {
+    public SkipListMy() {
         clear();
     }
 
@@ -21,7 +21,10 @@ public class SkipList<T> {
      * 清空跳跃表
      */
     public void clear() {
-        head = new SkipListNode<T>(HEAD_KEY, null, null, null);
+        head = new SkipListNode<T>(HEAD_KEY, null);
+        tail = new SkipListNode<T>(TAIL_KEY, null);
+        head.right = tail;
+        tail.left = head;
         listLevel = 0;
         nodes = 0;
     }
@@ -42,7 +45,7 @@ public class SkipList<T> {
         while (true) {
             // 如果 node.right > key 就进入 下一层
             // 如果 node.right.key <= key 不符合 说明 node <= key 因为 node <= key 会进入循环
-            while (node.right != null && node.right.key <= key) {
+            while (node.right.key != TAIL_KEY && node.right.key <= key) {
                 node = node.right;
             }
             if (node.down != null) {
@@ -129,77 +132,54 @@ public class SkipList<T> {
         if (search.key == k) {
             search.value = v;
         }
-        nodes++;
 
         // 插入 0 层数据
-        SkipListNode<T> nowNode = new SkipListNode(k, v, search.right, null);
-        search.right = nowNode;
+        SkipListNode<T> nowNode = new SkipListNode(k, v);
+        rightLink01(search, nowNode);
+
 
         // 随机层数
-        int randomLevel = randomLevel();
-        SkipListNode<T> idx = null;
-        if (randomLevel <= listLevel) {
-            for (int i = 1; i <= randomLevel; i++) {
-                idx = new SkipListNode<T>(k, null, idx);
+        int level = 0;
+        while (ThreadLocalRandom.current().nextDouble() < PROBABILITY) {
+            level++;
+            if (level > listLevel) {
+                SkipListNode<T> nowHead = new SkipListNode<>(HEAD_KEY, null);
+                SkipListNode<T> nowTail = new SkipListNode<>(TAIL_KEY, null);
+
+                nowHead.right = nowTail;
+                nowTail.left = nowHead;
+
+                downLink(nowHead, head);
+                downLink(nowTail, tail);
+
+                head = nowHead;
+                tail = nowTail;
+
+                listLevel++;
             }
-        } else {
-            // 超过了原有层数
-            SkipListNode<T>[] idxs = new SkipListNode[randomLevel + 1];
-            for (int i = 1; i <= randomLevel; i++) {
-                idx = idxs[i] = new SkipListNode<T>(k, idx);
+            while (search.up == null) {
+                search = search.left;
             }
-            for (int i = listLevel + 1; i <= randomLevel; i++) {
-                head = new SkipListNode<T>(HEAD_KEY, idxs[i], head);
-            }
-            int temp = randomLevel;
-            randomLevel = listLevel;
-            listLevel = temp;
+            search = search.up;
+            SkipListNode<T> right = new SkipListNode<>(k, null);
+            rightLink01(search, right);
+            downLink(right ,nowNode);
+            nowNode = right;
         }
-
-        // 找到合适的地方插入
-
-            int j = listLevel;
-            SkipListNode<T> tempHead = head;
-          /*  for (SkipListNode<T> t = idx, q = head, r = q.right;;) {
-                if (j == randomLevel) {
-                    new SkipListNode<T>(k, idx, h);
-                    randomLevel--;
-                }
-            }*/
-
-            for (SkipListNode<T> q = tempHead, r = q.right, t = idx;;) {
-                if (q == null || t == null)
-                    break;
-                if (r != null) {
-                    if (r.key < k) {
-                        q = r;
-                        r = r.right;
-                        continue;
-                    }
-                }
-
-                if (j == randomLevel) {
-                    t.right = r;
-                    q.right = t;
-                    if (--randomLevel == 0)
-                        break;
-                }
-
-                if (--j >= randomLevel)
-                    t = t.down;
-                q = q.down;
-                r = q.right;
-            }
-
+        nodes++;
     }
 
-    private void reghtLink01(SkipListNode<T> node1, SkipListNode<T> node2) {
+    private void rightLink01(SkipListNode<T> node1, SkipListNode<T> node2) {
+        node1.right.left = node2;
         node2.right = node1.right;
+
         node1.right = node2;
+        node2.left = node1;
     }
 
     private void downLink(SkipListNode<T> node1, SkipListNode<T> node2) {
         node1.down = node2;
+        node2.up = node1;
     }
 
     private int randomLevel() {
@@ -230,7 +210,7 @@ public class SkipList<T> {
             // 如果该层找到了 key 将其删除
             if (headTemp.right.key == key) {
                 oldNode = headTemp.right;
-                reghtLink01(headTemp, headTemp.right.right);
+                rightLink01(headTemp, headTemp.right.right);
             }
             if (headTemp.down != null) {
                 headTemp = headTemp.down;
@@ -274,6 +254,62 @@ public class SkipList<T> {
         return builder.toString();
     }
 
+
+    public class SkipListNode<T> {
+        public int key;
+        public T value;
+        public SkipListNode<T> up, down, left, right;// 上下左右四个指针
+
+        public SkipListNode(int key, T value) {
+            this.key = key;
+            this.value = value;
+        }
+
+        public int getKey() {
+            return key;
+        }
+
+        public void setKey(int key) {
+            this.key = key;
+        }
+
+        public T getValue() {
+            return value;
+        }
+
+        public void setValue(T value) {
+            this.value = value;
+        }
+
+        public SkipListNode<T> getDown() {
+            return down;
+        }
+
+        public void setDown(SkipListNode<T> down) {
+            this.down = down;
+        }
+
+        public SkipListNode<T> getRight() {
+            return right;
+        }
+
+        public void setRight(SkipListNode<T> right) {
+            this.right = right;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null) return false;
+            SkipListNode<T> ent = (SkipListNode<T>) o;
+            return (ent.getKey() == key) && (ent.getValue() == value);
+        }
+
+        @Override
+        public String toString() {
+            return "key-value:" + key + "-" + value;
+        }
+    }
 
 }
 
