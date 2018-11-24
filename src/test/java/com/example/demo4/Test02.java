@@ -51,7 +51,11 @@ public class Test02 {
 
     @Test
     public void test01() {
-        //ClassLoader.getSystemResources(path);
+        int s = Integer.MAX_VALUE;
+        int s2 = 100;
+        int s3 = (int) (s*100L/100L);
+        System.out.println(s3);
+        System.out.println(s);
     }
 }
 
