@@ -1,4 +1,4 @@
-package com.example.datastruture;
+package com.example.datastruture.linked;
 
 
 import org.junit.Test;

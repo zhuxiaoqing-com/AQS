@@ -80,13 +80,18 @@ public class PfTestMy01 {
         public double estimate() {
             // 这里使用 调和平均数 就是用 1/? 来进行让平均数偏向小的那一方
             double sumBitsInverse = 0.0; // 零位数倒数
+            int count = 0;
             for (int i = 0; i < keepers.length; i++) {
-                sumBitsInverse += 1.0 / keepers[i].maxBits;
+                if (keepers[i].maxBits != 0) {
+                    count++;
+                    sumBitsInverse += 1.0 / keepers[i].maxBits;
+
+                }
             }
             // 平均零位数
             double avgBits = (float) keepers.length / sumBitsInverse;
-            // 根据公式 2^avgBits * 桶数
-            return Math.pow(2, avgBits) * k;
+            // 根据公式 2^avgBits * 桶数(必须是不为空的桶)
+            return Math.pow(2, avgBits) * count;
         }
     }
 

@@ -169,7 +169,7 @@ public class RedBlack<Key extends Comparable<Key>, Value> {
     private Node deleteMin(Node h) {
         if (h.left == null)
             return null;
-
+        // 这里 h.left = black  h.left.left = red
         if (!isRed(h.left) && !isRed(h.left.left))
             h = moveRedLeft(h);
 
