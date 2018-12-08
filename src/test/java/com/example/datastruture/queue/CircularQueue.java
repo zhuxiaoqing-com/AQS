@@ -23,6 +23,10 @@ public class CircularQueue {
      */
     public boolean enqueue(String val) {
         // 队列满了
+        /**
+         * 因为 tail+1 == head
+         * 因为是循环的所有需要 % n ;
+         */
         if (((tail + 1) & (n - 1)) == head) {
             return false;
         }
