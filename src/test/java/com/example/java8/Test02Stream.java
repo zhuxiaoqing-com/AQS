@@ -15,4 +15,6 @@ public class Test02Stream {
         Map<Integer, Map<Integer, Employee>> b = employees.stream().collect(Collectors.groupingBy(Employee::getAge,LinkedHashMap::new, Collectors.toMap(Employee::getId, Function.identity())));
 
     }
+
+//    public void stream01(int a, int b, )
 }
