@@ -2,8 +2,11 @@ package com.example.datastruture.stringmatch.bm;
 
 import org.junit.Test;
 
-import java.util.Arrays;
-import java.util.HashMap;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class bm01 {
     private static final int SIZE = 256;// 全局变量或成员变量
@@ -154,6 +157,41 @@ public class bm01 {
         return -1;
     }
 
+    private void generateGS(char[] pattern, int[] suffix, boolean[] prefix) {
+        Arrays.fill(suffix, -1);
+
+        for (int i = 0; i < pattern.length - 1; i++) { // b[0, i]
+            int j = i;
+            int k = 0;// 公共后缀子串长度
+            // 与 b[0, m-1] 求公共后缀子串
+            while (j >= 0 && pattern[j] == pattern[pattern.length - 1 - k]) {
+                --j;
+                ++k;
+                suffix[k] = j + 1; // j+1 表示公共后缀子串在 b[0, i] 中的起始下标
+            }
+            if (j == -1) prefix[k] = true; // 如果是公共后缀子串也是模式串的前缀子串
+        }
+    }
+
+    private void generateGS01(char[] pattern, int[] suffix, boolean[] prefix) {
+        Arrays.fill(suffix, -1);
+        /**
+         * 进行匹配后缀 从 [0,length-1] 到[length-1,length-1]
+         * 将每一个前缀匹配
+         */
+        for (int i = 0; i < pattern.length - 1; i++) {
+            int j = i;
+            int k = 0; // 后缀的长度
+            while (j >= 0 && pattern[j] == pattern[pattern.length - 1 - k]) {
+                j--;
+                k++;
+                // 因为 k 是从 0 开始的所以 需要 k++; 以后再记录
+                // j+1 是因为 之前已经 j-- 过了
+                suffix[k] = j + 1;
+            }
+            if (j == -1) prefix[k] = true; // 如果公共后缀子串也是模式串的前缀子串
+        }
+    }
 
 }
 
