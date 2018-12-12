@@ -251,13 +251,12 @@ public class bm01 {
             int y = 0;
             // 如果有好后缀的话
             if (j < pattern.length - 1) {
-
+                y = moveByGS(j, pattern.length, suffix, prefix);
             }
+            i = i + Math.max(x, y);
         }
         return -1;
     }
-
-}
 
     /**
      * j 表示坏字符对应的模式串中的字符下标; m 表示模式串长度
@@ -281,9 +280,9 @@ public class bm01 {
          *  r = j + 2; 因为 j+1 是完成的好后缀
          *  又因为没有符合的好后缀，如果就 j+2;直接对应是否有符合条件的前缀
          */
-        for (int r = j + 2; r < pLength - 1; r++) {
+        for (int r = j + 2; r < pLength; r++) {
             // 直接减少看是否有前缀
-            if (prefix[pLength - r] == true) {
+            if (prefix[pLength - r]) {
                 return r;
             }
         }
@@ -298,7 +297,7 @@ public class bm01 {
         for (int i = 0; i < pattern.length - 1; i++) {
             int k = 0;
             int j = i;
-            if (j >= 0 && pattern[j] == pattern[pattern.length - 1 - k]) {
+            while (j >= 0 && pattern[j] == pattern[pattern.length - 1 - k]) {
                 j--;
                 k++;
                 suffix[k] = j + 1;
