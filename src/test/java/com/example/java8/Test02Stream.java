@@ -63,6 +63,9 @@ public class Test02Stream {
                 this.data=0;
                 }
                 */
+        /**
+         * @see Double
+          */
 
     }
 }
