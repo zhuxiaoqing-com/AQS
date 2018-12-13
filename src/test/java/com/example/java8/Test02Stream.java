@@ -59,10 +59,10 @@ public class Test02Stream {
                 // 当前这个任务  进度   data 1
                 // 1.2
                 // if(mode==1)
-                {
+              /*  {
                 this.data=0;
                 }
-
+                */
 
     }
 }
