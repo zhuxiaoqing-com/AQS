@@ -57,6 +57,11 @@ public class Test02 {
         System.out.println(s3);
         System.out.println(s);
     }
+
+    @Test
+    public void test02() {
+       // <message id="2" type="toClient" class="RspGodCrownActivate" desc="返回激活神冠结果">
+    }
 }
 
 
