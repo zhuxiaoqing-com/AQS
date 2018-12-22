@@ -40,6 +40,10 @@ public class SkipList {
         Node update[] = new Node[level];
         /**
          * 默认为 head
+         * 因为可能增加 level 层数。如果层数比现有的高的话 下面的 for(while(...)...)
+         * 循环就可能无法全部初始化 update[i]
+         * 比如 level == 5; currentLevel = 3;
+         * 那么只初始化le  update[2-0]的数组。 update[4-3]的没有初始化
          */
         for (int i = 0; i < level; i++) {
             update[i] = head;
@@ -52,12 +56,42 @@ public class SkipList {
             // 更新 update[i]
             update[i] = p;
         }
-        for(int i = 0; i< update.length; i++) {
+        /**
+         * 如果插入的值已经有了就不插入了
+         */
+        if (update[0].data == value) {
+            return;
+        }
+        for (int i = 0; i < update.length; i++) {
             newNode.forwards[i] = update[i].forwards[i];
             update[i].forwards[i] = newNode;
         }
 
+        // 如果随机出来的层数大于现有层数就将其替换
+        if (levelCount < level) {
+            levelCount = level;
+        }
     }
+
+    public void delete(int value) {
+        Node[] update = new Node[levelCount];
+
+        Node h = this.head;
+        for (int i = levelCount - 1; i >= 0; i++) {
+            while (h.forwards[i] != null && h.forwards[i].data < value) {
+                h = h.forwards[i];
+            }
+            update[i] = h;
+        }
+
+        for (int i = 0; i < levelCount; i++) {
+            int s;
+            if (update[i].forwards[i] != null && (s = update[i].forwards[i].data) == value) {
+                update[i].forwards[i] = update[i].forwards[i].forwards[i];
+            }
+        }
+    }
+
 
     /**
      * 随机 level 次，如果是奇数层数 + 1; 防止伪随机
