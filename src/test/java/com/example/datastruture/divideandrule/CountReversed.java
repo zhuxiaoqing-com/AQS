@@ -1,6 +1,7 @@
 package com.example.datastruture.divideandrule;
 
 /**
+ * 分治函数
  * 求出一组数据的有序对个数或者逆序对个数
  */
 public class CountReversed {
