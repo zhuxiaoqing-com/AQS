@@ -4,7 +4,6 @@ import org.junit.Test;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.TemporalAccessor;
 
 public class Test03Time {
     @Test
