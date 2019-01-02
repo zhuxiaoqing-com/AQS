@@ -60,7 +60,8 @@ public class Test02 {
 
     @Test
     public void test02() {
-       // <message id="2" type="toClient" class="RspGodCrownActivate" desc="返回激活神冠结果">
+       int id = 3032;
+        System.out.println(id%1000);
     }
 }
 
