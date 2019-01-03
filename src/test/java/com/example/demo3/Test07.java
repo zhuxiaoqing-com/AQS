@@ -136,6 +136,13 @@ public class Test07 {
         Long l = 1L;
         System.out.println(l.equals(1));
     }
+
+    @Test
+    public void test17() {
+        double s = 23.232321;
+        String.valueOf(s);
+        System.out.println();
+    }
 }
 
 

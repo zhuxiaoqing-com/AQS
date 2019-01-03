@@ -169,4 +169,24 @@ public class Test1Jedis {
         }
     }
 
+    @Test
+    public void fun13() {
+        jedis.del("a");
+        jedis.zadd("a",  23.232320, "11");
+        jedis.zadd("a",  23.232321, "22");
+        jedis.zadd("a",  23.232322, "23");
+        jedis.zadd("a",  23.232324, "24");
+
+
+        Set<Tuple> xx = jedis.zrangeWithScores("a", 0, 3);
+        Iterator<Tuple> iterator = xx.iterator();
+        while (iterator.hasNext()) {
+            Tuple next = iterator.next();
+            System.out.println(next.getElement());
+            System.out.println(next.getScore());
+        }
+       // System.out.println(jedis.zcount("a", 3,-1));
+        //jedis.zremrangeByRank("a", 3, 3);
+
+    }
 }
