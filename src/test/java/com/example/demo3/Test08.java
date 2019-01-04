@@ -303,7 +303,9 @@ public class Test08 {
     @Test
     public void test28() {
         double x = 1.1;
-        System.out.println(Math.ceil(x));
+        String s = String.valueOf(x);
+        String[] split = s.split("\\.");
+        System.out.println(Arrays.toString(split));
     }
 
 
