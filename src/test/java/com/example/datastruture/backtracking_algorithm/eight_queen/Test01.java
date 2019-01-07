@@ -1,5 +1,6 @@
-package com.example.datastruture.backtracking_algorithm;
+package com.example.datastruture.backtracking_algorithm.eight_queen;
 
+import com.example.datastruture.backtracking_algorithm.eight_queen.EightQueen02;
 import org.junit.Test;
 
 public class Test01 {

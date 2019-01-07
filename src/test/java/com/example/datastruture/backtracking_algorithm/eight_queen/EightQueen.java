@@ -1,4 +1,4 @@
-package com.example.datastruture.backtracking_algorithm;
+package com.example.datastruture.backtracking_algorithm.eight_queen;
 
 /**
  * 八皇后
