@@ -34,7 +34,7 @@ public class Zero_One_Bag_HS {
             return;
         }
 
-        // 如果备忘录里面已经有数据就直接返回k
+        // 如果备忘录里面已经有数据就直接返回
         if (mem[index][currentWeight]) return;
         f(index +1, currentWeight); // 0  不装入
         if(currentWeight + weight[index] <= w) {
