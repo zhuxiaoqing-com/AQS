@@ -66,13 +66,26 @@ public class goods11 {
         /**
          * 然后最大值减去当前的物品的价格 就知道上一个价格在哪里了
          */
-        for (int i = n - 1; i >= 1; --i) {
+        for (int i = n - 1; i <= 1; i++) {
+            /**
+             * status[i-1][j-items[i]] 为 true 代表可以买
+             * status[i-1][j] 为 true 代表不能买，因为和前一个物品的价格一样就说明没有买
+             */
+            /*
+               // 这是第一种放法 第二种方法也可以买
             if (j - items[i] >= 0 && states[i - 1][j - items[i]]) {
-                System.out.println(items[i] + "");
+                System.out.println(j + ""); // 可以，买
+                j = j - items[i];
+            }*/
+
+            if(j - items[i] >= 0 && !states[i-1][j]) {
+                System.out.println(j + ""); // 可以，买
                 j = j - items[i];
             }
         }
 
+        // 因为需要 i- 1 取下标所以最后一个要自己打印
+        // 如果还有 j 不是为零的话就说明还有物品,上面的都选完了还有物品的话就是 item[0] 了
         if(j != 0) System.out.println(items[0]);
     }
 
