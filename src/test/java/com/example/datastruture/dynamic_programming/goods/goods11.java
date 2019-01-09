@@ -61,15 +61,19 @@ public class goods11 {
         int j;
         // 先找到最大值
         for (j = w * 3; j >= 0; --j) {
-            if(states[n-1][j]) break;
+            if (states[n - 1][j]) break;
         }
         /**
          * 然后最大值减去当前的物品的价格 就知道上一个价格在哪里了
          */
-        for(int i = n -1; i>=0; --i) {
-            int max = j - items[i];
-            if()
+        for (int i = n - 1; i >= 1; --i) {
+            if (j - items[i] >= 0 && states[i - 1][j - items[i]]) {
+                System.out.println(items[i] + "");
+                j = j - items[i];
+            }
         }
+
+        if(j != 0) System.out.println(items[0]);
     }
 
 }
