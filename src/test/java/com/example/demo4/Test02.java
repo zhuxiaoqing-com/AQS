@@ -63,6 +63,14 @@ public class Test02 {
        int id = 3032;
         System.out.println(id%1000);
     }
+
+    @Test
+    public void test03() {
+        int id = 10000;
+        int temp = 3;
+        System.out.println(3*10000/10000);
+        System.out.println(3*0.1/10000);
+    }
 }
 
 
