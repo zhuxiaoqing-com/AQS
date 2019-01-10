@@ -2,6 +2,7 @@ package com.example.demo3;
 
 import org.junit.Test;
 import redis.clients.jedis.*;
+import redis.clients.jedis.params.geo.GeoRadiusParam;
 
 import java.lang.instrument.Instrumentation;
 import java.time.Instant;
@@ -9,7 +10,8 @@ import java.util.*;
 
 public class Test1Jedis {
 
-    Jedis jedis = new Jedis("127.0.0.1", 6379);
+    //Jedis jedis = new Jedis("127.0.0.1", 6379);
+    Jedis jedis = new Jedis("192.168.5.83", 6379);
 
     @Test
     public void fun1() {
@@ -188,5 +190,16 @@ public class Test1Jedis {
        // System.out.println(jedis.zcount("a", 3,-1));
         //jedis.zremrangeByRank("a", 3, 3);
 
+    }
+
+
+    @Test
+    public void fun14() {
+        Double zscore = jedis.zscore("arena:1:1:1", "3");
+        GeoRadiusParam param = GeoRadiusParam.geoRadiusParam().sortAscending().count(1).withCoord().withDist();
+        GeoCoordinate geoCoordinate = new GeoCoordinate(22, 22);
+       // jedis2.geoadd("location",geoCoordinate.getLongitude(),geoCoordinate.getLatitude(),"b");
+       //List<GeoRadiusResponse> geoRadiusResponses = jedis.georadiusByMember("location", "32ds", 1, GeoUnit.KM, param);
+        jedis.close();
     }
 }
