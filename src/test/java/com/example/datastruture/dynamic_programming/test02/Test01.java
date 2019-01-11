@@ -114,16 +114,65 @@ public class Test01 {
 
     // dynamic
     public void coinDynamic(int[] coinItem, int resultMemory) {
-        // 计算遍历的层数，此按最小金额来支付即为最大层数
-        int levelNum = resultMemory / coinItem[0] + 1;
+        // 层数为总金额
+        int levelNum = resultMemory / coinItem[0];
+        // 长度为货币数值
         int length = coinItem.length;
-        int[][] status = new int[levelNum + 1][length];
+        int[][] status = new int[levelNum][length];
 
-        for (int i = 0; i <= levelNum; i++) {
-            for (int j = 0; j < length; j++) {
-                status[]
+        // 初始化状态数组
+        for (int i = 0; i < levelNum; i++) {
+            for (int j = 0; j < resultMemory; j++) {
+                status[i][j] = -1;
             }
         }
+
+        // 将第一层的数据填充
+        for (int i = 0; i < length; i++) {
+            status[0][coinItem[i]] = coinItem[i];
+        }
+        int minNum = -1;
+
+        // 计算推导状态
+        for (int i = 1; i < levelNum; i++) {
+            // 推导出当前状态
+            for (int j = 0; j < resultMemory; j++) {
+                if (status[i - 1][j] != -1) {
+                    // 遍历元素,进行累加
+                    for (int k = 0; k < length; k++) {
+                        if (j + coinItem[k] <= resultMemory) {
+                            status[i][j + coinItem[k]] = coinItem[k];
+                        }
+                    }
+                }
+
+                // 找到最小的张数
+                if (status[i][resultMemory] >= 0) {
+                    minNum = i + 1;
+                    break;
+                }
+            }
+
+            if (minNum > 0) {
+                break;
+            }
+        }
+
+        int befValue = resultMemory;
+
+        // 进行反推出，币的组合
+        for (int i = minNum - 1; i >= 0; i--) {
+            for (int j = resultMemory; j >= 0; j--) {
+                if (j == befValue) {
+                    System.out.println("当前的为:" + status[i][j]);
+                    befValue = befValue - status[i][j];
+                    break;
+                }
+            }
+        }
+
+        //return minNum;
+
     }
 }
 
