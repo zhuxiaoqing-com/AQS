@@ -71,6 +71,14 @@ public class Test02 {
         System.out.println(3*10000/10000);
         System.out.println(3*0.1/10000);
     }
+
+    @Test
+    public void test04() {
+        long id = 1_000_000000;
+        int temp = 3;
+        System.out.println(id*id);
+        System.out.println(Math.toIntExact(id*id));
+    }
 }
 
 
