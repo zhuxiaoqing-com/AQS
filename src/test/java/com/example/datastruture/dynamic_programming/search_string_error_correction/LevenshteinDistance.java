@@ -40,16 +40,68 @@ public class LevenshteinDistance {
      * 2、根据递归树推出 状态转移方程
      * i,j 可能是 (i-1,j) (i,j-1), (i-1,j-1) 三个状态转换过来的
      * dist(i,j,d) = min((i-1,j)(i,j-1)(i-1,j-1));
-     *
-     *
+     * <p>
+     * <p>
      * 如果：a[i]!=b[j]，那么：min_edist(i, j) 就等于：
      * min(min_edist(i-1,j)+1, min_edist(i,j-1)+1, min_edist(i-1,j-1)+1)
-     *
+     * <p>
      * 如果：a[i]==b[j]，那么：min_edist(i, j) 就等于：
      * min(min_edist(i-1,j)+1, min_edist(i,j-1)+1，min_edist(i-1,j-1))
-     *
+     * <p>
      * 其中，min 表示求三数中的最小值。
-     *
-     * 为什么 a[i]!=b[j] 和 a[i]==b[j] 的最后一个不相同呢 因为
+     * <p>
+     * min_edist 表示的是 (i,j) 操作完成的操作次数
+     * <p>
+     * 如果：a[i]!=b[j]，那么：min_edist(i, j) 就等于：
+     * min(min_edist(i-1,j)+1, min_edist(i,j-1)+1, min_edist(i-1,j-1)+1)
+     * 表示 反正都是不等于 都是需要操作的 就选最小的 不相等可以选择 增加  删除 替换(替换成相等的字母)
+     * <p>
+     * 如果：a[i]==b[j]，那么：min_edist(i, j) 就等于：
+     * min(min_edist(i-1,j)+1, min_edist(i,j-1)+1，min_edist(i-1,j-1))
+     * 相等的话 可以选择不移动 就是 min_edist(i-1,j-1)
+     * 也可以选择移动 min_edist(i-1,j)+1, min_edist(i,j-1)+1
+     * 反正就是选择最小的 相等可以选择 增加 删除 替换(替换的话因为本来就是相等的就没有操作了)
      */
+
+
+    public int lwstDP(char[] a, int n, char[] b, int m) {
+        // 保存着编辑距离
+        int[][] minDist = new int[n][m];
+        // 初始化第一个
+        if (a[0] == b[0]) {
+            minDist[0][0] = 0;
+        } else {
+            minDist[0][0] = 1;
+        }
+        // 初始化第一行
+        for (int j = 1; j < m; ++j) {
+            // 因为第一行只能使 a 不断减少 或者 b 不断增加;
+            // 所以只能选择 (0,j) = minDist(0,j-1)+1 这里是 j不断增加 因为 j = j-1;
+            minDist[0][j] = minDist[0][j - 1];
+        }
+        // 初始化第一列
+        for (int i = 1; i < n; ++i) {
+            // 因为第一列只能使 a 不断增加 不能使 b 增加 因为 b 只有一个
+            minDist[i][0] = minDist[i - 1][0];
+        }
+
+        for (int i = 1; i < n; i++) {
+            for (int j = 1; j < m; j++) {
+                if (a[i] == b[j]) {
+                    int vA = minDist[i][j - 1] + 1;
+                    int vB = minDist[i - 1][j] + 1;
+                    int vC = minDist[i - 1][j - 1];
+                    minDist[i][j] = Math.min(Math.min(vA, vB), vC);
+                } else {
+                    int vA = minDist[i][j - 1] + 1;
+                    int vB = minDist[i - 1][j] + 1;
+                    int vC = minDist[i - 1][j - 1] + 1;
+                    minDist[i][j] = Math.min(Math.min(vA, vB), vC);
+                }
+            }
+        }
+
+        return minDist[n - 1][m - 1];
+    }
+
 }
