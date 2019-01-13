@@ -41,7 +41,7 @@ public class Test03 {
      * f02(0,1)  回溯
      *
      * @param index
-     * @param max 是当前 index 的数量
+     * @param max   是当前 index 的数量
      */
     public void f02(int index, int max) {
         if (index == list.length) {
@@ -55,16 +55,96 @@ public class Test03 {
         }
     }
 
+    /**
+     * @param arrays
+     * @param index
+     */
+    public int recursionCount(int[] arrays, int index) {
+        if (index == 0) {
+            return 1;
+        }
+        int max = 0;
+        // 此问题的解，递归的核心就是在之前的序列中找到最大递增子序列加1
+        // 所以需要遍历此之前的全部数据项
+        for (int i = 0; i < index; i++) {
+            // 递归求解每项的最第增序列
+            int value = recursionCount(arrays, i);
+            if (arrays[i] < arrays[index]) {
+                if (value > max) {
+                    max = value;
+                }
+            }
+        }
+        return max + 1;
+    }
 
     /**
-     * 动态规划
+     * 原理就是 获取之前的序列号中找到最大递增子序列
+     * 与当前序列比较大于 +1 小于 不加 取最大的存入
+     *
+     * @param arrays
+     * @param index
      */
-    public void dynamicP() {
-        int[] status = new int[list.length];
+    public int recursionCount02(int[] arrays, int index) {
+        if (index == 0) {
+            return 1;
+        }
+        int max = 0;
+        for (int i = 0; i < index; i++) {
+// 取到 index 到 i 的最大值
+            int value = recursionCount(arrays, i);
+            if (arrays[i] < arrays[index]) {
+                if (value + 1 > max) {
+                    max = value + 1;
+                }
+            } else {
+                if (value > max) {
+                    max = value;
+                }
+            }
+        }
+        return max;
+    }
 
-
+    @Test
+    public void test02() {
+        int[] array = new int[]{2, 3, 4, 6, 5, 1};
+        System.out.println(recursionCount02(array, array.length - 1));
     }
 
 
+    /**
+     * 动态规划
+     * <p>
+     * 等于前面所有的最大的然后 +1
+     */
+    public int dynamicP(int[] array) {
+        int[] status = new int[array.length];
+
+        status[0] = 1;
+        for (int i = 1; i < array.length; i++) {
+            int max = 0;
+            for (int j = 0; j < i; j++) {
+                if (array[i] > array[j]) {
+                    if (status[j] + 1 > max) {
+                        max = status[j] + 1;
+                    }
+                } else {
+                    if (status[j] > max) {
+                        max = status[j];
+                    }
+                }
+            }
+            status[i] = max;
+        }
+        return status[status.length - 1];
+    }
+
+    @Test
+    public void test03() {
+        int[] array = new int[]{2, 3, 4, 6, 8, 1};
+        System.out.println(recursionCount02(array, array.length - 1));
+        System.out.println(dynamicP(array));
+    }
 
 }
