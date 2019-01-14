@@ -2,11 +2,11 @@ package com.example.datastruture.a_43_topological_sorting;
 
 import java.util.LinkedList;
 
-public class Graph {
+public class Graph_Kahn {
     private int v; // 顶点的个数
     private LinkedList<Integer> adj[];// 邻接表
 
-    public Graph(int v) {
+    public Graph_Kahn(int v) {
         this.v = v;
         adj = new LinkedList[v];
         for (int i = 0; i < v; ++i) {
@@ -98,13 +98,88 @@ public class Graph {
             for (int i = 0; i < adj[pop].size(); i++) {
                 Integer integer = adj[pop].get(i);
                 inDegree[integer]--;
-                if(inDegree[integer] == 0) {
+                if (inDegree[integer] == 0) {
                     queue.add(integer);
                 }
             }
         }
+    }
 
+
+    /**
+     * Kahn 算法
+     * 本质使用了贪心算法的思想
+     * 看不太懂为什么是使用了贪心算法的思想。难道是因为每次都选择了最好的?(每次都选择了inDegree 最小的 vertex)
+     *
+     *
+     * <p>
+     * 将依赖链接起来，如果 a 依赖 b 那么就 a -> b
+     * <p>
+     * 用 邻接表 存储 graph
+     * 顶点里面的 linkedList 存储指向的顶点
+     */
+    public void kahn() {
+        // 存储顶点入度的个数
+        int[] inDegree = new int[v];
+        for (int i = 0; i < adj.length; i++) {
+            for (int j = 0; j < adj[i].size(); j++) {
+                // 统计入度 顶点
+                Integer vertex = adj[i].get(j);
+                inDegree[vertex]++;
+            }
+        }
+
+        LinkedList<Integer> queue = new LinkedList<>();
+        // 将入度为 0 的顶点加入 队列，最先输出
+        for (int i = 0; i < inDegree.length; i++) {
+            if (inDegree[i] == 0) {
+                queue.add(i);
+            }
+        }
+
+
+        while (!queue.isEmpty()) {
+            Integer vertex = queue.remove();
+            System.out.println("->" + vertex);
+
+            // 然后遍历 vertex 指向的顶点，将这些顶点的入度减 1
+            for (int i = 0; i < adj[vertex].size(); i++) {
+                // 指向的顶点
+                Integer pointToVertex = adj[vertex].get(i);
+                inDegree[pointToVertex]--;
+                if (inDegree[pointToVertex] == 0) {
+                    queue.add(pointToVertex);
+                }
+            }
+        }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
