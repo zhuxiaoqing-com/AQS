@@ -1,8 +1,10 @@
 package com.example.datastruture.a_44_shortest_path_algorithm;
 
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
+import java.util.function.Function;
 
 /**
  * 单源最短路径算法(一个顶点到一个顶点)。
@@ -71,7 +73,9 @@ public class Dijkstra {
         System.out.println("->" + t);
     }
 
-
+    public Function<Integer, Integer> setAgvDoorClose = function -> {
+        return function;
+    };
 
 
 
