@@ -14,8 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.*;
 
 public class Test02 {
     public static void main(String[] args) throws IOException, ClassNotFoundException {
@@ -78,6 +77,25 @@ public class Test02 {
         int temp = 3;
         System.out.println(id*id);
         System.out.println(Math.toIntExact(id*id));
+    }
+
+    @Test
+    public void test05() {
+        ArrayList<Integer> objects = new ArrayList<>();
+        objects.add(3);
+        objects.add(2);
+        objects.add(4);
+        objects.add(5);
+        objects.add(6);
+        objects.add(7);
+        objects.add(8);
+        objects.add(1);
+        System.out.println(objects);
+
+        Collections.sort(objects,(a,b)->{
+            return  a-b;
+        });
+        System.out.println(objects);
     }
 }
 
