@@ -97,6 +97,20 @@ public class Test02 {
         });
         System.out.println(objects);
     }
+
+    @Test
+    public void test06() {
+        int hashcode = 3;
+        int mask = 4-1;
+        /**
+         * 1...000
+         * 1...101
+         *
+         * 从右到左
+         */
+        System.out.println(hashcode |= ~mask);
+    }
+
 }
 
 
