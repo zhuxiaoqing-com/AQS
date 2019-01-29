@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.ConcurrentSkipListMap;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 public class Test02 {
     public static void main(String[] args) throws IOException, ClassNotFoundException {
@@ -111,6 +113,13 @@ public class Test02 {
         System.out.println(hashcode |= ~mask);
     }
 
+    @Test
+    public void test07() {
+        ConcurrentSkipListSet c = new ConcurrentSkipListSet();
+        c.add(2);
+        c.add(2);
+        System.out.println(c);
+    }
 }
 
 
