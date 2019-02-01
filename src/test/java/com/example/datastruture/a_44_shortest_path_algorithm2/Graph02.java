@@ -101,14 +101,38 @@ public class Graph02 {
         queue.add(vertexes[s]);
         inqueue[s] = true;
         while (!queue.isEmpty()) {
-
+            // 取堆顶元素并删除
+            Vertex minVertex = queue.poll();
+            // 最短路径产生了
+            if (minVertex.id == t) break;
+            for (int i = 0; i < adj[minVertex.id].size(); i++) {
+                Edge edge = adj[minVertex.id].get(i);
+                Vertex vertex = vertexes[edge.tid];
+                if (minVertex.dist + edge.w < vertex.dist) {
+                    vertex.dist = minVertex.dist + edge.w;
+                    predecessor[vertex.id] = minVertex.id;
+                    if (inqueue[vertex.id]) {
+                        queue.update(vertex);
+                    } else {
+                        inqueue[vertex.id] = true;
+                        queue.add(vertex);
+                    }
+                }
+            }
         }
-
+        System.out.println(s);
+        print(s, t, predecessor);
     }
 
-    private void print(int s, int t, int[] predecessor) {
-        if (s == t) return;
+    public void print(int s, int t, int[] predecessor) {
+        if (t == s) {
+            return;
+        }
         print(s, predecessor[t], predecessor);
-        System.out.println("->" + t);
+        System.out.println("-> " + t);
+    }
+
+
+    private void pri2nt(int s, int t, int[] predecessor) {
     }
 }
