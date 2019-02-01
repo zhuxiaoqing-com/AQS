@@ -101,7 +101,7 @@ public class Graph03 {
             vertexes[i] = new Vertex(i, Integer.MAX_VALUE);
         }
         // 保存前一个最短距离的节点的数组
-        int[] predecessor =  new int[this.v];
+        int[] predecessor = new int[this.v];
         /*
          保存需要遍历的顶点的优先级队列 这里使用优先级队列而不是普通队列，极大的减少了遍历顶点的数量
          每次就找离 s 顶点最近的顶点遍历。
@@ -116,10 +116,34 @@ public class Graph03 {
         // 开始遍历第一个
         vertexes[s].dist = 0;
         inqueue[s] = true;
-        queue.add( vertexes[s]);
-        
+        queue.add(vertexes[s]);
 
+        while (!queue.isEmpty()) {
+            Vertex minVertex = queue.poll();
+            for (int i = 0; i < adj[minVertex.id].size(); i++) {
+                Edge edge = adj[minVertex.id].get(i);
+                Vertex nextVertex = vertexes[edge.tid];
+                if (minVertex.dist + edge.w < nextVertex.dist) {
+                    nextVertex.dist = minVertex.dist + edge.w;
+                    predecessor[nextVertex.id] = minVertex.id;
+                    if (inqueue[nextVertex.id]) {
+                        queue.update(nextVertex);
+                    } else {
+                        queue.add(nextVertex);
+                        inqueue[nextVertex.id] = true;
+                    }
+                }
+            }
+        }
+        System.out.println(s);
+        print(s, t, predecessor);
     }
 
-
+    private void print(int s, int t, int[] predecessor) {
+        if (s == t) {
+            return;
+        }
+        print(s, predecessor[t], predecessor);
+        System.out.println("->" + t);
+    }
 }
