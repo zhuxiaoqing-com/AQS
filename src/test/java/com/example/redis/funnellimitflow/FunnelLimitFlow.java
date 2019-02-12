@@ -10,7 +10,7 @@ public class FunnelLimitFlow {
     static class Funnel {
         // 漏斗容量
         int capacity;
-        // 漏嘴流水速率
+        // 漏嘴流水速率 (可以以 xx/毫秒  比如 100/1秒 的话, 就100/1000毫秒 就是 流水速率了)
         float leakingRate;
         // 漏斗剩余空间
         int leftQuota;
@@ -65,7 +65,7 @@ public class FunnelLimitFlow {
      * @param userId
      * @param actionKey
      * @param capacity  漏斗容量
-     * @param leakingRate 漏水流水速率 quota/s
+     * @param leakingRate 漏水流水速率 quota/ms
      * @return
      */
     public boolean isActionAllowed(String userId, String actionKey, int capacity, float leakingRate) {
