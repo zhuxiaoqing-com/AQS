@@ -120,6 +120,16 @@ public class Test02 {
         c.add(2);
         System.out.println(c);
     }
+
+    @Test
+    public void test08() {
+        String s = "2d";
+        System.out.println(s == 2+"d");
+    }
+
+    public String join(int x) {
+        return x+"d";
+    }
 }
 
 

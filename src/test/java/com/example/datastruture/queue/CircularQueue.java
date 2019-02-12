@@ -31,6 +31,12 @@ public class CircularQueue {
             return false;
         }
         items[tail] = val;
+        /**
+         * 为什么要 + 1 入队了. tail当然要 + 1 了
+         * 因为队尾多了一个元素，所以 tail + 1
+         * 为什么要 % n 因为 是循环队列.
+         */
+        // tail = (tail + 1) % n;
         tail = (tail + 1) & (n - 1);
         return true;
     }
