@@ -1,11 +1,12 @@
 package com.example.java8;
 
+import javafx.application.Application;
 import org.junit.Test;
+import org.springframework.stereotype.Component;
 
 import java.util.*;
 import java.util.function.*;
 import java.util.stream.Collectors;
-
 public class Test02Stream {
     @Test
     public void test01() {
