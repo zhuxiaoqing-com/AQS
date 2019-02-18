@@ -130,6 +130,37 @@ public class Test02 {
     public String join(int x) {
         return x+"d";
     }
+
+    @Test
+    public void test09() {
+        HashMap<Integer, Integer> map = new HashMap<Integer, Integer>(){
+            {
+                put(1,1);
+                put(2,2);
+                put(3,3);
+                put(4,4);
+                put(5,5);
+                put(6,6);
+                put(7,7);
+            }
+        };
+        /*map.forEach((key, value)->{
+            System.out.println(key);
+            map.remove(key);
+        });*/
+        Collection<Integer> values = map.values();
+        for(Integer s:values) {
+            System.out.println(s);
+            map.remove(s);
+        }
+    }
+
+    @Test
+    public void test10() {
+        List<Integer> integers = Arrays.asList(2, 3, 4, 1, 3, 5);
+        Collections.sort(integers,(a,b)-> b-a);
+        System.out.println(integers);
+    }
 }
 
 
