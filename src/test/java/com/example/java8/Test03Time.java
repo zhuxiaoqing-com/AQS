@@ -2,7 +2,7 @@ package com.example.java8;
 
 import org.junit.Test;
 
-import java.time.LocalTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
 
@@ -10,7 +10,7 @@ public class Test03Time {
     @Test
     public void test01() {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm");
-        LocalTime parse = LocalTime.of(4,22);
+        LocalTime parse = LocalTime.of(4, 22);
         System.out.println(parse);
     }
 
@@ -21,5 +21,13 @@ public class Test03Time {
         TemporalAccessor parse1 = dateTimeFormatter.parse(s);
         LocalTime parse = LocalTime.parse(s);
         System.out.println(parse);
+    }
+
+    @Test
+    public void test03() {
+        // LocalDateTime 转时间戳
+        LocalDateTime localDateTime = LocalDateTime.now();
+        ZonedDateTime zonedDateTime = localDateTime.atZone(ZoneId.systemDefault());
+        long nextBornTime = zonedDateTime.toInstant().toEpochMilli();
     }
 }
