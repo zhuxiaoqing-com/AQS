@@ -29,5 +29,19 @@ public class Test03Time {
         LocalDateTime localDateTime = LocalDateTime.now();
         ZonedDateTime zonedDateTime = localDateTime.atZone(ZoneId.systemDefault());
         long nextBornTime = zonedDateTime.toInstant().toEpochMilli();
+
+        // 时间戳转 localDataTime localData LocalTime
+        Instant instant = Instant.ofEpochMilli(System.currentTimeMillis());
+        ZonedDateTime zonedDateTime1 = instant.atZone(ZoneId.systemDefault());
+        LocalDateTime localDateTime2 = zonedDateTime1.toLocalDateTime();
+
+        // LocalDate 转 LocalDateTime
+        LocalDateTime localDateTime1 = LocalDate.now().atStartOfDay();
+        LocalDateTime localDateTime3 = LocalDate.now().atTime(LocalTime.now());
+
+        // LocalTime 转 LocalDateTime
+        LocalDateTime localDateTime5 = LocalTime.now().atDate(LocalDate.now());
+        System.out.println(localDateTime5);
+
     }
 }
