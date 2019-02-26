@@ -161,6 +161,23 @@ public class Test02 {
         Collections.sort(integers,(a,b)-> b-a);
         System.out.println(integers);
     }
+
+    @Test
+    public void test11() {
+        System.out.println(exception());
+    }
+    public int exception() {
+        int i = 10;
+        try {
+            int a= 1/0;
+            return 1;
+        } catch (Exception e) {
+            return i;
+        } finally {
+            i = 20;
+            return i;
+        }
+    }
 }
 
 
