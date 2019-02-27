@@ -44,4 +44,12 @@ public class Test03Time {
         System.out.println(localDateTime5);
 
     }
+    @Test
+    public void test04() {
+        LocalDateTime now = Instant.ofEpochMilli(System.currentTimeMillis()).atZone(ZoneId.systemDefault()).toLocalDateTime();
+        LocalTime localTime = now.toLocalTime();
+
+        LocalTime localTime1 = localTime.plusMinutes(111);
+        System.out.println(localTime1);
+    }
 }
