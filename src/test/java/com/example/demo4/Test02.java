@@ -1,5 +1,6 @@
 package com.example.demo4;
 
+import org.apache.ibatis.javassist.bytecode.analysis.Executor;
 import org.junit.Test;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.ScannedGenericBeanDefinition;
@@ -15,8 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.ConcurrentSkipListMap;
-import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.concurrent.*;
 
 public class Test02 {
     public static void main(String[] args) throws IOException, ClassNotFoundException {
@@ -177,6 +177,12 @@ public class Test02 {
             i = 20;
             return i;
         }
+    }
+
+    @Test
+    public void test12() {
+        ScheduledExecutorService scheduledThreadPool = Executors.newScheduledThreadPool(10);
+
     }
 }
 

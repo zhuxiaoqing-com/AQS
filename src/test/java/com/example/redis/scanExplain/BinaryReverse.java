@@ -114,7 +114,7 @@ public class BinaryReverse {
     /****************************
      * ********看这里*************
      * **************************
-     *  https://blog.csdn.net/mickey35/article/details/72929883
+     * @url https://blog.csdn.net/mickey35/article/details/72929883
      * 在笼统的讲一遍
      * i = (i & 0x55555555) << 1 | (i >>> 1) & 0x55555555;
      *
