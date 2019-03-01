@@ -189,7 +189,21 @@ public class Test02 {
 
     @Test
     public void test13() {
-        HashSet<Object> objects = new HashSet<>();
+        long s = Integer.MAX_VALUE + 4;
+        System.out.println(s);
+    }
+
+    @Test
+    public void test14() {
+        long l = 2L * 60 * 60 * 1000;
+        System.out.println(l);
+        System.out.println(l/4);
+        System.out.println(l/(1000*60));
+    }
+
+    @Test
+    public void test15() {
+        System.out.println(24L*60);
     }
 }
 
