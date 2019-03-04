@@ -203,7 +203,8 @@ public class Test02 {
 
     @Test
     public void test15() {
-        System.out.println(-9%2);
+        System.out.println(0%2);
+        System.out.println(2%0);
         System.out.println(new Date(1551517260000L));
     }
 }
