@@ -55,4 +55,14 @@ public class Test02Stream {
             this.count = count;
         }
     }
+
+
+    @Test
+    public void test03() {
+        ArrayList<Object> objects = new ArrayList<>();
+        objects.add(1);
+        objects.add(2);
+        List<Object> collect = objects.stream().skip(1).collect(Collectors.toList());
+        System.out.println(collect);
+    }
 }
