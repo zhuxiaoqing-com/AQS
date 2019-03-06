@@ -65,4 +65,11 @@ public class Test02Stream {
         List<Object> collect = objects.stream().skip(1).collect(Collectors.toList());
         System.out.println(collect);
     }
+
+    @Test
+    public void test04() {
+        double v = 1544000 * 0.06;
+        System.out.println(v);
+        System.out.println(v/8);
+    }
 }
