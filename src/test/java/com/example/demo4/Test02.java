@@ -207,6 +207,15 @@ public class Test02 {
         System.out.println(2%0);
         System.out.println(new Date(1551517260000L));
     }
+
+    @Test
+    public void test16() {
+        int max = 13234;
+        int i = 13;
+        System.out.println(i*10000/13234);
+        System.out.println(0%2);
+        System.out.println(new Date(1551517260000L));
+    }
 }
 /**
  *
