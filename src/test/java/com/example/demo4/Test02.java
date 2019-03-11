@@ -243,9 +243,9 @@ public class Test02 {
 
     @Test
     public void fun01() {
-        int rank1 = 9400;
+        int rank1 = 9002;
         int[] rank = new int[]{10000, 9001};
-        int[] level = new int[]{4, 10};
+        int[] level = new int[]{1, 10};
 
         double k = (level[1] - level[0]) * 1.0 / (rank[0] - rank[1]);
 
@@ -270,6 +270,22 @@ public class Test02 {
 
         // 得出 unKnowIndex 下标所在 unknownRange 的值
         return unknownRange[0] > unknownRange[1] ? unknownRange[0] - unKnowIndex : unknownRange[0] + unKnowIndex;
+    }
+
+
+    @Test
+    public void fun02() {
+        int rank1 = 9715;
+        int[] rank = new int[]{10000, 9001};
+        int[] level = new int[]{1, 10};
+
+        double v = ((rank1 - rank[1]) * 1.0) / (rank[0] - rank[1]);
+        double v1 = (level[1] - level[0]) * (1 - v);
+        double v2 = level[0] + v1;
+
+        System.out.println(Math.round(v2));
+        int i = countRangeMappingRange(rank, rank1, level);
+        System.out.println(i);
     }
 }
 
