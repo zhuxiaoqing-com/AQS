@@ -277,7 +277,7 @@ public class Test02 {
     public void fun02() {
         int rank1 = 9715;
         int[] rank = new int[]{10000, 9001};
-        int[] level = new int[]{1, 10};
+        int[] level = new int[]{1, 1};
 
         double v = ((rank1 - rank[1]) * 1.0) / (rank[0] - rank[1]);
         double v1 = (level[1] - level[0]) * (1 - v);
@@ -286,6 +286,12 @@ public class Test02 {
         System.out.println(Math.round(v2));
         int i = countRangeMappingRange(rank, rank1, level);
         System.out.println(i);
+    }
+
+    @Test
+    public void fun03() {
+        long time = 10000*60*60*1000;
+        System.out.println(time);
     }
 }
 
