@@ -293,6 +293,14 @@ public class Test02 {
         long time = 10000*60*60*1000;
         System.out.println(time);
     }
+
+    @Test
+    public void fun04() {
+        int i = -3;
+        System.out.println( (i&1)!=0?"奇":"偶");
+        System.out.println( i&1);
+    }
+
 }
 
 
