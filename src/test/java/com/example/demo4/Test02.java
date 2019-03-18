@@ -301,6 +301,10 @@ public class Test02 {
         System.out.println( i&1);
     }
 
+    @Test
+    public void fun05() {
+        System.out.println(90*100/100);
+    }
 }
 
 
