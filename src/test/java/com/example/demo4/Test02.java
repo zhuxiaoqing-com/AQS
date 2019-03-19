@@ -303,7 +303,8 @@ public class Test02 {
 
     @Test
     public void fun05() {
-        System.out.println(90*100/100);
+        List<Integer> a = Arrays.asList(1, 2);
+        List<Integer> integers = a.subList(1, 2);
     }
 }
 
