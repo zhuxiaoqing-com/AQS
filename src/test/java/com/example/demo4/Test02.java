@@ -275,9 +275,9 @@ public class Test02 {
 
     @Test
     public void fun02() {
-        int rank1 = 9715;
+        int rank1 = 9400;
         int[] rank = new int[]{10000, 9001};
-        int[] level = new int[]{1, 1};
+        int[] level = new int[]{1, 2};
 
         double v = ((rank1 - rank[1]) * 1.0) / (rank[0] - rank[1]);
         double v1 = (level[1] - level[0]) * (1 - v);
