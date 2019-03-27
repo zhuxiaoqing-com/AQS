@@ -303,11 +303,25 @@ public class Test02 {
 
     @Test
     public void fun05() {
-       int a = 0;
-       a = a++;
-        System.out.println(a);
-        a= ++a;
-        System.out.println(a);
+        short x = 1;
+        num(x);
+    }
+
+
+
+
+    public void num(double x) {
+        System.out.println("double");
+    }
+   /* public void num(short x) {
+        System.out.println("short");
+    }*/
+
+    public void num(long x) {
+        System.out.println("long");
+    }
+    public void num(int x) {
+        System.out.println("int");
     }
 }
 
