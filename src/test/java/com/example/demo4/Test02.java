@@ -308,6 +308,15 @@ public class Test02 {
     }
 
 
+    @Test
+    public void fun06() {
+        int x = 1;
+        int y = 2;
+        int z = 3;
+
+        System.out.println(y+=z--/++x);
+    }
+
 
 
     public void num(double x) {
