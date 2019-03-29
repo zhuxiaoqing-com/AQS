@@ -317,6 +317,13 @@ public class Test02 {
         System.out.println(y+=z--/++x);
     }
 
+    @Test
+    public void fun07() {
+        int x = 0;
+        x = x++;
+        System.out.println(x);
+    }
+
 
 
     public void num(double x) {
