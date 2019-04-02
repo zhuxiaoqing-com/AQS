@@ -1,5 +1,6 @@
 package com.example.demo4;
 
+import com.example.demo1.demo.TimeUtil;
 import org.junit.Test;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.ScannedGenericBeanDefinition;
@@ -338,6 +339,18 @@ public class Test02 {
     }
     public void num(int x) {
         System.out.println("int");
+    }
+
+    @Test
+    public void fun08(){
+        long milli = 300000;
+        System.out.println();
+    }
+
+    @Test
+    public void fun09(){
+        int minute = (int)Math.ceil(0 * 1.0 / TimeUtil.ONE_MINUTE_IN_MILLISECONDS);
+        System.out.println(minute);
     }
 }
 
