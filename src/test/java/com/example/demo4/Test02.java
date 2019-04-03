@@ -352,6 +352,19 @@ public class Test02 {
         int minute = (int)Math.ceil(0 * 1.0 / TimeUtil.ONE_MINUTE_IN_MILLISECONDS);
         System.out.println(minute);
     }
+
+    @Test
+    public void fun10(){
+        double RTTm = 1.5;
+        double RTTs = 1.5;
+        double RTTD = 1.5/2;
+        double RTO = 0;
+        RTTm = 0.5;
+        RTTs = (1-0.125)*RTTs + 0.125*RTTm;
+        RTTD = (1-0.25) * RTTD + 0.25 * Math.abs(RTTs - RTTm);
+        RTO = RTTs + 4*RTTD;
+        System.out.println(RTO);
+    }
 }
 
 
