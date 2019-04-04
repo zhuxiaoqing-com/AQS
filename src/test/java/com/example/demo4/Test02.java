@@ -291,15 +291,15 @@ public class Test02 {
 
     @Test
     public void fun03() {
-        long time = 10000*60*60*1000;
+        long time = 10000 * 60 * 60 * 1000;
         System.out.println(time);
     }
 
     @Test
     public void fun04() {
         int i = -3;
-        System.out.println( (i&1)!=0?"奇":"偶");
-        System.out.println( i&1);
+        System.out.println((i & 1) != 0 ? "奇" : "偶");
+        System.out.println(i & 1);
     }
 
     @Test
@@ -315,7 +315,7 @@ public class Test02 {
         int y = 2;
         int z = 3;
 
-        System.out.println(y+=z--/++x);
+        System.out.println(y += z-- / ++x);
     }
 
     @Test
@@ -324,7 +324,6 @@ public class Test02 {
         x = x++;
         System.out.println(x);
     }
-
 
 
     public void num(double x) {
@@ -337,33 +336,47 @@ public class Test02 {
     public void num(long x) {
         System.out.println("long");
     }
+
     public void num(int x) {
         System.out.println("int");
     }
 
     @Test
-    public void fun08(){
+    public void fun08() {
         long milli = 300000;
         System.out.println();
     }
 
     @Test
-    public void fun09(){
-        int minute = (int)Math.ceil(0 * 1.0 / TimeUtil.ONE_MINUTE_IN_MILLISECONDS);
+    public void fun09() {
+        int minute = (int) Math.ceil(0 * 1.0 / TimeUtil.ONE_MINUTE_IN_MILLISECONDS);
         System.out.println(minute);
     }
 
     @Test
-    public void fun10(){
+    public void fun10() {
         double RTTm = 1.5;
         double RTTs = 1.5;
-        double RTTD = 1.5/2;
+        double RTTD = 1.5 / 2;
         double RTO = 0;
         RTTm = 0.5;
-        RTTs = (1-0.125)*RTTs + 0.125*RTTm;
-        RTTD = (1-0.25) * RTTD + 0.25 * Math.abs(RTTs - RTTm);
-        RTO = RTTs + 4*RTTD;
+        RTTs = (1 - 0.125) * RTTs + 0.125 * RTTm;
+        RTTD = (1 - 0.25) * RTTD + 0.25 * Math.abs(RTTs - RTTm);
+        RTO = RTTs + 4 * RTTD;
         System.out.println(RTO);
+    }
+
+    @Test
+    public void fun11() {
+        long a = 2;
+        long b = 123456789;
+        String scoreStr = a + "." + b;
+        double score = Double.valueOf(scoreStr);
+        System.out.println(score);
+
+        String scoreStr1 = score+"";
+        String[] split = scoreStr1.split("\\.");
+        System.out.println(Long.valueOf(split[1]));
     }
 }
 
