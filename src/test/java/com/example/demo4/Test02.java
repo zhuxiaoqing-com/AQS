@@ -374,9 +374,24 @@ public class Test02 {
         double score = Double.valueOf(scoreStr);
         System.out.println(score);
 
-        String scoreStr1 = score+"";
+        String scoreStr1 = score + "";
         String[] split = scoreStr1.split("\\.");
         System.out.println(Long.valueOf(split[1]));
+    }
+
+    @Test
+    public void fun12() {
+        List<Integer> list = Arrays.asList(1, 2, 3, 4, 5, 6, 65, 65, 67);
+        while (true) {
+            while1(list);
+        }
+    }
+
+    private void while1(List list){
+     Object s =  new Object();
+        list.forEach(a -> {
+            System.out.println(a);
+        });
     }
 }
 
