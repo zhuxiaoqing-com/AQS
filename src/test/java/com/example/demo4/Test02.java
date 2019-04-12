@@ -387,11 +387,58 @@ public class Test02 {
         }
     }
 
-    private void while1(List list){
-     Object s =  new Object();
+    private void while1(List list) {
+        Object s = new Object();
         list.forEach(a -> {
             System.out.println(a);
         });
+    }
+
+    @Test
+    public void fun13() {
+        HashMap<Integer, Integer> map = new HashMap<>();
+        for (int x = 0; x < 10; x++) {
+            map.put(x, x);
+        }
+        Set<Map.Entry<Integer, Integer>> entries = map.entrySet();
+        Iterator<Map.Entry<Integer, Integer>> iterator = entries.iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<Integer, Integer> next = iterator.next();
+            iterator.remove();
+        }
+        System.out.println(map);
+    }
+
+    @Test
+    public void fun14() {
+        HashMap<Integer, Integer> map = new HashMap<>();
+        for (int x = 0; x < 10; x++) {
+            map.put(x, x);
+        }
+        Collection<Integer> values = map.values();
+        Iterator<Integer> iterator1 = values.iterator();
+        while (iterator1.hasNext()) {
+            Integer next = iterator1.next();
+            if (next == 2) {
+                iterator1.remove();
+            }
+        }
+        System.out.println(map);
+    }
+
+    @Test
+    public void fun15() {
+        double d = 2.3;
+        double s = d + 1334;
+        System.out.println(d);
+        System.out.println(s);
+    }
+
+    @Test
+    public void fun16() {
+        double a = ((2*1460)+0.0) /(2*1538+84);
+        double b = 10_000_000*1.0/8;
+        System.out.println(a*b);
     }
 }
 
