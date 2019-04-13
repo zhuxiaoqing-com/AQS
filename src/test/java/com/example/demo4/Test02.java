@@ -440,6 +440,14 @@ public class Test02 {
         double b = 10_000_000*1.0/8;
         System.out.println(a*b);
     }
+
+    @Test
+    public void fun17() {
+        int s = Integer.MIN_VALUE;
+        System.out.println(Integer.toBinaryString(s));
+        System.out.println(Integer.toBinaryString(-1+3));
+        System.out.println(Integer.toBinaryString(s+3));
+    }
 }
 
 
