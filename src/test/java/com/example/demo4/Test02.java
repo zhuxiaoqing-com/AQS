@@ -15,10 +15,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.security.SecureRandom;
 import java.util.*;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Test02 {
     public static void main(String[] args) throws IOException, ClassNotFoundException {
@@ -436,17 +438,46 @@ public class Test02 {
 
     @Test
     public void fun16() {
-        double a = ((2*1460)+0.0) /(2*1538+84);
-        double b = 10_000_000*1.0/8;
-        System.out.println(a*b);
+        double a = ((2 * 1460) + 0.0) / (2 * 1538 + 84);
+        double b = 10_000_000 * 1.0 / 8;
+        System.out.println(a * b);
     }
 
     @Test
     public void fun17() {
-        int s = Integer.MIN_VALUE;
-        System.out.println(Integer.toBinaryString(s));
-        System.out.println(Integer.toBinaryString(-1+3));
-        System.out.println(Integer.toBinaryString(s+3));
+        System.out.println(-1L ^ (-1L << 13));
+    }
+
+    @Test
+    public void fun18() {
+        Calendar instance = Calendar.getInstance();
+        instance.clear();
+        instance.set(Calendar.YEAR, 2050);
+        long l = instance.getTimeInMillis() - System.currentTimeMillis();
+        System.out.println(Math.toIntExact(l / 1000));
+    }
+
+    @Test
+    public void fun19() {
+        System.out.println("9691640659".length());
+        System.out.println("10000000000000000".length());
+        System.out.println((Long.MAX_VALUE + "").length());
+    }
+
+    @Test
+    public void fun20() {
+        long max = -1L ^ (-1L << 51);
+
+        System.out.println(max);
+
+    }
+
+    @Test
+    public void fun21() {
+        for(int i = 0; i<=100;i++) {
+            System.out.println( ThreadLocalRandom.current().nextInt());
+        }
+
     }
 }
 
