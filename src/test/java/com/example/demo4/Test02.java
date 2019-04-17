@@ -500,7 +500,7 @@ public class Test02 {
 
     @Test
     public void fun23() {
-        System.out.println(Math.pow(-323,0));
+        System.out.println(-1L^(-1L<<11));
     }
 }
 
