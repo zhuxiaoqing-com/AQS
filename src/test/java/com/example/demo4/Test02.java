@@ -15,7 +15,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.security.SecureRandom;
 import java.util.*;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.Executors;
@@ -474,33 +473,59 @@ public class Test02 {
 
     @Test
     public void fun21() {
-        for(int i = 0; i<=100;i++) {
-            System.out.println( ThreadLocalRandom.current().nextInt());
+        for (int i = 0; i <= 100; i++) {
+            System.out.println(ThreadLocalRandom.current().nextInt());
         }
     }
 
     /**
      * 浮点数最多只能精确到 52 位
      * 符号位 1   指数位 11 尾数 52
-     *
+     * <p>
      * 4.2322 = 100.xxx
      * 0.2322 = 0.2322/(1/2) = 0.2322*2
-     *
      */
 
     @Test
     public void fun22() {
         long s = Long.MAX_VALUE;
-        double d =s*0.1*1;
+        double d = s * 0.1 * 1;
         System.out.println(s);
         System.out.println(d);
-        System.out.println((long)(s*0.1));
-        System.out.println((long)(s-d));
+        System.out.println((long) (s * 0.1));
+        System.out.println((long) (s - d));
     }
 
     @Test
     public void fun23() {
-        System.out.println(-1L^(-1L<<11));
+        System.out.println(-1L ^ (-1L << 11));
+    }
+
+    @Test
+    public void fun24() {
+        CloneTest cloneable = new CloneTest();
+        System.out.println(cloneable.clone());
+    }
+
+    @Test
+    public void fun25() {
+        System.out.println(150&50);
+        System.out.println(Integer.toBinaryString(150));
+        System.out.println(Integer.toBinaryString(50));
+        System.out.println(Integer.toBinaryString(18));
+    }
+
+    class CloneTest implements Cloneable {
+        @Override
+        protected CloneTest clone() {
+            CloneTest cloneTest = null;
+            try {
+                cloneTest = (CloneTest) super.clone();
+            } catch (CloneNotSupportedException e) {
+                e.printStackTrace();
+            }
+            return cloneTest;
+        }
     }
 }
 
