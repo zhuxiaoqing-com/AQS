@@ -509,11 +509,12 @@ public class Test02 {
 
     @Test
     public void fun25() {
-        System.out.println(150&50);
+        System.out.println(150 & 50);
         System.out.println(Integer.toBinaryString(150));
         System.out.println(Integer.toBinaryString(50));
         System.out.println(Integer.toBinaryString(18));
     }
+
 
     class CloneTest implements Cloneable {
         @Override
@@ -526,6 +527,23 @@ public class Test02 {
             }
             return cloneTest;
         }
+    }
+
+    @Test
+    public void fun26() {
+        int s = 0;
+        switch (1) {
+            case 1:
+                System.out.println(1);
+
+            case 2:
+                System.out.println(2);
+
+            case 3:
+                System.out.println(3);
+                break;
+        }
+
     }
 }
 
