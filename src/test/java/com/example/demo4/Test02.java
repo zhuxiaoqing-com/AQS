@@ -545,6 +545,14 @@ public class Test02 {
         }
 
     }
+
+    @Test
+    public void fun27() {
+        List<String> list = new ArrayList<>();
+
+        List<String> strings = list.subList(1, 0);
+        System.out.println(strings);
+    }
 }
 
 
