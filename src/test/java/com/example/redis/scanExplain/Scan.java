@@ -7,6 +7,16 @@ public class Scan {
     /**
      * @see <a href="https://blog.csdn.net/hackersuye/article/details/82831565">
      * https://blog.csdn.net/hackersuye/article/details/82831565</a>
+     * <p>
+     * <p>
+     *   假设mask=111，hashcode=101，步骤如下：
+     * <p>
+     * 1. hashcode |= ～mask：保留与mask长度相同的低n位数，其余为全为1，hashcode=1…101
+     * 2. rev（hashcoded）：二进制反转，hashcode=101…1
+     * 3. hashcode++:hashcode=1100…
+     * 4. rev（hashcoded）：二进制再次反转，hashcode=011
+     * <p>
+     *     可见，经过两次反转后，hashcode成功的向低位进了1：
      */
     @Test
     public void test01() {
@@ -86,6 +96,31 @@ public class Scan {
             v = ((v >> s) & mask) | ((v << s) & ~mask);
         }
         return v;
+    }
+
+
+    /**
+     *
+     * @see  <a href="https://mp.weixin.qq.com/s/ufoLJiXE0wU4Bc7ZbE9cDQ">
+     *
+     *
+     * Ⅰ. v低位加1向高位进位；
+     * Ⅱ. 去掉v最前面和最后面的部分，只保留v相较于m0的高位部分；
+     * Ⅲ. 保留v的低位，高位不断加1。即低位不变，高位不断加1，实现了小表到大表桶的关联。
+     */
+    @Test
+    public void reverse02() {
+        int v = 2;
+        System.out.println("1..." + Integer.toBinaryString(v));
+        int m0 = 8 - 1;
+        /**
+         * v|m0
+         *     0010 | 1111 = 1111
+         *
+         */
+        v = (((v | m0) + 1) & ~m0) | (v & m0);
+        System.out.println(v);
+        System.out.println("2..." + Integer.toBinaryString(v));
     }
 
 }

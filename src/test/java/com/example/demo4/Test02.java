@@ -548,10 +548,12 @@ public class Test02 {
 
     @Test
     public void fun27() {
-        List<String> list = new ArrayList<>();
-
-        List<String> strings = list.subList(1, 0);
-        System.out.println(strings);
+        int i = 1;
+       while (true){
+           if(i++%1_000_000_00000L==0) {
+               System.out.println("1_000_000_00000L轮回到了");
+           }
+       }
     }
 }
 
