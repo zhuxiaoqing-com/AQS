@@ -548,12 +548,7 @@ public class Test02 {
 
     @Test
     public void fun27() {
-        int i = 1;
-       while (true){
-           if(i++%1_000_000_00000L==0) {
-               System.out.println("1_000_000_00000L轮回到了");
-           }
-       }
+        System.out.println(Math.cos(20000000 * Math.PI / 180));
     }
 }
 
