@@ -550,6 +550,17 @@ public class Test02 {
     public void fun27() {
         System.out.println(Math.cos(20000000 * Math.PI / 180));
     }
+
+    @Test
+    public void fun28() {
+        Map<String, Integer> map = new LinkedHashMap<>();
+        map.put("祝",1);
+        map.put("小",2);
+        map.put("庆",3);
+        System.out.println(map);
+        Set<Map.Entry<String, Integer>> entries = map.entrySet();
+        System.out.println(entries);
+    }
 }
 
 
