@@ -554,12 +554,15 @@ public class Test02 {
     @Test
     public void fun28() {
         Map<String, Integer> map = new LinkedHashMap<>();
-        map.put("祝",1);
-        map.put("小",2);
-        map.put("庆",3);
+        map.put("祝", 1);
+        map.put("小", 2);
+        map.put("庆", 3);
         System.out.println(map);
         Set<Map.Entry<String, Integer>> entries = map.entrySet();
         System.out.println(entries);
+        Set<Map.Entry<String, Integer>> entries1 = map.entrySet();
+
+
     }
 }
 
