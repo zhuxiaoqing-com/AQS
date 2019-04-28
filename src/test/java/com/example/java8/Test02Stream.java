@@ -87,6 +87,9 @@ public class Test02Stream {
                     return 1;
                 }, LinkedHashMap::new));
 
+        LinkedHashMap<String, Integer> collect2 = map.entrySet().stream().sorted((o1, o2) -> 1).
+                collect(LinkedHashMap::new, (subMap, entry) -> subMap.put(entry.getKey(), entry.getValue()), LinkedHashMap::putAll);
+
         System.out.println(collect);
     }
 
@@ -100,6 +103,8 @@ public class Test02Stream {
             list.add(new TestData(i, i));
         }
         list.add(new TestData(1, 11));
+        list.add(new TestData(3, 11));
+        list.add(new TestData(1, 11));
 
         HashMap<Integer, Integer> collect = list.stream().collect(Collectors.toMap(a -> a.id, a -> a.count, (o1, o2) -> {
             System.out.println(o1);
@@ -107,6 +112,7 @@ public class Test02Stream {
             return o1 + o2;
         }, HashMap::new));
         System.out.println(collect);
+
     }
 
     class TestData {
