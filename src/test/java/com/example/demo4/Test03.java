@@ -27,6 +27,12 @@ public class Test03 {
 
         return new InnerObj();
     }
+
+    @Test
+    public void test02() {
+        long milli = 1000;
+        System.out.println(30*60*1000);
+    }
 }
 
 
