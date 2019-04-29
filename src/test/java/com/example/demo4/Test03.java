@@ -2,6 +2,12 @@ package com.example.demo4;
 
 import org.junit.Test;
 
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.Date;
+import java.util.Scanner;
+
 public class Test03 {
     @Test
     public void test01() {
@@ -33,6 +39,24 @@ public class Test03 {
         long milli = 1000;
         System.out.println(30*60*1000);
     }
+
+    public static void main(String[] args) throws IOException {
+        ServerSocket serverSocket = new ServerSocket(90);
+        Socket accept = serverSocket.accept();
+        Scanner scan = new Scanner(System.in);
+        String next = scan.next();
+        System.out.println(next);
+        accept.close();
+    }
+    @Test
+    public void test03() throws IOException {
+        System.out.println(new Date(1556559030832L));
+        System.out.println(new Date(1556571600000L));
+        System.out.println(System.currentTimeMillis());
+
+    }
+
+
 }
 
 
