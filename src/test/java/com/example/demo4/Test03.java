@@ -37,7 +37,7 @@ public class Test03 {
     @Test
     public void test02() {
         long milli = 1000;
-        System.out.println(30*60*1000);
+        System.out.println(30 * 60 * 1000);
     }
 
     public static void main(String[] args) throws IOException {
@@ -48,6 +48,7 @@ public class Test03 {
         System.out.println(next);
         accept.close();
     }
+
     @Test
     public void test03() throws IOException {
         System.out.println(new Date(1556559030832L));
@@ -56,6 +57,12 @@ public class Test03 {
 
     }
 
+    @Test
+    public void test04() {
+        int hour = 1;
+        int lastHour = 2;
+
+    }
 
 }
 
