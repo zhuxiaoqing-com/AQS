@@ -5,6 +5,10 @@ import org.junit.Test;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.Scanner;
 
@@ -57,11 +61,43 @@ public class Test03 {
 
     }
 
+    long localHour = 60L * 60 * 1000;
+    long nowTime;
+
     @Test
     public void test04() {
-        int hour = 1;
-        int lastHour = 2;
+        int nowHour = 20;
+        nowTime = LocalDateTime.of(2019, 5, 5, nowHour, 1, 0, 0)
+                .atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
 
+        int refreshHour = 19;
+        System.out.println(!isTodaySplitByHour(nowTime - localHour, refreshHour));// 前 1 个小时刷新过
+        System.out.println(!isTodaySplitByHour(nowTime - localHour * 2, refreshHour));// 前 2 个小时刷新过
+        System.out.println(!isTodaySplitByHour(nowTime - localHour * 12, refreshHour));// 前 12 个小时刷新过
+        System.out.println(!isTodaySplitByHour(nowTime - localHour * 29, refreshHour));// 前 29 个小时刷新过
+    }
+
+
+    public boolean isTodaySplitByHour(long time, int hour) {
+        if (time > nowTime) {
+            return true;
+        }
+        LocalDateTime resetDateTime = LocalDateTime.of(LocalDate.now(), LocalTime.MIN.plusHours(hour));
+        long resetTime = resetDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+        if (resetTime - time > localHour * 24) {
+            return false;
+        }
+
+        return ((time - resetTime) * (nowTime - resetTime)) >= 0;
+    }
+
+
+    public void s(int time, int hour) {
+        LocalDateTime now = LocalDateTime.now();
+        int hour1 = now.getHour();
+        if (hour1 > hour) {
+
+        }
     }
 
 }
