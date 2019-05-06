@@ -5,10 +5,8 @@ import org.junit.Test;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.ZoneId;
+import java.time.*;
+import java.time.temporal.ChronoField;
 import java.util.Date;
 import java.util.Scanner;
 
@@ -92,12 +90,74 @@ public class Test03 {
     }
 
 
-    public void s(int time, int hour) {
-        LocalDateTime now = LocalDateTime.now();
-        int hour1 = now.getHour();
-        if (hour1 > hour) {
+    public boolean isResetByDay(int time, int hour) {
+        LocalDateTime resetTime = Instant.ofEpochMilli(time).atZone(ZoneId.systemDefault()).toLocalDateTime();
+        ;
+        LocalDateTime localNextResetTime = LocalDateTime.of(resetTime.toLocalDate(), LocalTime.MIN.plusHours(hour));
 
+        int resetHour = resetTime.getHour();
+        if (resetHour >= hour) {
+            localNextResetTime = localNextResetTime.plusDays(1);
         }
+        long nextResetTime = localNextResetTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+        long nowTime = System.currentTimeMillis();
+        return nowTime > nextResetTime;
+    }
+
+    public boolean isResetByWeek(int time, int day, int hour) {
+        LocalDateTime localResetTime = Instant.ofEpochMilli(time).atZone(ZoneId.systemDefault()).toLocalDateTime();
+        LocalDateTime localNextResetTime = localResetTime.with(ChronoField.DAY_OF_WEEK, day);
+        localNextResetTime = LocalDateTime.of(localNextResetTime.toLocalDate(), LocalTime.MIN.plusHours(hour));
+
+        int resetWeekDay = localResetTime.get(ChronoField.DAY_OF_WEEK);
+        int resetHour = localResetTime.getHour();
+
+        if (resetWeekDay > day || (resetWeekDay == day && resetHour >= hour)) {
+            localNextResetTime = localNextResetTime.plusWeeks(1);
+        }
+        long nextResetTime = localNextResetTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+        long nowTime = System.currentTimeMillis();
+        return nowTime > nextResetTime;
+    }
+
+
+    public boolean isResetByDay1(int time, int hour) {
+        LocalDateTime localResetTime = Instant.ofEpochMilli(time).atZone(ZoneId.systemDefault()).toLocalDateTime();
+
+        LocalDate localNextResetDate = localResetTime.toLocalDate();
+        if (localResetTime.getHour() >= hour) {
+            localNextResetDate = localNextResetDate.plusDays(1);
+        }
+
+        LocalDateTime localNextResetTime = LocalDateTime.of(localNextResetDate, LocalTime.MIN.plusHours(hour));
+        long nextResetTime = localNextResetTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+        long nowTime = System.currentTimeMillis();
+        return nowTime > nextResetTime;
+    }
+
+    public boolean isResetByWeek1(int time, int day, int hour) {
+        LocalDateTime localResetTime = Instant.ofEpochMilli(time).atZone(ZoneId.systemDefault()).toLocalDateTime();
+
+        LocalDate localNextResetDate = localResetTime.toLocalDate().with(ChronoField.DAY_OF_WEEK, day);
+
+        int resetWeekDay = localResetTime.get(ChronoField.DAY_OF_WEEK);
+        int resetHour = localResetTime.getHour();
+
+        if (resetWeekDay > day || (resetWeekDay == day && resetHour >= hour)) {
+            localNextResetDate = localNextResetDate.plusWeeks(1);
+        }
+        LocalDateTime localNextResetTime = LocalDateTime.of(localNextResetDate, LocalTime.MIN.plusHours(hour));
+        long nextResetTime = localNextResetTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+        long nowTime = System.currentTimeMillis();
+        return nowTime > nextResetTime;
+    }
+
+    @Test
+    public void test05() {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime with = now.with(ChronoField.DAY_OF_WEEK, 2);
+
+        System.out.println(with);
     }
 
 }
