@@ -1,4 +1,4 @@
-package com.example.demo4;
+package com.example.java8;
 
 import org.junit.Test;
 
@@ -7,11 +7,10 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.time.*;
 import java.time.temporal.ChronoField;
-import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.Scanner;
 
-public class Test03 {
+public class Test03TimeIsReset {
     @Test
     public void test01() {
         Object innerObj = getInnerObj();
