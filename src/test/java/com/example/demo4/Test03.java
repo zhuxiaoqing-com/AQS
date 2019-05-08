@@ -204,10 +204,7 @@ public class Test03 {
 
     @Test
     public void test05() {
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime with = now.with(ChronoField.DAY_OF_WEEK, 2);
-
-        System.out.println(with);
+        System.out.println(new Date(1557316372841L));
     }
 
 }
