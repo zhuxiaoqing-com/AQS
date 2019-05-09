@@ -7,8 +7,9 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.time.*;
 import java.time.temporal.ChronoField;
-import java.time.temporal.ChronoUnit;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Scanner;
 
 public class Test03 {
@@ -205,6 +206,21 @@ public class Test03 {
     @Test
     public void test05() {
         System.out.println(new Date(1557316372841L));
+    }
+
+    @Test
+    public void test06() {
+        HashMap map = new HashMap() {
+            {
+                put(1, 1);
+                put(2, 2);
+                put(3, 3);
+            }
+        };
+
+        HashSet<Object> objects = new HashSet<Object>(map.keySet());
+        System.out.println(objects);
+
     }
 
 }
