@@ -1,5 +1,7 @@
 package com.example.datastruture.tree;
 
+import java.util.LinkedList;
+
 /**
  * 二叉树
  */
@@ -157,14 +159,72 @@ public class BinarySearchTree {
             child = null;
         }
         // 删除的是根节点
-        if(parent == null) {
+        if (parent == null) {
             tree = child;
-        } else if(parent.left == temp) {
+        } else if (parent.left == temp) {
             parent.left = child;
         } else {
             parent.right = child;
         }
+    }
 
+    ///////////////////////////////  遍历  ///////////////////////////////////////
+
+    ///////////////////////////////  前序遍历  ///////////////////////////////////////
+
+    public void preOrderTraverse1(Node root) {
+        System.out.println(root.data);
+        preOrderTraverse1(root.left);
+        preOrderTraverse1(root.right);
+    }
+
+    public void preOrderTraverse2(Node root) {
+        LinkedList<Node> stack = new LinkedList<>();
+        Node pNode = root;
+        while (!stack.isEmpty()) {
+            if (pNode != null) {
+                System.out.println(pNode.data + " ");
+                stack.push(pNode);
+                pNode = pNode.left;
+            } else {
+                pNode = stack.pop();
+                pNode = pNode.right;
+            }
+
+        }
+    }
+
+    public void inOrderTraverse2(Node root) {
+        LinkedList<Node> stack = new LinkedList<>();
+        Node pNode = root;
+        while (!stack.isEmpty()) {
+            if (pNode != null) {
+                System.out.println(pNode.data + " ");
+                stack.push(pNode);
+                pNode = pNode.left;
+            } else {
+                pNode = stack.pop();
+                System.out.println(pNode.data);
+                pNode = pNode.right;
+            }
+
+        }
+    }
+
+
+    public void postOrderTraverse3(Node root) {
+        LinkedList<Node> stack = new LinkedList<>();
+        Node currNode = null;
+        Node preNode = null;
+        stack.push(root);
+        while (!stack.isEmpty()) {
+            currNode = stack.pop();
+            if ((currNode.left == null && currNode.right == null) ||
+                    (preNode != null && (preNode == currNode.left || preNode == currNode.right))) {
+                stack.pop();
+                preNode = currNode;
+            }
+        }
     }
 
     public static class Node {
