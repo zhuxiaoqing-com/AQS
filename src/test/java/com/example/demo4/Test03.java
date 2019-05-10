@@ -1,6 +1,10 @@
 package com.example.demo4;
 
+
+import org.apache.http.cookie.Cookie;
+import org.junit.Assert;
 import org.junit.Test;
+import org.springframework.boot.web.servlet.server.Session;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -221,6 +225,16 @@ public class Test03 {
         HashSet<Object> objects = new HashSet<Object>(map.keySet());
         System.out.println(objects);
 
+    }
+
+    @Test
+    public void test07() {
+        Runtime.getRuntime().halt(0);
+        System.exit(0);
+        Assert.assertEquals(2, 4);
+        int s = 4;
+        System.out.println(Integer.toBinaryString(s));
+        System.out.println(Integer.toBinaryString(s << 1));
     }
 
 }
