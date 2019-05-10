@@ -181,7 +181,7 @@ public class BinarySearchTree {
     public void preOrderTraverse2(Node root) {
         LinkedList<Node> stack = new LinkedList<>();
         Node pNode = root;
-        while (!stack.isEmpty()) {
+        while (pNode != null || !stack.isEmpty()) {
             if (pNode != null) {
                 System.out.println(pNode.data + " ");
                 stack.push(pNode);
@@ -190,14 +190,13 @@ public class BinarySearchTree {
                 pNode = stack.pop();
                 pNode = pNode.right;
             }
-
         }
     }
 
     public void inOrderTraverse2(Node root) {
         LinkedList<Node> stack = new LinkedList<>();
         Node pNode = root;
-        while (!stack.isEmpty()) {
+        while (pNode != null || !stack.isEmpty()) {
             if (pNode != null) {
                 System.out.println(pNode.data + " ");
                 stack.push(pNode);
@@ -211,19 +210,93 @@ public class BinarySearchTree {
         }
     }
 
-
+    /**
+     * 对于节点p可以分情况讨论
+     * 1. p如果是叶子节点，直接输出
+     * 2. p如果有孩子，且孩子没有被访问过，则按照右孩子，左孩子的顺序依次入栈
+     * 3. p如果有孩子，而且孩子都已经访问过，则访问p节点
+     *
+     * @param root
+     */
     public void postOrderTraverse3(Node root) {
         LinkedList<Node> stack = new LinkedList<>();
         Node currNode = null;
         Node preNode = null;
         stack.push(root);
         while (!stack.isEmpty()) {
-            currNode = stack.pop();
-            if ((currNode.left == null && currNode.right == null) ||
-                    (preNode != null && (preNode == currNode.left || preNode == currNode.right))) {
+            currNode = stack.peek();
+            /**
+             * 1、没有子节点
+             * 2、没有右节点 左节点已经被访问过了
+             * 3、右节点被访问过了
+             */
+            if (
+                    (currNode.left == null && currNode.right == null)
+                            || (preNode.right != null && preNode == currNode.left)
+                            || preNode == currNode.right
+                    ) {
+                System.out.println(currNode.data);
                 stack.pop();
                 preNode = currNode;
+            } else {
+                if (currNode.right != null) {
+                    stack.push(currNode.right);
+                }
+                if (currNode.left != null) {
+                    stack.push(currNode.left);
+                }
             }
+        }
+    }
+
+    public void levelTraverse(Node root) {
+        LinkedList<Node> queue = new LinkedList<>();
+        queue.offer(root);
+        while (!queue.isEmpty()) {
+            Node poll = queue.poll();
+            System.out.println(poll.data);
+            if (poll.left != null) {
+                queue.offer(poll.left);
+            }
+            if (poll.right != null) {
+                queue.offer(poll.right);
+            }
+        }
+    }
+
+    public void depthOrderTraverse(Node root) {
+        LinkedList<Node> stack = new LinkedList<>();
+        stack.push(root);
+        while (!stack.isEmpty()) {
+            Node poll = stack.poll();
+            System.out.println(poll.data);
+            if (poll.right != null) {
+                stack.push(poll.right);
+            }
+            if (poll.left != null) {
+                stack.push(poll.left);
+            }
+        }
+    }
+
+    public void preOrderTraverseMy01(Node root) {
+        LinkedList<Node> stack = new LinkedList<>();
+        Node pNode = root;
+        /**
+         *  pNode != null
+         *  有可能 pNode = root.right
+         *  那么这个时候 stack 是空的, 而 root.right 还没输出
+         */
+        while (!stack.isEmpty() || pNode != null) {
+            if (pNode != null) {
+                System.out.println(pNode.data);
+                stack.push(pNode);
+                pNode = pNode.left;
+            } else {
+                Node poll = stack.poll();
+                pNode = poll.right;
+            }
+
         }
     }
 
