@@ -237,6 +237,13 @@ public class Test03 {
         System.out.println(Integer.toBinaryString(s << 1));
     }
 
+    @Test
+    public void test08() {
+       long s = 1L << 32;
+        System.out.println(s);
+        System.out.println(s/1024/1024/1024);
+    }
+
 }
 
 
