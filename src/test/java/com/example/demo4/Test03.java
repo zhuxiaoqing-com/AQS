@@ -244,6 +244,12 @@ public class Test03 {
         System.out.println(integers);
     }
 
+    @Test
+    public void test09() {
+        System.out.println(Integer.toBinaryString(Integer.MIN_VALUE));
+        System.out.println(Integer.toBinaryString(-0));
+    }
+
 }
 
 
