@@ -11,10 +11,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.time.*;
 import java.time.temporal.ChronoField;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Scanner;
+import java.util.*;
 
 public class Test03 {
     @Test
@@ -242,6 +239,9 @@ public class Test03 {
        long s = 1L << 32;
         System.out.println(s);
         System.out.println(s/1024/1024/1024);
+        List<Integer> list = Arrays.asList(1, 2, 3, 4);
+        List<Integer> integers = list.subList(1, 1);
+        System.out.println(integers);
     }
 
 }
