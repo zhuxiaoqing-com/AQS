@@ -1,12 +1,14 @@
 package com.example.demo4;
 
 
-import org.apache.http.cookie.Cookie;
+import com.google.common.reflect.TypeToken;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.junit.Assert;
 import org.junit.Test;
-import org.springframework.boot.web.servlet.server.Session;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.time.*;
@@ -236,9 +238,9 @@ public class Test03 {
 
     @Test
     public void test08() {
-       long s = 1L << 32;
+        long s = 1L << 32;
         System.out.println(s);
-        System.out.println(s/1024/1024/1024);
+        System.out.println(s / 1024 / 1024 / 1024);
         List<Integer> list = Arrays.asList(1, 2, 3, 4);
         List<Integer> integers = list.subList(1, 1);
         System.out.println(integers);
@@ -249,6 +251,233 @@ public class Test03 {
         System.out.println(Integer.toBinaryString(Integer.MIN_VALUE));
         System.out.println(Integer.toBinaryString(-0));
     }
+
+    @Test
+    public void test10() {
+        int sum = Integer.MAX_VALUE;
+        System.out.println(sum);
+//        System.out.println(sum - Integer.MAX_VALUE);
+//        System.out.println((sum - 1) == Integer.MAX_VALUE - 1);
+    }
+
+
+    @Test
+    public void test11() {
+        String json = "{\n" +
+                "\n" +
+                "    \"公共服务\": [\n" +
+                "        {\n" +
+                "            \"port\": 9001,\n" +
+                "            \"ip\": \"192.168.5.128\",\n" +
+                "            \"serverName\": \"内网测试\",\n" +
+                "            \"serverId\": 1,\n" +
+                "\t\t\t\"state\":3\n" +
+                "        },\n" +
+                "\t\t{\n" +
+                "            \"port\": 9002,\n" +
+                "            \"ip\": \"192.168.5.113\",\n" +
+                "            \"serverName\": \"定时任务\",\n" +
+                "            \"serverId\": 2,\n" +
+                "\t\t\t\"state\":2\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"port\": 9001,\n" +
+                "            \"ip\": \"115.159.159.40\",\n" +
+                "            \"serverName\": \"外网测试\",\n" +
+                "            \"serverId\": 10,\n" +
+                "\t\t\t\"state\":3\n" +
+                "        },\n" +
+                "\t\t{\n" +
+                "            \"port\": 9001,\n" +
+                "            \"ip\": \"115.159.220.131\",\n" +
+                "            \"serverName\": \"审核_暗夜黄昏测试\",\n" +
+                "            \"serverId\": 11,\n" +
+                "\t\t\t\"state\":1\n" +
+                "        },\n" +
+                "\t\t{\n" +
+                "            \"port\": 9013,\n" +
+                "            \"ip\": \"192.168.5.128\",\n" +
+                "            \"serverName\": \"审核_暗夜破晓新版\",\n" +
+                "            \"serverId\": 12,\n" +
+                "\t\t\t\"state\":2\n" +
+                "        },\n" +
+                "\t\t{\n" +
+                "            \"port\": 8001,\n" +
+                "            \"ip\": \"47.101.38.6\",\n" +
+                "            \"serverName\": \"性能测试\",\n" +
+                "            \"serverId\": 13,\n" +
+                "\t\t\t\"state\":2\n" +
+                "        }\n" +
+                "\n" +
+                "\t\t\n" +
+                "\n" +
+                "    ],\n" +
+                "      \"后端服务器\": [\n" +
+                "        {\n" +
+                "            \"port\": 9101,\n" +
+                "            \"ip\": \"127.0.0.1\",\n" +
+                "            \"serverName\": \"本地服务器9110\",\n" +
+                "            \"serverId\": 101,\n" +
+                "\t\t\t\"state\":2\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"port\": 9101,\n" +
+                "            \"ip\": \"10.42.0.66\",\n" +
+                "            \"serverName\": \"苏荀\",\n" +
+                "            \"serverId\": 102,\n" +
+                "\t\t\t\"state\":2\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"port\": 9101,\n" +
+                "            \"ip\": \"10.42.0.49\",\n" +
+                "            \"serverName\": \"张欢\",\n" +
+                "            \"serverId\": 103,\n" +
+                "\t\t\t\"state\":2\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"port\": 9101,\n" +
+                "            \"ip\": \"10.42.0.35\",\n" +
+                "            \"serverName\": \"沈明辉\",\n" +
+                "            \"serverId\": 104,\n" +
+                "\t\t\t\"state\":2\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"port\": 9101,\n" +
+                "            \"ip\": \"10.42.0.207\",\n" +
+                "            \"serverName\": \"欧阳伟良\",\n" +
+                "            \"serverId\": 105,\n" +
+                "\t\t\t\"state\":2\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"port\": 9101,\n" +
+                "            \"ip\": \"10.42.0.190\",\n" +
+                "            \"serverName\": \"吕亚珉\",\n" +
+                "            \"serverId\": 106,\n" +
+                "\t\t\t\"state\":2\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"port\": 9101,\n" +
+                "            \"ip\": \"10.42.0.50\",\n" +
+                "            \"serverName\": \"祝小庆\",\n" +
+                "            \"serverId\": 107,\n" +
+                "\t\t\t\"state\":2\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"port\": 9101,\n" +
+                "            \"ip\": \"10.42.0.48\",\n" +
+                "            \"serverName\": \"曹超杰\",\n" +
+                "            \"serverId\": 108,\n" +
+                "\t\t\t\"state\":2\n" +
+                "        }\n" +
+                "    ],\n" +
+                "\n" +
+                "       \"策划服务器\": [\n" +
+                "        {\n" +
+                "            \"port\": 9201,\n" +
+                "            \"ip\": \"192.168.5.128\",\n" +
+                "            \"serverName\": \"---\",\n" +
+                "            \"serverId\": 201,\n" +
+                "\t\t\t\"state\":3\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"port\": 9202,\n" +
+                "            \"ip\": \"192.168.5.128\",\n" +
+                "            \"serverName\": \"汪正军\",\n" +
+                "            \"serverId\": 202,\n" +
+                "\t\t\t\"state\":3\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"port\": 9203,\n" +
+                "            \"ip\": \"192.168.5.128\",\n" +
+                "            \"serverName\": \"---\",\n" +
+                "            \"serverId\": 203,\n" +
+                "\t\t\t\"state\":3\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"port\": 9204,\n" +
+                "            \"ip\": \"192.168.5.128\",\n" +
+                "            \"serverName\": \"徐丹\",\n" +
+                "            \"serverId\": 204,\n" +
+                "\t\t\t\"state\":3\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"port\": 9205,\n" +
+                "            \"ip\": \"192.168.5.128\",\n" +
+                "            \"serverName\": \"陈炯超\",\n" +
+                "            \"serverId\": 205,\n" +
+                "\t\t\t\"state\":3\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"port\": 9206,\n" +
+                "            \"ip\": \"192.168.5.128\",\n" +
+                "            \"serverName\": \"高涌\",\n" +
+                "            \"serverId\": 206,\n" +
+                "\t\t\t\"state\":3\n" +
+                "        },{\n" +
+                "            \"port\": 9207,\n" +
+                "            \"ip\": \"192.168.5.128\",\n" +
+                "            \"serverName\": \"王瑾\",\n" +
+                "            \"serverId\": 207,\n" +
+                "\t\t\t\"state\":3\n" +
+                "\t\t},{\n" +
+                "            \"port\": 9208,\n" +
+                "            \"ip\": \"192.168.5.128\",\n" +
+                "            \"serverName\": \"策划\",\n" +
+                "            \"serverId\": 208,\n" +
+                "\t\t\t\"state\":1\n" +
+                "\t\t},{\n" +
+                "            \"port\": 9209,\n" +
+                "            \"ip\": \"192.168.5.128\",\n" +
+                "            \"serverName\": \"闵文彪\",\n" +
+                "            \"serverId\": 209,\n" +
+                "\t\t\t\"state\":3\n" +
+                "\t\t},{\n" +
+                "            \"port\": 9210,\n" +
+                "            \"ip\": \"192.168.5.128\",\n" +
+                "            \"serverName\": \"张晨雪\",\n" +
+                "            \"serverId\": 210,\n" +
+                "\t\t\t\"state\":3\n" +
+                "\t\t},{\n" +
+                "            \"port\": 9211,\n" +
+                "            \"ip\": \"192.168.5.128\",\n" +
+                "            \"serverName\": \"刘伯承\",\n" +
+                "            \"serverId\": 211,\n" +
+                "\t\t\t\"state\":3\n" +
+                "\t\t}    ]\n" +
+                "       ,\"前端专用服务器\": [\n" +
+                "        {\n" +
+                "            \"port\": 9301,\n" +
+                "            \"ip\": \"192.168.5.128\",\n" +
+                "            \"serverName\": \"常子文\",\n" +
+                "            \"serverId\": 301,\n" +
+                "\t\t\t\"state\":2\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"port\": 9302,\n" +
+                "            \"ip\": \"192.168.5.128\",\n" +
+                "            \"serverName\": \"闲置\",\n" +
+                "            \"serverId\": 302,\n" +
+                "\t\t\t\"state\":2\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"port\": 9303,\n" +
+                "            \"ip\": \"192.168.5.128\",\n" +
+                "            \"serverName\": \"陈志鹏\",\n" +
+                "            \"serverId\": 303,\n" +
+                "\t\t\t\"state\":2\n" +
+                "        }\n" +
+                "    ]\n" +
+                "}\n";
+        Type mtype = new TypeToken<Map<String, List<GameServer>>>() {
+        }.getType();
+
+        Gson gson = new GsonBuilder().enableComplexMapKeySerialization().create();
+        Map<String, List<GameServer>> map = gson.fromJson(json, mtype);
+        map.forEach((key, value) -> {
+
+        });
+    }
+
 
 }
 
