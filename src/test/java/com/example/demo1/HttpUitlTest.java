@@ -1,7 +1,11 @@
 package com.example.demo1;
 
+import ch.qos.logback.classic.BasicConfigurator;
+import ch.qos.logback.classic.Logger;
 import com.example.demo1.demo.HttpUtil;
 import com.example.demo1.demo.SignUtil;
+import org.apache.commons.logging.Log;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.Collection;
@@ -305,13 +309,16 @@ public class HttpUitlTest {
 
     @Test
     public void textKeyWordRelease() {
+        Log log = Logger
         System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.SimpleLog");
         System.setProperty("org.apache.commons.logging.simplelog.showdatetime", "true");
-        System.setProperty("org.apache.commons.logging.simplelog.log.org.apache.commons.httpclient", "stdout");
+//        System.setProperty("org.apache.commons.logging.simplelog.log.org.apache.commons.httpclient", "stdout");
+        System.setProperty("org.apache.commons.logging.simplelog.log.org.apache.commons.httpclient", "ERROR");
+
         String uri = "/keyWord/filter";
         uri = uri + "?filter=" + content;
 
-        int testNum = 100_000;
+        int testNum = 10_0;
         String s = null;
         long start = System.currentTimeMillis();
         for (int i = 0; i < testNum; i++) {
@@ -319,10 +326,7 @@ public class HttpUitlTest {
         }
 
         long end = System.currentTimeMillis();
-
-        System.out.println(start - end / 1000);
-
-        System.out.println(s);
+        Assert.assertEquals(((end - start)), 1l);
     }
 
     /**

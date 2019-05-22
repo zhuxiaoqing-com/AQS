@@ -36,6 +36,8 @@ public class HttpUtil {
     public static String doGet(String url) {
         try {
             HttpClient client = new DefaultHttpClient();
+
+
             //发送get请求
             HttpGet request = new HttpGet(url);
             HttpResponse response = client.execute(request);
