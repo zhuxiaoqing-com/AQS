@@ -1,11 +1,7 @@
 package com.example.demo1;
 
-import ch.qos.logback.classic.BasicConfigurator;
-import ch.qos.logback.classic.Logger;
 import com.example.demo1.demo.HttpUtil;
 import com.example.demo1.demo.SignUtil;
-import org.apache.commons.logging.Log;
-import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.Collection;
@@ -14,7 +10,10 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * @author HSimon
+ * 2019-05-30 16:32:44 | INFO  | 游戏公共驱动线程-9 | RoleManager:366 | role=383579202062115 傲慢的巴里 升级！oldLv=73,
+ * curLv = 75, addExp=111111111, extraExp=0
+ *
+ * @author zhuxiaoqing
  */
 public class HttpUitlTest {
     /**
@@ -24,10 +23,12 @@ public class HttpUitlTest {
     public void itemQuery() {
         String uri = "/item/query";
         Map<String, String> params = new LinkedHashMap<>();
-        params.put("roleName", "内向的罗夫斯");
-        params.put("itemId", "1");
+        params.put("roleName", "傲慢的巴里");
+        //params.put("location", "1");
+        params.put("itemId", "42011");
         post(params, uri);
     }
+
 
     /**
      * 道具补偿
@@ -36,8 +37,23 @@ public class HttpUitlTest {
     public void compensate() {
         String uri = "/item/compensate";
         Map<String, String> params = new LinkedHashMap<>();
-        params.put("roleName", "内向的罗夫斯");
+        params.put("roleName", "傲慢的巴里");
         params.put("items", "42001|1");
+        post(params, uri);
+    }
+
+    /**
+     * 道具修改接口
+     */
+    @Test
+    public void itemModify() {
+        String uri = "/item/modify";
+        Map<String, String> params = new LinkedHashMap<>();
+        params.put("roleName", "傲慢的巴里");
+        params.put("itemId", "42001");
+        params.put("count", "1");
+        // params.put("roleName", "内向的罗夫斯");
+        //params.put("itemId", "1");
         post(params, uri);
     }
 
@@ -48,9 +64,9 @@ public class HttpUitlTest {
     public void recharge() {
         String uri = "/item/recharge";
         Map<String, String> params = new LinkedHashMap<>();
-        params.put("roleName", "内向的罗夫斯");
+        params.put("roleName", "傲慢的巴里");
         params.put("count", "222");
-        params.put("type", "1");
+        params.put("type", "true");
         post(params, uri);
     }
 
@@ -61,9 +77,9 @@ public class HttpUitlTest {
     public void sendGMNotice() {
         String uri = "/message/GMNotice";
         Map<String, String> params = new LinkedHashMap<>();
-        params.put("noticeModel", "xxxx");
-        params.put("noticeTimes", "222");
-        params.put("context", "xxxxxxxxxxx");
+        params.put("type", "1");
+        params.put("time", "11111");
+        params.put("context", "xxxxxxxxsdasddadasdasdaxxx");
         post(params, uri);
     }
 
@@ -80,7 +96,7 @@ public class HttpUitlTest {
         //params.put("subject", "xxxxxxxxxxx");
         params.put("content", "xxxxxxxxxxx");
         params.put("items", "42001|1");
-        params.put("key", "内向的");
+        params.put("roleNames", "傲慢的巴里");
         params.put("closeDay", "3");
         post(params, uri);
     }
@@ -110,7 +126,7 @@ public class HttpUitlTest {
     public void selectId() {
         String uri = "/role/selectId";
         Map<String, String> params = new LinkedHashMap<>();
-        params.put("roleId", "381949133783432");
+        params.put("roleId", "383579202062115");
         post(params, uri);
     }
 
@@ -121,7 +137,7 @@ public class HttpUitlTest {
     public void selectName() {
         String uri = "/role/selectName";
         Map<String, String> params = new LinkedHashMap<>();
-        params.put("roleName", "内向的罗夫斯");
+        params.put("roleName", "傲慢的巴里");
         post(params, uri);
     }
 
@@ -130,11 +146,12 @@ public class HttpUitlTest {
      */
     @Test
     public void setRoleLock() {
-        String uri = "/role/setRoleLock";
+        String uri = "/role/setRoleLockAndChat";
         Map<String, String> params = new LinkedHashMap<>();
-        params.put("roleName", "内向的罗夫斯");
-        params.put("lockTime", "2222");
-        params.put("reason", "内向的罗夫斯xxxxx");
+        params.put("type", "1");
+        params.put("roleName", "傲慢的巴里");
+        params.put("lockTime", "0");
+        params.put("reason", "傲慢的巴里开外挂了");
         post(params, uri);
     }
 
@@ -144,11 +161,12 @@ public class HttpUitlTest {
      */
     @Test
     public void setRoleUnLock() {
-        String uri = "/role/setRoleUnLock";
+        String uri = "/role/setRoleLockAndChat";
         Map<String, String> params = new LinkedHashMap<>();
-        params.put("roleName", "内向的罗夫斯");
-        params.put("lockTime", "2222");
-        params.put("reason", "内向的罗夫斯xxxxx");
+        params.put("type", "1");
+        params.put("roleName", "傲慢的巴里");
+        params.put("lockTime", "0");
+        params.put("reason", "傲慢的巴里私底下交易给钱了");// 禁封理由
         post(params, uri);
     }
 
@@ -158,13 +176,14 @@ public class HttpUitlTest {
      */
     @Test
     public void chatBan() {
-        String uri = "/role/chatBan";
+        String uri = "/role/setRoleLockAndChat";
         Map<String, String> params = new LinkedHashMap<>();
-        params.put("roleName", "内向的罗夫斯");
-        params.put("banTime", "2222");
+        params.put("type", "2");
+        params.put("roleName", "傲慢的巴里");
+        params.put("lockTime", "20000");
         params.put("reason", "xxxxxx");
-        params.put("channelType", "1");
-        params.put("banType", "1");
+        params.put("channelType", "0"); // 设置默认 0全频道 1综合 2 世界 3 工会 5 场景  默认全频道禁言
+        params.put("banType", "0"); //0禁言 1//自言自语，不发送信息   默认禁言
         post(params, uri);
     }
 
@@ -174,7 +193,7 @@ public class HttpUitlTest {
      */
     @Test
     public void chatUnBan() {
-        String uri = "/role/chatUnBan";
+        String uri = "/role/setRoleLockAndChat";
         Map<String, String> params = new HashMap<>();
         params.put("roleName", "内向的罗夫斯");
         params.put("channelType", "1");
@@ -190,6 +209,28 @@ public class HttpUitlTest {
     public void countNumbers() {
         String uri = "/role/countNumbers";
         Map<String, String> params = new HashMap<>();
+        post(params, uri);
+    }
+
+    /**
+     * 关闭服务器
+     */
+    @Test
+    public void closeServer() {
+        String uri = "/system/closeServer";
+        Map<String, String> params = new HashMap<>();
+        post(params, uri);
+    }
+
+
+    /**
+     * 修改在线人数
+     */
+    @Test
+    public void updateMaxOnlineNum() {
+        String uri = "/system/updateMaxOnlineNum";
+        Map<String, String> params = new HashMap<>();
+        params.put("onlineNum", "111");
         post(params, uri);
     }
 
@@ -247,7 +288,7 @@ public class HttpUitlTest {
         String uri = "/item/query";
         Map<String, String> params = new LinkedHashMap<>();
         params.put("roleName", "内向的罗夫斯");
-        params.put("location", "2");
+        params.put("itemId", "2");
         //params.put("urlAdd", "xxxx");
         //params.put("urlName", "xxxx");
         post(params, uri);
@@ -338,8 +379,8 @@ public class HttpUitlTest {
      * @param map
      */
     private void post(Map<String, String> map, String uri) {
-        //String url = "http://10.42.0.50:11000" + uri;
-        String url = "http://10.42.0.50:8089" + uri;
+        String url = "http://10.42.0.50:11000" + uri;
+        //String url = "http://10.42.0.50:8089" + uri;
         Collection<String> values = map.values();
         String sign = SignUtil.getMD5ForGM(values.toArray(new String[values.size()]));
         map.put("sign", sign);
