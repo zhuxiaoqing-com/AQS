@@ -23,7 +23,7 @@ public class Test03 {
         System.out.println("2:.." + innerObj);
         System.out.println("4:.." + innerObj.toString());
         new HashMap(new HashMap());
-       // Integer.valueOf()
+        // Integer.valueOf()
     }
 
     private Object getInnerObj() {
@@ -285,6 +285,30 @@ public class Test03 {
 
         String ip = "192.168.5.83";
         Jedis jedis = new Jedis(ip, 6379);
+    }
+
+    @Test
+    public void test13() {
+        int y = 1000;
+        int x = 100;
+        ArrayList<Integer> list = new ArrayList<>();
+        for (int i = 0; i < x; i++) {
+          /*  if (i % 10 == 0) {
+                y++;
+            }*/
+            list.add(0);
+        }
+        list.add(-1);
+        list.add(-2);
+        list.add(2);
+        list.add(1);
+        System.out.println(list);
+        Collections.shuffle(list);
+        System.out.println(list);
+        list.sort((o1, o2) -> {
+            return o1 > o2 ? 1 : -1;
+        });
+        System.out.println(list);
     }
 
 
