@@ -22,6 +22,8 @@ public class Test03 {
         Object innerObj = getInnerObj();
         System.out.println("2:.." + innerObj);
         System.out.println("4:.." + innerObj.toString());
+        new HashMap(new HashMap());
+       // Integer.valueOf()
     }
 
     private Object getInnerObj() {
