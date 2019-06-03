@@ -312,6 +312,29 @@ public class Test03 {
     }
 
 
+    @Test
+    public void test14() {
+        HashMap<Integer, Integer> map = new HashMap<>();
+        for(int i = 0; i<= 100; i++) {
+            map.put(i,i);
+        }
+
+        Set<Map.Entry<Integer, Integer>> entries = map.entrySet();
+        for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
+            Integer key = entry.getKey();
+            if(key == 0) {
+                map.put(101,101);
+            }
+            if(key == 50) {
+                map.put(102,102);
+            }
+            if(key == 100) {
+                map.put(103,103);
+            }
+        }
+    }
+
+
 }
 
 

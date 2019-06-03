@@ -7,7 +7,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class Test04 {
+public class TimSortTest {
 
     @Test
     public void test01() {
