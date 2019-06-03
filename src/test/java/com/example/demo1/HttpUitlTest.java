@@ -75,7 +75,7 @@ public class HttpUitlTest {
      */
     @Test
     public void sendGMNotice() {
-        String uri = "/message/GMNotice";
+        String uri = "/message/sendNotice";
         Map<String, String> params = new LinkedHashMap<>();
         params.put("type", "1");
         params.put("time", "11111");
@@ -89,7 +89,7 @@ public class HttpUitlTest {
      */
     @Test
     public void sendSomeRoleGMEmail1() {
-        String uri = "/message/GMEmail";
+        String uri = "/message/sendEmail";
         Map<String, String> params = new LinkedHashMap<>();
         params.put("type", "1");
         params.put("title", "xxxx");
@@ -106,7 +106,7 @@ public class HttpUitlTest {
      */
     @Test
     public void sendSomeRoleGMEmail2() {
-        String uri = "/message/GMEmail";
+        String uri = "/message/sendNotice";
         Map<String, String> params = new LinkedHashMap<>();
         params.put("type", "2");
         params.put("title", "xxxx");
@@ -194,7 +194,7 @@ public class HttpUitlTest {
     @Test
     public void chatUnBan() {
         String uri = "/role/setRoleLockAndChat";
-        Map<String, String> params = new HashMap<>();
+        Map<String, String> params = new LinkedHashMap<>();
         params.put("roleName", "内向的罗夫斯");
         params.put("channelType", "1");
         params.put("banType", "1");
@@ -208,7 +208,7 @@ public class HttpUitlTest {
     @Test
     public void countNumbers() {
         String uri = "/role/countNumbers";
-        Map<String, String> params = new HashMap<>();
+        Map<String, String> params = new LinkedHashMap<>();
         post(params, uri);
     }
 
@@ -218,7 +218,7 @@ public class HttpUitlTest {
     @Test
     public void closeServer() {
         String uri = "/system/closeServer";
-        Map<String, String> params = new HashMap<>();
+        Map<String, String> params = new LinkedHashMap<>();
         post(params, uri);
     }
 
@@ -229,89 +229,88 @@ public class HttpUitlTest {
     @Test
     public void updateMaxOnlineNum() {
         String uri = "/system/updateMaxOnlineNum";
-        Map<String, String> params = new HashMap<>();
+        Map<String, String> params = new LinkedHashMap<>();
         params.put("onlineNum", "111");
         post(params, uri);
     }
 
 
     /**
-     * 测试 新 封号
+     * 获取所有公会的id和名字
      */
     @Test
-    public void setRoleLockAndChat1() {
-        String uri = "/role/setRoleLockAndChat";
+    public void guildIdNameList() {
+        String uri = "/guild/guildIdNameList";
         Map<String, String> params = new LinkedHashMap<>();
-        params.put("type", "1");
-        params.put("roleName", "内向的罗夫斯");
-        params.put("lockTime", "2222");
-        // params.put("reason", "内向的罗夫斯xxxxx");
-        post(params, uri);
+        String result = post(params, uri);
+        System.out.println(result);
     }
 
-    /**
-     * 测试 新 聊天
-     */
-    @Test
-    public void setRoleLockAndChat2() {
-        String uri = "/role/setRoleLockAndChat";
-        Map<String, String> params = new LinkedHashMap<>();
-        params.put("type", "2");
-        params.put("roleName", "内向的罗夫斯");
-        params.put("banTime", "2222");
-        params.put("reason", "xxxxxx");
-        params.put("channelType", "1");
-        params.put("banType", "1");
-        post(params, uri);
-    }
 
 
     /**
-     * 道具删除
+     * 获取所有公会
      */
     @Test
-    public void modify() {
-        String uri = "/item/modify";
+    public void guildList() {
+        String uri = "/guild/guildList";
         Map<String, String> params = new LinkedHashMap<>();
-        params.put("roleId", "381949133783432");
-        params.put("location", "1");
-        params.put("id", "1");
-        params.put("count", "1");
-        post(params, uri);
+        String result = post(params, uri);
     }
 
     /**
-     * 道具查询
+     * 获取公会所有成员
      */
     @Test
-    public void query() {
-        String uri = "/item/query";
+    public void guildMemberListByGuildId() {
+        String uri = "/guild/guildMemberList";
         Map<String, String> params = new LinkedHashMap<>();
-        params.put("roleName", "内向的罗夫斯");
-        params.put("itemId", "2");
-        //params.put("urlAdd", "xxxx");
-        //params.put("urlName", "xxxx");
-        post(params, uri);
+        // todo 获取所有公会id和name 随机取一个公会id作为测试参数
+        params.put("guildId", "383681319098674");
+        String result = post(params, uri);
+    }
+
+
+    /**
+     * 解散公会
+     */
+    @Test
+    public void disbandGuild() {
+        String uri = "/guild/disband";
+        Map<String, String> params = new LinkedHashMap<>();
+        // todo 获取所有公会id和name 随机取一个公会id作为测试参数
+        params.put("guildId", "383680247304774");
+        String result = post(params, uri);
     }
 
     /**
-     * 公告接口
+     * 公会会长转移
      */
     @Test
-    public void sendGMNotice1() {
-        String uri = "/message/GMNotice";
+    public void guildOwnerTransfer() {
+        String uri = "/guild/ownerTransfer";
         Map<String, String> params = new LinkedHashMap<>();
-        params.put("id", "1");
-        params.put("type", "14");
-        params.put("str", "xxxx");
-        params.put("color", "xxxx");
-        params.put("stime", "2018-08-29 16:45:23");
-        params.put("etime", "2018-08-29 16:46:23");
-        params.put("ltime", "1111");
-        //params.put("urlAdd", "xxxx");
-        //params.put("urlName", "xxxx");
-        post(params, uri);
+        // todo 获取所有公会id和name 随机取一个公会id作为测试参数
+        params.put("guildId", "383680247304774");
+        params.put("roleId", "58086030552467210");
+        String result = post(params, uri);
     }
+
+    /**
+     * 修改行会公告
+     */
+    @Test
+    public void updateNotice() {
+        String uri = "/guild/updateNotice";
+        Map<String, String> params = new LinkedHashMap<>();
+        // todo 获取所有公会id和name 随机取一个公会id作为测试参数
+        params.put("guildId", "383680247304774");
+        params.put("bulletin", "修改 bulletin 公告");
+        String result = post(params, uri);
+        System.out.println(result);
+    }
+
+
 
 
     String content = "1995年中共执政当局开始寻求强化法轮功的组织构架及与政府的关系。" +
@@ -327,7 +326,7 @@ public class HttpUitlTest {
             "法轮功起初并没有受批评，但在1996年3月退出中国气功协会后，失去了政府体制的保护。";
 
     /**
-     * 公告接口
+     * 过滤器
      */
     @Test
     public void textKeyWord() {
@@ -345,7 +344,7 @@ public class HttpUitlTest {
     }
 
     /**
-     * 公告接口
+     * 过滤器
      */
 
     @Test
@@ -378,14 +377,14 @@ public class HttpUitlTest {
      *
      * @param map
      */
-    private void post(Map<String, String> map, String uri) {
+    private String post(Map<String, String> map, String uri) {
         String url = "http://10.42.0.50:11000" + uri;
         //String url = "http://10.42.0.50:8089" + uri;
         Collection<String> values = map.values();
         String sign = SignUtil.getMD5ForGM(values.toArray(new String[values.size()]));
         map.put("sign", sign);
         System.out.println("参数: " + map);
-        HttpUtil.doPost(url, map);
+        return HttpUtil.doPost(url, map);
     }
 
     /**
