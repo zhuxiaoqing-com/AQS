@@ -378,7 +378,7 @@ public class HttpUitlTest {
      * @param map
      */
     private String post(Map<String, String> map, String uri) {
-        String url = "http://10.42.0.50:11000" + uri;
+        String url = "http://192.168.5.128:11001" + uri;
         //String url = "http://10.42.0.50:8089" + uri;
         Collection<String> values = map.values();
         String sign = SignUtil.getMD5ForGM(values.toArray(new String[values.size()]));

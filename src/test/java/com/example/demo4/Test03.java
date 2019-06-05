@@ -334,6 +334,13 @@ public class Test03 {
         }
     }
 
+    @Test
+    public void test15() {
+        String s = "ASDF!@#$%^as)_df3f4uiiu(%&^GM";
+        String ss = "AS*DF!@#$%^as)_df3f4uiiu*(%&^GM";
+        System.out.println(s.equals(ss));
+    }
+
 
 }
 
