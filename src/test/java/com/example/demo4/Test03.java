@@ -342,6 +342,13 @@ public class Test03 {
     }
 
 
+    @Test
+    public void test16() {
+        ArrayList<Integer> list = new ArrayList<>();
+        Collections.binarySearch(list,1);
+    }
+
+
 }
 
 
