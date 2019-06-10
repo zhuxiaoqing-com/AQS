@@ -15,6 +15,7 @@ import java.net.Socket;
 import java.time.*;
 import java.time.temporal.ChronoField;
 import java.util.*;
+import java.util.concurrent.ThreadPoolExecutor;
 
 public class Test03 {
     @Test
@@ -348,6 +349,16 @@ public class Test03 {
         Collections.binarySearch(list,1);
     }
 
+    @Test
+    public void test17() {
+        //todo s
+        // fixme
+        //
+        double x = 0.1f;
+        int x1= 1;
+        double sum = x*x1;
+        System.out.println(sum);
+    }
 
 }
 
