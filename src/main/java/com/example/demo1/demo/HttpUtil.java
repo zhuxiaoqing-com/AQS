@@ -14,7 +14,6 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
@@ -31,12 +30,12 @@ import java.util.Map;
 public class HttpUtil {
     /**
      * get请求
+     *
      * @return
      */
     public static String doGet(String url) {
         try {
-            HttpClient client = new DefaultHttpClient();
-
+            CloseableHttpClient client = HttpClients.createSystem();
 
             //发送get请求
             HttpGet request = new HttpGet(url);
@@ -49,8 +48,7 @@ public class HttpUtil {
 
                 return strResult;
             }
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
@@ -59,30 +57,31 @@ public class HttpUtil {
 
     /**
      * post请求(用于key-value格式的参数)
+     *
      * @param url
      * @param params
      * @return
      */
-    public static String doPost(String url, Map params){
+    public static String doPost(String url, Map params) {
 
 
         try {
             // 定义HttpClient
-            HttpClient client = new DefaultHttpClient();
+            CloseableHttpClient client = HttpClients.createSystem();
             // 实例化HTTP方法
             HttpPost request = new HttpPost();
             request.setURI(new URI(url));
 
             //设置参数
             List<NameValuePair> nvps = new ArrayList<NameValuePair>();
-            for (Iterator iter = params.keySet().iterator(); iter.hasNext();) {
+            for (Iterator iter = params.keySet().iterator(); iter.hasNext(); ) {
                 String name = (String) iter.next();
                 String value = String.valueOf(params.get(name));
                 nvps.add(new BasicNameValuePair(name, value));
 
                 //System.out.println(name +"-"+value);
             }
-            request.setEntity(new UrlEncodedFormEntity(nvps,HTTP.UTF_8));
+            request.setEntity(new UrlEncodedFormEntity(nvps, HTTP.UTF_8));
 
             HttpResponse response = client.execute(request);
             int code = response.getStatusLine().getStatusCode();
@@ -96,17 +95,16 @@ public class HttpUtil {
 					sb.append(line + NL);
 				}
 */
-                HttpEntity entity = response.getEntity();
-                String data = new String(EntityUtils.toByteArray(entity), "UTF-8");
-                System.out.println(data);
-                return data;
+            HttpEntity entity = response.getEntity();
+            String data = new String(EntityUtils.toByteArray(entity), "UTF-8");
+            System.out.println(data);
+            return data;
             /*}
             else{	//
                 System.out.println("状态码：" + code);
                 return null;
             }*/
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
 
             return null;
@@ -115,6 +113,7 @@ public class HttpUtil {
 
     /**
      * post请求（用于请求json格式的参数）
+     *
      * @param url
      * @param params
      * @return
@@ -139,11 +138,9 @@ public class HttpUtil {
                 HttpEntity responseEntity = response.getEntity();
                 String jsonString = EntityUtils.toString(responseEntity);
                 return jsonString;
+            } else {
             }
-            else{
-            }
-        }
-        finally {
+        } finally {
             if (response != null) {
                 try {
                     response.close();
