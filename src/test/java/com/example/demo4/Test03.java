@@ -15,7 +15,6 @@ import java.net.Socket;
 import java.time.*;
 import java.time.temporal.ChronoField;
 import java.util.*;
-import java.util.concurrent.ThreadPoolExecutor;
 
 public class Test03 {
     @Test
@@ -316,21 +315,21 @@ public class Test03 {
     @Test
     public void test14() {
         HashMap<Integer, Integer> map = new HashMap<>();
-        for(int i = 0; i<= 100; i++) {
-            map.put(i,i);
+        for (int i = 0; i <= 100; i++) {
+            map.put(i, i);
         }
 
         Set<Map.Entry<Integer, Integer>> entries = map.entrySet();
         for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
             Integer key = entry.getKey();
-            if(key == 0) {
-                map.put(101,101);
+            if (key == 0) {
+                map.put(101, 101);
             }
-            if(key == 50) {
-                map.put(102,102);
+            if (key == 50) {
+                map.put(102, 102);
             }
-            if(key == 100) {
-                map.put(103,103);
+            if (key == 100) {
+                map.put(103, 103);
             }
         }
     }
@@ -346,7 +345,7 @@ public class Test03 {
     @Test
     public void test16() {
         ArrayList<Integer> list = new ArrayList<>();
-        Collections.binarySearch(list,1);
+        Collections.binarySearch(list, 1);
     }
 
     @Test
@@ -354,19 +353,24 @@ public class Test03 {
         //todo s
         // fixme
         //
-        int x1= -21/4;
+        int x1 = -21 / 4;
         /**    1 0000 0000
          * -21 = 1001 0101 = 1110 1011
          * -21 >> 2 = 1111 1010
          * 1 0000 0000 - 1111 1010 = 1000 0110 = 6
          */
         // 所有负数右移必须特别注意！！！ -21/4 和 -21>>2 是不同的
-        int x2= -21>>2;
-        int x3= 21>>2;
+        int x2 = -21 >> 2;
+        int x3 = 21 >> 2;
         System.out.println(x1);// -5 想上取正
         System.out.println(Integer.toBinaryString(-21));
         System.out.println(x2);// -6 向下取正
         System.out.println(x3);// -6 向下取正
+    }
+
+    @Test
+    public void test18() {
+
     }
 
 }
