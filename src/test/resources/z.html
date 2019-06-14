@@ -1,0 +1,116 @@
+<!doctype html>
+<html>
+<head>
+    <title>Document</title>
+</head>
+<body>
+<select id="country" onchange="change(this.value);">
+    <option value="请选择">--请选择--</option>
+    <option value="中国">中国</option>
+    <option value="美国">美国</option>
+    <option value="日本">日本</option>
+
+</select>
+
+<select id="city" onchange="change1(this.value);">
+
+</select>
+
+<select id="xiancity">
+
+</select>
+
+<script type="text/javascript">
+    var arr = Array(3);
+    arr[0] = ["中国", "杭州", "宁波", "温州"];
+    arr[1] = ["美国", "纽约", "华盛顿", "底特律"];
+    arr[2] = ["日本", "东京", "北海道", "长崎"];
+
+    var arrt = Array(1);
+    arrt[0] = ["温州", "苍南", "瑞安", "鹿城"];
+
+    function change(val) {
+        /*
+            1、遍历二维数组
+            2、得到也是一个数组(国家对应关系)
+
+            3、拿到数组中的第一个值和传递来的值比较
+            4、如果相同，获取到第一个值后面的元素
+            5、得到city的select
+            6、添加过去（使用）appendChild方法
+                - 创建option（3步骤）
+        */
+        //获取city的select
+        var city = document.getElementById("city");
+        //得到city里面的option
+        var option1 = city.getElementsByTagName("option");
+        //遍历数组
+        for (var m = 0; m < option1.length; m++) {
+            //得到每一个option
+            var op = option1[m];
+            city.removeChild(op);
+            m--;
+        }
+
+
+        for (var i = 0; i < arr.length; i++) {
+            //得到数组的每个值
+            var arr1 = arr[i];
+            //得到数组的第一个值
+            var firstarr = arr1[0];
+            //判断得到的数组是否等于数组的第一个值
+            if (firstarr == val) {
+                //遍历数组
+
+                for (var j = 1; j < arr1.length; j++) {
+                    var value1 = arr1[j];
+                    //创建option
+                    var option1 = document.createElement("option");
+                    //创建文本
+                    var text1 = document.createTextNode(value1);
+                    //把文本添加到option里面
+                    option1.appendChild(text1);
+                    //吧option添加到city里面
+                    city.appendChild(option1);
+                }
+
+
+            }
+
+        }
+    }
+
+    function change1(val1) {
+        alert(val1);
+        /*
+            1、遍历二维数组
+            2、得到也是一个数组(国家对应关系)
+
+            3、拿到数组中的第一个值和传递来的值比较
+            4、如果相同，获取到第一个值后面的元素
+            5、得到city的select
+            6、添加过去（使用）appendChild方法
+                - 创建option（3步骤）
+        */
+        for (var i = 0; i < arrt.length; i++) {
+            var arrt1 = arrt[i];
+            var firstarrt1 = arrt1[0];
+            alert(val1);
+            if (firstarrt1 == val1) {
+
+            }
+
+        }
+
+        function fun() {
+            var a= document.getElementById("a").value();
+            var b= document.getElementById("b").value();
+            var c= document.getElementById("c").value();
+
+            document.write(a+b+c);
+        }
+    }
+
+</script>
+</body>
+</html>
