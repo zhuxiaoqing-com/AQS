@@ -378,7 +378,8 @@ public class Test03 {
         System.out.println(v);
 
         System.out.println(v*1);
-        System.out.println(v*0);
+        System.out.println(v-0.2);
+        System.out.println(v+0.3);
 
         int ss= 1;
         System.out.println(ss/0);
