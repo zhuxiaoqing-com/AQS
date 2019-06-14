@@ -368,9 +368,20 @@ public class Test03 {
         System.out.println(x3);// -6 向下取正
     }
 
+    /**
+     * 小数 / 0 不会抛出  java.lang.ArithmeticException: / by zero
+     */
     @Test
     public void test18() {
+        double s= 1.2;
+        double v = s / 0;
+        System.out.println(v);
 
+        System.out.println(v*1);
+        System.out.println(v*0);
+
+        int ss= 1;
+        System.out.println(ss/0);
     }
 
 }
