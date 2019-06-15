@@ -385,6 +385,31 @@ public class Test03 {
         System.out.println(ss/0);
     }
 
+
+    /**
+     *
+     */
+    @Test
+    public void test19() {
+        double s = 0.1f;
+        int const1 = 1;
+        double ss = s*const1;
+
+        System.out.println(s);
+        System.out.println(s*const1);
+        System.out.println(ss);
+    }
+
+    @Test
+    public void test20() {
+        //todo s
+        // fixme
+        //
+        double x = 0.1f;
+        int x1= 1;
+        double sum = x*x1;
+        System.out.println(sum);
+    }
 }
 
 
