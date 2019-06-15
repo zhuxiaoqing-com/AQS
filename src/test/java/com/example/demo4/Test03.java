@@ -373,16 +373,16 @@ public class Test03 {
      */
     @Test
     public void test18() {
-        double s= 1.2;
-        double v = s / 0;
+        double s = 1.2;
+        double v = s / -0;
         System.out.println(v);
 
-        System.out.println(v*1);
-        System.out.println(v-0.2);
-        System.out.println(v+0.3);
+        System.out.println(v * 1);
+        System.out.println(v - 0.2);
+        System.out.println(v + 0.3);
 
-        int ss= 1;
-        System.out.println(ss/0);
+        int ss = 1;
+        System.out.println(ss / 0);
     }
 
 
@@ -393,10 +393,10 @@ public class Test03 {
     public void test19() {
         double s = 0.1f;
         int const1 = 1;
-        double ss = s*const1;
+        double ss = s * const1;
 
         System.out.println(s);
-        System.out.println(s*const1);
+        System.out.println(s * const1);
         System.out.println(ss);
     }
 
@@ -405,10 +405,27 @@ public class Test03 {
         //todo s
         // fixme
         //
-        double x = 0.1f;
-        int x1= 1;
-        double sum = x*x1;
+        double x = 0.1;
+        int x1 = 1;
+        double sum = x * x1;
         System.out.println(sum);
+    }
+
+    @Test
+    public void test21() {
+        //todo s
+        // fixme
+        //
+        double x1 = 2.0;
+        doubleSum(x1);
+    }
+
+    private void doubleSum(double decimal) {
+        double x = 1.1;
+        double sum = x * decimal;
+        System.out.println(sum);
+        System.out.println(0.1+0.2);
+        System.out.println(1f*0.2);
     }
 }
 
