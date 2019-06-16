@@ -354,10 +354,19 @@ public class Test03 {
         //todo s
         // fixme
         //
-        double x = 0.1f;
-        int x1= 1;
-        double sum = x*x1;
-        System.out.println(sum);
+        int x1= -21/4;
+        /**    1 0000 0000
+         * -21 = 1001 0101 = 1110 1011
+         * -21 >> 2 = 1111 1010
+         * 1 0000 0000 - 1111 1010 = 1000 0110 = 6
+         */
+        // 所有负数右移必须特别注意！！！ -21/4 和 -21>>2 是不同的
+        int x2= -21>>2;
+        int x3= 21>>2;
+        System.out.println(x1);// -5 想上取正
+        System.out.println(Integer.toBinaryString(-21));
+        System.out.println(x2);// -6 向下取正
+        System.out.println(x3);// -6 向下取正
     }
 
 }
