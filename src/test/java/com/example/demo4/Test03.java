@@ -15,6 +15,7 @@ import java.net.Socket;
 import java.time.*;
 import java.time.temporal.ChronoField;
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Test03 {
     @Test
@@ -439,6 +440,29 @@ public class Test03 {
         System.out.println(l);
         System.out.println(l*7f);
     }
+
+
+    private static boolean isWin(int power1, int power2) {
+        // 低的一方的战斗力 与 高的一方的战斗力 相差 5%以上算输，以内随机
+        int percent = (int) ((power1 * 100L) / power2);
+        int diffPercent = Math.abs(100 - percent);
+        if (diffPercent <= 5) {
+            // 随机
+            int randomInt = ThreadLocalRandom.current().nextInt(0, 2);
+            return randomInt == 0;
+        }
+        return percent > 100;
+
+    }
+
+    @Test
+    public void test23() {
+        int power2 = 200_000_000;
+        int power1 = 220_000_000;
+        boolean win = isWin(power1, power2);
+        System.out.println(win);
+    }
+
 }
 
 
