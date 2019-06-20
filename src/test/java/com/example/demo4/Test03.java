@@ -424,8 +424,20 @@ public class Test03 {
         double x = 1.1;
         double sum = x * decimal;
         System.out.println(sum);
-        System.out.println(0.1+0.2);
-        System.out.println(1f*0.2);
+        System.out.println(0.1 + 0.2);
+        System.out.println(1f * 0.2);
+    }
+
+    @Test
+    public void test22() {
+        long rid = 2000_000_000L;
+        System.out.println(rid*7f/222222);
+        float v = rid * 7f;
+        System.out.println(v);
+        System.out.println(v/222222);
+        long l = rid / 222222;
+        System.out.println(l);
+        System.out.println(l*7f);
     }
 }
 
