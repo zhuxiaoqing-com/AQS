@@ -463,6 +463,22 @@ public class Test03 {
         System.out.println(win);
     }
 
+
+    @Test
+    public void test24() {
+        Date date = new Date(1561104600000L);
+        System.out.println(date);
+        int i = 3;
+        switch(i) {
+            case 2:
+                System.out.println(2);
+            case 3:
+                System.out.println(3);
+            case 4:
+                System.out.println(4);
+        }
+    }
+
 }
 
 

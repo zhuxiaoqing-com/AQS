@@ -7,11 +7,12 @@ public class IpUtilTest {
     @Test
     public void test01() {
         String ip = "10.42.0.50";
-        int port = 7999;
+        int port = 8001;
         long l = IPUtil.IpPortToLong(ip, port);
         // 34355613925426
         System.out.println(l);
         String ipByAddr = IPUtil.getIpByAddr(34362970604928l);
         System.out.println(ipByAddr);
+        System.out.println(IPUtil.getPortByAddr(34362970604928l));
     }
 }
