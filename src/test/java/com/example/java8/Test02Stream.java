@@ -1,5 +1,6 @@
 package com.example.java8;
 
+import com.google.common.collect.Lists;
 import org.junit.Test;
 
 import java.util.*;
@@ -115,6 +116,26 @@ public class Test02Stream {
 
     }
 
+
+    /**
+     * 如果有重复的就会合并 Collectors.toMap(key, value, mergeFunction, HashMap::new);
+     */
+    @Test
+    public void test07() {
+        ArrayList<TestData> list = new ArrayList();
+        for (int i = 0; i <= 10; i++) {
+            list.add(new TestData(i, i));
+        }
+     /*   list.add(new TestData(1, 11));
+        list.add(new TestData(3, 11));
+        list.add(new TestData(1, 11));*/
+
+
+        List<List<TestData>> partition = Lists.partition(list, 4);
+        System.out.println(partition);
+
+    }
+
     class TestData {
         int id;
         int count;
@@ -122,6 +143,11 @@ public class Test02Stream {
         public TestData(int id, int count) {
             this.id = id;
             this.count = count;
+        }
+
+        @Override
+        public String toString() {
+            return id + "";
         }
     }
 }
