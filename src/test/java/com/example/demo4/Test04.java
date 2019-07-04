@@ -92,8 +92,8 @@ public class Test04 {
 
     @Test
     public void test08(){
-        int num = 150000;
-        System.out.println(num*100/1000/1000);
+       String s = "A894110C0002EEEEEEEEEEEE7F0000008D1E54117E16";
+        System.out.println(Long.parseLong(s, 16));
     }
 
 }
