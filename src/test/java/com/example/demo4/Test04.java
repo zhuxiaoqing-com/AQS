@@ -1,6 +1,6 @@
 package com.example.demo4;
 
-import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
+import com.example.custom_annotation.IndexDesc;
 import org.junit.Test;
 
 import java.util.*;
@@ -92,8 +92,25 @@ public class Test04 {
 
     @Test
     public void test08(){
-       String s = "A894110C0002EEEEEEEEEEEE7F0000008D1E54117E16";
-        System.out.println(Long.parseLong(s, 16));
+        int num = 10000;
+        System.out.println(num*10*8);
+    }
+
+    @Test
+    public void test09(){
+        IndexDesc indexDesc = new IndexDesc();
+        indexDesc.setName("name");
+        indexDesc.setColumnNames(new String[]{"a","b"});
+        indexDesc.setUnique(true);
+        System.out.println(indexDesc.toIndexDDL());
+    }
+
+    @Test
+    public void test10(){
+        List<Object> list = new ArrayList<>();
+        list.add(0, 1);
+        list.add(0, 2);
+        System.out.println(list);
     }
 
 }

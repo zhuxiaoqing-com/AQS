@@ -1,8 +1,14 @@
 package com.example.demo1.demo;
 
+
+
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
+
 /**
  * @author HSimon
  */
+@Table()
 public class entity {
 
     private String key;
