@@ -84,33 +84,55 @@ public class Test04 {
     }
 
     @Test
-    public void test07(){
-        System.out.println(Integer.toBinaryString(-1>>2));
-        System.out.println(1>>2);
-        System.out.println(-1<<2);
+    public void test07() {
+        System.out.println(Integer.toBinaryString(-1 >> 2));
+        System.out.println(1 >> 2);
+        System.out.println(-1 << 2);
     }
 
     @Test
-    public void test08(){
+    public void test08() {
         int num = 10000;
-        System.out.println(num*10*8);
+        System.out.println(num * 10 * 8);
     }
 
     @Test
-    public void test09(){
+    public void test09() {
         IndexDesc indexDesc = new IndexDesc();
         indexDesc.setName("name");
-        indexDesc.setColumnNames(new String[]{"a","b"});
+        indexDesc.setColumnNames(new String[]{"a", "b"});
         indexDesc.setUnique(true);
         System.out.println(indexDesc.toIndexDDL());
     }
 
     @Test
-    public void test10(){
+    public void test10() {
         List<Object> list = new ArrayList<>();
         list.add(0, 1);
         list.add(0, 2);
         System.out.println(list);
+    }
+
+    @Test
+    public void test11() {
+        int s = 50;
+        int radio = 10;
+        int radio1 = s / radio;
+        for (int i = s; i >= 0; i = i - radio1) {
+            System.out.println(i);
+        }
+
+    }
+
+    @Test
+    public void test12() {
+        int s = 55;
+        int ratio = 10;
+        int radio1 = s / ratio;
+      for(int i = 1; i < ratio; i++) {
+          System.out.println(s%i);
+      }
+
     }
 
 }
