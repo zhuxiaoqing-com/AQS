@@ -129,10 +129,9 @@ public class Test04 {
         int s = 55;
         int ratio = 10;
         int radio1 = s / ratio;
-      for(int i = 1; i < ratio; i++) {
-          System.out.println(s%i);
-      }
-
+        for (int i = 1; i < ratio; i++) {
+            System.out.println(s % i);
+        }
     }
 
 }
