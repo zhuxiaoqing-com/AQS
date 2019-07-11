@@ -11,5 +11,6 @@ public class Doc {
         son.setA(1);
         String o = JSON.toJSONString(son);
         System.out.println(o);
+        System.out.println(JSON.parseObject(o, Son.class).getAa());
     }
 }
