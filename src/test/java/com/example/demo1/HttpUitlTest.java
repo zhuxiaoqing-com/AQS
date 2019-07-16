@@ -137,7 +137,7 @@ public class HttpUitlTest {
     public void selectName() {
         String uri = "/role/selectName";
         Map<String, String> params = new LinkedHashMap<>();
-        params.put("roleName", "傲慢的巴里");
+        params.put("roleName", "庆小猪");
         post(params, uri);
     }
 
@@ -378,8 +378,8 @@ public class HttpUitlTest {
      * @param map
      */
     private String post(Map<String, String> map, String uri) {
-        String url = "http://192.168.5.128:11001" + uri;
-        //String url = "http://10.42.0.50:11000" + uri;
+        //String url = "http://192.168.5.128:11001" + uri;
+        String url = "http://10.42.0.50:11000" + uri;
         //String url = "http://10.42.0.35:11000" + uri;
         //String url = "http://10.42.0.50:8089" + uri;
         Collection<String> values = map.values();
