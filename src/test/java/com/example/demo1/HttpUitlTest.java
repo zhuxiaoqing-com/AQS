@@ -77,9 +77,14 @@ public class HttpUitlTest {
     public void sendGMNotice() {
         String uri = "/message/sendNotice";
         Map<String, String> params = new LinkedHashMap<>();
+        params.put("id", "1");
         params.put("type", "1");
-        params.put("time", "11111");
-        params.put("context", "xxxxxxxxsdasddadasdasdaxxx");
+        params.put("content", "xxxxx");
+        params.put("color", "#FE0000");
+        params.put("stime", "11111");
+        params.put("etime", "1560000000");
+        params.put("ltime", "1560000000");
+        params.put("time", "45");
         post(params, uri);
     }
 
@@ -92,10 +97,10 @@ public class HttpUitlTest {
         String uri = "/message/sendEmail";
         Map<String, String> params = new LinkedHashMap<>();
         params.put("type", "1");
-        params.put("title", "xxxx");
+        params.put("title", "体验游戏");
         //params.put("subject", "xxxxxxxxxxx");
-        params.put("content", "xxxxxxxxxxx");
-        params.put("items", "42001|1");
+        params.put("content", "222");
+        params.put("items", "42001|1&101|300");
         params.put("roleNames", "傲慢的巴里");
         params.put("closeDay", "3");
         post(params, uri);
