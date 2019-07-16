@@ -154,8 +154,8 @@ public class HttpUitlTest {
         String uri = "/role/setRoleLockAndChat";
         Map<String, String> params = new LinkedHashMap<>();
         params.put("type", "1");
-        params.put("roleName", "傲慢的巴里");
-        params.put("lockTime", "0");
+        params.put("roleName", "aaa");
+        params.put("lockTime", "111111");
         params.put("reason", "傲慢的巴里开外挂了");
         post(params, uri);
     }
