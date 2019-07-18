@@ -100,7 +100,7 @@ public class HttpUitlTest {
         //params.put("subject", "xxxxxxxxxxx");
         params.put("content", "222");
         params.put("items", "42001|1&101|300");
-        params.put("roleNames", "aaa");
+        params.put("roleNames", "祝小庆一号");
         params.put("closeDay", "3");
         post(params, uri);
     }
@@ -141,7 +141,7 @@ public class HttpUitlTest {
     public void selectName() {
         String uri = "/role/selectName";
         Map<String, String> params = new LinkedHashMap<>();
-        params.put("roleName", "庆小猪");
+        params.put("roleName", "祝小庆");
         post(params, uri);
     }
 
@@ -154,7 +154,7 @@ public class HttpUitlTest {
         Map<String, String> params = new LinkedHashMap<>();
         params.put("type", "1");
         params.put("roleName", "祝小庆");
-        params.put("lockTime", "111111111");
+        params.put("lockTime", "1111111");
         params.put("reason", "傲慢的巴里开外挂了");
         post(params, uri);
     }
@@ -168,7 +168,7 @@ public class HttpUitlTest {
         String uri = "/role/setRoleLockAndChat";
         Map<String, String> params = new LinkedHashMap<>();
         params.put("type", "1");
-        params.put("roleName", "傲慢的巴里");
+        params.put("roleName", "祝小庆");
         params.put("lockTime", "0");
         params.put("reason", "傲慢的巴里私底下交易给钱了");// 禁封理由
         post(params, uri);
