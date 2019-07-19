@@ -5,7 +5,6 @@ import com.example.demo1.demo.SignUtil;
 import org.junit.Test;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -75,16 +74,22 @@ public class HttpUitlTest {
      */
     @Test
     public void sendGMNotice() {
+        long milli = System.currentTimeMillis() + 1000 * 10;
+        String stime =  String.valueOf(milli / 1000);
+        String etime =  String.valueOf(milli / 1000 + 120);
         String uri = "/message/sendNotice";
         Map<String, String> params = new LinkedHashMap<>();
-        params.put("id", "1");
+        params.put("id", "2");
         params.put("type", "1");
-        params.put("content", "测试。。。。。。。。");
+        // <color=#76EE00>杨帅能上天</color>
+        params.put("content", "<color=#76EE00>王战要上天入地下海王战要上天入地下海王战要上天入地下海王战要上天入地下海</color>");
         params.put("color", "#FE0000");
-        params.put("stime", "11111");
-        params.put("etime", "1560000");
-        params.put("ltime", "1560000");
-        post(params, uri);
+        params.put("stime", stime);
+        params.put("etime", etime);
+        params.put("ltime", "1");
+        params.put("count", "2");
+        post1(params, uri);
+        //post(params, uri);
     }
 
 
@@ -97,11 +102,12 @@ public class HttpUitlTest {
         Map<String, String> params = new LinkedHashMap<>();
         params.put("type", "1");
         params.put("title", "体验游戏");
-        //params.put("subject", "xxxxxxxxxxx");
         params.put("content", "222");
-        params.put("items", "42001|1&101|300");
-        params.put("roleNames", "祝小庆一号");
+        params.put("items", "42001|1&104|300000");
+        params.put("roleNames", "祝小庆");
         params.put("closeDay", "3");
+        params.put("subject", "xxxxxxxxxxx");
+        params.put("emailName", "xxxxxxxxxxx");
         post(params, uri);
     }
 
@@ -113,12 +119,13 @@ public class HttpUitlTest {
         String uri = "/message/sendEmail";
         Map<String, String> params = new LinkedHashMap<>();
         params.put("type", "2");
-        params.put("title", "xxxx");
-        //params.put("subject", "xxxxxxxxxxx");
-        params.put("content", "xxxxxxxxxxx");
+        params.put("title", "测试邮件");
+        params.put("content", "测试邮件");
         params.put("items", "42001|1");
         //params.put("key", "内向的");
         params.put("closeDay", "3");
+        params.put("subject", "测试邮件");
+        params.put("emailName", "测试邮件");
         post(params, uri);
     }
 
@@ -131,6 +138,7 @@ public class HttpUitlTest {
         String uri = "/role/selectId";
         Map<String, String> params = new LinkedHashMap<>();
         params.put("roleId", "383579202062115");
+        params.put("text", content);
         post(params, uri);
     }
 
@@ -150,13 +158,12 @@ public class HttpUitlTest {
      */
     @Test
     public void setRoleLock() {
-        int time = 30*60*1000;
         String uri = "/role/setRoleLockAndChat";
         Map<String, String> params = new LinkedHashMap<>();
         params.put("type", "1");
-        params.put("roleName", "战神");
-        params.put("lockTime", time+"");
-        params.put("reason", "傲慢的巴里开外挂了");
+        params.put("roleName", "迷茫的伍沃德");
+        params.put("lockTime", "1111111");
+        params.put("reason", "开挂了");
         post(params, uri);
     }
 
@@ -255,7 +262,6 @@ public class HttpUitlTest {
     }
 
 
-
     /**
      * 获取所有公会
      */
@@ -319,9 +325,7 @@ public class HttpUitlTest {
     }
 
 
-
-
-    String content = "1995年中共执政当局开始寻求强化法轮功的组织构架及与政府的关系。" +
+    String content1 = "1995年中共执政当局开始寻求强化法轮功的组织构架及与政府的关系。" +
             "中国政府的国家体委、公共健康部和气功科研会，访问李洪志，要求联合成立法轮功协会，但李洪志表示拒绝。" +
             "同年，气功科研会通过一项新规定，命令所有气功分会必须建立中国共产党党支部，但李洪志再次表示拒绝。" +
             "李洪志与中国气功科研会的关系在1996年持续恶化。" +
@@ -333,6 +337,7 @@ public class HttpUitlTest {
             "90年代中期，中国政府主管的媒体开始发表文章批评气功。" +
             "法轮功起初并没有受批评，但在1996年3月退出中国气功协会后，失去了政府体制的保护。";
 
+    String content = "等会啊服你习习近平";
     /**
      * 过滤器
      */
@@ -386,8 +391,10 @@ public class HttpUitlTest {
      * @param map
      */
     private String post(Map<String, String> map, String uri) {
-        String url = "http://192.168.5.128:11001" + uri;
-        //String url = "http://10.42.0.50:11000" + uri;
+        //String url = "http://192.168.5.128:11001" + uri;
+        // 俞樟鹏
+        //String url = "http://10.40.2.68:11000" + uri;
+        String url = "http://10.42.0.50:11000" + uri;
         //String url = "http://10.42.0.35:11000" + uri;
         //String url = "http://10.42.0.50:8089" + uri;
         Collection<String> values = map.values();
@@ -396,6 +403,28 @@ public class HttpUitlTest {
         System.out.println("参数: " + map);
         return HttpUtil.doPost(url, map);
     }
+
+    /**
+     * 测试方法
+     *
+     * @param map
+     */
+    private String post1(Map<String, String> map, String uri) {
+        String url = "http://192.168.5.128:11001" + uri;
+        //String url = "http://10.40.2.68:11000" + uri;
+        //String url = "http://10.42.0.50:11000" + uri;
+        //String url = "http://10.42.0.35:11000" + uri;
+        //String url = "http://10.42.0.50:8089" + uri;
+        Collection<String> values = map.values();
+        //todo 要删除
+        String count = map.remove("count");
+        String sign = SignUtil.getMD5ForGM(values.toArray(new String[values.size()]));
+        map.put("count", count);
+        map.put("sign", sign);
+        System.out.println("参数: " + map);
+        return HttpUtil.doPost(url, map);
+    }
+
 
     /**
      * 测试方法
