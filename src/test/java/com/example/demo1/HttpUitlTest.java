@@ -57,17 +57,31 @@ public class HttpUitlTest {
     }
 
     /**
-     * 充值接口
+     * 充值钻石接口
      */
     @Test
-    public void recharge() {
-        String uri = "/item/recharge";
+    public void rechargeIngot() {
+        String uri = "/recharge/ingot";
         Map<String, String> params = new LinkedHashMap<>();
-        params.put("roleName", "傲慢的巴里");
+        params.put("roleName", "aaaa");
         params.put("count", "222");
         params.put("type", "true");
         post(params, uri);
     }
+
+    /**
+     * 激活特权接口
+     */
+    @Test
+    public void activatePrivilege() {
+        String uri = "/recharge/privilege";
+        Map<String, String> params = new LinkedHashMap<>();
+        params.put("roleName", "aaaa");
+        params.put("privilegeId", "7");
+        post(params, uri);
+    }
+
+
 
     /**
      * 公告接口
@@ -88,7 +102,7 @@ public class HttpUitlTest {
         params.put("etime", etime);
         params.put("ltime", "1");
         params.put("count", "2");
-        post1(params, uri);
+        post(params, uri);
         //post(params, uri);
     }
 
@@ -138,7 +152,6 @@ public class HttpUitlTest {
         String uri = "/role/selectId";
         Map<String, String> params = new LinkedHashMap<>();
         params.put("roleId", "383579202062115");
-        params.put("text", content);
         post(params, uri);
     }
 
@@ -399,27 +412,6 @@ public class HttpUitlTest {
         //String url = "http://10.42.0.50:8089" + uri;
         Collection<String> values = map.values();
         String sign = SignUtil.getMD5ForGM(values.toArray(new String[values.size()]));
-        map.put("sign", sign);
-        System.out.println("参数: " + map);
-        return HttpUtil.doPost(url, map);
-    }
-
-    /**
-     * 测试方法
-     *
-     * @param map
-     */
-    private String post1(Map<String, String> map, String uri) {
-        String url = "http://192.168.5.128:11001" + uri;
-        //String url = "http://10.40.2.68:11000" + uri;
-        //String url = "http://10.42.0.50:11000" + uri;
-        //String url = "http://10.42.0.35:11000" + uri;
-        //String url = "http://10.42.0.50:8089" + uri;
-        Collection<String> values = map.values();
-        //todo 要删除
-        String count = map.remove("count");
-        String sign = SignUtil.getMD5ForGM(values.toArray(new String[values.size()]));
-        map.put("count", count);
         map.put("sign", sign);
         System.out.println("参数: " + map);
         return HttpUtil.doPost(url, map);
