@@ -61,17 +61,16 @@ public class HttpUitlTest {
      */
     @Test
     public void rechargeIngot() {
-        String uri = "/recharge/ingot";
+        String uri = "/recharge";
         Map<String, String> params = new LinkedHashMap<>();
-        params.put("roleName", "aaaa");
-        params.put("count", "222");
-        params.put("type", "true");
+        params.put("roleName", "aa");
+        params.put("rechargeId", "1");
         post(params, uri);
     }
 
-    /**
+  /*  *//**
      * 激活特权接口
-     */
+     *//*
     @Test
     public void activatePrivilege() {
         String uri = "/recharge/privilege";
@@ -79,7 +78,7 @@ public class HttpUitlTest {
         params.put("roleName", "aaaa");
         params.put("privilegeId", "7");
         post(params, uri);
-    }
+    }*/
 
 
 
