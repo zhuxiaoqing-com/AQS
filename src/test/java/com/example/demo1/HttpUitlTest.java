@@ -406,9 +406,10 @@ public class HttpUitlTest {
         //String url = "http://192.168.5.128:11001" + uri;
         // 俞樟鹏
         //String url = "http://10.40.2.68:11000" + uri;
-        String url = "http://10.42.0.50:11000" + uri;
+        //String url = "http://10.42.0.50:11000" + uri;
         //String url = "http://10.42.0.35:11000" + uri;
         //String url = "http://10.42.0.50:8089" + uri;
+        String url = "http://106.52.215.79:8015" + uri;// XY 线上
         Collection<String> values = map.values();
         String sign = SignUtil.getMD5ForGM(values.toArray(new String[values.size()]));
         map.put("sign", sign);

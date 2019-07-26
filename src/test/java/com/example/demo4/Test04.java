@@ -130,4 +130,12 @@ public class Test04 {
         System.out.println(integers.size());
     }
 
+
+    @Test
+    public void test13() {
+        Integer sum  = Integer.MAX_VALUE + 23;
+       int a = sum - 23;
+        System.out.println(sum.equals(sum - 23));
+    }
+
 }
