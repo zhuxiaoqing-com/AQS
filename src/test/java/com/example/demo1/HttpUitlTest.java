@@ -95,7 +95,7 @@ public class HttpUitlTest {
         params.put("id", "2");
         params.put("type", "1");
         // <color=#76EE00>杨帅能上天</color>
-        params.put("content", "<color=#76EE00>王战要上天入地下海王战要上天入地下海王战要上天入地下海王战要上天入地下海</color>");
+        params.put("content", "<color=#76EE00>王·战要上天入地下海王战要上天入地下海王战要上天入地下海王战要上天入地下海</color>");
         params.put("color", "#FE0000");
         params.put("stime", stime);
         params.put("etime", etime);
