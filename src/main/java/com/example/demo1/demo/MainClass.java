@@ -6,7 +6,7 @@ import java.util.Map;
 /**
  * @author HSimon
  */
-public class mainClass {
+public class MainClass {
     public static void main(String[] args) throws Exception {
 
         String url = "http://10.42.0.35:11000/message/GMEmail";
