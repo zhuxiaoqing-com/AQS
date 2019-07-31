@@ -133,7 +133,21 @@ public class Test04 {
 
     @Test
     public void test13() {
-        System.out.println(1&-16);
+       float s = 1.0f;
+        s = s/0f;
+        s = s-Integer.MAX_VALUE;
+       if(s == 0f) {
+           System.out.println("==");
+       }
+
+       if(s  < 0f){
+           System.out.println("<");
+        }
+
+        if(s  > 0f){
+            System.out.println(">");
+        }
+
     }
 
 }
