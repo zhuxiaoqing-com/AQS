@@ -150,11 +150,12 @@ public class HttpUitlTest {
      */
     @Test
     public void setRoleLock() {
+        int time = 30*60*1000;
         String uri = "/role/setRoleLockAndChat";
         Map<String, String> params = new LinkedHashMap<>();
         params.put("type", "1");
-        params.put("roleName", "祝小庆");
-        params.put("lockTime", "1111111");
+        params.put("roleName", "战神");
+        params.put("lockTime", time+"");
         params.put("reason", "傲慢的巴里开外挂了");
         post(params, uri);
     }
@@ -168,7 +169,7 @@ public class HttpUitlTest {
         String uri = "/role/setRoleLockAndChat";
         Map<String, String> params = new LinkedHashMap<>();
         params.put("type", "1");
-        params.put("roleName", "祝小庆");
+        params.put("roleName", "封号");
         params.put("lockTime", "0");
         params.put("reason", "傲慢的巴里私底下交易给钱了");// 禁封理由
         post(params, uri);
@@ -183,8 +184,8 @@ public class HttpUitlTest {
         String uri = "/role/setRoleLockAndChat";
         Map<String, String> params = new LinkedHashMap<>();
         params.put("type", "2");
-        params.put("roleName", "祝小庆");
-        params.put("lockTime", "200000");
+        params.put("roleName", "aa");
+        params.put("lockTime", "20000");
         params.put("reason", "xxxxxx");
         params.put("channelType", "0"); // 设置默认 0全频道 1综合 2 世界 3 工会 5 场景  默认全频道禁言
         params.put("banType", "0"); //0禁言 1//自言自语，不发送信息   默认禁言
@@ -199,9 +200,12 @@ public class HttpUitlTest {
     public void chatUnBan() {
         String uri = "/role/setRoleLockAndChat";
         Map<String, String> params = new LinkedHashMap<>();
-        params.put("roleName", "内向的罗夫斯");
-        params.put("channelType", "1");
-        params.put("banType", "1");
+        params.put("type", "2");
+        params.put("roleName", "aa");
+        params.put("lockTime", "0");
+        params.put("reason", "xxxxxx");
+        params.put("channelType", "0"); // 设置默认 0全频道 1综合 2 世界 3 工会 5 场景  默认全频道禁言
+        params.put("banType", "0"); //0禁言 1//自言自语，不发送信息   默认禁言
         post(params, uri);
     }
 
@@ -382,8 +386,8 @@ public class HttpUitlTest {
      * @param map
      */
     private String post(Map<String, String> map, String uri) {
-        //String url = "http://192.168.5.128:11001" + uri;
-        String url = "http://10.42.0.50:11000" + uri;
+        String url = "http://192.168.5.128:11001" + uri;
+        //String url = "http://10.42.0.50:11000" + uri;
         //String url = "http://10.42.0.35:11000" + uri;
         //String url = "http://10.42.0.50:8089" + uri;
         Collection<String> values = map.values();
