@@ -336,6 +336,27 @@ public class HttpUitlTest {
         System.out.println(result);
     }
 
+    /**
+     * 热更资源
+     */
+    @Test
+    public void hotSwapRes() {
+        String uri = "/system/hotswap_res";
+        Map<String, String> params = new LinkedHashMap<>();
+        String result = post(params, uri);
+    }
+
+
+    /**
+     * 热更脚本
+     */
+    @Test
+    public void hotSwapScript() {
+        String uri = "/system/hotswap_script";
+        Map<String, String> params = new LinkedHashMap<>();
+        String result = post(params, uri);
+    }
+
 
     String content1 = "1995年中共执政当局开始寻求强化法轮功的组织构架及与政府的关系。" +
             "中国政府的国家体委、公共健康部和气功科研会，访问李洪志，要求联合成立法轮功协会，但李洪志表示拒绝。" +
@@ -375,14 +396,6 @@ public class HttpUitlTest {
     @Test
     public void textKeyWordRelease() {
 
-        java.util.logging.Logger.getLogger("org.apache.http.wire").setLevel(java.util.logging.Level.FINEST);
-        java.util.logging.Logger.getLogger("org.apache.http.headers").setLevel(java.util.logging.Level.FINEST);
-        System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.SimpleLog");
-        System.setProperty("org.apache.commons.logging.simplelog.showdatetime", "true");
-        System.setProperty("org.apache.commons.logging.simplelog.log.httpclient.wire", "ERROR");
-        System.setProperty("org.apache.commons.logging.simplelog.log.org.apache.http", "ERROR");
-        System.setProperty("org.apache.commons.logging.simplelog.log.org.apache.http.headers", "ERROR");
-
         String uri = "/keyWord/filter";
         uri = uri + "?filter=" + content;
 
@@ -406,10 +419,10 @@ public class HttpUitlTest {
         //String url = "http://192.168.5.128:11001" + uri;
         // 俞樟鹏
         //String url = "http://10.40.2.68:11000" + uri;
-        //String url = "http://10.42.0.50:11000" + uri;
+        String url = "http://10.42.0.50:11000" + uri;
         //String url = "http://10.42.0.35:11000" + uri;
         //String url = "http://10.42.0.50:8089" + uri;
-        String url = "http://106.52.215.79:8015" + uri;// XY 线上
+        //String url = "http://106.52.215.79:8015" + uri;// XY 线上
         Collection<String> values = map.values();
         String sign = SignUtil.getMD5ForGM(values.toArray(new String[values.size()]));
         map.put("sign", sign);
