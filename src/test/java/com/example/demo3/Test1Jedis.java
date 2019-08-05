@@ -10,8 +10,8 @@ import java.util.*;
 
 public class Test1Jedis {
 
-    //Jedis jedis = new Jedis("127.0.0.1", 6379);
-    Jedis jedis = new Jedis("192.168.5.83", 6379);
+    Jedis jedis = new Jedis("127.0.0.1", 6379);
+    //Jedis jedis = new Jedis("192.168.5.83", 6379);
 
     @Test
     public void fun1() {
@@ -174,11 +174,10 @@ public class Test1Jedis {
     @Test
     public void fun13() {
         jedis.del("a");
-        jedis.zadd("a",  23.232320, "11");
+        jedis.zadd("a",  1.001, "11");
         jedis.zadd("a",  23.232321, "22");
         jedis.zadd("a",  23.232322, "23");
         jedis.zadd("a",  23.232324, "24");
-
 
         Set<Tuple> xx = jedis.zrangeWithScores("a", 0, 3);
         Iterator<Tuple> iterator = xx.iterator();

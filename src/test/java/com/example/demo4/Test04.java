@@ -2,6 +2,7 @@ package com.example.demo4;
 
 import com.example.custom_annotation.IndexDesc;
 import org.junit.Test;
+import sun.misc.FloatingDecimal;
 
 import java.util.*;
 
@@ -147,7 +148,54 @@ public class Test04 {
         if(s  > 0f){
             System.out.println(">");
         }
-
     }
 
+    @Test
+    public void test14() {
+        System.out.println(0x3FF_FFFFF_FFFFFL);
+        Long l = -1L ^ (-1L << 50);
+        System.out.println(-1L ^ (-1L << 50));
+        System.out.println(Long.toHexString(l));
+        System.out.println(0x2FF_FFFFF_FFFFFL);
+        System.out.println(0x3FF_FFFFF_FFFFFL);
+        System.out.println(Long.toBinaryString(l).length());
+        System.out.println(Long.toBinaryString(0x2FF_FFFFF_FFFFFL).length());
+        System.out.println(Long.toBinaryString(0x3FF_FFFFF_FFFFFL).length());
+        System.out.println(Long.toBinaryString(0x2FF_FFFFF_FFFFFL));
+        System.out.println(Long.toBinaryString(0x3FF_FFFFF_FFFFFL));
+        //long s = 11111_11111_11111_11111_11111_11111_11111_11111_11111_11111;
+    }
+
+    @Test
+    public void test15() {
+        double s = 1.001;
+        double ss = s*3;
+        System.out.println(s*3);
+        System.out.println(ss);
+        double v = FloatingDecimal.parseDouble(String.valueOf(s));
+        System.out.println(ss);
+        System.out.println(String.valueOf(ss));
+        System.out.println(s);
+        String.valueOf(s).split("\\.");
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
