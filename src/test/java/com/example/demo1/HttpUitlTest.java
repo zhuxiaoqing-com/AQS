@@ -150,7 +150,8 @@ public class HttpUitlTest {
     public void selectId() {
         String uri = "/role/selectId";
         Map<String, String> params = new LinkedHashMap<>();
-        params.put("roleId", "383579202062115");
+        // 72058144007497728 本机
+        params.put("roleId", "72058144007497728");
         post(params, uri);
     }
 
@@ -161,7 +162,7 @@ public class HttpUitlTest {
     public void selectName() {
         String uri = "/role/selectName";
         Map<String, String> params = new LinkedHashMap<>();
-        params.put("roleName", "祝小庆");
+        params.put("roleName", "西迪丝丶卡斯");
         post(params, uri);
     }
 
@@ -416,12 +417,11 @@ public class HttpUitlTest {
      * @param map
      */
     private String post(Map<String, String> map, String uri) {
-        //String url = "http://192.168.5.128:11001" + uri;
-        // 俞樟鹏
-        //String url = "http://10.40.2.68:11000" + uri;
-        String url = "http://10.42.0.50:11000" + uri;
+        //String url = "http://192.168.5.128:11001" + uri; // 内网一
+        //String url = "http://10.40.2.68:11000" + uri; // 俞樟鹏
+        String url = "http://10.42.0.50:11000" + uri; // 本机 游戏服务器
         //String url = "http://10.42.0.35:11000" + uri;
-        //String url = "http://10.42.0.50:8089" + uri;
+        //String url = "http://10.42.0.50:8089" + uri; // 本机 gmweb
         //String url = "http://106.52.215.79:8015" + uri;// XY 线上
         Collection<String> values = map.values();
         String sign = SignUtil.getMD5ForGM(values.toArray(new String[values.size()]));
