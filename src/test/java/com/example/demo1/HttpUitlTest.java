@@ -427,6 +427,7 @@ public class HttpUitlTest {
         String sign = SignUtil.getMD5ForGM(values.toArray(new String[values.size()]));
         map.put("sign", sign);
         System.out.println("参数: " + map);
+        System.out.println(url);
         return HttpUtil.doPost(url, map);
     }
 
