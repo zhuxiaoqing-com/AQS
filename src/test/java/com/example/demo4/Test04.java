@@ -178,6 +178,11 @@ public class Test04 {
         System.out.println(s);
         String.valueOf(s).split("\\.");
     }
+
+    @Test
+    public void test16() {
+        Map<Object, Object> hashMap = new HashMap<>();
+    }
 }
 
 
