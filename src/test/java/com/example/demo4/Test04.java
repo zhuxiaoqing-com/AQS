@@ -182,6 +182,9 @@ public class Test04 {
     @Test
     public void test16() {
         Map<Object, Object> hashMap = new HashMap<>();
+        LinkedList<Object> objects = new LinkedList<>();
+        objects.set(3,new Object());
+        
     }
 }
 
