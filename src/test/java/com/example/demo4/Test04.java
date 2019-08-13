@@ -4,6 +4,8 @@ import com.example.custom_annotation.IndexDesc;
 import org.junit.Test;
 import sun.misc.FloatingDecimal;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 public class Test04 {
@@ -181,10 +183,17 @@ public class Test04 {
 
     @Test
     public void test16() {
-        Map<Object, Object> hashMap = new HashMap<>();
-        LinkedList<Object> objects = new LinkedList<>();
-        objects.set(3,new Object());
-
+        LocalDateTime now = LocalDateTime.now();
+        int nano = now.getNano();
+        System.out.println(now);
+        System.out.println(nano);
+    }
+    @Test
+    public void test17() {
+        System.out.println(1/70.0);
+        System.out.println(1/120.0);
+        System.out.println(1/360.0);
+        System.out.println(1/320.0);
     }
 }
 
