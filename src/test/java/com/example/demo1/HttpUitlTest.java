@@ -114,13 +114,31 @@ public class HttpUitlTest {
         String uri = "/message/sendEmail";
         Map<String, String> params = new LinkedHashMap<>();
         params.put("type", "1");
-        params.put("title", "体验游戏");
-        params.put("content", "222");
+        params.put("title", "title");
+        params.put("content", "content");
         params.put("items", "42001|1&104|300000");
-        params.put("roleNames", "祝小庆");
+        params.put("roleNames", "abc");
         params.put("closeDay", "3");
-        params.put("subject", "xxxxxxxxxxx");
-        params.put("emailName", "xxxxxxxxxxx");
+        params.put("subject", "subject");
+        params.put("emailName", "emailName");
+        post(params, uri);
+    }
+
+    /**
+     * 邮件接口 个人 2
+     */
+    @Test
+    public void sendSomeRoleGMEmail3() {
+        String uri = "/message/sendEmail";
+        Map<String, String> params = new LinkedHashMap<>();
+        params.put("type", "1");
+        params.put("title", "2");
+        params.put("content", "3");
+        params.put("items", "42001|1&104|300000");
+        params.put("roleNames", "abc");
+        params.put("closeDay", "3");
+        params.put("subject", "4");
+        params.put("emailName", "5");
         post(params, uri);
     }
 
