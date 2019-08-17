@@ -195,6 +195,24 @@ public class Test04 {
         System.out.println(1/360.0);
         System.out.println(1/320.0);
     }
+
+    @Test
+    public void test18() {
+        float i = 0.9f;
+        float b = 0.3f;
+        System.out.println(i == (b*b));
+
+    }
+
+    @Test
+    public void test19() {
+        String  a = new String("ab");
+        String  b = "ab";
+        b.intern();
+        System.out.println(a == b);
+        new StringBuilder().toString();
+
+    }
 }
 
 
