@@ -116,8 +116,8 @@ public class HttpUitlTest {
         params.put("type", "1");
         params.put("title", "title");
         params.put("content", "content");
-        params.put("items", "42001|1&104|300000");
-        params.put("roleNames", "abc");
+        params.put("items", "13430|100&103|300000");
+        params.put("roleNames", "细心的威尔");
         params.put("closeDay", "3");
         params.put("subject", "subject");
         params.put("emailName", "emailName");
@@ -169,7 +169,9 @@ public class HttpUitlTest {
         String uri = "/role/selectId";
         Map<String, String> params = new LinkedHashMap<>();
         // 72058144007497728 本机
-        params.put("roleId", "72058144007497728");
+        params.put("roleId", "1152930300834096913");
+        // todo 测试
+        params.put("level", "200");
         post(params, uri);
     }
 
