@@ -206,12 +206,8 @@ public class Test04 {
 
     @Test
     public void test19() {
-        String  a = new String("ab");
-        String  b = "ab";
-        b.intern();
-        System.out.println(a == b);
-        new StringBuilder().toString();
-
+        int s ="546110133".split("1").length ^ 1;
+        System.out.println(s);
     }
 }
 
