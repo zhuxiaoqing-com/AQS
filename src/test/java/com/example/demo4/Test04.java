@@ -209,6 +209,13 @@ public class Test04 {
         int s ="546110133".split("1").length ^ 1;
         System.out.println(s);
     }
+
+    @Test
+    public void test20() {
+        long s = 0xffff_ffff_ffff_fff8L;
+        System.out.println(s);
+        System.out.println(s-8);
+    }
 }
 
 
