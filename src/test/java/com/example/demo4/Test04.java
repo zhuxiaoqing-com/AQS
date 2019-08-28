@@ -4,7 +4,6 @@ import com.example.custom_annotation.IndexDesc;
 import org.junit.Test;
 import sun.misc.FloatingDecimal;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -136,18 +135,18 @@ public class Test04 {
 
     @Test
     public void test13() {
-       float s = 1.0f;
-        s = s/0f;
-        s = s-Integer.MAX_VALUE;
-       if(s == 0f) {
-           System.out.println("==");
-       }
-
-       if(s  < 0f){
-           System.out.println("<");
+        float s = 1.0f;
+        s = s / 0f;
+        s = s - Integer.MAX_VALUE;
+        if (s == 0f) {
+            System.out.println("==");
         }
 
-        if(s  > 0f){
+        if (s < 0f) {
+            System.out.println("<");
+        }
+
+        if (s > 0f) {
             System.out.println(">");
         }
     }
@@ -171,8 +170,8 @@ public class Test04 {
     @Test
     public void test15() {
         double s = 1.001;
-        double ss = s*3;
-        System.out.println(s*3);
+        double ss = s * 3;
+        System.out.println(s * 3);
         System.out.println(ss);
         double v = FloatingDecimal.parseDouble(String.valueOf(s));
         System.out.println(ss);
@@ -188,25 +187,26 @@ public class Test04 {
         System.out.println(now);
         System.out.println(nano);
     }
+
     @Test
     public void test17() {
-        System.out.println(1/70.0);
-        System.out.println(1/120.0);
-        System.out.println(1/360.0);
-        System.out.println(1/320.0);
+        System.out.println(1 / 70.0);
+        System.out.println(1 / 120.0);
+        System.out.println(1 / 360.0);
+        System.out.println(1 / 320.0);
     }
 
     @Test
     public void test18() {
         float i = 0.9f;
         float b = 0.3f;
-        System.out.println(i == (b*b));
+        System.out.println(i == (b * b));
 
     }
 
     @Test
     public void test19() {
-        int s ="546110133".split("1").length ^ 1;
+        int s = "546110133".split("1").length ^ 1;
         System.out.println(s);
     }
 
@@ -214,9 +214,36 @@ public class Test04 {
     public void test20() {
         long s = 0xffff_ffff_ffff_fff8L;
         System.out.println(s);
-        System.out.println(s-8);
+        System.out.println(s - 8);
+    }
+
+    @Test
+    public void test21() {
+        double s = 1.0 - 0.9;
+        double ss = 1.0 - 0.1;
+        System.out.println(s);
+        System.out.println(ss);
+
+        double a = 0.9;
+        double aa = 0.1;
+        System.out.println(0.0001);
+        System.out.println(0.0009);
+        System.out.println(a == 0.9);
+        System.out.println(aa == 0.1);
+
     }
 }
+
+/**
+ * double 52精度
+ * 0.1*2=0.2  0
+ * 0.2*2=0.4  0
+ * 0.4*2=0.8  0
+ * 0.8*2=1.6  1
+ * 0.6*2=1.2  1
+ */
+
+
 
 
 
