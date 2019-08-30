@@ -232,6 +232,16 @@ public class Test04 {
         System.out.println(aa == 0.1);
 
     }
+
+    @Test
+    public void test22() {
+        System.out.println(12*60*60*1000);
+        System.out.println(13*60*60*1000);
+        System.out.println(18*60*60*1000 + 15*60*1000);
+        System.out.println(19*60*60*1000);
+        System.out.println();
+
+    }
 }
 
 /**
