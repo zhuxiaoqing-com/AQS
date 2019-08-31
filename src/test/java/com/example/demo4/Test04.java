@@ -4,7 +4,9 @@ import com.example.custom_annotation.IndexDesc;
 import org.junit.Test;
 import sun.misc.FloatingDecimal;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.*;
 
 public class Test04 {
@@ -235,13 +237,32 @@ public class Test04 {
 
     @Test
     public void test22() {
-        System.out.println(12*60*60*1000);
-        System.out.println(13*60*60*1000);
-        System.out.println(18*60*60*1000 + 15*60*1000);
-        System.out.println(19*60*60*1000);
-        System.out.println();
-
+        LocalTime now = LocalTime.now();
+        LocalTime minute = LocalTime.of(10,40);
+        LocalTime second = LocalTime.of(10,40,1);
+        System.out.println(now);
+        System.out.println(minute.isBefore(minute));
+        System.out.println(minute.isAfter(minute));
+        System.out.println(60*60*1000);
     }
+
+    @Test
+    public void test23() {
+        String timeStr = "12:11:11";
+        LocalTime parse = LocalTime.parse(timeStr);
+        System.out.println(parse);
+
+        String dateStr = "2018-01-02";
+        LocalDate parse1 = LocalDate.parse(dateStr);
+        System.out.println(parse1);
+
+
+        String dateTimeStr = "2018-01-02T12:11:11";
+        LocalDateTime parse2 = LocalDateTime.parse(dateTimeStr);
+        System.out.println(parse2);
+    }
+
+
 }
 
 /**
