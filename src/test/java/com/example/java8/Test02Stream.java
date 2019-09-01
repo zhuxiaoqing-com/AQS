@@ -134,6 +134,8 @@ public class Test02Stream {
         List<List<TestData>> partition = Lists.partition(list, 4);
         System.out.println(partition);
 
+        Map<Object, Object> map = new HashMap<>();
+        //map.putIfAbsent()
     }
 
     class TestData {
