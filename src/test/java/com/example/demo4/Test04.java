@@ -263,16 +263,16 @@ public class Test04 {
     }
 
 
+    @Test
+    public void test24() {
+        LocalTime now = LocalTime.now();
+        System.out.println(now.plusMinutes(111));
+        System.out.println(now);
+    }
+
 }
 
-/**
- * double 52精度
- * 0.1*2=0.2  0
- * 0.2*2=0.4  0
- * 0.4*2=0.8  0
- * 0.8*2=1.6  1
- * 0.6*2=1.2  1
- */
+
 
 
 
