@@ -57,14 +57,14 @@ public class HttpUitlTest {
     }
 
     /**
-     * 充值钻石接口
+     * 充值接口
      */
     @Test
     public void rechargeIngot() {
         String uri = "/recharge";
         Map<String, String> params = new LinkedHashMap<>();
-        params.put("roleName", "aa");
-        params.put("rechargeId", "1");
+        params.put("roleName", "凯尔西丶威尔斯");
+        params.put("rechargeId", "81");
         post(params, uri);
     }
 
@@ -169,9 +169,7 @@ public class HttpUitlTest {
         String uri = "/role/selectId";
         Map<String, String> params = new LinkedHashMap<>();
         // 72058144007497728 本机
-        params.put("roleId", "1152930300834096913");
-        // todo 测试
-        params.put("level", "200");
+        params.put("roleId", "1152930300834447939");
         post(params, uri);
     }
 
