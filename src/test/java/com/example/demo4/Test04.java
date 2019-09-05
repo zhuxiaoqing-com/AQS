@@ -238,12 +238,12 @@ public class Test04 {
     @Test
     public void test22() {
         LocalTime now = LocalTime.now();
-        LocalTime minute = LocalTime.of(10,40);
-        LocalTime second = LocalTime.of(10,40,1);
+        LocalTime minute = LocalTime.of(10, 40);
+        LocalTime second = LocalTime.of(10, 40, 1);
         System.out.println(now);
         System.out.println(minute.isBefore(minute));
         System.out.println(minute.isAfter(minute));
-        System.out.println(60*60*1000);
+        System.out.println(60 * 60 * 1000);
     }
 
     @Test
@@ -260,6 +260,8 @@ public class Test04 {
         String dateTimeStr = "2018-01-02T12:11:11";
         LocalDateTime parse2 = LocalDateTime.parse(dateTimeStr);
         System.out.println(parse2);
+
+        System.out.println(7080 - 1880-1880);
     }
 
 
@@ -268,6 +270,34 @@ public class Test04 {
         LocalTime now = LocalTime.now();
         System.out.println(now.plusMinutes(111));
         System.out.println(now);
+    }
+// 1880 -1080 800 12080 - 3700  4080 - 1880-1880
+    @Test
+    public void test25() {
+        ArrayList<Integer> list = new ArrayList<>();
+        list.add(60);
+        list.add(120);
+        list.add(300);
+        list.add(600);
+        list.add(1000);
+        list.add(2000);
+        list.add(3000); //2390 + 610 = 3000
+        list.add(5000);
+        list.add(7000);
+        list.add(10000);
+
+        for (int index = 0; index < list.size(); index++) {
+            int a = index + 1;
+            System.out.println(a + "....." + fun1(list, index));
+        }
+    }
+
+    private int fun1(ArrayList<Integer> list, int index) {
+        int sum = 0;
+        for (int x = 0; x <= index; x++) {
+            sum += list.get(x);
+        }
+        return sum;
     }
 
 }
