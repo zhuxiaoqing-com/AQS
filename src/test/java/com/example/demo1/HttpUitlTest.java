@@ -180,7 +180,7 @@ public class HttpUitlTest {
     public void selectName() {
         String uri = "/role/selectName";
         Map<String, String> params = new LinkedHashMap<>();
-        params.put("roleName", "西迪丝丶卡斯");
+        params.put("roleName", "aaa");
         post(params, uri);
     }
 
