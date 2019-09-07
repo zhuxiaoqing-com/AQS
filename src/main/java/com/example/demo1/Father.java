@@ -3,6 +3,7 @@ package com.example.demo1;
 public class Father {
     private int a;
     private int b;
+    private String c;
 
     public int getB() {
         return b;
@@ -18,5 +19,13 @@ public class Father {
 
     public void setA(int a) {
         this.a = a;
+    }
+
+    public String getC() {
+        return c;
+    }
+
+    public void setC(String c) {
+        this.c = c;
     }
 }

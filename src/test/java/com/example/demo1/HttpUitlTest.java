@@ -64,7 +64,7 @@ public class HttpUitlTest {
         String uri = "/recharge";
         Map<String, String> params = new LinkedHashMap<>();
         params.put("roleName", "塞缪尔丶美伊");
-        params.put("rechargeId", "6");
+        params.put("rechargeId", "81");
         post(params, uri);
     }
 

@@ -1,6 +1,13 @@
 package com.example.demo4;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.example.custom_annotation.IndexDesc;
+import com.google.common.base.Splitter;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import org.junit.Test;
 import sun.misc.FloatingDecimal;
 
@@ -261,7 +268,7 @@ public class Test04 {
         LocalDateTime parse2 = LocalDateTime.parse(dateTimeStr);
         System.out.println(parse2);
 
-        System.out.println(7080 - 1880-1880);
+        System.out.println(7080 - 1880 - 1880);
     }
 
 
@@ -271,7 +278,8 @@ public class Test04 {
         System.out.println(now.plusMinutes(111));
         System.out.println(now);
     }
-// 1880 -1080 800 12080 - 3700  4080 - 1880-1880
+
+    // 1880 -1080 800 12080 - 3700  4080 - 1880-1880
     @Test
     public void test25() {
         ArrayList<Integer> list = new ArrayList<>();
@@ -300,6 +308,33 @@ public class Test04 {
         return sum;
     }
 
+    @Test
+    public void test26() {
+        String ss = "{\"a\",\"b\\x";
+        System.out.println(ss);
+        Object o = JSON.parse(ss);
+        System.out.println(o);
+    }
+
+    @Test
+    public void test27() {
+        Iterable<String> split = Splitter.on(" ").trimResults().split("null nd ds ds   dsdf");
+        System.out.println(split);
+    }
+
+    @Test
+    public void test28() {
+        Map<Integer, Integer> set = new HashMap<>();
+        set.put(1, 1);
+        set.put(2, 2);
+        set.put(3, 3);
+        set.put(4, 4);
+        String o = JSONObject.toJSONString(set);
+        JSONObject object = JSONObject.parseObject(o);
+        String pretty = JSON.toJSONString(object, SerializerFeature.PrettyFormat, SerializerFeature.WriteMapNullValue,
+                SerializerFeature.WriteDateUseDateFormat);
+        System.out.println(pretty);
+    }
 }
 
 
