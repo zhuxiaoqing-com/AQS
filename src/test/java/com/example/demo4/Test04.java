@@ -5,9 +5,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.example.custom_annotation.IndexDesc;
 import com.google.common.base.Splitter;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
 import org.junit.Test;
 import sun.misc.FloatingDecimal;
 
@@ -334,6 +331,14 @@ public class Test04 {
         String pretty = JSON.toJSONString(object, SerializerFeature.PrettyFormat, SerializerFeature.WriteMapNullValue,
                 SerializerFeature.WriteDateUseDateFormat);
         System.out.println(pretty);
+    }
+
+    @Test
+    public void test29() {
+        long multi = 10000;
+        long  attr = 2324;
+        System.out.println(attr*2000/multi + attr);
+        System.out.println(attr*12000/multi);
     }
 }
 
