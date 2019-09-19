@@ -129,13 +129,13 @@ public class HttpUitlTest {
      */
     @Test
     public void sendSomeRoleGMEmail3() {
-        String uri = "/message/sendEmail";
+        String uri = "/message/sendRoleEmail";
         Map<String, String> params = new LinkedHashMap<>();
-        params.put("type", "1");
+        //params.put("type", "1");
         params.put("title", "2");
         params.put("content", "3");
         params.put("items", "42001|1&104|300000");
-        params.put("roleNames", "abc");
+        params.put("roleNames", "老实的霍顿");
         params.put("closeDay", "3");
         params.put("subject", "4");
         params.put("emailName", "5");
@@ -147,13 +147,13 @@ public class HttpUitlTest {
      */
     @Test
     public void sendSomeRoleGMEmail2() {
-        String uri = "/message/sendEmail";
+        String uri = "/message/sendServerEmail";
         Map<String, String> params = new LinkedHashMap<>();
-        params.put("type", "2");
+        //params.put("type", "2");
         params.put("title", "测试邮件");
         params.put("content", "测试邮件");
         params.put("items", "42001|1");
-        //params.put("key", "内向的");
+        //params.put("roleNames", "老实的霍顿");
         params.put("closeDay", "3");
         params.put("subject", "测试邮件");
         params.put("emailName", "测试邮件");
@@ -189,10 +189,10 @@ public class HttpUitlTest {
      */
     @Test
     public void setRoleLock() {
-        String uri = "/role/setRoleLockAndChat";
+        String uri = "/role/setRoleLock";
         Map<String, String> params = new LinkedHashMap<>();
-        params.put("type", "1");
-        params.put("roleName", "迷茫的伍沃德");
+        //params.put("type", "1");
+        params.put("roleName", "老实的霍顿");
         params.put("lockTime", "1111111");
         params.put("reason", "开挂了");
         post(params, uri);
@@ -204,10 +204,10 @@ public class HttpUitlTest {
      */
     @Test
     public void setRoleUnLock() {
-        String uri = "/role/setRoleLockAndChat";
+        String uri = "/role/setRoleLock";
         Map<String, String> params = new LinkedHashMap<>();
-        params.put("type", "1");
-        params.put("roleName", "封号");
+        //params.put("type", "1");
+        params.put("roleName", "老实的霍顿");
         params.put("lockTime", "0");
         params.put("reason", "傲慢的巴里私底下交易给钱了");// 禁封理由
         post(params, uri);
@@ -219,10 +219,10 @@ public class HttpUitlTest {
      */
     @Test
     public void chatBan() {
-        String uri = "/role/setRoleLockAndChat";
+        String uri = "/role/chatBan";
         Map<String, String> params = new LinkedHashMap<>();
-        params.put("type", "2");
-        params.put("roleName", "aa");
+        //params.put("type", "2");
+        params.put("roleName", "老实的霍顿");
         params.put("lockTime", "20000");
         params.put("reason", "xxxxxx");
         params.put("channelType", "0"); // 设置默认 0全频道 1综合 2 世界 3 工会 5 场景  默认全频道禁言
@@ -236,10 +236,10 @@ public class HttpUitlTest {
      */
     @Test
     public void chatUnBan() {
-        String uri = "/role/setRoleLockAndChat";
+        String uri = "/role/chatBan";
         Map<String, String> params = new LinkedHashMap<>();
-        params.put("type", "2");
-        params.put("roleName", "aa");
+        //params.put("type", "2");
+        params.put("roleName", "老实的霍顿");
         params.put("lockTime", "0");
         params.put("reason", "xxxxxx");
         params.put("channelType", "0"); // 设置默认 0全频道 1综合 2 世界 3 工会 5 场景  默认全频道禁言
