@@ -335,10 +335,7 @@ public class Test04 {
 
     @Test
     public void test29() {
-        long multi = 10000;
-        long  attr = 2324;
-        System.out.println(attr*2000/multi + attr);
-        System.out.println(attr*12000/multi);
+        System.out.println((Long.MAX_VALUE+"").length());
     }
 }
 
