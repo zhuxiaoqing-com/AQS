@@ -335,7 +335,7 @@ public class Test04 {
 
     @Test
     public void test29() {
-        System.out.println((Long.MAX_VALUE+"").length());
+        System.out.println(Long.MAX_VALUE);
     }
 }
 
