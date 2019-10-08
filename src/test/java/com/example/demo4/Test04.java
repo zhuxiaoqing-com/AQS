@@ -335,7 +335,8 @@ public class Test04 {
 
     @Test
     public void test29() {
-        System.out.println(Long.MAX_VALUE);
+        long i = 1;
+        System.out.println(i*512*300*20000*2*5);
     }
 }
 
