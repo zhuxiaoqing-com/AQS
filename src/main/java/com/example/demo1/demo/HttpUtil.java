@@ -23,7 +23,7 @@ import java.util.Map;
 
 
 /**
- * @author 马弦
+ * @author zhuxiaoqing
  * @date 2017年10月23日 下午2:49
  * HttpClient工具类
  */

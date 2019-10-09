@@ -335,8 +335,7 @@ public class Test04 {
 
     @Test
     public void test29() {
-        long i = 1;
-        System.out.println(i*512*300*20000*2*5);
+        LinkedList<Object> objects = new LinkedList<>();
     }
 }
 
