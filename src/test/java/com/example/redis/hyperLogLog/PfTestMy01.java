@@ -6,6 +6,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * 超级简单的 HyperLogLog
  */
 public class PfTestMy01 {
+   // static long l = ThreadLocalRandom.current().nextLong(1L << 32);
     /**
      * 桶
      */
@@ -90,6 +91,7 @@ public class PfTestMy01 {
             }
             // 平均零位数
             double avgBits = (float) keepers.length / sumBitsInverse;
+            //double avgBits = sumBitsInverse/(float) keepers.length ;
             // 根据公式 2^avgBits * 桶数(必须是不为空的桶)
             return Math.pow(2, avgBits) * count;
         }

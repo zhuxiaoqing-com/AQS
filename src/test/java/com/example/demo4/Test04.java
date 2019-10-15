@@ -335,9 +335,8 @@ public class Test04 {
 
     @Test
     public void test29() {
-        System.out.println(1024/4/8);
-        System.out.println(Math.sqrt(256));
-        System.out.println(Math.log(32)/Math.log(2));
+        System.out.println(Math.pow(2, 1024));
+        System.out.println(Math.pow(2, 10));
     }
 }
 
