@@ -333,11 +333,43 @@ public class Test04 {
         System.out.println(pretty);
     }
 
+    /**
+     * capacity 8 1991 1991 1706 2275
+     * capacity 12 2560 2276 2276
+     */
     @Test
     public void test29() {
-        System.out.println(Math.pow(2, 1024));
-        System.out.println(Math.pow(2, 10));
+        int capacity = 66;
+        long[] array1 = createArray(capacity);
+        long[] array2 = createArray(capacity);
+
+        long oldTime = System.nanoTime();
+        sum(capacity, array1, array2);
+        long newTime = System.nanoTime();
+        System.out.println((newTime-oldTime));
     }
+
+    private long[] createArray(int capacity) {
+        long[] ints = new long[capacity];
+        for (int i = 0; i < capacity; i++) {
+            ints[i] = i;
+        }
+        return ints;
+    }
+
+    private long sum(int capacity, long[] a, long[] b) {
+
+        long sum = 0;
+        int index = capacity;
+        for (int i = 0; i < index; i++) {
+            sum = a[i] + b[i];
+        }
+        return sum;
+    }
+
+    /**
+     * 有两个组，
+     */
 }
 
 

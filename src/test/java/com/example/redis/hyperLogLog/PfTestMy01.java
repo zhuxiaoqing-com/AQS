@@ -4,6 +4,8 @@ import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * 超级简单的 HyperLogLog
+ *
+ * 为什么去重，因为 相同的value的hash 是一样的，不能更新桶里面的 maxBits.
  */
 public class PfTestMy01 {
    // static long l = ThreadLocalRandom.current().nextLong(1L << 32);
