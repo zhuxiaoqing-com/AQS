@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.example.custom_annotation.IndexDesc;
+import com.example.demo1.demo.HttpUtil;
 import com.google.common.base.Splitter;
 import org.junit.Test;
 import sun.misc.FloatingDecimal;
@@ -367,9 +368,12 @@ public class Test04 {
         return sum;
     }
 
-    /**
-     * 有两个组，
-     */
+    @Test
+    public void test30() {
+        String url = "https://sp0.baidu.com/9_Q4sjW91Qh3otqbppnN2DJv/pae/channel/data/asyncqury?appid=4001&com=&nu=75175450714712";
+        String s = HttpUtil.doGet(url);
+        System.out.println(s);
+    }
 }
 
 
