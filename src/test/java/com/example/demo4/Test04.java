@@ -370,9 +370,16 @@ public class Test04 {
 
     @Test
     public void test30() {
-        String url = "https://sp0.baidu.com/9_Q4sjW91Qh3otqbppnN2DJv/pae/channel/data/asyncqury?appid=4001&com=&nu=75175450714712";
-        String s = HttpUtil.doGet(url);
-        System.out.println(s);
+        /**
+         * B=16
+         * S=64
+         *
+         * 一个数组 8字节，一个块可以有两个数组元素。
+         *
+         * 16*16/2 128 个块
+         */
+        System.out.println(1024/16);
+        System.out.println(16*16);
     }
 }
 
