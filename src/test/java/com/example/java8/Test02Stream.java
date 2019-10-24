@@ -54,6 +54,14 @@ public class Test02Stream {
         public void setCount(int count) {
             this.count = count;
         }
+
+        @Override
+        public String toString() {
+            return "A{" +
+                    "id=" + id +
+                    ", count=" + count +
+                    '}';
+        }
     }
 
 
@@ -152,4 +160,31 @@ public class Test02Stream {
             return id + "";
         }
     }
+
+    @Test
+    public void test08() {
+        HashMap<Integer, A> hashMap = new HashMap<>();
+        hashMap.put(1,new A(2, 3));
+        hashMap.put(2,new A(2, 2));
+        hashMap.put(3,new A(3, 4));
+        hashMap.put(3,new A(3, 5));
+        hashMap.put(2,new A(1, 4));
+        hashMap.put(2,new A(1, 5));
+
+        TreeMap<Integer, List<A>> collect = hashMap.values().stream().collect(Collectors.groupingBy(a -> a.getId(), TreeMap::new, Collectors.toList()));
+        System.out.println(collect);
+
+    }
+
+    @Test
+    public void test09() {
+        List<Integer> list = new ArrayList<Integer>(){
+            {
+                add(1);
+                add(2);
+                add(4);
+            }
+        };
+    }
+
 }
