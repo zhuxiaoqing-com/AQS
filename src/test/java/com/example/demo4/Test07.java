@@ -35,6 +35,19 @@ public class Test07 {
         System.out.println(bossReviveQueue.poll());
         System.out.println(peek);
     }
+
+    @Test
+    public void test03()  {
+        Integer a = 2;
+        System.out.println(a.equals(2L));
+        System.out.println(a.equals(2));
+    }
+
+    public void a(Object a){
+        Integer aa =1;
+        Long ll = 2L;
+        System.out.println(ll.equals(2));
+    }
 }
 
 
