@@ -48,6 +48,12 @@ public class Test07 {
         Long ll = 2L;
         System.out.println(ll.equals(2));
     }
+
+    @Test
+    public void test04()  {
+        String s = "\"\"";
+        System.out.println(s.substring(1,-1));
+    }
 }
 
 
