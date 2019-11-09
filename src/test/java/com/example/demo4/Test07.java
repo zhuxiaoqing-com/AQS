@@ -17,7 +17,7 @@ public class Test07 {
         System.out.println(clone.atomic == a.atomic);
     }
 
-    class A implements Cloneable{
+    class A implements Cloneable {
         AtomicLong atomic = new AtomicLong();
 
         @Override
@@ -27,7 +27,7 @@ public class Test07 {
     }
 
     @Test
-    public void test02()  {
+    public void test02() {
         PriorityQueue<Object> bossReviveQueue = new PriorityQueue<>();
         boolean add = bossReviveQueue.add(new Object());
         Object peek = bossReviveQueue.peek();
@@ -37,22 +37,43 @@ public class Test07 {
     }
 
     @Test
-    public void test03()  {
+    public void test03() {
         Integer a = 2;
         System.out.println(a.equals(2L));
         System.out.println(a.equals(2));
     }
 
-    public void a(Object a){
-        Integer aa =1;
+    public void a(Object a) {
+        Integer aa = 1;
         Long ll = 2L;
         System.out.println(ll.equals(2));
     }
 
     @Test
-    public void test04()  {
+    public void test04() {
         String s = "\"\"";
-        System.out.println(s.substring(1,-1));
+        System.out.println(s.substring(1, -1));
+    }
+
+    @Test
+    public void test05() {
+        System.out.println(1);
+        System.out.println(2);
+        System.out.println(3);
+        System.out.println(4);
+        System.out.println(5);
+        System.out.println(6);
+        System.out.println(7);
+        System.out.println(8);
+        System.out.println(9);
+        System.out.println(10);
+    }
+
+    @Test
+    public void test06() {
+        for (int i = 1; i <= 10000000; i++) {
+            System.out.println(i);
+        }
     }
 }
 
