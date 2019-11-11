@@ -9,7 +9,7 @@ public class Sort {
             // 提前退出冒泡循环的标志位
             boolean flag = false;
             for (int j = 0; j < n - i - 1; ++j) {
-                if (a[j] > a[j + 1]) {
+                if (a[j] > a[j + 1]) { // 这行注释没用 改成 compare.(a[j],a[j+1])  > 1
                     int temp = a[j];
                     a[j] = a[j + 1];
                     a[j + 1] = temp;

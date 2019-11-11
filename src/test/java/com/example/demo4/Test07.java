@@ -1,8 +1,9 @@
 package com.example.demo4;
 
+import com.example.demo1.util.ProtostuffSerializer;
 import org.testng.annotations.Test;
 
-import java.util.PriorityQueue;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class Test07 {
@@ -10,8 +11,8 @@ public class Test07 {
 
     @Test
     public void test01() throws CloneNotSupportedException {
-        A a = new A();
-        A clone = a.clone();
+        com.example.demo4.Test07.A a = new com.example.demo4.Test07.A();
+        com.example.demo4.Test07.A clone = a.clone();
         System.out.println(a.atomic.hashCode());
         System.out.println(clone.atomic.hashCode());
         System.out.println(clone.atomic == a.atomic);
@@ -21,8 +22,8 @@ public class Test07 {
         AtomicLong atomic = new AtomicLong();
 
         @Override
-        protected A clone() throws CloneNotSupportedException {
-            return (A) super.clone();
+        protected com.example.demo4.Test07.A clone() throws CloneNotSupportedException {
+            return (com.example.demo4.Test07.A) super.clone();
         }
     }
 
@@ -71,9 +72,83 @@ public class Test07 {
 
     @Test
     public void test06() {
-        for (int i = 1; i <= 10000000; i++) {
-            System.out.println(i);
+        B a = new B();
+        ArrayList<Integer> list = new ArrayList<>();
+        for (int i = 0; i <= 1000; i++) {
+            list.add(i);
         }
+        a.setList(list);
+
+
+        new Thread(() -> {
+            while (true) {
+                List<Integer> list1 = a.getList();
+
+
+                list1.add(1);
+                list1.remove(1);
+            }
+        }).start();
+
+        new Thread(() -> {
+            while (true) {
+                ProtostuffSerializer.getInstance().encode(a, B.class);
+            }
+        }).start();
+
+        while (true) {
+
+        }
+
+    }
+
+    class B {
+        private int i;
+        private List<Integer> list;
+
+        public int getI() {
+            return i;
+        }
+
+        public void setI(int i) {
+            this.i = i;
+        }
+
+        public List<Integer> getList() {
+            return list;
+        }
+
+        public void setList(List<Integer> list) {
+            this.list = list;
+        }
+    }
+
+
+    @Test
+    public void test07() {
+        ArrayList<Integer> list = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            list.add(i);
+        }
+        list.sort((a,b)->{
+            int i = a - b;
+            System.out.println(i);
+            return i;
+        });
+        System.out.println(list);
+
+
+        ArrayList<Integer> list2 = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            list2.add(i);
+        }
+
+        list2.sort((a,b)->{
+            int i = b - a;
+            System.out.println(i);
+            return i;
+        });
+        System.out.println(list2);
     }
 }
 
