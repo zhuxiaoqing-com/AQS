@@ -153,19 +153,16 @@ public class Test07 {
 
     @Test
     public void test08() {
-        char a = 11;
-       int i = 0;
-       switch (i){
-           default:
-               System.out.println("default......");
-               break;
-           case 2:
-               System.out.println(2);
-           case  1:
-               System.out.println(1);
-       }
+        ArrayList<List<Integer>> list = new ArrayList<>();
+        a(list,Integer.class);
+    }
+
+    private<T> void a(List<List<T>> list, Class<T> c){
+        HashMap<Object, Object> hashMap = new HashMap<>();
 
     }
+
+
 }
 
 
