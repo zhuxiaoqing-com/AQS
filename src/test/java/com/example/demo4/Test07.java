@@ -159,7 +159,6 @@ public class Test07 {
 
     private<T> void a(List<List<T>> list, Class<T> c){
         HashMap<Object, Object> hashMap = new HashMap<>();
-
     }
 
 
