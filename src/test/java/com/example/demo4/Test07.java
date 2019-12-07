@@ -3,7 +3,10 @@ package com.example.demo4;
 import com.example.demo1.util.ProtostuffSerializer;
 import org.testng.annotations.Test;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.PriorityQueue;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class Test07 {
@@ -130,7 +133,7 @@ public class Test07 {
         for (int i = 0; i < 10; i++) {
             list.add(i);
         }
-        list.sort((a,b)->{
+        list.sort((a, b) -> {
             int i = a - b;
             System.out.println(i);
             return i;
@@ -143,7 +146,7 @@ public class Test07 {
             list2.add(i);
         }
 
-        list2.sort((a,b)->{
+        list2.sort((a, b) -> {
             int i = b - a;
             System.out.println(i);
             return i;
@@ -154,11 +157,29 @@ public class Test07 {
     @Test
     public void test08() {
         ArrayList<List<Integer>> list = new ArrayList<>();
-        a(list,Integer.class);
+        a(list, Integer.class);
     }
 
-    private<T> void a(List<List<T>> list, Class<T> c){
+    private <T> void a(List<List<T>> list, Class<T> c) {
         HashMap<Object, Object> hashMap = new HashMap<>();
+    }
+
+    @Test
+    public void test09() {
+        ArrayList<Integer> list = new ArrayList<>();
+        list.add(1);
+        list.add(2);
+        list.add(0);
+
+        list.sort((a, b) -> a - b);
+        System.out.println(list);
+    }
+
+    @Test
+    public void test10() {
+        int a = 100000*10000;
+        System.out.println(a);
+        System.out.println(Integer.MAX_VALUE);
     }
 
 

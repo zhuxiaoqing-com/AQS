@@ -1,11 +1,7 @@
 package com.example.demo4;
 
-import com.example.snowflakeIdWorker.BitMap;
 import org.junit.Test;
-import redis.clients.jedis.JedisPool;
 
-import java.time.*;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.*;
 
@@ -103,17 +99,6 @@ public class Test01 {
         System.out.println(Integer.toBinaryString(-1));
     }
 
-    @Test
-    public void test10() {
-        A b = new B();
-        if(b instanceof B){
-            System.out.println("B通过了");
-        }
-
-        if(b instanceof A){
-            System.out.println("A通过了");
-        }
-    }
 
     @Test
     public void test11() {
