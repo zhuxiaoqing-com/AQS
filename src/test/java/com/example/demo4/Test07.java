@@ -171,7 +171,7 @@ public class Test07 {
         list.add(2);
         list.add(0);
 
-        list.sort((a, b) -> a - b);
+        list.sort((a, b) -> b - a);
         System.out.println(list);
     }
 
