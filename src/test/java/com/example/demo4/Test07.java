@@ -1,12 +1,10 @@
 package com.example.demo4;
 
+import com.alibaba.fastjson.JSON;
 import com.example.demo1.util.ProtostuffSerializer;
 import org.testng.annotations.Test;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.PriorityQueue;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class Test07 {
@@ -177,9 +175,28 @@ public class Test07 {
 
     @Test
     public void test10() {
-        int a = 100000*10000;
+        int a = 100000 * 10000;
         System.out.println(a);
         System.out.println(Integer.MAX_VALUE);
+    }
+
+    @Test
+    public void test11() {
+        Map<Integer, Integer> hashMap = new HashMap<>();
+        hashMap.put(1, 1);
+        hashMap.put(2, 1);
+        String s = JSON.toJSONString(hashMap);
+        System.out.println(s);
+
+        Object parse = JSON.parseObject(s);
+        System.out.println(parse);
+    }
+
+    @Test
+    public void test12() {
+        for (; ; ) {
+            System.out.println("马哥吃屎吧");
+        }
     }
 
 
