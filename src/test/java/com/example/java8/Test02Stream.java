@@ -28,6 +28,9 @@ public class Test02Stream {
         Map<Integer, Integer> collect = resources.stream()
                 .collect(Collectors.groupingBy(A::getId, Collectors.summingInt(A::getCount)));
         System.out.println(collect);
+
+        int sum = resources.stream().mapToInt(r -> r.getId() + r.getCount()).sum();
+        System.out.println(sum);
     }
 
     class A {
