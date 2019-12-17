@@ -2,9 +2,13 @@ package com.example.demo3;
 
 import com.example.snowflakeIdWorker.RobotRidObj;
 import org.junit.Test;
+import org.quartz.*;
+import org.quartz.impl.calendar.BaseCalendar;
+import org.quartz.spi.OperableTrigger;
 import sun.instrument.InstrumentationImpl;
 
 import java.lang.instrument.Instrumentation;
+import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -138,10 +142,25 @@ public class Test07 {
     }
 
     @Test
-    public void test17() {
-        double s = 23.232321;
-        String.valueOf(s);
-        System.out.println();
+    public void test17() throws ParseException {
+        String cron = "";
+
+        /*CronTrigger trigger = TriggerBuilder.newTrigger().withIdentity("Caclulate Date").withSchedule(CronScheduleBuilder.cronSchedule(cron)).build();
+        BaseCalendar baseCalendar = new BaseCalendar();
+        baseCalendar.setDescription();
+
+        TriggerUtils.computeFireTimes(trigger, baseCalendar,)*/
+
+        CronExpression cronExpression = new CronExpression("0/10 * * * * ?");
+        System.out.println(cronExpression.getNextValidTimeAfter(new Date()));
+
+    }
+
+    @Test
+    public void test18() {
+        Long l = 1L;
+        System.out.println(10800000/1000/60/60);
+        System.out.println(3*60*60);
     }
 }
 

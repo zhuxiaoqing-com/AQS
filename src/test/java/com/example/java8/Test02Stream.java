@@ -181,13 +181,7 @@ public class Test02Stream {
 
     @Test
     public void test09() {
-        List<Integer> list = new ArrayList<Integer>(){
-            {
-                add(1);
-                add(2);
-                add(4);
-            }
-        };
+        System.out.println(Integer.MAX_VALUE/24/60/60/1000);
     }
 
 }
