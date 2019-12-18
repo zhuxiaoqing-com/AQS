@@ -2,16 +2,10 @@ package com.example.demo3;
 
 import com.example.snowflakeIdWorker.RobotRidObj;
 import org.junit.Test;
-import org.quartz.*;
-import org.quartz.impl.calendar.BaseCalendar;
-import org.quartz.spi.OperableTrigger;
-import sun.instrument.InstrumentationImpl;
+import org.quartz.CronExpression;
 
-import java.lang.instrument.Instrumentation;
 import java.text.ParseException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.time.*;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -25,9 +19,10 @@ public class Test07 {
         System.out.println(s == 211);
         System.out.println(s == 211L);
     }
+
     @Test
     public void test2() {
-        String  s = "abc113";
+        String s = "abc113";
         String spilt = "abc";
         System.out.println(s.substring(spilt.length()));
     }
@@ -44,7 +39,7 @@ public class Test07 {
 
     @Test
     public void test4() {
-        System.out.println(-1L^(-1L << 5));
+        System.out.println(-1L ^ (-1L << 5));
     }
 
     @Test
@@ -60,7 +55,7 @@ public class Test07 {
         System.out.println(rank2);
         System.out.println(rank3);
         System.out.println(Long.MAX_VALUE);
-        System.out.println((long)1<<34);
+        System.out.println((long) 1 << 34);
     }
 
     @Test
@@ -77,18 +72,19 @@ public class Test07 {
 
     @Test
     public void test8() {
-        System.out.println((long)452<<24);
+        System.out.println((long) 452 << 24);
     }
 
     @Test
     public void test9() {
         long l = System.currentTimeMillis() - 1420041600000L;
         System.out.println(l);
-        System.out.println((1L << 38) / (1000L * 60 * 60 * 24 * 365) );
+        System.out.println((1L << 38) / (1000L * 60 * 60 * 24 * 365));
     }
+
     @Test
     public void test10() {
-        System.out.println(-1L^(-1L << 16));
+        System.out.println(-1L ^ (-1L << 16));
     }
 
     @Test
@@ -113,24 +109,24 @@ public class Test07 {
     @Test
     public void test14() {
         int objHead = 12;
-        int ss = 8+4+3*7+4+4;
-        int Obj = objHead+ss;
-        System.out.println(objHead+ss);
+        int ss = 8 + 4 + 3 * 7 + 4 + 4;
+        int Obj = objHead + ss;
+        System.out.println(objHead + ss);
         int nowObj;
         if (Obj % 8 == 0) {
             nowObj = Obj;
         } else {
             int i = Obj / 8;
-            nowObj = (i+1)*8;
+            nowObj = (i + 1) * 8;
         }
 
         System.out.println(nowObj);
-        System.out.println(nowObj*40000/1024/1024);
+        System.out.println(nowObj * 40000 / 1024 / 1024);
     }
 
     @Test
     public void test15() {
-        Map map  = new HashMap<>();
+        Map map = new HashMap<>();
         map.put(Integer.parseInt("1"), 2);
         System.out.println(map.get(1));
     }
@@ -158,9 +154,20 @@ public class Test07 {
 
     @Test
     public void test18() {
-        Long l = 1L;
-        System.out.println(10800000/1000/60/60);
-        System.out.println(3*60*60);
+        System.out.println(new Date(findSignUpDate(73800000, 10800000, 3600000)));
+        System.out.println(new Date(findStartDate(73800000)));
+    }
+
+    private long findSignUpDate(long openTime, long signUpTime, long durationTime) {
+        LocalDateTime localDateTime = LocalDateTime.of(LocalDate.now(), LocalTime.MIN);
+        long zeroTime = localDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+        return zeroTime + openTime - signUpTime;
+    }
+
+    private long findStartDate(long openTime) {
+        LocalDateTime localDateTime = LocalDateTime.of(LocalDate.now(), LocalTime.MIN);
+        long zeroTime = localDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+        return zeroTime + openTime;
     }
 }
 

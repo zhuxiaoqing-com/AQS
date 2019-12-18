@@ -1,22 +1,37 @@
 package com.example.demo1.demo;
 
+import com.example.demo1.util.FileUtil;
+import org.apache.logging.log4j.util.PropertiesUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.io.IOException;
 import java.sql.Time;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.*;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoField;
+import java.time.temporal.TemporalAdjusters;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
-/**
- * @author HSimon
- */
 public class TimeUtil {
-
     private static final Logger LOGGER = LoggerFactory.getLogger(TimeUtil.class);
+
+    /**
+     * 一分钟的秒时长
+     */
+    public static final long ONE_MINUTE_IN_SECONDS = 60L ;
+
+    /**
+     * 一小时的秒时长
+     */
+    public static final int ONE_HOUR_IN_SECONDS = 60 * 60;
 
     /**
      * 一分钟的毫秒时长
@@ -41,9 +56,28 @@ public class TimeUtil {
     public static final long ONE_MILLS = 1000L;
 
     /**
+     * 一周的毫秒时长
+     */
+    public static final long ONE_WEEK_IN_MILLISECONDS = 7 * ONE_DAY_IN_MILLISECONDS;
+
+    /**
      * 2015-02-23 12:12:12格式
      */
     public static final String DEFAULT_FORMAT = "yyyy-MM-dd HH:mm:ss";
+    public static DateTimeFormatter SIMPLE_DATE_FORMAT = DateTimeFormatter.ofPattern(DEFAULT_FORMAT);
+
+    /**
+     * 2019-01-02 格式
+     */
+    public static final String DEFAULT_DAY_FORMAT = "yyyy-MM-dd";
+    public static DateTimeFormatter SIMPLE_DAY_FORMAT = DateTimeFormatter.ofPattern(DEFAULT_DAY_FORMAT);
+
+
+    /**
+     * 2019010221 格式
+     */
+    public static final String DEFAULT_DAY_HOUR_FORMAT = "yyyyMMddHH";
+    public static DateTimeFormatter SIMPLE_DAY_HOUR_FORMAT = DateTimeFormatter.ofPattern(DEFAULT_DAY_HOUR_FORMAT);
 
     /**
      * 判断两个时间是否是同一天
@@ -82,7 +116,134 @@ public class TimeUtil {
      * @return
      */
     public static boolean isToday(long time) {
-        return isSameDay(System.currentTimeMillis(), time);
+        return isTodaySplitByHour(time, 0);
+    }
+
+
+    /**
+     * 是否为今天
+     *
+     * @param millis
+     * @return
+     */
+    public static boolean isTodayNew(long millis) {
+        Calendar today = Calendar.getInstance();
+        Calendar compareday = Calendar.getInstance();
+        compareday.setTimeInMillis(millis);
+        if (today.get(Calendar.YEAR) == compareday.get(Calendar.YEAR) && today.get(Calendar.DAY_OF_MONTH) == compareday.get(Calendar.DAY_OF_MONTH)) {
+            return true;
+        }
+        return false;
+    }
+
+
+    /**
+     * 根据指定小时划分，判断是否同一天
+     *
+     * @param time
+     * @param hour
+     * @return
+     */
+    public static boolean isTodaySplitByHour(long time, int hour) {
+        long nowTime = System.currentTimeMillis();
+        if (time > nowTime) {
+            return true;
+        }
+        LocalDateTime resetDateTime = LocalDateTime.of(LocalDate.now(), LocalTime.MIN.plusHours(hour));
+        long resetTime = resetDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+
+        return ((time - resetTime) * (nowTime - resetTime)) >= 0;
+    }
+
+    /**
+     * 判断传入的时间是否是同年同月
+     *
+     * @return
+     */
+    public static boolean isTheSameMonth(long targetTime, long sourceTimes) {
+        Calendar calendarTarget = Calendar.getInstance();
+        calendarTarget.setTimeInMillis(targetTime);
+        Calendar calendarSource = Calendar.getInstance();
+        calendarSource.setTimeInMillis(sourceTimes);
+        return calendarTarget.get(Calendar.YEAR) == calendarSource.get(Calendar.YEAR) && calendarTarget.get(Calendar.MONTH) == calendarSource.get(Calendar.MONTH);
+    }
+
+    /**
+     * 获取当前时间在当月是第几天
+     *
+     * @return
+     */
+    public static int getTodayInMonth() {
+        int dayindex = getTheDayInMonth(new Date());
+        return dayindex;
+    }
+
+    /**
+     * 获取指定日期在当月是第几天
+     *
+     * @param date
+     * @return
+     */
+    public static int getTheDayInMonth(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        return calendar.get(Calendar.DAY_OF_MONTH);
+    }
+
+    /**
+     * 获取指定时间在当月是第几天
+     *
+     * @param times
+     * @return
+     */
+    public static int getTheDayInMonthForTimes(long times) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(times);
+        return calendar.get(Calendar.DAY_OF_MONTH);
+    }
+
+    /**
+     * 获取当月的第n天是星期几
+     *
+     * @param dayIndex
+     * @return
+     */
+    public static int getTheDayInMonthForWeek(int dayIndex) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.DAY_OF_MONTH, dayIndex - 1);
+        return calendar.get(Calendar.DAY_OF_WEEK);
+    }
+
+    /**
+     * 获取这周是当月的第几周
+     * (设置周一为每周的第一天)
+     *
+     * @param dayIndex
+     * @return
+     */
+    public static int getTheWeekInMonthForDay(int dayIndex) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setFirstDayOfWeek(Calendar.MONDAY);
+        calendar.set(Calendar.DAY_OF_MONTH, dayIndex);
+        return calendar.get(Calendar.WEEK_OF_MONTH);
+    }
+
+
+    /**
+     * 获取两个时间的逻辑间隔天数,以源时间为基准,目标时间小于源时间则返回大于或等于天数，反之返回小于等于天数
+     * <p>
+     * 举例：hour=5,sourceTime=今天凌晨4点59分59秒,targetTime=昨天晚上5点0分1秒,则返回1
+     *
+     * @param sourceTime
+     * @param targetTime
+     * @param hour
+     * @return
+     */
+    public static int getLogicIntervalDaysByHour(long sourceTime, long targetTime, int hour) {
+        long sourceHourClockTime = getHourClockTime(sourceTime, hour);
+        long targetHourClockTime = getHourClockTime(targetTime, hour);
+
+        return getRealIntervalDays(sourceHourClockTime, targetHourClockTime);
     }
 
     /**
@@ -144,6 +305,14 @@ public class TimeUtil {
         return calendar.getTimeInMillis();
     }
 
+    public static long getTimeInMillis(long time, int hour, int minute) {
+        return getTimeInMillis(time, hour, minute, 0, 0);
+    }
+
+    public static long getTimeInMillis(long time, int hour) {
+        return getTimeInMillis(time, hour, 0, 0, 0);
+    }
+
     /**
      * 获取指定日期的时间戳
      *
@@ -202,6 +371,33 @@ public class TimeUtil {
     public static long getZeroClockTime(long time) {
         return getTimeInMillis(time, 0, 0, 0, 0);
     }
+
+    /**
+     * 获取次日0点时间
+     * @return
+     */
+    public static long getZeroTomorrow() {
+        Calendar now = Calendar.getInstance();
+        now.add(Calendar.DATE, 1);
+        now.set(Calendar.HOUR_OF_DAY, 0);
+        now.set(Calendar.MINUTE, 0);
+        now.set(Calendar.SECOND, 0);
+        now.set(Calendar.MILLISECOND, 0);
+        return now.getTimeInMillis();
+    }
+
+    /**
+     * 获取指定时间的整点时间
+     *
+     * @param time
+     * @return
+     */
+    public static long getHourClockTime(long time, int hour) {
+        //往前挪hour小时
+        time -= hour * ONE_HOUR_IN_MILLISECONDS;
+        return getTimeInMillis(time, hour, 0, 0, 0);
+    }
+
 
 
 
@@ -377,7 +573,6 @@ public class TimeUtil {
                 Process process = Runtime.getRuntime().exec(cmd);
 
 
-
             } else if (osName.matches("^(?i)Linux.*$")) {// Linux 系统
                 Runtime.getRuntime().exec("date -s " + date);
                 Runtime.getRuntime().exec("date -s " + time);
@@ -386,5 +581,263 @@ public class TimeUtil {
             return e.getMessage();
         }
         return dateTimeMessage;
+    }
+
+
+
+    /**
+     * 格式化日期
+     *
+     * @param time 时间戳
+     * @return
+     */
+    public static String timeFormat(long time) {
+        LocalDateTime ldt = LocalDateTime.ofInstant(Instant.ofEpochMilli(time), ZoneId.systemDefault());
+        return ldt.format(SIMPLE_DATE_FORMAT);
+    }
+
+    /**
+     * 格式化日期
+     *
+     * @param time 时间戳
+     * @return
+     */
+    public static String timeFormatDay(long time) {
+        LocalDateTime ldt = LocalDateTime.ofInstant(Instant.ofEpochMilli(time), ZoneId.systemDefault());
+        return ldt.format(SIMPLE_DAY_FORMAT);
+    }
+
+    /**
+     * 格式化日期
+     * yyyyMMddHH
+     * @param time 时间戳
+     * @return
+     */
+    public static String timeFormatDayAndHour(long time) {
+        LocalDateTime ldt = LocalDateTime.ofInstant(Instant.ofEpochMilli(time), ZoneId.systemDefault());
+        return ldt.format(SIMPLE_DAY_HOUR_FORMAT);
+    }
+
+
+
+
+    /**
+     * 时间单位转换
+     *
+     * @param sourceUnit 源时间单位
+     * @param targetUnit 目标时间单位
+     * @param timeData   时间
+     * @return
+     */
+    public static long timeChange(TimeUnit sourceUnit, TimeUnit targetUnit, long timeData) {
+        return targetUnit.convert(timeData, sourceUnit);
+    }
+
+    /**
+     * 是否同一周
+     *
+     * @param sourceTime 开始时间
+     * @param targetTime 结束时间
+     * @return 是否同一周
+     */
+    public static boolean isSameWeek(long sourceTime, long targetTime) {
+        long startWeekTime = getWeekFirstDayZeroHourTimestamp(sourceTime);
+        long endWeekTime = getWeekFirstDayZeroHourTimestamp(targetTime);
+        return startWeekTime == endWeekTime;
+    }
+
+
+
+
+    /**
+     * 判断是否可以刷新(每天刷新)
+     *
+     * @param lastResetTime 上一次的刷新时间
+     * @param refreshHour   每天几点刷新
+     * @return true:刷新 false: 不刷新
+     */
+    private static boolean isResetByDay(long lastResetTime, int refreshHour) {
+        LocalDateTime resetTime = Instant.ofEpochMilli(lastResetTime).atZone(ZoneId.systemDefault()).toLocalDateTime();
+
+        // 根据上一次的刷新时间点 获取下一次刷新的时间点
+        LocalDate nextResetDate = resetTime.toLocalDate();
+        if (resetTime.getHour() >= refreshHour) {
+            nextResetDate = nextResetDate.plusDays(1);
+        }
+        LocalDateTime nextResetTime = LocalDateTime.of(nextResetDate, LocalTime.MIN.plusHours(refreshHour));
+
+        long nextResetTimeMill = nextResetTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+        long nowTimeMill = System.currentTimeMillis();
+        return nowTimeMill > nextResetTimeMill;
+    }
+
+    /**
+     * 判断是否可以刷新(每周刷新)
+     *
+     * @param lastResetTime 上一次的刷新时间
+     * @param refreshWeek   每周星期几刷新
+     * @param refreshHour   几点刷新
+     * @return true:刷新 false: 不刷新
+     */
+    private static boolean isResetByWeek(long lastResetTime, int refreshWeek, int refreshHour) {
+        LocalDateTime resetTime = Instant.ofEpochMilli(lastResetTime).atZone(ZoneId.systemDefault()).toLocalDateTime();
+
+        // 根据上一次的刷新时间点 获取下一次刷新的时间点
+        LocalDate nextResetDate = resetTime.toLocalDate().with(ChronoField.DAY_OF_WEEK, refreshWeek);
+        int resetWeek = resetTime.get(ChronoField.DAY_OF_WEEK);
+        int resetHour = resetTime.getHour();
+        if (resetWeek > refreshWeek || (resetWeek == refreshWeek && resetHour >= refreshHour)) {
+            nextResetDate = nextResetDate.plusWeeks(1);
+        }
+        LocalDateTime nextResetTime = LocalDateTime.of(nextResetDate, LocalTime.MIN.plusHours(refreshHour));
+
+        long nextResetTimeMill = nextResetTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+        long nowTimeMill = System.currentTimeMillis();
+        return nowTimeMill > nextResetTimeMill;
+    }
+
+
+
+    /**
+     * 获取修正时间
+     *
+     * @param now  时间搓
+     * @param hour 修正小时点
+     */
+    public static long getFixTimeStamp(long now, int hour) {
+        return toMillSecond(getFixTime(now, hour));
+    }
+
+    /**
+     * 获取修正时间
+     *
+     * @param now  时间
+     * @param hour 修正时间点
+     */
+    public static LocalDateTime getFixTime(long now, int hour) {
+        Instant instant = Instant.ofEpochMilli(now);
+        LocalDateTime localDateTime = LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
+        int currentHour = localDateTime.getHour();
+        localDateTime.withHour(hour).withMinute(0).withSecond(0).withNano(0);
+        if (currentHour < hour) {
+            localDateTime = localDateTime.minusDays(1);
+        }
+        return localDateTime;
+    }
+
+
+
+
+    /**
+     * 根据时间点获取这个月有几天
+     *
+     * @param time 时间点
+     */
+    public static int getMonthDays(long time) {
+        Calendar a = Calendar.getInstance();
+        a.setTimeInMillis(time);
+        a.set(Calendar.DATE, 1);//把日期设置为当月第一天
+        a.roll(Calendar.DATE, -1);//日期回滚一天，也就是最后一天
+        return a.get(Calendar.DATE);
+    }
+
+    /**
+     * 是否超过一星期
+     *
+     * @param startTime 开始时间
+     * @param endTime   结束时间
+     */
+    public static boolean isMoreThanOneWeek(long startTime, long endTime) {
+        return endTime - startTime >= ONE_WEEK_IN_MILLISECONDS;
+    }
+
+
+    /**
+     * 根据时间点获取周一时间
+     *
+     * @param now  时间点
+     * @param hour 修正小时
+     */
+    public static long getWeekFirstDayFixHour(long now, int hour) {
+        LocalDateTime fixTime = getFixTime(now, hour);
+        return toMillSecond(fixTime.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY)));
+    }
+
+    /**
+     * 根据时间点获取每月第一天修正时间
+     *
+     * @param now  时间点
+     * @param hour 修正小时
+     */
+    public static long getFirstMonthDayFixHour(long now, int hour) {
+        LocalDateTime fixTime = getFixTime(now, hour);
+        return toMillSecond(fixTime.with(TemporalAdjusters.firstDayOfMonth()));
+    }
+
+    /**
+     * 根据时间点获取每星期最后一天0点时间
+     *
+     * @param now 时间点
+     */
+    public static long getLastWeekDayTimestamp(long now) {
+        LocalDateTime fixTime = getFixTime(now, 0);
+        return toMillSecond(fixTime.with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY)));
+    }
+
+    /**
+     * 根据时间点获取每月最后一天0点时间
+     *
+     * @param now 时间点
+     */
+    public static long getLastMonthDayTimestamp(long now) {
+        LocalDateTime fixTime = getFixTime(now, 0);
+        return toMillSecond(fixTime.with(TemporalAdjusters.lastDayOfMonth()));
+    }
+
+    /**
+     * 根据时间点获取每月第一天0点时间
+     *
+     * @param now 时间点
+     */
+    public static long getFirstMonthDayZeroHourTimestamp(long now) {
+        return getFirstMonthDayFixHour(now, 0);
+    }
+
+    /**
+     * 根据时间点获取周一0点时间
+     *
+     * @param now 时间点
+     */
+    public static long getWeekFirstDayZeroHourTimestamp(long now) {
+        return getWeekFirstDayFixHour(now, 0);
+    }
+
+
+
+    /**
+     * LocalDateTime转MillSecond
+     */
+    public static long toMillSecond(LocalDateTime localDateTime) {
+        Objects.requireNonNull(localDateTime);
+        return localDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+    }
+
+    /**
+     * millSecond转LocalDateTime
+     */
+    public static LocalDateTime toLocalDate(long time) {
+        return LocalDateTime.ofInstant(Instant.ofEpochMilli(time), ZoneId.systemDefault());
+    }
+
+
+    /**
+     * 获取当前时间精确到分钟的时间戳
+     */
+    public static long getNowTimeToMinute() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        return calendar.getTimeInMillis();
     }
 }
