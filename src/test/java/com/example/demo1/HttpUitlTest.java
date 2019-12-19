@@ -5,6 +5,7 @@ import com.example.demo1.demo.SignUtil;
 import org.junit.Test;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -428,7 +429,12 @@ public class HttpUitlTest {
         long end = System.currentTimeMillis();
 //        Assert.assertEquals(((end - start)), 1l);
     }
+    //http://10.40.2.68/login/user/token
+    @Test
+    public void a() {
 
+        HttpUtil.doPost("http://10.40.2.68/login/user/token", Collections.EMPTY_MAP);
+    }
     /**
      * 测试方法
      *

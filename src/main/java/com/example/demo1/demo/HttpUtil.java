@@ -82,6 +82,7 @@ public class HttpUtil {
                 //System.out.println(name +"-"+value);
             }
             request.setEntity(new UrlEncodedFormEntity(nvps, HTTP.UTF_8));
+            request.addHeader("Content-type","application/json; charset=utf-8");
 
             HttpResponse response = client.execute(request);
             int code = response.getStatusLine().getStatusCode();
