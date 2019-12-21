@@ -169,6 +169,18 @@ public class Test07 {
         long zeroTime = localDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
         return zeroTime + openTime;
     }
+
+
+    @Test
+    public void test19() {
+        long a = (-1L ^ (-1L << 32))+1;
+        System.out.println(111+3);
+        int b = (int)(111+(a+3));
+        System.out.println(b);
+        System.out.println(Integer.toBinaryString(111+3));
+        System.out.println(Integer.toBinaryString(b));
+        System.out.println(Long.toBinaryString(111+(a+3)));
+    }
 }
 
 
