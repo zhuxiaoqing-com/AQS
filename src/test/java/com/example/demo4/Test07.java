@@ -194,10 +194,10 @@ public class Test07 {
 
     @Test
     public void test12() {
-        for (; ; ) {
-            System.out.println("马哥吃屎吧");
-        }
+
     }
+
+
 
 
 }
