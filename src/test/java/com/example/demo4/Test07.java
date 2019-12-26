@@ -2,6 +2,7 @@ package com.example.demo4;
 
 import com.alibaba.fastjson.JSON;
 import com.example.demo1.util.ProtostuffSerializer;
+import com.example.javase.DecimalToBit;
 import org.testng.annotations.Test;
 
 import java.util.*;
@@ -194,11 +195,60 @@ public class Test07 {
 
     @Test
     public void test12() {
+       /* toBinary(0.5);
+        toBinary(1.3);*/
+        float a = 7.8125f;
+        DecimalToBit.getInstance().toBinary(a);
+        int l = Float.floatToRawIntBits(a);
+        long l1 = Float.floatToIntBits(a);
+        System.out.println(Long.toBinaryString(l));
+        System.out.println(Integer.toBinaryString(l));
+        System.out.println(l1);
+        System.out.println(Integer.toBinaryString(129));
 
     }
 
+    @Test
+    public void test14() {
+        System.out.println("111111010100000000000000000000".equals("11111101010000000000000000000"));
+        // 1000000111110100000000000000000
+        // 1000000111110100000000000000000
+    }
 
 
+    /**
+     * 0.3 转 double 二进制数
+     * 2^8 = 256
+     * 256 -1 = 255
+     * 0.0
+     * 255
+     * 0.3 = 1*M*2^E
+     * <p>
+     * 0.0100110011001100110011001100110011001100110011001100110011001100110011001100110011001100110011001100
+     * 0 100110011001100110011001100110011001100110011001100110011001100110011001100110011001100110011001100
+     * <p>
+     * 0.8125f
+     * 0.1101
+     * 需要处理成1.xxx 这样才能变成有隐含的 1。
+     * 往左移动 1.101  需要 * 2; *2 就要把 阶数 -1 。因为这里的2 是从阶数这里借的。
+     * 00000000  -1 =  e - 127  -> -1+127 = e -> 126 = e  ->  e  bit= 1111110;
+     * 1.101
+     * 0 01111110 1010 0000 0000 0000 0000 00
+     * <p>
+     * <p>
+     * 111.8125f
+     * 111.1101 -> 1.111101 右移了二位
+     *
+     *  阶数 +2
+     * 00000000  2 =  e - 127  -> 2+127 = e -> 129 = e  ->  e  bit= 10000001;
+     * 110 = e-127 -> 110 + 127 = e  -> 237 = e
+     * 1.101
+     * 0 10000001 1111 0100 0000 0000 0000 000
+     */
+    @Test
+    public void test13() {
+        System.out.println(Math.pow(2, 14));
+    }
 
 }
 
