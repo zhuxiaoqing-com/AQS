@@ -247,7 +247,12 @@ public class Test07 {
      */
     @Test
     public void test13() {
-        System.out.println(Math.pow(2, 14));
+        List<Integer> list = new ArrayList<>();
+        list.add(1);
+        list.add(1);
+        list.add(1);
+        list.add(1);
+        System.out.println(JSON.toJSONString(list));
     }
 
 }
