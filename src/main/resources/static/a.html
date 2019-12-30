@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script>
+        var getArgs=(function(){
+
+            var sc=document.getElementsByTagName('script');
+
+            var paramsArr=sc[sc.length-1].src;
+
+
+            var paramsArr2=""+paramsArr.split('?')[1];
+
+            paramsArr=paramsArr2.split("&");
+
+
+            var args={},argsStr=[],param,t,name,value;
+
+            var result='';
+            for(var ii=0,len=paramsArr.length;ii<len;ii++){
+
+                param=paramsArr[ii].split('=');
+
+                name=param[0],value=param[1];
+
+                var tep='"'+name+'"'+':'+ '"'+value+'"'+',';
+
+                result+=tep;
+
+            }   // 主要进行数据的获取 并转换为json文本。
+
+            var data=result.substring(0,result.length-1);
+
+            var dddd="{"+ data+"}";     // 获取实际需要使用的json 文本。
+
+            var myData = JSON.parse(dddd);   //使用json2 进行json文本的解析。
+
+            // alert(myData.urls);
+            // window.location.href = myData.urls;
+            // tempwindow.location = myData.urls;
+            // window.open(myData.urls,'_self')
+
+            // alert(myData.title);
+
+            var s = document.referrer;
+            if(s != null && s != ''){
+                a = window.open(myData.urls,'_self');
+                a.document.write("<title>" + myData.title + "</title>");
+            }
+        })();
+
+    </script>
+</head>
+<body>
+
+</body>
+</html>
