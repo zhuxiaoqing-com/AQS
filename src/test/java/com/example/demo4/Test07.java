@@ -257,7 +257,7 @@ public class Test07 {
 
     @Test
     public void test15() {
-        long n = 16;
+        long n = 32;
         long memory = (long) Math.pow(2, n);
         long memoryKb = (long) (memory/Math.pow(2,10));
         System.out.println(memoryKb/4);
