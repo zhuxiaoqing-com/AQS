@@ -5,6 +5,12 @@ import com.example.demo1.util.ProtostuffSerializer;
 import com.example.javase.DecimalToBit;
 import org.testng.annotations.Test;
 
+import java.lang.reflect.Constructor;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAccessor;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -263,9 +269,83 @@ public class Test07 {
         System.out.println(memoryKb/4);
     }
 
+    public static final String DEFAULT_FORMAT = "YYYY-MM-dd";
+    public static DateTimeFormatter SIMPLE_DATE_FORMAT = DateTimeFormatter.ofPattern(DEFAULT_FORMAT);
+
+    @Test
+    public void test16() throws ParseException {
+        String dateStr = "2019-12-29";
+        TemporalAccessor parse = SIMPLE_DATE_FORMAT.parse(dateStr);
+        System.out.println(parse);
+        SimpleDateFormat format = new SimpleDateFormat(DEFAULT_FORMAT);
+        Date parse1 = format.parse(dateStr);
+        System.out.println(parse1);
+    }
+
+    @Test
+    public void test17() throws ParseException {
+        Temp a = new Temp(1, "a");
+        String s = JSON.toJSONString(a);
+        System.out.println(s);
+        //System.out.println(JSON.parseObject(s, Temp.class).getClass());
+        System.out.println(JSON.parseObject(s,Temp.class));
+
+    }
+    @Test
+    public void test18() throws Exception {
+        Constructor<?>[] constructors = Temp.class.getConstructors();
+        Object a = constructors[0].newInstance(1, "a");
+        System.out.println(a);
+    }
+
+
 }
 
+/*class Temp extends Father {
+   private int id;
+   private String name;
 
+    public Temp(int id, String name) {
+        this.id = id;
+        this.name = name;
+        System.out.println("有参构造");
+    }
+
+  *//*  public Temp() {
+        System.out.println("无参构造");
+    }*//*
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String toString() {
+        return "Temp{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
+    }
+
+
+}
+
+    class Father {
+        public Father(){
+            System.out.println("父类的构造函数");
+        }
+    }*/
 
 
 

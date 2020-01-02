@@ -1,6 +1,5 @@
 package com.example.demo3;
 
-import com.alibaba.fastjson.support.odps.udf.CodecCheck;
 import org.junit.Test;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
