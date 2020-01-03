@@ -1,4 +1,4 @@
-package com.example.demo4;
+package com.example.demo4.testObj1;
 
 public class CC implements AA, BB {
     @Override

@@ -1,6 +1,9 @@
 package com.example.demo4;
 
 public class Main {
+    static {
+        System.out.println("static");
+    }
 
     public Main() {
         System.out.println("constructor");

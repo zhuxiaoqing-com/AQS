@@ -2,13 +2,14 @@ package com.example.demo4;
 
 import com.alibaba.fastjson.JSON;
 import com.example.demo1.util.ProtostuffSerializer;
+import com.example.demo4.testObj1.Child;
+import com.example.demo4.testObj1.Temp;
 import com.example.javase.DecimalToBit;
 import org.testng.annotations.Test;
 
 import java.lang.reflect.Constructor;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
 import java.util.*;
@@ -284,7 +285,7 @@ public class Test07 {
 
     @Test
     public void test17() throws ParseException {
-        Temp a = new Temp(1, "a");
+        Temp a = new Temp(1, "a",new Child(1,"child"));
         String s = JSON.toJSONString(a);
         System.out.println(s);
         //System.out.println(JSON.parseObject(s, Temp.class).getClass());
@@ -299,53 +300,17 @@ public class Test07 {
     }
 
 
-}
-
-/*class Temp extends Father {
-   private int id;
-   private String name;
-
-    public Temp(int id, String name) {
-        this.id = id;
-        this.name = name;
-        System.out.println("有参构造");
-    }
-
-  *//*  public Temp() {
-        System.out.println("无参构造");
-    }*//*
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String toString() {
-        return "Temp{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                '}';
+    @Test
+    public void test19() throws Exception {
+        Temp a = new Temp(1, "a",new Child(1,"child"));
+        String s = JSON.toJSONString(a);
+        System.out.println(s);
+        //System.out.println(JSON.parseObject(s, Temp.class).getClass());
+        System.out.println(JSON.parseObject(s,Temp.class));
     }
 
 
 }
-
-    class Father {
-        public Father(){
-            System.out.println("父类的构造函数");
-        }
-    }*/
 
 
 
