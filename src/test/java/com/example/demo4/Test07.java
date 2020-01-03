@@ -267,7 +267,7 @@ public class Test07 {
         long n = 32;
         long memory = (long) Math.pow(2, n);
         long memoryKb = (long) (memory/Math.pow(2,10));
-        System.out.println(memoryKb/4);
+        System.out.println(memoryKb/1);
     }
 
     public static final String DEFAULT_FORMAT = "YYYY-MM-dd";
