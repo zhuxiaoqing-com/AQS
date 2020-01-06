@@ -267,7 +267,7 @@ public class Test07 {
         long n = 32;
         long memory = (long) Math.pow(2, n);
         long memoryKb = (long) (memory/Math.pow(2,10));
-        System.out.println(memoryKb/1);
+        System.out.println(memoryKb/4);
     }
 
     public static final String DEFAULT_FORMAT = "YYYY-MM-dd";
@@ -307,6 +307,11 @@ public class Test07 {
         System.out.println(s);
         //System.out.println(JSON.parseObject(s, Temp.class).getClass());
         System.out.println(JSON.parseObject(s,Temp.class));
+    }
+
+    @Test
+    public void test20() throws Exception {
+        Class<?> a = A.class;
     }
 
 
