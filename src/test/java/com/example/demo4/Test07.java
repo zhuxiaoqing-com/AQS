@@ -311,7 +311,8 @@ public class Test07 {
 
     @Test
     public void test20() throws Exception {
-        Class<?> a = A.class;
+        System.out.println(Math.pow(2,14)/64);
+        System.out.println(Math.log(256)/Math.log(2));
     }
 
 
