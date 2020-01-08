@@ -170,7 +170,7 @@ public class HttpUitlTest {
         String uri = "/role/selectId";
         Map<String, String> params = new LinkedHashMap<>();
         // 72058144007497728 本机
-        params.put("roleId", "1152930300834447939");
+        params.put("roleId", "1152930300834362913");
         post(params, uri);
     }
 
