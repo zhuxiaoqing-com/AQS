@@ -205,7 +205,7 @@ public class Test07 {
        /* toBinary(0.5);
         toBinary(1.3);*/
         float a = 7.8125f;
-        DecimalToBit.getInstance().toBinary(a);
+        DecimalToBit.getInstance().toBinary(145.39);
         int l = Float.floatToRawIntBits(a);
         long l1 = Float.floatToIntBits(a);
         System.out.println(Long.toBinaryString(l));

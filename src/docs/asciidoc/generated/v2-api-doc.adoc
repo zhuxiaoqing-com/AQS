@@ -1,0 +1,5206 @@
+= 日志
+
+
+[[_overview]]
+== Overview
+日志详细
+
+
+=== Version information
+[%hardbreaks]
+__Version__ : 1.1
+
+
+
+
+
+
+[[_definitions]]
+== Definitions
+
+[[_abysslog]]
+=== AbyssLog
+深渊魔塔副本日志
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**exp** +
+__optional__|经验奖励|integer (int64)
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**reward** +
+__optional__|获取奖励 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**starNum** +
+__optional__|当前星星数|integer (int64)
+|**tier** +
+__optional__|层|integer (int64)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_accumulateactivitylog]]
+=== AccumulateActivityLog
+累充日志
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**reward** +
+__optional__|奖励 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|**welfareId** +
+__optional__|配置奖励表id|integer (int32)
+|===
+
+
+[[_activescorechangelog]]
+=== ActiveScoreChangeLog
+活跃度变化日志
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**actId** +
+__optional__|导致该活跃度变化的活动id|integer (int32)
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**dailyTotalScore** +
+__optional__|每日累计活跃度|integer (int32)
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**nowActiveScore** +
+__optional__|当前活跃度|integer (int32)
+|**oldActiveScore** +
+__optional__|旧的活跃度|integer (int32)
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_advanceactivelog]]
+=== AdvanceActiveLog
+进阶线激活日志
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**costItem** +
+__optional__|消耗货币 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**secondType** +
+__optional__|进阶线二级类型(仅结界使用)|integer (int32)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**type** +
+__optional__|合成类型 1.坐骑 2.魔灵(战旗) 3.神臂 4.神冠 5.神器 6.结界(足迹) 7.神兵 8.神翼|integer (int32)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_advancedressactivelog]]
+=== AdvanceDressActiveLog
+进阶线装扮激活日志
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**dressId** +
+__optional__|进阶线装扮id|integer (int32)
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**type** +
+__optional__|合成类型 1.坐骑 2.魔灵(战旗) 3.神臂 4.神冠 5.神器 6.结界(足迹) 7.神兵 8.神翼|integer (int32)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_advancestagelog]]
+=== AdvanceStageLog
+资源副本
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**advanceId** +
+__optional__|进阶线类型 1:坐骑 2:魔灵 3:神臂 4:神冠 5:神器|integer (int32)
+|**cfgId** +
+__optional__|通关的进阶线配置表Id|integer (int32)
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**firstPass** +
+__optional__|1:是首通 0:不是首通|integer (int32)
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**reward** +
+__optional__|奖励 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**sweep** +
+__optional__|1:是扫荡 0:不是扫荡|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_advancetowerlog]]
+=== AdvanceTowerLog
+试练塔
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**advanceId** +
+__optional__|进阶线类型 6:结界 7:神兵 8:神翼|integer (int32)
+|**cfgId** +
+__optional__|通关的进阶线配置表Id（如果是扫荡就是扫荡的得最高层数）|integer (int32)
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**firstPass** +
+__optional__|1:是首通 0:不是首通|integer (int32)
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**reward** +
+__optional__|奖励 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**sweep** +
+__optional__|1:是扫荡 0:不是扫荡|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_ancientlog]]
+=== AncientLog
+远古遗迹
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**cfgId** +
+__optional__|遗迹Id|integer (int32)
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**residueStrength** +
+__optional__|剩余体力|integer (int32)
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_antiquelog]]
+=== AntiqueLog
+藏品日志
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**antiqueMapId** +
+__optional__|藏品地图|integer (int32)
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**cost** +
+__optional__|提交的藏品物品 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_arenadailycountrewardlog]]
+=== ArenaDailyCountRewardLog
+竞技场每日结算奖励日志
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**arenaType** +
+__optional__|竞技场类型 1:单服 2:多服|integer (int32)
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**countRank** +
+__optional__|结算的时候的排名|integer (int32)
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**reward** +
+__optional__|奖励 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_arenadarelog]]
+=== ArenaDareLog
+竞技场挑战日志
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**alreadyUseCount** +
+__optional__|已经挑战次数|integer (int32)
+|**arenaType** +
+__optional__|竞技场类型 1:单服 2:多服|integer (int32)
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**newPeakRank** +
+__optional__|竞技场挑战后的最高历史排名或积分，单服排名，多服积分|integer (int32)
+|**newRank** +
+__optional__|竞技场挑战后排名|integer (int32)
+|**newScore** +
+__optional__|竞技场挑战后积分|integer (int32)
+|**oldPeakRank** +
+__optional__|竞技场挑战前的最高历史排名或积分，单服排名，多服积分|integer (int32)
+|**oldRank** +
+__optional__|竞技场挑战前排名|integer (int32)
+|**oldScore** +
+__optional__|竞技场挑战前积分|integer (int32)
+|**peakRankReward** +
+__optional__|突破历史最高奖励 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|**win** +
+__optional__|是否胜利 1: 胜利 0: 失败|integer (int32)
+|**winOrLoseReward** +
+__optional__|胜利或者失败奖励 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|===
+
+
+[[_arenapeakgraderewardlog]]
+=== ArenaPeakGradeRewardLog
+竞技场最高段位奖励
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**arenaType** +
+__optional__|竞技场类型 1:单服 2:多服|integer (int32)
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**peakScore** +
+__optional__|领取奖励时的最高积分|integer (int32)
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**reward** +
+__optional__|奖励 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**rewardId** +
+__optional__|领取的奖励id|integer (int32)
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_assistasklog]]
+=== AssistAskLog
+请求协助日志
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**assistRid** +
+__optional__|协助者的玩家id rid1\|rid2|string
+|**assistSuccRid** +
+__optional__|协助成功的玩家id rid1\|rid2|string
+|**assistType** +
+__optional__|协助类型|integer (int32)
+|**cfgId** +
+__optional__|BOSS协助进入地图需要使用的cfg id|integer (int64)
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**endTime** +
+__optional__|协助删除时间|integer (int64)
+|**gbId** +
+__optional__|协助唯一 Id|integer (int64)
+|**id** +
+__optional__|ID|integer (int32)
+|**monsterCfgId** +
+__optional__|BOSS协助需要击杀的bossId|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**questId** +
+__optional__|同盟任务协助 任务Id|integer (int32)
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**startTime** +
+__optional__|协助开始时间|integer (int64)
+|**success** +
+__optional__|协助是否成功 0：失败 1：成功|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_backresourcelog]]
+=== BackResourceLog
+找回类型日志
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**backResourceId** +
+__optional__|找回资源id|integer (int32)
+|**backResourceName** +
+__optional__|找回资源name|string
+|**backResourceRewardId** +
+__optional__|找回资源奖励表配置Id|integer (int32)
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**count** +
+__optional__|找回次数|integer (int32)
+|**exp** +
+__optional__|找回资源经验|integer (int64)
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**reward** +
+__optional__|找回资源奖励 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_bifrostinstancelog]]
+=== BifrostInstanceLog
+彩虹桥副本日志
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**endTime** +
+__optional__|endTime|integer (int64)
+|**exp** +
+__optional__|exp|integer (int64)
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**reward** +
+__optional__|获取奖励 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**startTime** +
+__optional__|开始时间|integer (int64)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_bossfirstkilllog]]
+=== BossFirstKillLog
+Boss首杀
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**bossCfgId** +
+__optional__|怪物配置id|integer (int64)
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_buygoodslog]]
+=== BuyGoodsLog
+商城购买日志
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**cost** +
+__optional__|消耗 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**goodId** +
+__optional__|商品id|integer (int32)
+|**id** +
+__optional__|ID|integer (int32)
+|**itemId** +
+__optional__|道具Id|integer (int32)
+|**mallType** +
+__optional__|商城分类 1：钻石商城 2：绑钻商城 3：金币商城 4：充值 5：绑金商城 6：公会商城 7：BOSS商城 8：竞技商城 9：限时抢购 10：炫酷外观 11：兑换|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**reward** +
+__optional__|奖励 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_chatlog]]
+=== ChatLog
+聊天日志
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel** +
+__optional__|频道|integer (int32)
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**content** +
+__optional__|内容|string
+|**id** +
+__optional__|ID|integer (int32)
+|**loginName** +
+__optional__|账号名|string
+|**name** +
+__optional__|角色名称|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**sendToRoleId** +
+__optional__|接收者id|integer (int64)
+|**sendToRoleName** +
+__optional__|接收者名|string
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|**userId** +
+__optional__|账号id|integer (int64)
+|===
+
+
+[[_composelog]]
+=== ComposeLog
+角色合成记录
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**composeItemId** +
+__optional__|合成表字段id|integer (int32)
+|**costCoin** +
+__optional__|消耗货币 货币类型1\|货币数量&amp;货币类型2\|货币数量|string
+|**costItem** +
+__optional__|消耗货币 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**expectComposeCount** +
+__optional__|期望合成数量|integer (int32)
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**realityComposeCount** +
+__optional__|实际合成数量|integer (int32)
+|**reward** +
+__optional__|奖励 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**type** +
+__optional__|合成类型 1.装备 2.宝石 3.魔神 4.铭文 5.圣纹|integer (int32)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_createrolelog]]
+=== CreateRoleLog
+创角日志
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**career** +
+__optional__|职业|integer (int32)
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**sex** +
+__optional__|性别|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|**userId** +
+__optional__|帐号id|integer (int64)
+|===
+
+
+[[_createuserlog]]
+=== CreateUserLog
+创建用户日志
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**id** +
+__optional__|ID|integer (int32)
+|**ip** +
+__optional__|登录Ip|string
+|**loginName** +
+__optional__|sdk传的帐号|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**userId** +
+__optional__|账号id|integer (int64)
+|===
+
+
+[[_dailygiftlog]]
+=== DailyGiftLog
+每日礼包
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**giftId** +
+__optional__|礼包Id|integer (int32)
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**reward** +
+__optional__|获取奖励 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_dailyoneactivitylog]]
+=== DailyOneActivityLog
+每日一元
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**reward** +
+__optional__|奖励 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_dailyrechargeactivitylog]]
+=== DailyRechargeActivityLog
+每日充值
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**reward** +
+__optional__|奖励 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|**welfareId** +
+__optional__|配置奖励表id|integer (int32)
+|===
+
+
+[[_daywelfareactivitylog]]
+=== DayWelfareActivityLog
+夜间奖励
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**reward** +
+__optional__|奖励 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|**welfareId** +
+__optional__|配置奖励表id|integer (int32)
+|===
+
+
+[[_devilpetactivelog]]
+=== DevilPetActiveLog
+宠物激活
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**costItem** +
+__optional__|消耗货币 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**devilPetId** +
+__optional__|宠物Id|integer (int32)
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_devilpetbattlelog]]
+=== DevilPetBattleLog
+宠物出战
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**devilPetId** +
+__optional__|宠物Id|integer (int32)
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_devilpetuplevellog]]
+=== DevilPetUpLevelLog
+宠物升级
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**devilPetId** +
+__optional__|宠物Id|integer (int32)
+|**exp** +
+__optional__|变化前经验|integer (int64)
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**newCfgId** +
+__optional__|加经验后配置id|integer (int32)
+|**newExp** +
+__optional__|变化后经验|integer (int64)
+|**oldCfgId** +
+__optional__|加经验前配置id|integer (int32)
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_devilpetupstarlog]]
+=== DevilPetUpStarLog
+宠物升星
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**costItem** +
+__optional__|消耗货币 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**devilPetId** +
+__optional__|宠物Id|integer (int32)
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**newStarCfgId** +
+__optional__|升级后星星配置表id|integer (int32)
+|**oldStarCfgId** +
+__optional__|升级前星星配置表id|integer (int32)
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_diamonddialactivitylog]]
+=== DiamondDialActivityLog
+钻石转盘
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**cost** +
+__optional__|消耗 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**reward** +
+__optional__|奖励 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|**welfareId** +
+__optional__|配置奖励表id|integer (int32)
+|===
+
+
+[[_dungeonmaplog]]
+=== DungeonMapLog
+进入|退出地牢刷怪记录
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**activeScore** +
+__optional__|人物等级|integer (int32)
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**id** +
+__optional__|ID|integer (int32)
+|**level** +
+__optional__|人物等级|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**operate** +
+__optional__|0:退出地图 1:进入地图|integer (int32)
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**sceneId** +
+__optional__|地图id|integer (int32)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_emaillog]]
+=== EmailLog
+角色邮件日志
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**closingDate** +
+__optional__|截止日期|integer (int64)
+|**emailId** +
+__optional__|邮件id|integer (int64)
+|**emailIndex** +
+__optional__|多封邮件标记|integer (int32)
+|**hasAttachment** +
+__optional__|0:没有 1:有|integer (int32)
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**params** +
+__optional__|邮件道具附件|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**receiveTime** +
+__optional__|接收邮件时间|integer (int64)
+|**resources** +
+__optional__|邮件附件物品 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**sendName** +
+__optional__|发件人|string
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**sumEmails** +
+__optional__|多封邮件总数量|integer (int32)
+|**templateId** +
+__optional__|邮件模板|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_emailstatelog]]
+=== EmailStateLog
+角色更新邮件状态表
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**emailId** +
+__optional__|邮件id|integer (int64)
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**state** +
+__optional__|邮件状态 0:创建 1:阅读 2:领取附件 3:邮件已删除|integer (int64)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_enchantmentupgradelog]]
+=== EnchantmentUpgradeLog
+结界升级
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**addExp** +
+__optional__|增加的经验|integer (int64)
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**costItem** +
+__optional__|消耗货币 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**newCfgId** +
+__optional__|增加经验后的进阶线cfgId|integer (int32)
+|**newExp** +
+__optional__|增加经验后的经验|integer (int64)
+|**oldCfgId** +
+__optional__|增加经验前进阶线cfgId|integer (int32)
+|**oldExp** +
+__optional__|增加经验前的经验|integer (int64)
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**type** +
+__optional__|结界类型|integer (int32)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_equipartistlog]]
+=== EquipArtistLog
+装备大师/星级大师日志
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**nowLevel** +
+__optional__|现在等级|integer (int32)
+|**oldLevel** +
+__optional__|旧等级|integer (int32)
+|**operateType** +
+__optional__|5: 激活 6：穿脱装备|integer (int32)
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**type** +
+__optional__|1: 装备大师 2：星级大师|integer (int32)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_equipbosslog]]
+=== EquipBossLog
+装备boss
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**bossCfgId** +
+__optional__|装备boss配置表id|integer (int32)
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**reward** +
+__optional__|奖励 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**type** +
+__optional__|参与类型 1：击杀奖 2：参与奖|integer (int32)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_equipcollectlog]]
+=== EquipCollectLog
+装备收集
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**collectLevel** +
+__optional__|收集等级|integer (int32)
+|**equipLevel** +
+__optional__|装备阶级|integer (int64)
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_equipintensifylog]]
+=== EquipIntensifyLog
+装备强化
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**costItem** +
+__optional__|消耗货币 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**id** +
+__optional__|ID|integer (int32)
+|**major** +
+__optional__|阶数|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**newLevel** +
+__optional__|变化后等级|integer (int32)
+|**oldLevel** +
+__optional__|变化前等级|integer (int32)
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**slot** +
+__optional__|槽位|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_equipputonorofflog]]
+=== EquipPutOnOrOffLog
+装备穿脱日志
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**id** +
+__optional__|ID|integer (int32)
+|**major** +
+__optional__|阶数|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**nowEquipId** +
+__optional__|新的穿戴装备id|integer (int32)
+|**oldEquipId** +
+__optional__|旧的穿戴装备id|integer (int32)
+|**operateType** +
+__optional__|0：脱装备 1：穿装备|integer (int32)
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**slot** +
+__optional__|槽位|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_equiprefinelog]]
+=== EquipRefineLog
+装备淬炼记录
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**costItem** +
+__optional__|消耗资源 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**id** +
+__optional__|ID|integer (int32)
+|**major** +
+__optional__|阶数|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**slot** +
+__optional__|槽位|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_equipresolvelog]]
+=== EquipResolveLog
+装备分解
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**cost** +
+__optional__|消耗 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**reward** +
+__optional__|奖励 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_equipupstarlog]]
+=== EquipUpStarLog
+装备升星
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**costItem** +
+__optional__|消耗货币 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**id** +
+__optional__|ID|integer (int32)
+|**major** +
+__optional__|阶数|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**newLevel** +
+__optional__|变化后等级|integer (int32)
+|**oldLevel** +
+__optional__|变化前等级|integer (int32)
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**slot** +
+__optional__|槽位|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_escortdartlog]]
+=== EscortDartLog
+押镖日志
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**dartType** +
+__optional__|镖车类型|integer (int32)
+|**endTime** +
+__optional__|结束时间|integer (int64)
+|**guildId** +
+__optional__|所属公会id|integer (int64)
+|**guildReward** +
+__optional__|公会奖励 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**hpRatio** +
+__optional__|血量万分比|integer (int32)
+|**id** +
+__optional__|ID|integer (int32)
+|**manageGuildReward** +
+__optional__|经营公会奖励 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**name** +
+__optional__|角色名称|string
+|**perfect** +
+__optional__|perfect 1:完美 0：破损|integer (int32)
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**playerReward** +
+__optional__|玩家奖励 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**startTime** +
+__optional__|开始时间|integer (int64)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_everyloginactivitylog]]
+=== EveryLoginActivityLog
+每日登录
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**reward** +
+__optional__|奖励 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|**welfareId** +
+__optional__|配置奖励表id|integer (int32)
+|===
+
+
+[[_expdruguselog]]
+=== ExpDrugUseLog
+经验药水使用日志
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**endTime** +
+__optional__|结束时间|integer (int64)
+|**id** +
+__optional__|ID|integer (int32)
+|**itemId** +
+__optional__|使用过的道具id|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**startTime** +
+__optional__|开始时间|integer (int64)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_expinstancelog]]
+=== ExpInstanceLog
+经验副本(幽冥宝船)
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**cfgId** +
+__optional__|挑战的经验副本的配置表id|integer (int64)
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**exp** +
+__optional__|exp|integer (int64)
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**reward** +
+__optional__|获取奖励 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**startTime** +
+__optional__|开始时间|integer (int64)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_expquesttasklog]]
+=== ExpQuestTaskLog
+经验任务日志
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**exp** +
+__optional__|经验奖励|integer (int64)
+|**expQuestRound** +
+__optional__|经验任务完成环数|integer (int32)
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**reward** +
+__optional__|奖励 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**sweep** +
+__optional__|是否是扫荡 0: 不是扫荡 1:是扫荡|integer (int32)
+|**taskId** +
+__optional__|完成的经验任务id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**type** +
+__optional__|完成任务的类型 0:普通领取 1:1.5倍领取|integer (int32)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_firstrechargeactivitylog]]
+=== FirstRechargeActivityLog
+首充奖励
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**reward** +
+__optional__|奖励 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|**welfareId** +
+__optional__|配置奖励表id|integer (int32)
+|===
+
+
+[[_friendlog]]
+=== FriendLog
+好友添加或删除记录
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**operateType** +
+__optional__|1:添加 2:删除 3:拉黑 4:取消拉黑|integer (int32)
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**targetRoleId** +
+__optional__|被操作人id|integer (int64)
+|**targetRoleName** +
+__optional__|被操作人名称|string
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_geniusactivatelog]]
+=== GeniusActivateLog
+天赋激活记录
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**geniusId** +
+__optional__|激活的天赋id|integer (int32)
+|**geniusLevel** +
+__optional__|激活的天赋id|integer (int32)
+|**geniusStageId** +
+__optional__|激活的天赋阶级id|integer (int32)
+|**geniusStageName** +
+__optional__|激活的天赋阶级Name|string
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**success** +
+__optional__|是否成功 1:成功 0:失败|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_godapplianceskillupgradelog]]
+=== GodApplianceSkillUpgradeLog
+神器技能升级
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**costItem** +
+__optional__|消耗货币 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**newCfgUpSkillId** +
+__optional__|新的升级技能表id|integer (int32)
+|**oldCfgUpSkillId** +
+__optional__|旧的升级技能表id|integer (int32)
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_godapplianceupgradelog]]
+=== GodApplianceUpgradeLog
+神器升级
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**addExp** +
+__optional__|增加的经验|integer (int64)
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**costItem** +
+__optional__|消耗货币 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**newCfgId** +
+__optional__|增加经验后的进阶线cfgId|integer (int32)
+|**newExp** +
+__optional__|增加经验后的经验|integer (int64)
+|**oldCfgId** +
+__optional__|增加经验前进阶线cfgId|integer (int32)
+|**oldExp** +
+__optional__|增加经验前的经验|integer (int64)
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_godarmskillupgradelog]]
+=== GodArmSkillUpgradeLog
+神臂技能升级
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**costItem** +
+__optional__|消耗货币 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**newCfgUpSkillId** +
+__optional__|新的升级技能表id|integer (int32)
+|**oldCfgUpSkillId** +
+__optional__|旧的升级技能表id|integer (int32)
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_godarmupgradelog]]
+=== GodArmUpgradeLog
+神臂升级
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**addExp** +
+__optional__|增加的经验|integer (int64)
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**costItem** +
+__optional__|消耗货币 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**newCfgId** +
+__optional__|增加经验后的进阶线cfgId|integer (int32)
+|**newExp** +
+__optional__|增加经验后的经验|integer (int64)
+|**oldCfgId** +
+__optional__|增加经验前进阶线cfgId|integer (int32)
+|**oldExp** +
+__optional__|增加经验前的经验|integer (int64)
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_godcrownskillupgradelog]]
+=== GodCrownSkillUpgradeLog
+神冠技能升级
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**costItem** +
+__optional__|消耗货币 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**newCfgUpSkillId** +
+__optional__|新的升级技能表id|integer (int32)
+|**oldCfgUpSkillId** +
+__optional__|旧的升级技能表id|integer (int32)
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_godcrownupgradelog]]
+=== GodCrownUpgradeLog
+神冠升级
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**addExp** +
+__optional__|增加的经验|integer (int64)
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**costItem** +
+__optional__|消耗货币 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**newCfgId** +
+__optional__|增加经验后的进阶线cfgId|integer (int32)
+|**newExp** +
+__optional__|增加经验后的经验|integer (int64)
+|**oldCfgId** +
+__optional__|增加经验前进阶线cfgId|integer (int32)
+|**oldExp** +
+__optional__|增加经验前的经验|integer (int64)
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_godweaponlog]]
+=== GodWeaponLog
+神兵升级记录
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**addExp** +
+__optional__|增加的经验|integer (int64)
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**costItem** +
+__optional__|消耗货币 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**newExp** +
+__optional__|增加经验后的经验|integer (int64)
+|**newRank** +
+__optional__|新的阶数|integer (int32)
+|**oldExp** +
+__optional__|增加经验前的经验|integer (int64)
+|**oldRank** +
+__optional__|旧的阶数|integer (int32)
+|**operateType** +
+__optional__|操作类型 1：解封 2：激活 3：升级|integer (int32)
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|**weaponType** +
+__optional__|神兵类型|integer (int32)
+|===
+
+
+[[_godweaponskilllog]]
+=== GodWeaponSkillLog
+神兵技能日志
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**costItem** +
+__optional__|消耗货币 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**newLevel** +
+__optional__|技能新的等级|integer (int32)
+|**oldLevel** +
+__optional__|技能旧的等级|integer (int32)
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**skillId** +
+__optional__|技能id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|**weaponType** +
+__optional__|神兵类型|integer (int32)
+|===
+
+
+[[_godweaponskillupgradelog]]
+=== GodWeaponSkillUpgradeLog
+神兵技能升级
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**costItem** +
+__optional__|消耗货币 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**newCfgUpSkillId** +
+__optional__|新的升级技能表id|integer (int32)
+|**oldCfgUpSkillId** +
+__optional__|旧的升级技能表id|integer (int32)
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_godweaponupgradelog]]
+=== GodWeaponUpgradeLog
+神兵升级
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**addExp** +
+__optional__|增加的经验|integer (int64)
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**costItem** +
+__optional__|消耗货币 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**newCfgId** +
+__optional__|增加经验后的进阶线cfgId|integer (int32)
+|**newExp** +
+__optional__|增加经验后的经验|integer (int64)
+|**oldCfgId** +
+__optional__|增加经验前进阶线cfgId|integer (int32)
+|**oldExp** +
+__optional__|增加经验前的经验|integer (int64)
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_godwingupgradelog]]
+=== GodWingUpgradeLog
+神翼升级
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**addExp** +
+__optional__|增加的经验|integer (int64)
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**costItem** +
+__optional__|消耗货币 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**newCfgId** +
+__optional__|增加经验后的进阶线cfgId|integer (int32)
+|**newExp** +
+__optional__|增加经验后的经验|integer (int64)
+|**oldCfgId** +
+__optional__|增加经验前进阶线cfgId|integer (int32)
+|**oldExp** +
+__optional__|增加经验前的经验|integer (int64)
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_goldboxactivitylog]]
+=== GoldBoxActivityLog
+金币宝箱
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**cost** +
+__optional__|消耗 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**count** +
+__optional__|当前剩余次数|integer (int32)
+|**freeCount** +
+__optional__|当前免费剩余次数|integer (int32)
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**reward** +
+__optional__|奖励 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**type** +
+__optional__|领取类型1：领取金币 2：领取经验|integer (int32)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_grossgoldenbattlecollectlog]]
+=== GrossGoldenBattleCollectLog
+黄金战场采集日志
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**id** +
+__optional__|ID|integer (int32)
+|**pearlCfgId** +
+__optional__|圣杯配置Id|integer (int32)
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**reward** +
+__optional__|掉落资源 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|===
+
+
+[[_grossgoldenbattlemonsterkilllog]]
+=== GrossGoldenBattleMonsterKillLog
+黄金战场怪物击杀日志
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**ascriptionRids** +
+__optional__|归属玩家 serverId\|rid\|name\|level&amp;serverId\|rid\|name\|level|string
+|**bossCfgId** +
+__optional__|怪物配置id|integer (int32)
+|**bossName** +
+__optional__|怪物名字|string
+|**id** +
+__optional__|ID|integer (int32)
+|**monsterType** +
+__optional__|怪物类型 1：boss 2:精英|integer (int32)
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**reward** +
+__optional__|掉落资源 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|===
+
+
+[[_guildanswerranklog]]
+=== GuildAnswerRankLog
+公会答题日志
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**answerRids** +
+__optional__|rid1\|rid2|string
+|**endTime** +
+__optional__|结束时间|integer (int64)
+|**guildId** +
+__optional__|公会id|integer (int64)
+|**guildName** +
+__optional__|公会名字|string
+|**guildRank** +
+__optional__|公会排名|integer (int32)
+|**id** +
+__optional__|ID|integer (int32)
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**rightAnswer** +
+__optional__|正确答案数量|integer (int32)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**startTime** +
+__optional__|开始时间|integer (int64)
+|**time** +
+__optional__|时间|integer (int64)
+|===
+
+
+[[_guildbarbecuelog]]
+=== GuildBarbecueLog
+公会烤肉
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**exp** +
+__optional__|经验奖励|integer (int64)
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**operateType** +
+__optional__|聚餐操作 0:喝酒 1:吃烤肉|integer (int32)
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_guildbossguildranklog]]
+=== GuildBossGuildRankLog
+公会boss公会排行日志
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**guildId** +
+__optional__|公会id|integer (int64)
+|**guildName** +
+__optional__|公会名字|string
+|**guildRank** +
+__optional__|排行|integer (int32)
+|**id** +
+__optional__|ID|integer (int32)
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**reward** +
+__optional__|获取奖励 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|===
+
+
+[[_guildbossroleranklog]]
+=== GuildBossRoleRankLog
+公会boss个人排行日志
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**exp** +
+__optional__|经验奖励|integer (int64)
+|**guildId** +
+__optional__|公会id|integer (int64)
+|**guildName** +
+__optional__|公会名字|string
+|**id** +
+__optional__|ID|integer (int32)
+|**joinTimeNumber** +
+__optional__|参与活动的时间(总毫秒数)|integer (int64)
+|**name** +
+__optional__|角色名称|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**rank** +
+__optional__|排行|integer (int32)
+|**reward** +
+__optional__|获取奖励 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_guildmemberlog]]
+=== GuildMemberLog
+公会成员
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**guildId** +
+__optional__|公会id|integer (int64)
+|**guildName** +
+__optional__|公会名|string
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**state** +
+__optional__|状态 -1：加入公会 0：自行退出 1：被踢出公会 2:公会解散 3：公会合并|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_guildpartylog]]
+=== GuildPartyLog
+公会聚会
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**id** +
+__optional__|ID|integer (int32)
+|**joinRoleRewardInfo** +
+__optional__|参加活动的玩家的奖励信息 参与人数\|经验奖励&amp;参与人数\|经验奖励|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|===
+
+
+[[_guildpassonexplog]]
+=== GuildPassOnExpLog
+公会传功
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**byPassOnExpRoleExp** +
+__optional__|被传功者经验奖励|integer (int64)
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**passOnExpRoleExp** +
+__optional__|传功者经验奖励|integer (int64)
+|**passOnExpRoleId** +
+__optional__|传功者Id|integer (int64)
+|**passOnExpRoleLevel** +
+__optional__|传功者等级|integer (int32)
+|**passOnExpRoleName** +
+__optional__|传功者名字|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**roleLevel** +
+__optional__|被传功者等级|integer (int32)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_guildpositiontracelog]]
+=== GuildPositionTraceLog
+公会位置变化
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**OperatorId** +
+__optional__|操作人id|integer (int64)
+|**OperatorName** +
+__optional__|操作人名字|string
+|**byOperatorId** +
+__optional__|被操作人id|integer (int64)
+|**byOperatorName** +
+__optional__|被操作人名字|string
+|**guildId** +
+__optional__|公会id|integer (int64)
+|**guildName** +
+__optional__|公会名|string
+|**id** +
+__optional__|ID|integer (int32)
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**positionId** +
+__optional__|职位id|integer (int32)
+|**positionName** +
+__optional__|职位名称|string
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|===
+
+
+[[_guildredpacketlog]]
+=== GuildRedPacketLog
+公会红包
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**coinCount** +
+__optional__|红包金钱奖励数量|integer (int32)
+|**coinType** +
+__optional__|红包金钱奖励类型|integer (int32)
+|**guildId** +
+__optional__|公会id|integer (int64)
+|**guildName** +
+__optional__|公会名|string
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_guildrenamelog]]
+=== GuildRenameLog
+公会改名日志
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**guildId** +
+__optional__|公会id|integer (int64)
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**newGuildName** +
+__optional__|新公会名|string
+|**oldGuildName** +
+__optional__|原公会名|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_guildtasklog]]
+=== GuildTaskLog
+公会任务日志
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**exp** +
+__optional__|经验奖励|integer (int64)
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**prestige** +
+__optional__|声望奖励|integer (int32)
+|**reward** +
+__optional__|获取奖励 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**state** +
+__optional__|任务状态(2:已接受,3:已提交 4:放弃)|integer (int32)
+|**taskId** +
+__optional__|任务id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_guildtriallog]]
+=== GuildTrialLog
+公会试炼
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**floor** +
+__optional__|层数|integer (int32)
+|**guildId** +
+__optional__|公会id|integer (int64)
+|**guildName** +
+__optional__|公会名|string
+|**id** +
+__optional__|ID|integer (int32)
+|**operateId** +
+__optional__|操作人Id|integer (int64)
+|**operateName** +
+__optional__|操作人名字|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|===
+
+
+[[_guilduplevellog]]
+=== GuildUpLevelLog
+公会升级
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**guildId** +
+__optional__|公会id|integer (int64)
+|**guildName** +
+__optional__|公会名|string
+|**id** +
+__optional__|ID|integer (int32)
+|**newLevel** +
+__optional__|变化后等级|integer (int32)
+|**oldLevel** +
+__optional__|变化前等级|integer (int32)
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|===
+
+
+[[_guildwarranklog]]
+=== GuildWarRankLog
+公会战信息
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**endTime** +
+__optional__|endTime|integer (int64)
+|**guildRanker** +
+__optional__|公会排行榜 攻击方公会id\|公会名称\|公会积分&amp;攻击方公会id\|公会名称\|公会积分|string
+|**id** +
+__optional__|ID|integer (int32)
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**roleRanker** +
+__optional__|玩家排行榜 rid\|name\|guildId\|guildName\|score&amp;rid\|name\|guildId\|guildName\|score|string
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**startTime** +
+__optional__|开始时间|integer (int64)
+|**time** +
+__optional__|时间|integer (int64)
+|===
+
+
+[[_heroactivelog]]
+=== HeroActiveLog
+武神激活
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**costItem** +
+__optional__|消耗货币 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**heroId** +
+__optional__|武神id|integer (int64)
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_heroactivetasklog]]
+=== HeroActiveTaskLog
+武神激活日志
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**phaseId** +
+__optional__|阶段id|integer (int32)
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_herobattlelog]]
+=== HeroBattleLog
+武神出战
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**heroId** +
+__optional__|武神id|integer (int64)
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_heroupfetterlog]]
+=== HeroUpFetterLog
+武神羁绊升级
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**fetterId** +
+__optional__|武神Id|integer (int32)
+|**id** +
+__optional__|ID|integer (int32)
+|**level** +
+__optional__|变化前等级|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**newLevel** +
+__optional__|变化后等级|integer (int32)
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_herouplevellog]]
+=== HeroUpLevelLog
+武神升级
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**exp** +
+__optional__|变化前经验|integer (int64)
+|**heroId** +
+__optional__|武神Id|integer (int32)
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**newCfgId** +
+__optional__|加经验后配置id|integer (int32)
+|**newExp** +
+__optional__|变化后经验|integer (int64)
+|**oldCfgId** +
+__optional__|加经验前配置id|integer (int32)
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_heroupqualitylog]]
+=== HeroUpQualityLog
+武神提品
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**costItem** +
+__optional__|消耗货币 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**heroId** +
+__optional__|武神Id|integer (int32)
+|**id** +
+__optional__|ID|integer (int32)
+|**level** +
+__optional__|变化前等级|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**newLevel** +
+__optional__|变化后等级|integer (int32)
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_heroupstarlog]]
+=== HeroUpStarLog
+武神升星
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**costItem** +
+__optional__|消耗货币 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**heroId** +
+__optional__|武神Id|integer (int32)
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**newStarCfgId** +
+__optional__|升级后星星配置表id|integer (int32)
+|**oldStarCfgId** +
+__optional__|升级前星星配置表id|integer (int32)
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_inlaycrystallog]]
+=== InlayCrystalLog
+镶嵌宝石
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**crystalId** +
+__optional__|宝石id|integer (int32)
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**operate** +
+__optional__|操作类型 0：卸下 1：镶嵌|integer (int32)
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**slot** +
+__optional__|宝石唯一槽位|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_instancetargetlog]]
+=== InstanceTargetLog
+副本目标信息
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**goalId** +
+__optional__|当前已接取的副本目标id|integer (int32)
+|**id** +
+__optional__|ID|integer (int32)
+|**instanceId** +
+__optional__|副本id|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_investactivitylog]]
+=== InvestActivityLog
+投资计划
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**reward** +
+__optional__|奖励 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|**welfareId** +
+__optional__|配置奖励表id|integer (int32)
+|===
+
+
+[[_keycodelog]]
+=== KeyCodeLog
+激活码
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**id** +
+__optional__|ID|integer (int32)
+|**keyCode** +
+__optional__|激活码|string
+|**name** +
+__optional__|角色名称|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**reward** +
+__optional__|奖励 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_killedlog]]
+=== KilledLog
+玩家被击杀记录日志
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**id** +
+__optional__|ID|integer (int32)
+|**killerId** +
+__optional__|击杀者id|integer (int64)
+|**killerName** +
+__optional__|击杀者名字|string
+|**mapCfgId** +
+__optional__|地图id|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|**x** +
+__optional__|坐标x|integer (int32)
+|**y** +
+__optional__|坐标y|integer (int32)
+|**z** +
+__optional__|坐标z|integer (int32)
+|===
+
+
+[[_limitactsignfinishlog]]
+=== LimitActSignFinishLog
+限时活动报名完成日志
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**actId** +
+__optional__|活动Id|integer (int32)
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**id** +
+__optional__|ID|integer (int32)
+|**limitActId** +
+__optional__|限时活动id|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**reward** +
+__optional__|获取奖励 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_limitactsignlog]]
+=== LimitActSignLog
+限时活动报名日志
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**actId** +
+__optional__|活动Id|integer (int32)
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**id** +
+__optional__|ID|integer (int32)
+|**limitActId** +
+__optional__|限时活动id|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_limittimepurchaseactivitylog]]
+=== LimitTimePurchaseActivityLog
+限时购买
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**reward** +
+__optional__|奖励 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|**welfareId** +
+__optional__|配置奖励表id|integer (int32)
+|===
+
+
+[[_loginlog]]
+=== LoginLog
+角色登录日志
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**id** +
+__optional__|ID|integer (int32)
+|**ip** +
+__optional__|登录Ip|string
+|**level** +
+__optional__|等级|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_logoutlog]]
+=== LogoutLog
+角色登出日志
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**id** +
+__optional__|ID|integer (int32)
+|**level** +
+__optional__|等级|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**onlineTime** +
+__optional__|在线时间(秒数)|integer (int32)
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_mapunlocklog]]
+=== MapUnlockLog
+地图解锁
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**sceneId** +
+__optional__|地图id|integer (int32)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_mininginfolog]]
+=== MiningInfoLog
+挖矿日志
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**endTime** +
+__optional__|挖矿结束时间|integer (int64)
+|**id** +
+__optional__|ID|integer (int32)
+|**miningQuality** +
+__optional__|矿镐品质|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**plunderedCount** +
+__optional__|已经被掠夺次数|integer (int32)
+|**residueMiningCount** +
+__optional__|剩余挖矿次数|integer (int32)
+|**reward** +
+__optional__|资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**startTime** +
+__optional__|开始挖矿时间|integer (int64)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_miningpickupgradelog]]
+=== MiningPickUpgradeLog
+挖矿矿镐升级日志
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**LuckyValue** +
+__optional__|当前幸运值|integer (int32)
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**costItem** +
+__optional__|消耗货币 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**nowLevel** +
+__optional__|当前等级|integer (int32)
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**success** +
+__optional__|1：成功 0：失败|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_miningplunderlog]]
+=== MiningPlunderLog
+挖矿掠夺日志
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**plunderedRoleId** +
+__optional__|被掠夺玩家id|integer (int64)
+|**reward** +
+__optional__|资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**success** +
+__optional__|是否掠夺成功 1：成功 0:失败|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_miningrecapturelog]]
+=== MiningRecaptureLog
+挖矿夺回日志
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**assistId** +
+__optional__|协助者id|integer (int64)
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**plunderRoleId** +
+__optional__|掠夺玩家id|integer (int64)
+|**reward** +
+__optional__|资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**success** +
+__optional__|是否夺回成功 1：成功 0:失败|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_mountsdressactivatelog]]
+=== MountsDressActivateLog
+坐骑装扮激活日志
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**dressId** +
+__optional__|装扮id|integer (int32)
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_mountsskillupgradelog]]
+=== MountsSkillUpgradeLog
+坐骑技能升级
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**costItem** +
+__optional__|消耗货币 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**newCfgUpSkillId** +
+__optional__|新的升级技能表id|integer (int32)
+|**oldCfgUpSkillId** +
+__optional__|旧的升级技能表id|integer (int32)
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_mountsupgradelog]]
+=== MountsUpgradeLog
+坐骑升级
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**addExp** +
+__optional__|增加的经验|integer (int64)
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**costItem** +
+__optional__|消耗货币 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**newCfgId** +
+__optional__|增加经验后的进阶线cfgId|integer (int32)
+|**newExp** +
+__optional__|增加经验后的经验|integer (int64)
+|**oldCfgId** +
+__optional__|增加经验前进阶线cfgId|integer (int32)
+|**oldExp** +
+__optional__|增加经验前的经验|integer (int64)
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_mysterystoreactivitylog]]
+=== MysteryStoreActivityLog
+神秘商店
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**cost** +
+__optional__|消耗 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**reward** +
+__optional__|奖励 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|**welfareId** +
+__optional__|配置奖励表id|integer (int32)
+|===
+
+
+[[_offlinehangaddtimelog]]
+=== OfflineHangAddTimeLog
+离线挂机增加时间日志
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**addTime** +
+__optional__|增加时长|integer (int64)
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**currentTime** +
+__optional__|当前时长|integer (int64)
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**oldTime** +
+__optional__|旧的时长|integer (int64)
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_offlinehanglog]]
+=== OfflineHangLog
+离线挂机日志
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**exp** +
+__optional__|exp|integer (int64)
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**residueTime** +
+__optional__|剩余时长|integer (int64)
+|**reward** +
+__optional__|获取奖励 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**totalTime** +
+__optional__|挂机总时长|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_onlinenumlog]]
+=== OnlineNumLog
+在线人数日志
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**id** +
+__optional__|ID|integer (int32)
+|**num** +
+__optional__|人数|integer (int32)
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|===
+
+
+[[_onlinerewardactivitylog]]
+=== OnlineRewardActivityLog
+在线奖励
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**reward** +
+__optional__|奖励 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|**welfareId** +
+__optional__|配置奖励表id|integer (int32)
+|===
+
+
+[[_powerchangelog]]
+=== PowerChangeLog
+战力变化日志
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**action** +
+__optional__|模块\|行为|string
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**nowPower** +
+__optional__|变化后战力|integer (int64)
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**prePower** +
+__optional__|变化前战力|integer (int64)
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_privilegeactivelog]]
+=== PrivilegeActiveLog
+特权激活日志
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**privilegeId** +
+__optional__|特权id|integer (int32)
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_quickpassinstancelog]]
+=== QuickPassInstanceLog
+快速通关副本日志
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**cfgId** +
+__optional__|配置id 个人boss和世界boss 的怪物配置id|integer (int32)
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**exp** +
+__optional__|exp|integer (int64)
+|**id** +
+__optional__|ID|integer (int32)
+|**instanceCfgId** +
+__optional__|副本id|integer (int32)
+|**instanceName** +
+__optional__|副本名称|string
+|**name** +
+__optional__|角色名称|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**reward** +
+__optional__|获取奖励 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_rechargelog]]
+=== RechargeLog
+充值日志
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**count** +
+__optional__|充值总次数|integer (int32)
+|**id** +
+__optional__|ID|integer (int32)
+|**level** +
+__optional__|充值时等级|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**orderId** +
+__optional__|我方订单id|integer (int64)
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**rechargeId** +
+__optional__|充值表id|integer (int32)
+|**rechargeName** +
+__optional__|充值name|string
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**thirdOrderId** +
+__optional__|第三方订单Id|string
+|**time** +
+__optional__|时间|integer (int64)
+|**type** +
+__optional__|充值时类型 1：商城充值 2：特权 3：限时直购|integer (int32)
+|**user** +
+__optional__|用户名|string
+|**value** +
+__optional__|充值金额|integer (int32)
+|===
+
+
+[[_redequipbosslog]]
+=== RedEquipBossLog
+红装boss
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**bossCfgId** +
+__optional__|红装boss配置表id|integer (int32)
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**reward** +
+__optional__|奖励 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_renamelog]]
+=== RenameLog
+重命名日志
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**oldName** +
+__optional__|改名前名字|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|**userId** +
+__optional__|账号id|integer (int64)
+|===
+
+
+[[_rescostlog]]
+=== ResCostLog
+角色消费资源日志
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**action** +
+__optional__|类型名称|string
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**count** +
+__optional__|资源数量|integer (int64)
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**resId** +
+__optional__|资源Id|integer (int32)
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**type** +
+__optional__|消费类型|integer (int32)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_resgainlog]]
+=== ResGainLog
+资源获得日志
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**action** +
+__optional__|类型名称|string
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**count** +
+__optional__|资源数量|integer (int64)
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**resId** +
+__optional__|资源Id|integer (int32)
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**type** +
+__optional__|获取类型|integer (int32)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_roleguildskilllog]]
+=== RoleGuildSkillLog
+玩家公会技能升级
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**costItem** +
+__optional__|消耗货币 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**newLevel** +
+__optional__|变化后等级|integer (int32)
+|**oldLevel** +
+__optional__|变化前等级|integer (int32)
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**skillId** +
+__optional__|公会技能id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_royalefightinstancelog]]
+=== RoyaleFightInstanceLog
+大逃杀
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**exp** +
+__optional__|exp|integer (int64)
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**phase** +
+__optional__|阶段|integer (int32)
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**rank** +
+__optional__|排名|integer (int32)
+|**reward** +
+__optional__|获取奖励 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**sceneLevel** +
+__optional__|地图平均等级|integer (int32)
+|**sceneStartTime** +
+__optional__|地图开启时间|integer (int64)
+|**sceneUniqueId** +
+__optional__|大逃杀地图的唯一id|integer (int32)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_ruinmonsterkilllog]]
+=== RuinMonsterKillLog
+遗迹怪物击杀日志
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**ascriptionRids** +
+__optional__|归属玩家id rid1\|rid2|string
+|**bossCfgId** +
+__optional__|怪物配置id|integer (int32)
+|**bossName** +
+__optional__|怪物名字|string
+|**id** +
+__optional__|ID|integer (int32)
+|**monsterType** +
+__optional__|怪物类型 1：boss 2:精英|integer (int32)
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**reward** +
+__optional__|掉落资源 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|===
+
+
+[[_scenelog]]
+=== SceneLog
+进入|退出地图日志
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**id** +
+__optional__|ID|integer (int32)
+|**level** +
+__optional__|人物等级|integer (int32)
+|**line** +
+__optional__|地图分线|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**operate** +
+__optional__|0:退出地图 1:进入地图|integer (int32)
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**sceneId** +
+__optional__|地图id|integer (int32)
+|**sceneName** +
+__optional__|地图名称|string
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|**x** +
+__optional__|坐标x|integer (int32)
+|**y** +
+__optional__|坐标y|integer (int32)
+|**z** +
+__optional__|坐标z|integer (int32)
+|===
+
+
+[[_settinglog]]
+=== SettingLog
+设置系统配置日志
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**settingInfo** +
+__optional__|设置id\|设置值&amp;设置id\|设置值|string
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_sevenaimactivitylog]]
+=== SevenAimActivityLog
+七日目标
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**reward** +
+__optional__|奖励 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|**welfareId** +
+__optional__|配置奖励表id|integer (int32)
+|===
+
+
+[[_sevenloginactivitylog]]
+=== SevenLoginActivityLog
+七日登录
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**reward** +
+__optional__|奖励 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|**welfareId** +
+__optional__|配置奖励表id|integer (int32)
+|===
+
+
+[[_sevensignactivitylog]]
+=== SevenSignActivityLog
+七日签到
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**dayIndex** +
+__optional__|0每日签到奖励 1累充奖励|integer (int32)
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**reward** +
+__optional__|奖励 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_singlebosslog]]
+=== SingleBossLog
+个人Boss副本
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**exp** +
+__optional__|exp|integer (int64)
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**reward** +
+__optional__|获取奖励 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**score** +
+__optional__|评分|string
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**startTime** +
+__optional__|开始时间|integer (int64)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_skillactivatelog]]
+=== SkillActivateLog
+技能激活日志
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**skillId** +
+__optional__|技能id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_skilluplevellog]]
+=== SkillUpLevelLog
+技能升级日志
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**newLevel** +
+__optional__|新的等级|integer (int32)
+|**oldLevel** +
+__optional__|旧的等级|integer (int32)
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**skillId** +
+__optional__|技能id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_tldcostcoinlog]]
+=== TLDCostCoinLog
+限时消费
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**activityId** +
+__optional__|活动id|integer (int32)
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**reward** +
+__optional__|奖励 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_tlddayrechargelog]]
+=== TLDDayRechargeLog
+连充日志
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**activityId** +
+__optional__|活动id|integer (int32)
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**reward** +
+__optional__|奖励 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**rewardId** +
+__optional__|rewardId|integer (int32)
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_tldexchangelog]]
+=== TLDExchangeLog
+兑换日志
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**activityId** +
+__optional__|活动id|integer (int32)
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**cost** +
+__optional__|奖励 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**exchangeId** +
+__optional__|兑换id|integer (int32)
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**reward** +
+__optional__|奖励 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_tldranklog]]
+=== TLDRankLog
+限时排行
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**activityId** +
+__optional__|活动id|integer (int32)
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**id** +
+__optional__|ID|integer (int32)
+|**indexId** +
+__optional__|领取的奖励是第几档的奖励|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**reward** +
+__optional__|奖励 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_tldtotalrechargelog]]
+=== TLDTotalRechargeLog
+限时累充日志
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**activityId** +
+__optional__|活动id|integer (int32)
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**reward** +
+__optional__|奖励 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**rewardId** +
+__optional__|rewardId|integer (int32)
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_tasklog]]
+=== TaskLog
+任务日志
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**queueType** +
+__optional__|任务类型|integer (int32)
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**state** +
+__optional__|任务状态(2:已接受,3:已提交)|integer (int32)
+|**taskId** +
+__optional__|任务id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_teamsecretlog]]
+=== TeamSecretLog
+组队秘境
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**cfgId** +
+__optional__|秘境Id|integer (int32)
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**cost** +
+__optional__|翻倍消耗资源|string
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**rewardDouble** +
+__optional__|是否翻倍|integer (int32)
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**team** +
+__optional__|是否组队 1:组队 0:不组队|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_titleactivelog]]
+=== TitleActiveLog
+称号激活日志
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**titleId** +
+__optional__|称号id|integer (int32)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_traderbuylog]]
+=== TraderBuyLog
+交易行购买记录
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**benefitPlayer** +
+__optional__|获得分红的人的Id rid1\|rid2|string
+|**buyWay** +
+__optional__|1:一口价 2：竞价|integer (int32)
+|**buyerId** +
+__optional__|购买者Id|integer (int64)
+|**costCoin** +
+__optional__|价钱 资源id\|资源数量|string
+|**count** +
+__optional__|购买数量|integer (int32)
+|**guildId** +
+__optional__|公会id|integer (int64)
+|**guildName** +
+__optional__|公会名称|string
+|**id** +
+__optional__|ID|integer (int32)
+|**itemId** +
+__optional__|购买物品ID|integer (int32)
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**sellType** +
+__optional__|上架类型|integer (int32)
+|**sellerId** +
+__optional__|卖家角色id(如果是个人上架就有Id，如果是系统上架就为空)|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**tradeId** +
+__optional__|交易物品Id|integer (int64)
+|**traderType** +
+__optional__|商店类型|integer (int32)
+|===
+
+
+[[_traderitemlog]]
+=== TraderItemLog
+交易行交易记录
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**benefitPlayer** +
+__optional__|获得分红的人的Id rid1\|rid2|string
+|**closeTime** +
+__optional__|结束时间|integer (int64)
+|**count** +
+__optional__|上架数量|integer (int32)
+|**guildId** +
+__optional__|公会id|integer (int64)
+|**guildName** +
+__optional__|公会名称|string
+|**id** +
+__optional__|ID|integer (int32)
+|**itemId** +
+__optional__|上架物品|integer (int32)
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**price** +
+__optional__|出售价格|integer (int32)
+|**roleId** +
+__optional__|玩家id|integer (int64)
+|**sellTime** +
+__optional__|开始寄售时间|integer (int64)
+|**sellType** +
+__optional__|上架类型|integer (int32)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**tradeId** +
+__optional__|交易物品Id|integer (int64)
+|**traderType** +
+__optional__|商店类型|integer (int32)
+|===
+
+
+[[_traderstatelog]]
+=== TraderStateLog
+交易行物品状态变化记录
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**id** +
+__optional__|ID|integer (int32)
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**state** +
+__optional__|2:上架 3：下架 4：出售 5：过期下架|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**tradeId** +
+__optional__|交易物品Id|integer (int64)
+|===
+
+
+[[_uplevellog]]
+=== UpLevelLog
+角色等级日志
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**career** +
+__optional__|职业|integer (int32)
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**id** +
+__optional__|ID|integer (int32)
+|**level** +
+__optional__|角色等级|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**oldLevel** +
+__optional__|变化前等级|integer (int32)
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**sex** +
+__optional__|性别|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|**vipLevel** +
+__optional__|vip等级|integer (int32)
+|===
+
+
+[[_userloginlog]]
+=== UserLoginLog
+用户登录日志
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**client** +
+__optional__|登录的客户端 0:pc 1:安卓 2:ios|integer (int32)
+|**id** +
+__optional__|ID|integer (int32)
+|**ip** +
+__optional__|ip|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**userId** +
+__optional__|账号id|integer (int64)
+|===
+
+
+[[_valhallainsetjewellog]]
+=== ValhallaInsetJewelLog
+英灵殿镶嵌记录
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**id** +
+__optional__|ID|integer (int32)
+|**index** +
+__optional__|位置索引|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**newInlayId** +
+__optional__|操作后的宝石id|integer (int32)
+|**oldInlayId** +
+__optional__|操作前的宝石id|integer (int32)
+|**operate** +
+__optional__|操作类型 0：卸下 1：镶嵌|integer (int64)
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|**valhallaType** +
+__optional__|英灵殿类型( 1: 符文 2: 神魂 3:法咒 4:器灵)|integer (int32)
+|===
+
+
+[[_valhallaopenlog]]
+=== ValhallaOpenLog
+英灵殿开启记录
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|**valhallaType** +
+__optional__|英灵殿类型( 1: 符文 2: 神魂 3:法咒 4:器灵)|integer (int32)
+|===
+
+
+[[_valhallauplevellog]]
+=== ValhallaUpLevelLog
+英灵殿升级日志
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**costItem** +
+__optional__|消耗货币 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**id** +
+__optional__|ID|integer (int32)
+|**index** +
+__optional__|位置索引|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**newLevel** +
+__optional__|升级后的等级|integer (int32)
+|**oldLevel** +
+__optional__|升级前的等级|integer (int32)
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|**valhallaType** +
+__optional__|英灵殿子系统类型 ( 1: 符文 2: 神魂 3:法咒 4:器灵)|integer (int32)
+|===
+
+
+[[_viplog]]
+=== VipLog
+vip变化日志
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**addVipExp** +
+__optional__|增加vip经验|integer (int32)
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**oldVipExp** +
+__optional__|变化前vip经验|integer (int64)
+|**oldVipLevel** +
+__optional__|变化前等级|integer (int32)
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|**vipExp** +
+__optional__|变化后vip经验|integer (int64)
+|**vipLevel** +
+__optional__|变化后等级|integer (int32)
+|===
+
+
+[[_wantedtasklog]]
+=== WantedTaskLog
+通缉任务日志
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**exp** +
+__optional__|经验奖励|integer (int64)
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**quality** +
+__optional__|任务品质|integer (int32)
+|**reward** +
+__optional__|任务奖励|string
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**status** +
+__optional__|任务状态 1:接取 2:完成|integer (int32)
+|**taskId** +
+__optional__|任务id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_warflagskillupgradelog]]
+=== WarFlagSkillUpgradeLog
+战旗(魔灵)技能升级
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**costItem** +
+__optional__|消耗货币 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**newCfgUpSkillId** +
+__optional__|新的升级技能表id|integer (int32)
+|**oldCfgUpSkillId** +
+__optional__|旧的升级技能表id|integer (int32)
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_warflagupgradelog]]
+=== WarFlagUpgradeLog
+魔灵(战旗)升级
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**addExp** +
+__optional__|增加的经验|integer (int64)
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**costItem** +
+__optional__|消耗货币 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**newCfgId** +
+__optional__|增加经验后的进阶线cfgId|integer (int32)
+|**newExp** +
+__optional__|增加经验后的经验|integer (int64)
+|**oldCfgId** +
+__optional__|增加经验前进阶线cfgId|integer (int32)
+|**oldExp** +
+__optional__|增加经验前的经验|integer (int64)
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_weekmonthcardlog]]
+=== WeekMonthCardLog
+周月卡领取奖励日志
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**reward** +
+__optional__|获取奖励 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_weekwelfareactivitylog]]
+=== WeekWelfareActivityLog
+周一奖励奖励
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**reward** +
+__optional__|奖励 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|**welfareId** +
+__optional__|配置奖励表id|integer (int32)
+|===
+
+
+[[_wingcomposelog]]
+=== WingComposeLog
+神翼合成
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**composeItemId** +
+__optional__|合成表字段id|integer (int32)
+|**costCoin** +
+__optional__|消耗货币 货币类型1\|货币数量&amp;货币类型2\|货币数量|string
+|**costItem** +
+__optional__|消耗货币 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**firstCompose** +
+__optional__|是否是第一次合成 0：不是 1：是|integer (int32)
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**perfectCount** +
+__optional__|完美合成次数|integer (int32)
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**reward** +
+__optional__|奖励 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_worldbossranklog]]
+=== WorldBossRankLog
+世界Boss 排行榜
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**cfgId** +
+__optional__|世界Boss配置表id|integer (int32)
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**rank** +
+__optional__|排名|integer (int32)
+|**reward** +
+__optional__|获取奖励 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_worldbossrecoverycountlog]]
+=== WorldBossRecoveryCountLog
+世界Boss恢复次数日志
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**currentCount** +
+__optional__|当前次数|integer (int32)
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**recoveryNum** +
+__optional__|今天已恢复次数|integer (int32)
+|**recoveryTime** +
+__optional__|恢复时间|integer (int64)
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+[[_xunbaoactivitylog]]
+=== XunbaoActivityLog
+寻宝
+
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**channel_id** +
+__optional__|渠道Id|integer (int32)
+|**cost** +
+__optional__|消耗 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**count** +
+__optional__|次数|integer (int32)
+|**id** +
+__optional__|ID|integer (int32)
+|**name** +
+__optional__|角色名称|string
+|**platformId** +
+__optional__|平台Id|integer (int32)
+|**reward** +
+__optional__|奖励 资源类型1\|资源数量&amp;资源类型2\|资源数量|string
+|**rid** +
+__optional__|角色Id|integer (int64)
+|**serverId** +
+__optional__|服务器Id|integer (int32)
+|**time** +
+__optional__|时间|integer (int64)
+|**user** +
+__optional__|用户名|string
+|===
+
+
+
+
+
