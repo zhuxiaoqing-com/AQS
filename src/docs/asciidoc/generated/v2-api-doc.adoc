@@ -1,14 +1,19 @@
-= 日志
+= 日志详细
 
 
 [[_overview]]
 == Overview
-日志详细
+日志
 
 
 === Version information
 [%hardbreaks]
 __Version__ : 1.1
+
+
+=== Contact information
+[%hardbreaks]
+__Contact__ : 祝小庆
 
 
 
