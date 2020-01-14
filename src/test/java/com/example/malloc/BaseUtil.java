@@ -3,7 +3,7 @@ package com.example.malloc;
 public class BaseUtil {
     public final static int WSIZE = 4; //word and header/footer size(bytes)  字的大小
     public final static int DSIZE = 8; //Double word size(bytes)  双字的大小
-    public final static int CHUNKSIZE = 1 << 12; //extend heap by this amount(bytes) 4字节 初始空闲块的大小 和 扩展堆时的默认大小
+    public final static int CHUNKSIZE = 1 << 12; //extend heap by this amount(bytes) 16字节 初始空闲块的大小 和 扩展堆时的默认大小
 
     public static int max(int x, int y) {
         return x > y ? x : y;
@@ -49,7 +49,7 @@ public class BaseUtil {
         return blockPointer - WSIZE;
     }
 
-    public static int FTR(int bp) {
+    public static int FTRP(int bp) {
         // 块开始指针 + 总size(包含头和尾大小) - 头和尾大小(加起来就是 DSIZE)
         // 就是尾部的开始指针
         return bp + getSize(HDRP(bp)) - DSIZE;

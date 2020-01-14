@@ -155,8 +155,8 @@ public class Test07 {
 
     @Test
     public void test18() {
-        System.out.println(new Date(findSignUpDate(73800000, 10800000, 3600000)));
-        System.out.println(new Date(findStartDate(73800000)));
+        System.out.println(new Date(findSignUpDate(43200000, 7200000, 7140000)));
+        System.out.println(new Date(findStartDate(43200000)));
     }
 
     private long findSignUpDate(long openTime, long signUpTime, long durationTime) {

@@ -9,15 +9,11 @@ import io.github.swagger2markup.builder.Swagger2MarkupConfigBuilder;
 import io.github.swagger2markup.markup.builder.MarkupLanguage;
 import org.junit.Test;
 
-import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.file.*;
-
 import java.lang.reflect.Field;
+import java.net.URI;
 import java.nio.file.Paths;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class Test08 {
 
@@ -31,6 +27,7 @@ public class Test08 {
         System.out.println(field.getType());
         System.out.println(field.getDeclaringClass());
     }
+
     @Test
     public void generateAsciiDocs() throws Exception {
         //    输出Ascii格式
@@ -51,6 +48,28 @@ public class Test08 {
     }
 
 
+    @Test
+    public void test02() {
+        /*ExecutorService executorService = Executors.newFixedThreadPool(2);
+        while (true) {
+            executorService.execute(() -> {
+                try {
+                    Thread.sleep(10000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            });
+        }*/
+    }
+
+    @Test
+    public void test03() {
+        System.out.println(getFloat4(3.444444f));
+    }
+
+    static public float getFloat4(float souse) {
+        return Math.round(souse * 10000f) / 10000f;
+    }
 }
 
 
