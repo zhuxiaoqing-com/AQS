@@ -1,6 +1,7 @@
 package com.example.demo4;
 
 import com.example.demo4.testObj1.Child;
+import com.sun.javadoc.RootDoc;
 import io.github.swagger2markup.GroupBy;
 import io.github.swagger2markup.Language;
 import io.github.swagger2markup.Swagger2MarkupConfig;
@@ -70,7 +71,22 @@ public class Test08 {
     static public float getFloat4(float souse) {
         return Math.round(souse * 10000f) / 10000f;
     }
+
+
+
+    @Test
+    public void test04() {
+        System.out.println(getFloat4(3.444444f));
+    }
+
+
 }
+
+
+
+
+
+
 
 
 

@@ -1,8 +1,17 @@
 package com.example.demo1;
 
 public class Father {
+    /**
+     * 字段a
+     */
     private int a;
+    /**
+     * 字段b
+     */
     private int b;
+    /**
+     * 字段c
+     */
     private String c;
 
     public int getB() {
