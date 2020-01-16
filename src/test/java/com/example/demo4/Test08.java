@@ -1,7 +1,7 @@
 package com.example.demo4;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.example.demo4.testObj1.Child;
-import com.sun.javadoc.RootDoc;
 import io.github.swagger2markup.GroupBy;
 import io.github.swagger2markup.Language;
 import io.github.swagger2markup.Swagger2MarkupConfig;
@@ -10,11 +10,11 @@ import io.github.swagger2markup.builder.Swagger2MarkupConfigBuilder;
 import io.github.swagger2markup.markup.builder.MarkupLanguage;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.net.URI;
 import java.nio.file.Paths;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.Set;
 
 public class Test08 {
 
@@ -73,10 +73,15 @@ public class Test08 {
     }
 
 
-
     @Test
     public void test04() {
-        System.out.println(getFloat4(3.444444f));
+        char a = 46;
+        System.out.println(a);
+    }
+
+    @Test
+    public void test05() throws ClassNotFoundException, IOException {
+        System.out.println(JSONField.class.getName());
     }
 
 

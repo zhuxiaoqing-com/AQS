@@ -1,8 +1,8 @@
-package com.example.common;
-
-import java.util.ArrayList;
+package com.example.common.findComment;
 
 import com.sun.javadoc.*;
+
+import java.util.ArrayList;
 
 /**
  * 类说明：打印类及其字段、方法的注释<br>
@@ -17,7 +17,9 @@ public class Doclet {
     public static void main(String[] args) {
         //java源文件的路径
         ArrayList<String> sources = new ArrayList<>();
-        sources.add("D:\\JProject\\game_server\\game\\src\\main\\java\\com\\sh\\game\\log\\tables\\AntiqueLog.java");
+        //sources.add("com.example.demo4.testObj1.package-info");
+        sources.add("D:\\JProject\\game_server\\game\\src\\main\\java\\com\\sh\\game\\log\\tables");
+        //sources.add("D:\\JProject\\game_server\\game\\src\\main\\java\\com\\sh\\game\\log\\tables\\AntiqueLog.java");
         //sources.add("D:\\01.ideaWeb\\AQS\\src\\main\\java\\com\\example\\demo1\\Father.java");
         //sources.add("../uuo/example/Example2.java");
         //打印
@@ -31,9 +33,14 @@ public class Doclet {
      */
     public static void println(ArrayList<String> sources) {
         ArrayList<String> list = new ArrayList<>();
-        list.add("-doclet");
+        list.add("-doclet");// 指定使用这个类
         list.add(Doclet.class.getName());
-        list.addAll(sources);
+        list.add("-sourcepath");// 指定使用这个目录下面的源文件
+        list.add(".\\src\\main\\java");
+        list.add("-subpackages"); // 指定扫描哪个包
+        list.add("com");
+
+        //list.addAll(sources);
         com.sun.tools.javadoc.Main.execute(list.toArray(new String[list.size()]));
 
         StringBuilder buffer = new StringBuilder();
@@ -46,6 +53,7 @@ public class Doclet {
             // classDoc.fields(false) 读取 private 字段
             FieldDoc[] fields = classDoc.fields(false);
             for (FieldDoc field : fields) {
+                System.out.println(field.type());
                 buffer.append('\t').append('\t').append(field.name()).append('\n');
                 buffer.append('\t').append('\t').append('\t').append(field.commentText()).append('\n');
             }

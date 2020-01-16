@@ -2,16 +2,18 @@ package com.example.demo1.demo;
 
 
 
+import com.alibaba.fastjson.annotation.JSONField;
+
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 /**
  * @author HSimon
  */
-@Table()
 public class entity {
-
+   @JSONField(name = "renameJsonNameKey")
     private String key;
+   @JSONField(name = "renameJsonNameVal")
     private String val;
 
     public String getKey() {
