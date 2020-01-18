@@ -73,8 +73,13 @@ public class Test02Stream {
         ArrayList<Object> objects = new ArrayList<>();
         objects.add(1);
         objects.add(2);
+        objects.add(3);
+        objects.add(4);
+        objects.add(5);
         List<Object> collect = objects.stream().skip(1).collect(Collectors.toList());
         System.out.println(collect);
+        List<Object> collect1 = objects.stream().distinct().collect(Collectors.toList());
+        System.out.println(collect1);
     }
 
     @Test

@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.net.URI;
 import java.nio.file.Paths;
-import java.util.Set;
 
 public class Test08 {
 
@@ -82,6 +81,12 @@ public class Test08 {
     @Test
     public void test05() throws ClassNotFoundException, IOException {
         System.out.println(JSONField.class.getName());
+    }
+
+    @Test
+    public void test06() {
+        char a = 0x0a;
+        System.out.println(a);
     }
 
 
