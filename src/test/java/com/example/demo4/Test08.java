@@ -85,7 +85,7 @@ public class Test08 {
 
     @Test
     public void test06() {
-        char a = 0x0a;
+        double a= 221111323231424232323242134214214124124141000000000000000000000000000000000000000000000000000000000d;
         System.out.println(a);
     }
 
