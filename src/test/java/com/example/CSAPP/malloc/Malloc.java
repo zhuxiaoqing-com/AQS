@@ -1,8 +1,8 @@
-package com.example.malloc;
+package com.example.CSAPP.malloc;
 
 import org.junit.Test;
 
-import static com.example.malloc.BaseUtil.*;
+import static com.example.CSAPP.malloc.BaseUtil.*;
 
 public class Malloc {
     /**

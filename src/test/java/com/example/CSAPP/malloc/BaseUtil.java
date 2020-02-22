@@ -1,4 +1,4 @@
-package com.example.malloc;
+package com.example.CSAPP.malloc;
 
 public class BaseUtil {
     public final static int WSIZE = 4; //word and header/footer size(bytes)  字的大小
