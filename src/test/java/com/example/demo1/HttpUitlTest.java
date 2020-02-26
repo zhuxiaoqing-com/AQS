@@ -290,7 +290,6 @@ public class HttpUitlTest {
         String uri = "/guild/guildIdNameList";
         Map<String, String> params = new LinkedHashMap<>();
         String result = post(params, uri);
-        System.out.println(result);
     }
 
 
@@ -312,7 +311,7 @@ public class HttpUitlTest {
         String uri = "/guild/guildMemberList";
         Map<String, String> params = new LinkedHashMap<>();
         // todo 获取所有公会id和name 随机取一个公会id作为测试参数
-        params.put("guildId", "383681319098674");
+        params.put("guildId", "1729391053139762401");
         String result = post(params, uri);
     }
 
@@ -354,6 +353,18 @@ public class HttpUitlTest {
         params.put("bulletin", "修改 bulletin 公告");
         String result = post(params, uri);
         System.out.println(result);
+    }
+
+    /**
+     * 查看排行榜
+     */
+    @Test
+    public void queryRanker() {
+        String uri = "/ranker/query";
+        Map<String, String> params = new LinkedHashMap<>();
+        params.put("type", "1");
+        params.put("career", "0");
+        String result = post(params, uri);
     }
 
     /**
@@ -441,9 +452,9 @@ public class HttpUitlTest {
      * @param map
      */
     private String post(Map<String, String> map, String uri) {
-        //String url = "http://192.168.5.128:11001" + uri; // 内网一
+        String url = "http://192.168.5.128:11001" + uri; // 内网一
         //String url = "http://10.40.2.68:11000" + uri; // 俞樟鹏
-        String url = "http://10.42.0.50:11000" + uri; // 本机 游戏服务器
+        //String url = "http://10.42.0.50:11000" + uri; // 本机 游戏服务器
         //String url = "http://10.42.0.35:11000" + uri;
         //String url = "http://10.42.0.50:8089" + uri; // 本机 gmweb
         //String url = "http://106.52.215.79:8015" + uri;// XY 线上
