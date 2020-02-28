@@ -85,8 +85,17 @@ public class Test08 {
 
     @Test
     public void test06() {
-        double a= 221111323231424232323242134214214124124141000000000000000000000000000000000000000000000000000000000d;
+        double a = 221111323231424232323242134214214124124141000000000000000000000000000000000000000000000000000000000d;
         System.out.println(a);
+    }
+
+    @Test
+    public void test07() {
+        new Thread(() -> {
+            while (true) {
+                System.out.println("1111");
+            }
+        }).start();
     }
 
 
