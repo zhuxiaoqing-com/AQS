@@ -91,11 +91,19 @@ public class Test08 {
 
     @Test
     public void test07() {
-        new Thread(() -> {
-            while (true) {
-                System.out.println("1111");
-            }
-        }).start();
+        update();
+        test();
+    }
+    private int numone = 0;
+    private Boolean flag = false;
+    public void update(){
+        numone = 8;
+        flag = true;
+    }
+    public void test(){
+        if (flag){
+            System.out.println(numone);
+        }
     }
 
 
