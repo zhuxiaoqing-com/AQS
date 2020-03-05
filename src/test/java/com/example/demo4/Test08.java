@@ -14,6 +14,9 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.net.URI;
 import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class Test08 {
 
@@ -94,18 +97,71 @@ public class Test08 {
         update();
         test();
     }
+
     private int numone = 0;
     private Boolean flag = false;
-    public void update(){
+
+    public void update() {
         numone = 8;
         flag = true;
     }
-    public void test(){
-        if (flag){
+
+    public void test() {
+        if (flag) {
             System.out.println(numone);
         }
     }
 
+
+    HashMap<Object, Object> hashMap = new HashMap<>();
+
+    @Test
+    public void test08() {
+        ExecutorService dataManager = Executors.newSingleThreadExecutor();
+        ExecutorService dataProcessor = Executors.newFixedThreadPool(10);
+
+        dataProcessor.execute(() -> {
+            // 满足条件
+            if (true) {
+                dataManager.execute(() -> {
+                    // 更新map
+                    hashMap.put(1, 1);
+                    // 这里再加一个时间 每秒推送一次
+                    if (true) {
+                        // 推送数据
+                    }
+                });
+            }
+        });
+
+
+    }
+
+    @Test
+    public void test09() {
+        ExecutorService executorService = Executors.newFixedThreadPool(2);
+        for (int i = 1; i < 100; i++) {
+            executorService.execute(() -> thread1());
+            executorService.execute(() -> thread2());
+        }
+    }
+
+
+    int a = 0;
+    boolean b = false;
+
+    public void thread1() {
+        a = 3;
+        b = true;
+    }
+
+    public void thread2() {
+        while (!b) {
+        }
+        System.out.println(a);
+        a = 0;
+        b = false;
+    }
 
 }
 
