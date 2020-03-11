@@ -154,7 +154,7 @@ public class Test02Stream {
         //map.putIfAbsent()
     }
 
-    class TestData {
+    class TestData implements Cloneable {
         int id;
         int count;
 
@@ -172,12 +172,12 @@ public class Test02Stream {
     @Test
     public void test08() {
         HashMap<Integer, A> hashMap = new HashMap<>();
-        hashMap.put(1,new A(2, 3));
-        hashMap.put(2,new A(2, 2));
-        hashMap.put(3,new A(3, 4));
-        hashMap.put(4,new A(3, 5));
-        hashMap.put(5,new A(1, 4));
-        hashMap.put(6,new A(1, 5));
+        hashMap.put(1, new A(2, 3));
+        hashMap.put(2, new A(2, 2));
+        hashMap.put(3, new A(3, 4));
+        hashMap.put(4, new A(3, 5));
+        hashMap.put(5, new A(1, 4));
+        hashMap.put(6, new A(1, 5));
 
         TreeMap<Integer, List<A>> collect = hashMap.values().stream().collect(Collectors.groupingBy(A::getId, TreeMap::new, Collectors.toList()));
         System.out.println(collect);
@@ -187,7 +187,16 @@ public class Test02Stream {
 
     @Test
     public void test09() {
-        System.out.println(Integer.MAX_VALUE/24/60/60/1000);
+        ArrayList<TestData> list = new ArrayList();
+        for (int i = 0; i <= 10; i++) {
+            list.add(new TestData(i, i));
+        }
+     /*   list.add(new TestData(1, 11));
+        list.add(new TestData(3, 11));
+        list.add(new TestData(1, 11));*/
+
+
+        //list.stream().filter(a -> true).map(a -> a.clone()).collect(Collectors.toList());
     }
 
 }
