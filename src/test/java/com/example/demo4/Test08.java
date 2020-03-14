@@ -165,10 +165,15 @@ public class Test08 {
     }
 
 
-
     @Test
     public void test10() {
         System.out.println(new Date(1583500454000L));
+    }
+
+    @Test
+    public void test11() {
+        System.out.println(new Date(1583500454000L));
+        System.out.println(Integer.MIN_VALUE);
     }
 }
 
