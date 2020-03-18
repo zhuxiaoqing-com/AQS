@@ -36,7 +36,7 @@ public class Tower {
     /**
      * 获取所有游戏对象
      */
-    public Set<Long> removeObjectId() {
+    public Set<Long> findAllObjectIds() {
         return objectIds;
     }
 
