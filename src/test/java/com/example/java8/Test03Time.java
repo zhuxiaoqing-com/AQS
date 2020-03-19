@@ -4,7 +4,9 @@ import org.junit.Test;
 
 import java.time.*;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoField;
 import java.time.temporal.TemporalAccessor;
+import java.util.Date;
 
 public class Test03Time {
     @Test
@@ -44,6 +46,7 @@ public class Test03Time {
         System.out.println(localDateTime5);
 
     }
+
     @Test
     public void test04() {
         LocalDateTime now = Instant.ofEpochMilli(System.currentTimeMillis()).atZone(ZoneId.systemDefault()).toLocalDateTime();
@@ -52,4 +55,35 @@ public class Test03Time {
         LocalTime localTime1 = localTime.plusMinutes(111);
         System.out.println(localTime1);
     }
+
+    @Test
+    public void test05() {
+        LocalDate openServerDate = Instant.now().atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDate with = openServerDate.with(ChronoField.DAY_OF_WEEK, 1);
+        System.out.println(with);
+    }
+
+    @Test
+    public void test0() {
+        //localDate 转换为时间戳
+        LocalDate localDate = Instant.now().atZone(ZoneId.systemDefault()).toLocalDate();
+        long l = localDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+        System.out.println(new Date(l));
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
