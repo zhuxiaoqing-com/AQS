@@ -13,7 +13,7 @@ public class Tower {
     private final Set<Long> objectIds = new HashSet<>(100);
 
     /**
-     * 观察者
+     * 观察者(就是需要知道这个灯塔里面的对象的 玩家)
      */
     private final Set<Long> watcherIds = new HashSet<>(100);
 

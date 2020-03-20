@@ -172,8 +172,21 @@ public class Test08 {
 
     @Test
     public void test11() {
-        System.out.println(new Date(1583500454000L));
-        System.out.println(Integer.MIN_VALUE);
+        double v = Math.atan2(6, 4);
+        System.out.println(v);
+
+        double v1 = Math.atan2(-6, -4);
+        System.out.println(v1 + Math.PI*2);
+        //System.out.println(v1*);
+    }
+
+    @Test
+    public void test12() {
+        System.out.println(1584713873580L - 1584713850889L);
+        System.out.println(1584713850889L + 200f*3000);
+        System.out.println(1584713873580L + 199f*3000);
+        System.out.println(1584713850889L + 200*3000);
+        System.out.println(1584713873580L + 199*3000);
     }
 }
 

@@ -170,6 +170,221 @@ public class TowerAOI {
     }
 
 
+    /**
+     * 添加一个对象，将对象放入坐标对应的灯塔里面，向灯塔中的观察者触发一个 新对象添加事件
+     */
+    public void addObject(long obj, Vector2f v2) {
+        int point = convertPoint(v2);
+        if (point == -1) {
+            return;
+        }
+        int x = BitUtil.separateIntHigh16Bit(point);
+        int y = BitUtil.separateIntLow16Bit(point);
+        Tower tower = towers[x][y];
+        addObject(tower, obj, tower.findAllWatcherIds());
+    }
+
+    /**
+     * 添加一个对象，将对象放入坐标对应的灯塔里面，向灯塔中的观察者触发一个 新对象添加事件
+     */
+    private void addObject(Tower tower, long obj, Set<Long> watcherIds) {
+        boolean result = tower.addObjectId(obj);
+        if (!result) {
+            //GameLog.sys.warn("添加对象失败！objId={}, name={}", obj.getId(), obj.getName());
+        }
+        //listener.onAdd(obj, watcherIds);
+    }
+
+    /**
+     * 删除一个对象，将对象从坐标对应的灯塔里面移除，向灯塔中的观察者触发一个 对象移除事件
+     */
+    public void removeObject(long obj, Vector2f v2) {
+        int point = convertPoint(v2);
+        if (point == -1) {
+            return;
+        }
+        int x = BitUtil.separateIntHigh16Bit(point);
+        int y = BitUtil.separateIntLow16Bit(point);
+        Tower tower = towers[x][y];
+        removeObject(tower, obj, tower.findAllWatcherIds());
+    }
+
+
+    /**
+     * 删除一个对象，将对象从坐标对应的灯塔里面移除，向灯塔中的观察者触发一个 对象移除事件
+     */
+    private void removeObject(Tower tower, long obj, Set<Long> watcherIds) {
+        boolean result = tower.removeObjectId(obj);
+        if (!result) {
+            //GameLog.sys.error("移除对象失败！objId={}, name={}", obj.getId(), obj.getName());
+        }
+        //listener.onRemove(obj, watcherIds);
+    }
+
+
+
+    /**
+     * 更新一个游戏对象，该方法会触发一个update事件，此事件通知其他观察者，我消失或者进入了你的视野</br>
+     * 注意：该方法的触发的事件不包括自己
+     */
+    public void updateObject(long obj, Vector2f oldV2, Vector2f newV2) {
+        int oldTP = convertPoint(oldV2);
+        int newTP = convertPoint(newV2);
+
+        if (oldTP == -1) {
+            if (newTP >= 0) {
+                addObject(obj, newV2);
+            }
+            return;
+        }
+        if (newTP == -1) {
+            removeObject(obj, oldV2);
+            return;
+        }
+        if (oldTP == newTP) {
+            return;
+        }
+
+        int oldX = BitUtil.separateIntHigh16Bit(oldTP);
+        int oldY = BitUtil.separateIntLow16Bit(oldTP);
+        Tower oldTower = towers[oldX][oldY];
+        int newX = BitUtil.separateIntHigh16Bit(newTP);
+        int newY = BitUtil.separateIntLow16Bit(newTP);
+        Tower newTower = towers[newX][newY];
+
+        Set<Long> oldWatcherIds = oldTower.findAllWatcherIds();
+        Set<Long> newWatcherIds = newTower.findAllWatcherIds();
+
+        Set<Long> removeWatcherIds = new HashSet<>(oldWatcherIds);
+        Set<Long> addWatcherIds = new HashSet<>(newWatcherIds);
+
+        // 从旧的灯塔里面删除新的灯塔里面的观察者，通知这些观察者玩家离开这个灯塔了
+        removeWatcherIds.removeAll(newWatcherIds);
+        removeObject(oldTower, obj, removeWatcherIds);
+
+        // 从新的灯塔里面删除旧的观察者，通知这些观察这玩家进入这个灯塔了。
+        addWatcherIds.removeAll(oldWatcherIds);
+        addObject(newTower, obj, addWatcherIds);
+    }
+
+
+    /**
+     * 添加观察者
+     */
+    public void addWatcher(long obj, Vector2f v2) {
+        addWatcher(obj, v2, range);
+    }
+
+    /**
+     * 添加观察者
+     */
+    private void addWatcher(long obj, Vector2f v2, int range) {
+        List<Integer> points = convertPoint(v2, range);
+        addWatcher(obj, points);
+    }
+
+    /**
+     * 添加观察者
+     */
+    private void addWatcher(long obj, List<Integer> points) {
+        for (int point : points) {
+            int x = BitUtil.separateIntHigh16Bit(point);
+            int y = BitUtil.separateIntLow16Bit(point);
+            Tower tower = towers[x][y];
+            addWatcher(tower, obj, tower.findAllObjectIds());
+        }
+    }
+
+    /**
+     * 添加观察者
+     */
+    private void addWatcher(Tower tower, long watcher, Set<Long> objIds) {
+        boolean result = tower.addWatcherId(watcher);
+        if (!result) {
+            //GameLog.sys.warn("添加观察者失败！watcherId={}, name={}", watcher.getId(), watcher.getName());
+        }
+        //listener.watcherEnter(watcher, objIds);
+    }
+
+    /**
+     * 移除观察者
+     */
+    public void removeWatcher(long obj, Vector2f v2) {
+        removeWatcher(obj, v2, range);
+    }
+
+    /**
+     * 移除观察者
+     */
+    private void removeWatcher(long obj, Vector2f v2, int range) {
+        List<Integer> points = convertPoint(v2, range);
+        removeWatcher(obj, points);
+    }
+
+
+    /**
+     * 移除观察者
+     */
+    private void removeWatcher(long obj, List<Integer> points) {
+        for (int point : points) {
+            int x = BitUtil.separateIntHigh16Bit(point);
+            int y = BitUtil.separateIntLow16Bit(point);
+            Tower tower = towers[x][y];
+            removeWatcher(tower, obj, tower.findAllObjectIds());
+        }
+    }
+
+    /**
+     * 移除观察者
+     */
+    private void removeWatcher(Tower tower, long watcher, Set<Long> objIds) {
+        boolean result = tower.removeWatcherId(watcher);
+        if (!result) {
+            //GameLog.sys.error("移除观察者失败！watcherId={}, name={}", watcher.getId(), watcher.getName());
+        }
+        //listener.watcherOuter(watcher, objIds);
+    }
+
+    /**
+     * 更新观察者，该方法会触发一个updateWatcher事件，此事件告诉观察者本身，我的视野游戏哪些变化
+     */
+    public void updateWatcher(long obj, Vector2f oldV2, Vector2f newV2) {
+        updateWatcher(obj, oldV2, newV2, range);
+    }
+
+    /**
+     * 更新观察者，该方法会触发一个updateWatcher事件，此事件告诉观察者本身，我的视野游戏哪些变化
+     */
+    private void updateWatcher(long obj, Vector2f oldV2, Vector2f newV2, int range) {
+        List<Integer> oldPoints = convertPoint(oldV2, range);
+        List<Integer> newPoints = convertPoint(newV2, range);
+
+        List<Integer> equalsPoints = new ArrayList<>();
+        for (int oldPoint : oldPoints) {
+            for (int newPoint : newPoints) {
+                if (oldPoint == newPoint) {
+                    equalsPoints.add(oldPoint);
+                }
+            }
+        }
+        oldPoints.removeAll(equalsPoints);
+        removeWatcher(obj, oldPoints);
+        //
+        newPoints.removeAll(equalsPoints);
+        addWatcher(obj, newPoints);
+    }
+
+    /**
+     * 清空
+     */
+    public void clear() {
+        for (Tower[] towerArray : towers) {
+            for (Tower tower : towerArray) {
+                tower.clear();
+            }
+        }
+    }
+
 }
 
 
