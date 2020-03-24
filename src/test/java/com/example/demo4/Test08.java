@@ -176,17 +176,40 @@ public class Test08 {
         System.out.println(v);
 
         double v1 = Math.atan2(-6, -4);
-        System.out.println(v1 + Math.PI*2);
+        System.out.println(v1 + Math.PI * 2);
         //System.out.println(v1*);
     }
 
     @Test
     public void test12() {
         System.out.println(1584713873580L - 1584713850889L);
-        System.out.println(1584713850889L + 200f*3000);
-        System.out.println(1584713873580L + 199f*3000);
-        System.out.println(1584713850889L + 200*3000);
-        System.out.println(1584713873580L + 199*3000);
+        System.out.println(1584713850889L + 200f * 3000);
+        System.out.println(1584713873580L + 199f * 3000);
+        System.out.println(1584713850889L + 200 * 3000);
+        System.out.println(1584713873580L + 199 * 3000);
+    }
+
+    /**
+     * 根据坐标系可以看出来
+     * source 攻击 target 计算方法应该是 y2-y1, x2-x1
+     *
+     */
+    @Test
+    public void test13() {
+        // source
+        int x1 = 3;
+        int y1 = 4;
+
+        // target
+        int x2 = -4;
+        int y2 = -2;
+
+        System.out.println("y2-y1: " + (y2 - y1) + "  x2-x1: " + (x2 - x1));
+        System.out.println("y1-y2: " + (y1 - y2) + "  x1-x2: " + (x1 - x2));
+        double v1 = Math.atan2((y2 - y1), (x2 - x1));
+        double v2 = Math.atan2((y1 - y2), (x1 - x2));
+        System.out.println(v1 * (180 / Math.PI) + 360);
+        System.out.println(v2 * (180 / Math.PI));
     }
 }
 
