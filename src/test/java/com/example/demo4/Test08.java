@@ -17,6 +17,7 @@ import java.nio.file.Paths;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.PriorityQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -243,6 +244,40 @@ public class Test08 {
             }
 
         }
+    }
+
+    /**
+     * remove 13900  23608    16497  13653
+     * poll  7965   7395    8248
+     */
+    @Test
+    public void test15() {
+        PriorityQueue<Object> objects = new PriorityQueue<>();
+        objects.add(1);
+        objects.add(2);
+        objects.add(3);
+        objects.add(4);
+        objects.add(5);
+
+        long start = System.nanoTime();
+        int size = objects.size();
+        for (int i = 1; i <= size; i++) {
+            objects.remove(i);
+            objects.poll();
+        }
+
+
+        long end = System.nanoTime();
+        System.out.println(end - start);
+    }
+
+    @Test
+    public void test16() {
+        HashMap<Class, Object> hashMap = new HashMap<>();
+        hashMap.put(Integer.class, 1);
+        hashMap.put(Object.class, 2);
+        hashMap.put(Long.class, 3);
+        System.out.println(hashMap.get(Long.class));
     }
 }
 

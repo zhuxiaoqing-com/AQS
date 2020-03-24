@@ -400,6 +400,26 @@ public class HttpUitlTest {
     }
 
 
+    /**
+     * 热更新运营活动
+     */
+    @Test
+    public void hotswapOperateAct() {
+        String uri = "/operateActivity/hotswap";
+        Map<String, String> params = new LinkedHashMap<>();
+        String result = post(params, uri);
+    }
+    /**
+     * 热更新活动
+     */
+    @Test
+    public void hotswapAct() {
+        String uri = "/system/hotswap_activity";
+        Map<String, String> params = new LinkedHashMap<>();
+        String result = post(params, uri);
+    }
+
+
     String content1 = "1995年中共执政当局开始寻求强化法轮功的组织构架及与政府的关系。" +
             "中国政府的国家体委、公共健康部和气功科研会，访问李洪志，要求联合成立法轮功协会，但李洪志表示拒绝。" +
             "同年，气功科研会通过一项新规定，命令所有气功分会必须建立中国共产党党支部，但李洪志再次表示拒绝。" +
