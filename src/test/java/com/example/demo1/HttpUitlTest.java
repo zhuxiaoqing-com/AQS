@@ -324,7 +324,7 @@ public class HttpUitlTest {
         String uri = "/guild/disband";
         Map<String, String> params = new LinkedHashMap<>();
         // todo 获取所有公会id和name 随机取一个公会id作为测试参数
-        params.put("guildId", "383680247304774");
+        params.put("guildId", "1729391053137962401");
         String result = post(params, uri);
     }
 

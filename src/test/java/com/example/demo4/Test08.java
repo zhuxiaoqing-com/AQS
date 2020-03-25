@@ -14,6 +14,9 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.net.URI;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -278,6 +281,15 @@ public class Test08 {
         hashMap.put(Object.class, 2);
         hashMap.put(Long.class, 3);
         System.out.println(hashMap.get(Long.class));
+    }
+
+    @Test
+    public void test17() {
+        ZonedDateTime zonedDateTime = LocalDateTime.of(2020, 3, 25, 14,0).atZone(ZoneId.systemDefault());
+        long now = zonedDateTime.toInstant().toEpochMilli();
+        long zeroTime = zonedDateTime.toLocalDate().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+
+        System.out.println(now - zeroTime);
     }
 }
 
