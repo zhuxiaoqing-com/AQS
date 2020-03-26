@@ -175,6 +175,16 @@ public class GeomUtil {
     }
 
     /**
+     *
+     * 我的扇形的生成方式是从中心方向像两边展开若干角度。
+     *
+     * 所以我们只要算出扇形的中心向量与角色向量的夹脚是否大于扇形的展开角度即可。
+     *
+     *  扇形的偏移角度LHL:
+     * 伤害中心点与释放者正前方的偏移角度
+     * 顺时针为负，逆时针为正
+     * 不填则为释放者正前方
+     *
      * 判断是否在扇形中 float
      *
      * @param center  当前位置
@@ -185,6 +195,7 @@ public class GeomUtil {
      * @return
      */
     public static boolean checkInRangeFan(Vector3f center, Vector3f target, float w, float radius, float degrees) {
+        // 判断玩家是否在圆的半径范围内
         //判断距离小于圆半径
         boolean isRange = checkInRangeCylinder(center, target, radius);
         if (!isRange) {
@@ -194,6 +205,7 @@ public class GeomUtil {
         if (degrees >= 360) {
             return true;
         }
+        // 判断 扇形的中心向量与角色向量的夹脚是否大于扇形的展开角度
         //目标角度
         double targetDegrees = getDegrees(w, angle(center, target));
         //判断角度是否小于配置角度
@@ -317,6 +329,30 @@ public class GeomUtil {
         }
         return degrees;
     }
+
+    /*
+     * referenceDir - (360 - Math.toDegrees(angle)) = referenceDir +  Math.toDegrees(angle);
+     *
+     * referenceDir - 360 + Math.toDegrees(angle) = referenceDir +  Math.toDegrees(angle)
+     *
+     */
+
+    /**
+     * 这个方法和上面的  getDegrees 一样
+     * 根据配置弧度转成角度
+     *
+     * @param referenceDir 参考方向
+     * @param angle        弧度
+     * @return 角度
+     */
+    private static double getDegrees1(double referenceDir, double angle) {
+        double degrees = referenceDir + Math.toDegrees(angle) % 360;
+        if (degrees < 0) {
+            degrees += 360;
+        }
+        return degrees;
+    }
+
 
     /**
      * 计算2个点之间的距离

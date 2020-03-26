@@ -16,6 +16,8 @@ import java.net.URI;
 import java.nio.file.Paths;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -192,7 +194,6 @@ public class Test08 {
     /**
      * 根据坐标系可以看出来
      * source 攻击 target 计算方法应该是 y2-y1, x2-x1
-     *
      */
     @Test
     public void test13() {
@@ -208,8 +209,40 @@ public class Test08 {
         System.out.println("y1-y2: " + (y1 - y2) + "  x1-x2: " + (x1 - x2));
         double v1 = Math.atan2((y2 - y1), (x2 - x1));
         double v2 = Math.atan2((y1 - y2), (x1 - x2));
+        System.out.println(v1);
         System.out.println(v1 * (180 / Math.PI) + 360);
+
+        System.out.println(v2);
         System.out.println(v2 * (180 / Math.PI));
+    }
+
+
+    /**
+     * 根据坐标系可以看出来
+     * source 攻击 target 计算方法应该是 y2-y1, x2-x1
+     */
+    @Test
+    public void test14() {
+        Map<Object, Object> hashMap = new ConcurrentHashMap<>();
+        hashMap.put(1, 1);
+        hashMap.put(2, 2);
+        hashMap.put(3, 3);
+        hashMap.put(4, 4);
+
+        for (Map.Entry entry : hashMap.entrySet()) {
+            if (entry.getKey().equals(2)) {
+                hashMap.put(5, 5);
+            }
+            System.out.println(entry.getKey() + "...." + entry.getValue());
+            if (entry.getKey().equals(4)) {
+                hashMap.put(6, 6);
+            }
+
+            if (entry.getKey().equals(2)) {
+                hashMap.remove(2);
+            }
+
+        }
     }
 }
 

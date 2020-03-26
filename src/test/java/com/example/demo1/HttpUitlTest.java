@@ -388,6 +388,17 @@ public class HttpUitlTest {
         String result = post(params, uri);
     }
 
+    /**
+     * 关闭运营活动
+     */
+    @Test
+    public void closeOperateAct() {
+        String uri = "/operateActivity/close";
+        Map<String, String> params = new LinkedHashMap<>();
+        params.put("operateActOpenId", "201");
+        String result = post(params, uri);
+    }
+
 
     String content1 = "1995年中共执政当局开始寻求强化法轮功的组织构架及与政府的关系。" +
             "中国政府的国家体委、公共健康部和气功科研会，访问李洪志，要求联合成立法轮功协会，但李洪志表示拒绝。" +
@@ -452,9 +463,9 @@ public class HttpUitlTest {
      * @param map
      */
     private String post(Map<String, String> map, String uri) {
-        String url = "http://192.168.5.128:11001" + uri; // 内网一
+        //String url = "http://192.168.5.128:11001" + uri; // 内网一
         //String url = "http://10.40.2.68:11000" + uri; // 俞樟鹏
-        //String url = "http://10.42.0.50:11000" + uri; // 本机 游戏服务器
+        String url = "http://10.42.0.50:11000" + uri; // 本机 游戏服务器
         //String url = "http://10.42.0.35:11000" + uri;
         //String url = "http://10.42.0.50:8089" + uri; // 本机 gmweb
         //String url = "http://106.52.215.79:8015" + uri;// XY 线上
