@@ -17,10 +17,7 @@ import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.PriorityQueue;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -285,11 +282,36 @@ public class Test08 {
 
     @Test
     public void test17() {
-        ZonedDateTime zonedDateTime = LocalDateTime.of(2020, 3, 25, 14,0).atZone(ZoneId.systemDefault());
+        ZonedDateTime zonedDateTime = LocalDateTime.of(2020, 3, 25, 14, 0).atZone(ZoneId.systemDefault());
         long now = zonedDateTime.toInstant().toEpochMilli();
         long zeroTime = zonedDateTime.toLocalDate().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
 
         System.out.println(now - zeroTime);
+    }
+
+    @Test
+    public void test18() {
+        String s = "亲爱的玩家:\\n\\t您的<color=#c6484c>%s</color>将在<color=#86bb76>%s天</color>后过期，请注意查看。";
+        String format = String.format(s, "999", "32312");
+        System.out.println(format);
+        String a = "";
+    }
+
+    @Test
+    public void test19() {
+        String s = "2|";
+        String s1 = "2";
+        String s2 = "2|1";
+        String s3 = "";
+        String[] split = s.split("\\|");
+        System.out.println(Arrays.toString(split));
+        String[] split1 = s1.split("\\|");
+        System.out.println(Arrays.toString(split1));
+        String[] split2 = s2.split("\\|");
+        System.out.println(Arrays.toString(split2));
+
+        String[] split3 = s3.split("\\|");
+        System.out.println(Arrays.toString(split3));
     }
 }
 
