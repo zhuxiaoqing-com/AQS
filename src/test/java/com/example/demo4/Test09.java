@@ -16,6 +16,11 @@ public class Test09 {
             }
         }).start();
     }
+
+    @Test
+    public void test02() {
+        System.out.println(1-0.9);
+    }
 }
 
 

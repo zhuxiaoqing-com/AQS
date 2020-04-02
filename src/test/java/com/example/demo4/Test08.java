@@ -291,7 +291,7 @@ public class Test08 {
 
     @Test
     public void test18() {
-        String s = "亲爱的玩家:\\n\\t您的<color=#c6484c>%s</color>将在<color=#86bb76>%s天</color>后过期，请注意查看。";
+        String s = "";//"亲爱的玩家:\\n\\t您的<color=#c6484c>%s</color>将在<color=#86bb76>%s天</color>后过期，请注意查看。";
         String format = String.format(s, "999", "32312");
         System.out.println(format);
         String a = "";
