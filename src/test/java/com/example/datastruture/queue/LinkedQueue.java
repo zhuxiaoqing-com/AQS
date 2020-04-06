@@ -1,6 +1,6 @@
 package com.example.datastruture.queue;
 
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * 链表队列

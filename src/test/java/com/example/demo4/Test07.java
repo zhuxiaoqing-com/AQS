@@ -5,7 +5,7 @@ import com.example.demo1.util.ProtostuffSerializer;
 import com.example.demo4.testObj1.Child;
 import com.example.demo4.testObj1.Temp;
 import com.example.javase.DecimalToBit;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Constructor;
 import java.text.ParseException;

@@ -1,6 +1,6 @@
 package com.example.demo1.util.lock;
 
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 public class Test1 {
 

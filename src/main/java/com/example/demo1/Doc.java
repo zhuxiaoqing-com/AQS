@@ -1,7 +1,7 @@
 package com.example.demo1;
 
 import com.alibaba.fastjson.JSON;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 public class Doc {
 
