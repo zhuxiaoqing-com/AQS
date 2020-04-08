@@ -44,8 +44,17 @@ public class Test09 {
         System.out.println(a);
         float aa = a * 1.1f;
         System.out.println(aa);
-        System.out.println(0/aa);
-        System.out.println(Float.valueOf(aa/0).intValue());
+        System.out.println(0 / aa);
+        System.out.println(Float.valueOf(aa / 0).intValue());
+    }
+
+    @Test
+    public void test05() {
+        System.out.println("");
+        for (int i = 1; i < 1000; i++) {
+
+        }
+        Test08.staticFun();
     }
 }
 

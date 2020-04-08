@@ -313,6 +313,10 @@ public class Test08 {
         String[] split3 = s3.split("\\|");
         System.out.println(Arrays.toString(split3));
     }
+
+    public static void staticFun(){
+        System.out.println("热更后");
+    }
 }
 
 
