@@ -56,6 +56,18 @@ public class Test09 {
         }
         Test08.staticFun();
     }
+
+    @Test
+    public void test06() {
+        for (int i = 1; i < testSize(); i++) {
+
+        }
+    }
+    private int testSize(){
+        System.out.println("testSize");
+        return 100;
+    }
+
 }
 
 
