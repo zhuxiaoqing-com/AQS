@@ -63,11 +63,38 @@ public class Test09 {
 
         }
     }
-    private int testSize(){
+
+    private int testSize() {
         System.out.println("testSize");
         return 100;
     }
 
+
+    @Test
+    public void test07() {
+        long startTime = System.nanoTime();
+        int index =1111232;
+        for (int i = 0; i <= 100000; i++) {
+            int high = 0xFFFF0000 & index;
+            int low = 0xFFFF & index;
+        }
+
+        System.out.println((System.nanoTime() - startTime)/1000);
+    }
+
+    public static short getIntLow(int index) {
+        return (short) (0xFFFF & index);
+    }
+
+    public static short getIntHigh(int index) {
+        return (short) ((0xFFFF0000 & index) >> 16);
+    }
+
+    @Test
+    public void test08() {
+        // 0,3 1,4 一对;
+        System.out.println(3%2);
+    }
 }
 
 

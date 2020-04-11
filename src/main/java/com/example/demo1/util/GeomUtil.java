@@ -616,4 +616,15 @@ public class GeomUtil {
         /* 拿到保留4位小数计算器 */
         return BitUtil.getFloat4(cosr);
     }
+
+    public static void aa(int x, int y, float a){
+        int newX = (int) (x* Math.cos(Math.toRadians(a)));
+        int newY = (int) (y* Math.sin(Math.toRadians(a)));
+        System.out.println(newX);
+        System.out.println(newY);
+    }
+
+    public static void main(String[] args) {
+        aa(2,3,90);
+    }
 }
