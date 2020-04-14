@@ -199,4 +199,20 @@ public class Test02Stream {
         //list.stream().filter(a -> true).map(a -> a.clone()).collect(Collectors.toList());
     }
 
+    @Test
+    public void test10() {
+       Set<Set<Integer>> sets = new HashSet<>();
+        Set<Integer> s1 = new HashSet<Integer>(){{add(1);add(2);add(3);}};
+        Set<Integer> s2 = new HashSet<Integer>(){{add(3);add(4);add(5);}};
+        Set<Integer> s3 = new HashSet<Integer>(){{add(5);add(6);add(7);}};
+
+        sets.add(s1);
+        sets.add(s2);
+        sets.add(s3);
+
+        //HashSet<Integer> collect = sets.stream().collect(HashSet::new, (set, entry) -> set.addAll(entry), HashSet::addAll);
+        HashSet<Integer> collect = sets.stream().collect(HashSet::new, HashSet::addAll, HashSet::addAll);
+        System.out.println(collect);
+    }
+
 }
