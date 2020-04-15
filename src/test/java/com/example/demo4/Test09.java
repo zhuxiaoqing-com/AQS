@@ -82,19 +82,41 @@ public class Test09 {
         System.out.println((System.nanoTime() - startTime)/1000);
     }
 
-    public static short getIntLow(int index) {
-        return (short) (0xFFFF & index);
-    }
-
-    public static short getIntHigh(int index) {
-        return (short) ((0xFFFF0000 & index) >> 16);
-    }
-
     @Test
     public void test08() {
         // 0,3 1,4 一对;
         System.out.println(3%2);
     }
+
+    // x 33  y 16
+    @Test
+    public void test09() {
+        // 0,3 1,4 一对; 1048582 16,6    2162704 x 33  y 16
+        // 1900554  42228780712591360 42228781275709440
+        System.out.println(getIntHigh(1966089));
+        System.out.println(getIntLow(1966089));
+    }
+
+    @Test
+    public void test10() {
+        // 0,3 1,4 一对; 1048582 1245193
+        System.out.println(getIntIndexByXY(33,16));
+    }
+
+
+    public  int getIntIndexByXY(int high, int low) {
+        return (((int) low & 0xFFFF) | (((int) high << 16) & 0xFFFF0000));
+    }
+
+
+    public  short getIntLow(int index) {
+        return (short) (0xFFFF & index);
+    }
+
+    public  short getIntHigh(int index) {
+        return (short) ((0xFFFF0000 & index) >> 16);
+    }
+
 }
 
 

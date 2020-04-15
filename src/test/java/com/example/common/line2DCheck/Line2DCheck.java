@@ -29,6 +29,25 @@ public class Line2DCheck {
         return true;
     }
 
+    public static boolean intersection3(Line2 P, Line2 Q) {
+        /*
+        跨立实验  设矢量 P = (x1, y1)，Q = ( x2, y2 )，则矢量叉积定义为：P × Q = x1*y2 - x2*y1
+        (P1-Q1)x(Q2-Q1)*(P2-Q1)x(Q2-Q1) < 0   &&
+        (Q1-P1)x(P2-P1)*(Q2-P1)x(P2-P1) < 0
+
+
+
+        x1*y2 - x2*y1
+         */
+        if ((((P.x1 - Q.x1) * (Q.y2 - Q.y1) - (P.y1 - Q.y1) * (Q.x2 - Q.x1)) *
+                ((P.x2 - Q.x1) * (Q.y2 - Q.y1) - (P.y2 - Q.y1) * (Q.x2 - Q.x1))) < 0 &&
+                (((Q.x1 - P.x1) * (P.y2 - P.y1) - (Q.y1 - P.y1) * (P.x2 - P.x1)) *
+                        ((Q.x2 - P.x1) * (P.y2 - P.y1) - (Q.y2 - P.y1) * (P.x2 - P.x1))) < 0) {
+            return true;
+        }
+        return false;
+    }
+
     /**
      * 两条线段有且仅有一个公共点，且这个点不是任何一条线段的端点时，称这两条线段是严格相交的。
      * <p>
@@ -62,6 +81,7 @@ public class Line2DCheck {
         }
         return false;
     }
+
 
 
     //  x1*y2 - x2*y1

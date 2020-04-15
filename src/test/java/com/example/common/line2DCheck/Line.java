@@ -29,4 +29,8 @@ public class Line {
     public void setPoint2(Point point2) {
         this.point2 = point2;
     }
+
+    public Line2 toLine2() {
+        return new Line2(point1.getX(), point1.getY(), point2.getX(), point2.getY());
+    }
 }
