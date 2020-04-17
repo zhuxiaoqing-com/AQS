@@ -11,7 +11,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.stream.Collectors;
 
-public class Test01 {
+public class ClassScan {
    @Test
     public void test01() {
        List<Number> list = new ArrayList<>();
@@ -39,7 +39,7 @@ public class Test01 {
               getResource 只要搜到了一个就返回
               而 getResources 会搜索全部 搜到了一个 还会继续搜索下去直到扫描完毕
               */
-            Enumeration<URL> dirs = Test01.class.getClassLoader().getResources(packageDir);
+            Enumeration<URL> dirs = ClassScan.class.getClassLoader().getResources(packageDir);
             while (dirs.hasMoreElements()) {
                 URL url = dirs.nextElement();
                 // 获取协议名 jar http file 等 http://www.baidu.com http 是协议名
