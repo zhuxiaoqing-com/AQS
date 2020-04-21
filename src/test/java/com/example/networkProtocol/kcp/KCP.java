@@ -151,8 +151,18 @@ public abstract class KCP {
         protected long fragment = 0;// 分段序号 frg fragment
         protected long windowsSize = 0; // windows ，窗口大小
         protected long timestamp = 0;//发送的时间戳
-        protected long sequenceNumber = 0;// segment 序号 message分片segment的序号，按1累次递增。
-        protected long unacknowledged = 0; // 待接收消息序号(接收滑动窗口左端)。对于未丢包的网络来说，una是下一个可接收的序号，如收到sn=10的包，una为11。
+        /*
+        push 当前发送的   发送方的sn
+        ack  当前接收到的 接收方的sn
+         */
+        protected long sequenceNumber = 0;//  如果是 Push 就是发送方当前发送的数据的序号(是发送方的sn);  如果是ack就是确认发送方的序号(是接受方的sn)
+        /*
+        待接收消息序号(接收滑动窗口左端)。对于未丢包的网络来说，
+        una是下一个可接收的序号(永远都是发送方的una)，una:接受窗口左端;una 前面的sn已经全部被接收
+        如收到sn=10的包，una为11。 已经确认对方 udp 包的序号+1; 如收到sn=10的包，una为11。
+         */
+
+        protected long unacknowledged = 0;
         protected long repetitionSendTimestamp = 0; //重发的时间戳
         protected long rto = 0; // 超时重传的时间间隔 Retransmission TimeOut
         protected long fastAck = 0; // ack 跳过的次数, 用于快速重传
@@ -213,7 +223,7 @@ public abstract class KCP {
     byte[] buffer = new byte[(int) (mtu + IKCP_OVERHEAD) * 3];
     // 已经接受的缓存
     ArrayList<Segment> nrcv_buf = new ArrayList<>(128);
-    // 已经发送的缓存
+    // 已经发送但是未收到ack的缓存
     ArrayList<Segment> nsnd_buf = new ArrayList<>(128);
     ArrayList<Segment> nrcv_que = new ArrayList<>(128);
     ArrayList<Segment> nsnd_que = new ArrayList<>(128);
@@ -433,7 +443,7 @@ public abstract class KCP {
 
     // 对端返回的ack, 确认发送成功时，对应包从发送缓存中移除
     void parse_ack(long sn) {
-        // 当前序列号比未发送的
+        // 当前ack确认的序列号  已经被确认收到了; || 当前ack确认的序列号 我们并没有发送过
         if (_itimediff(sn, snd_una) < 0 || _itimediff(sn, snd_nxt) >= 0) {
             return;
         }
@@ -443,10 +453,11 @@ public abstract class KCP {
             if (_itimediff(sn, seg.sequenceNumber) < 0) {
                 break;
             }
-
+            // 把比 当前ack确认的序列号 小的序列号的快速重传 全部+1
             // 原版ikcp_parse_fastack&ikcp_parse_ack逻辑重复
             seg.fastAck++;
 
+            // 当前序号已经确认了 已发送未确认窗口中删除
             if (sn == seg.sequenceNumber) {
                 nsnd_buf.remove(index);
                 break;
@@ -612,6 +623,8 @@ public abstract class KCP {
                 parse_ack(sequenceNumber);
                 shrink_buf();
             } else if (IKCP_CMD_PUSH == cmd) {
+                // 当前序号比接受窗口大; 说明窗口满了 无法再接受当前序号了
+                // 只有当前接受的序号比当前接受窗口小 才能接受
                 if (_itimediff(sequenceNumber, rcv_nxt + rcv_wnd) < 0) {
                     ack_push(sequenceNumber, timestamp);
                     if (_itimediff(sequenceNumber, rcv_nxt) >= 0) {
