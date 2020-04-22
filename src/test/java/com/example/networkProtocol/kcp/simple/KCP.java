@@ -1,4 +1,4 @@
-package com.example.networkProtocol.kcp;
+package com.example.networkProtocol.kcp.simple;
 
 /**
  * @Auther: zhuxiaoqing
@@ -148,8 +148,12 @@ public abstract class KCP {
     private class Segment {
         protected long conversation = 0; // 会话序号:接收到的数据包与发送的一致才接受此数据包
         protected long cmd = 0;// command，指令类型：代表这个 segment 的类型
-        protected long fragment = 0;// 分段序号 frg fragment
+        protected long fragment = 0;// 分段序号 frg fragment 从大到小,比如 数据 123; 分片 frg 序号就是 2(1) 1(2) 0(3)
         protected long windowsSize = 0; // windows ，窗口大小
+        /*
+        push ： 发送的时间
+        ack ： 发送方发送push的时间
+         */
         protected long timestamp = 0;//发送的时间戳
         /*
         push 当前发送的   发送方的sn
@@ -203,52 +207,92 @@ public abstract class KCP {
     }
 
 
-    long conv = 0; // 会话id
+    private long conv = 0; // 会话id
     //long user = user;
-    long snd_una = 0; // 第一个未确认的包
-    long snd_nxt = 0; // 待发送包的序号
-    long rcv_nxt = 0; // 待接收消息的序号
+    private long snd_una = 0; // 第一个未确认的包
+    private long snd_nxt = 0; // 待发送包的序号
+    private long rcv_nxt = 0; // 待接收消息的序号
     long ts_recent = 0;
     long ts_lastack = 0;
-    long ts_probe = 0;
-    long probe_wait = 0;
-    long snd_wnd = IKCP_WND_SND;
-    long rcv_wnd = IKCP_WND_RCV;
-    long rmt_wnd = IKCP_WND_RCV;
-    long cwnd = 0;
-    long incr = 0;
-    long probe = 0;
-    long mtu = IKCP_MTU_DEF;
-    long mss = this.mtu - IKCP_OVERHEAD;
-    byte[] buffer = new byte[(int) (mtu + IKCP_OVERHEAD) * 3];
+    private long ts_probe = 0; // 下次探查窗口的时间戳
+    private long probe_wait = 0; // 探查窗口需要等待的时间
+    private long snd_wnd = IKCP_WND_SND; // 发送窗口大小
+    private long rcv_wnd = IKCP_WND_RCV; // 接收窗口大小
+    private long rmt_wnd = IKCP_WND_RCV; // 远端接收窗口大小
+    private long cwnd = 0; // 拥塞窗口大小
+    private long incr = 0; //  可发送的最大数据量
+    private long probe = 0;
+    private int mtu = IKCP_MTU_DEF;
+    private int mss = this.mtu - IKCP_OVERHEAD;
+    private byte[] buffer = new byte[(mtu + IKCP_OVERHEAD) * 3];
     // 已经接受的缓存
-    ArrayList<Segment> nrcv_buf = new ArrayList<>(128);
+    private ArrayList<Segment> nrcv_buf = new ArrayList<>(128);
     // 已经发送但是未收到ack的缓存
-    ArrayList<Segment> nsnd_buf = new ArrayList<>(128);
-    ArrayList<Segment> nrcv_que = new ArrayList<>(128);
-    ArrayList<Segment> nsnd_que = new ArrayList<>(128);
-    long state = 0; // 连接状态
-    ArrayList<Long> acklist = new ArrayList<>(128);
+    private ArrayList<Segment> nsnd_buf = new ArrayList<>(128);
+    private ArrayList<Segment> nrcv_que = new ArrayList<>(128);
+    private ArrayList<Segment> nsnd_que = new ArrayList<>(128);
+    private long state = 0; // 连接状态 0xFFFFFFFF (-1)表示断开连接
+    private ArrayList<Long> acklist = new ArrayList<>(128);
     //long ackblock = 0;
     //long ackcount = 0;
-    long rx_srtt = 0; // ack接收rtt平滑值(smoothed)
-    long rx_rttval = 0; // ack接收rtt浮动值 rtt 偏差？
-    long rx_rto = IKCP_RTO_DEF; // 由ack接收延迟计算出来的复原时间
-    long rx_minrto = IKCP_RTO_MIN; // 最小复原时间 最小 rto 时间。 rto 拿来计算超时以后的重发协议时间
-    long current = 0;
-    long interval = IKCP_INTERVAL;
-    long ts_flush = IKCP_INTERVAL;
-    long nodelay = 0;
-    long updated = 0;
+    private long rx_srtt = 0; // ack接收rtt平滑值(smoothed)
+    private long rx_rttval = 0; // ack接收rtt浮动值 rtt 偏差？
+    private long rx_rto = IKCP_RTO_DEF; // 由ack接收延迟计算出来的复原时间
+    private long rx_minrto = IKCP_RTO_MIN; // 最小复原时间 最小 rto 时间。 rto 拿来计算超时以后的重发协议时间
+    private long current = 0;
+    private long interval = IKCP_INTERVAL; // 刷新间隔
+    private long ts_flush = IKCP_INTERVAL; // 下次flush刷新时间戳
+    private long nodelay = 0; // 	是否启动无延迟模式
+    private boolean updated = true; // 是否是首次调用 update 函数的标识
     long logmask = 0;
-    long ssthresh = IKCP_THRESH_INIT;
-    long fastresend = 0;
-    long nocwnd = 0;
-    long xmit = 0;
-    long dead_link = IKCP_DEADLINK;
+    private long ssthresh = IKCP_THRESH_INIT; // 慢启动值
+    long fastresend = 0; //  触发快速重传的重复ack个数
+    private long nocwnd = 0; // 	取消拥塞控制
+    //long xmit = 0;
+    private long dead_link = IKCP_DEADLINK; // 死亡的连接
     //long output = NULL;
     //long writelog = NULL;
 
+    /*
+    慢启动和阻塞避免
+    ssthresh 慢启动值 ;   cwnd 阻塞避免窗口
+    1、对于一个给定的连接, 初始化 cwnd 为 1 个报文段; ssthresh 为 65535 字节;
+    2、 TCP 输出例程的输出不能超过 cwnd 和 接收方 通告窗口的大小。
+        拥塞避免是发送方使用的流量控制, 而通告窗口则是接收方进行的流量控制。
+        前者是发送方感受到的网络拥塞的估计, 而后者则是与接收方在该连接上的可用缓存大小有关
+
+    3、当拥塞发生时(超时或收到重复确认),ssthresh 被设置为当前窗口大小的一半(cwnd 和接收方通告窗口大小的最小值，但最少为2个报文段)。
+       此外，如果超时引起了拥塞，则 cwnd 被设置为 1 个报文段(慢启动)
+
+    4、当新的数据被对方确认时，就增加 cwnd，但增加的方法依赖于我们是否正在进行慢启动或拥塞避免。
+    如果 cwnd <= ssthresh, 则正在进行慢启动，否则正在进行拥塞避免。
+    慢启动一直持续到我们回到当拥塞发生时所处位置的一半的时候才停止,(因为我们记录了在步骤2中给我们制造麻烦的窗口大小的一半），然后转为执行拥塞避免。
+
+
+    慢启动算法初始设置 cwnd 为1个报文段，此后每收到一个确认就加 1。
+    这会使窗口按指数方式增长：发送1个报文段，然后是2个，接着是4个......。
+
+    拥塞避免算法要求每次收到一个确认时将cwnd增加1/cwnd。
+    与慢启动的指数增加比起来，这是一种加性增长(additive increase)。
+    我们希望在一个往返时间内最多为cwnd增加1个报文段（不管在这个RTT中收到了多少个ACK），
+    然而慢启动将根据这个往返时间中所收到的确认的个数增加cwnd。
+     */
+
+    /*
+    快速恢复算法
+    1、 当收到第3个重复的ACK时，将ssthresh设置为当前拥塞窗口cwnd的一半。重传丢失的报文段。设置cwnd为ssthresh加上3倍的报文段大小。
+    2、每次收到另一个重复的ACK时，cwnd增加1个报文段大小并发送1个分组（如果新的cwnd允许发送）。
+    3、当下一个确认新数据的ACK到达时，设置cwnd为ssthresh（在第1步中设置的值）。
+    这个ACK应该是在进行重传后的一个往返时间内对步骤1中重传的确认。
+    另外，这个ACK也应该是对丢失的分组和收到的第1个重复的ACK之间的所有中间报文段的确认。
+    这一步采用的是拥塞避免，因为当分组丢失时我们将当前的速率减半。
+
+    为啥要 对步骤1中重传的确认以后才将 cwnd 减半呢?
+    因为没有收到确认的时候可能发送缓存(已经发送还未收到ack的数据),可能已经占满了 cwnd 了;
+    如果这个时候就降低 cwnd, 那是不是如果没有响应(对步骤1中重传的确认), 就永远也发送不了新的数据了呢?
+
+    等到 对步骤1中重传的确认) 回来以后, 发送缓存就可以清一清,然后再降低 cwnd, 就算cwnd降低了，也还是可以发送新的数据了
+     */
     public KCP(long conv_) {
         conv = conv_;
     }
@@ -264,7 +308,7 @@ public abstract class KCP {
         }
 
         int peekSize = PeekSize();
-        if (0 > peekSize) {
+        if (peekSize < 0) {
             return -2;
         }
 
@@ -309,6 +353,7 @@ public abstract class KCP {
             slice(nrcv_buf, count, nrcv_buf.size());
         }
 
+        // 窗口大小更新
         // fast recover
         if (nrcv_que.size() < rcv_wnd && recover) {
             // ready to send back IKCP_CMD_WINS in ikcp_flush
@@ -332,11 +377,12 @@ public abstract class KCP {
 
         Segment seq = nrcv_que.get(0);
 
-        if (0 == seq.fragment) {
+        if (seq.fragment == 0) {
             return seq.data.length;
         }
 
-        if (nrcv_que.size() < seq.fragment + 1) {
+        // nrcv_que 还没有收集到所有的 fragment
+        if (seq.fragment + 1 > nrcv_que.size()) {
             return -1;
         }
 
@@ -368,10 +414,11 @@ public abstract class KCP {
         if (buffer.length < mss) {
             count = 1;
         } else {
+            // 相当于 Math.ceil()
             count = (int) (buffer.length + mss - 1) / (int) mss;
         }
-
-        if (255 < count) {
+        // 数据太大
+        if (count > 255) {
             return -2;
         }
 
@@ -395,6 +442,72 @@ public abstract class KCP {
         return 0;
     }
 
+    /**
+     * 该版本不支持 流模式, input 那里没法保存没有读取完的流;
+     * 需要上层搭建一个缓存 缓存未读完的数据流;
+     * 流模式和普通模式的对比
+     * 普通模式：如果需要拆包;就拆分为多个 kcp 包; 一个 kcp 包(拆分后的包)就是一个 udp 包
+     * 流模式：  因为是流模式;所有就尽量填满上一个待发送的包的数据;
+     * 1、先判断上一个待发送的包的数据达到了 mss 没有，没有的话就先把上一个待发送的包的数据填充满;
+     * 2、然后再正常分包
+     *
+     * @param buffer
+     * @return
+     */
+    // 上层要发送的数据丢给发送队列，发送队列会根据mtu大小分片
+    public int SendByStream(byte[] buffer) {
+
+        if (0 == buffer.length) {
+            return -1;
+        }
+
+        boolean stream = true;
+        // append to previous segment in streaming mode (if possible)
+        // 如果是流模式就将上一个的数据包数据填满
+        if (stream && !nsnd_que.isEmpty()) {
+            Segment segment = nsnd_que.get(nrcv_que.size() - 1);
+            // 或者判断 cmd 是不是 ack
+            if (segment.data != null && segment.data.length < mss) {
+                int capacity = mss - segment.data.length;
+                int extend = (buffer.length < capacity) ? buffer.length : capacity;
+                // 将需要发送的数据添加到 segment 里面去
+                //segment.data.add(buffer);
+                // 如果已经被全部填充完了 直接 return
+                if (buffer.length == 0) {
+                    return 0;
+                }
+            }
+        }
+
+        int count;
+
+        // 根据mss大小分片
+        if (buffer.length < mss) {
+            count = 1;
+        } else {
+            // 相当于 Math.ceil()
+            count = (int) (buffer.length + mss - 1) / (int) mss;
+        }
+        // 数据太大
+        if (count > 255) {
+            return -2;
+        }
+
+        if (count == 0) {
+            count = 1;
+        }
+        // fragment
+        for (int i = 0; i < count; i++) {
+            int size = buffer.length > mss ? mss : buffer.length;
+            Segment seg = new Segment(size);
+            //seg.data = (buffer, size);
+            //seg.frg = this.stream ? 0 : count - i - 1;
+            nrcv_que.add(seg);
+        }
+
+        return 0;
+    }
+
     //---------------------------------------------------------------------
     // parse ack
 
@@ -402,13 +515,13 @@ public abstract class KCP {
      * RTP:RTO主要考虑RTT的期望值和偏差
      * 综上的理解，我们就可以很快理解并记住一下公式。
      * 第一次测量时候，RTTm是我们测量的结果，RTTs=RTTm,RTTD=RTTm/2
-     *
+     * <p>
      * 以后每次测量采用以下公式
-     * 	RTTs=(1-a)*RTTs+a*RTTm, a通常为1/8,即0.125 ...... 公式1
-     * 	RTTD=(1-b)*RTTD+b*|RTTm-RTTs|, b通常为1/4,即0.25 ...... 公式2
-     * 	RTO = RTTs+4RTTD ...... 公式3
-     *
-     * 	说明：公式3不管是第一次计算还是最后一次，都是采用该公式。
+     * RTTs=(1-a)*RTTs+a*RTTm, a通常为1/8,即0.125 ...... 公式1
+     * RTTD=(1-b)*RTTD+b*|RTTm-RTTs|, b通常为1/4,即0.25 ...... 公式2
+     * RTO = RTTs+4RTTD ...... 公式3
+     * <p>
+     * 说明：公式3不管是第一次计算还是最后一次，都是采用该公式。
      */
     void update_ack(int rtt) {
         // 如果rtt为零 初始化 rtt
@@ -499,7 +612,7 @@ public abstract class KCP {
     void parse_data(Segment newseg) {
         long sn = newseg.sequenceNumber;
         boolean repeat = false;
-
+        // 如果当前发送过来的sn 比接收窗口大  ||   收到了已经收到的 sn  ; rcv_nxt 前面的包均已经收到
         if (_itimediff(sn, rcv_nxt + rcv_wnd) >= 0 || _itimediff(sn, rcv_nxt) < 0) {
             return;
         }
@@ -515,6 +628,7 @@ public abstract class KCP {
                 break;
             }
 
+            // 获取插入位置
             if (_itimediff(sn, seg.sequenceNumber) > 0) {
                 after_idx = i;
                 break;
@@ -534,6 +648,7 @@ public abstract class KCP {
         // 将连续包加入到接收队列
         int count = 0;
         for (Segment seg : nrcv_buf) {
+            // 接收队列也不能比接收窗口大
             if (seg.sequenceNumber == rcv_nxt && nrcv_que.size() < rcv_wnd) {
                 nrcv_que.add(seg);
                 rcv_nxt++;
@@ -640,7 +755,6 @@ public abstract class KCP {
                         if (length > 0) {
                             System.arraycopy(data, offset, seg.data, 0, (int) length);
                         }
-
                         parse_data(seg);
                     }
                 }
@@ -695,15 +809,17 @@ public abstract class KCP {
     //---------------------------------------------------------------------
     void flush() {
         long current_ = current;
+        // 用于缓存将要发送的字节流
         byte[] buffer_ = buffer;
-        int change = 0;
-        int lost = 0;
+        int fastReSendCount = 0; // 快速重传次数
+        int timeoutCount = 0;
 
         // 'ikcp_update' haven't been called.
-        if (0 == updated) {
+        if (updated) {
             return;
         }
 
+        // 将ack 发送出去
         Segment seg = new Segment(0);
         seg.conversation = conv;
         seg.cmd = IKCP_CMD_ACK;
@@ -716,13 +832,13 @@ public abstract class KCP {
         int offset = 0;
         for (int i = 0; i < count; i++) {
             if (offset + IKCP_OVERHEAD > mtu) {
-                output(buffer, offset);
+                output(buffer_, offset);
                 offset = 0;
             }
             // ikcp_ack_get
             seg.sequenceNumber = acklist.get(i * 2 + 0);
             seg.timestamp = acklist.get(i * 2 + 1);
-            offset += seg.encode(buffer, offset);
+            offset += seg.encode(buffer_, offset);
         }
         acklist.clear();
 
@@ -738,15 +854,18 @@ public abstract class KCP {
                     if (probe_wait < IKCP_PROBE_INIT) {
                         probe_wait = IKCP_PROBE_INIT;
                     }
+                    // tcp 是 指数退让; kcp 是 0.5 倍
                     probe_wait += probe_wait / 2;
                     if (probe_wait > IKCP_PROBE_LIMIT) {
                         probe_wait = IKCP_PROBE_LIMIT;
                     }
                     ts_probe = current + probe_wait;
+                    // 表示需要发送窗口检测
                     probe |= IKCP_ASK_SEND;
                 }
             }
         } else {
+            // 如果对方接受窗口不为零; 不需要定时坚持器
             ts_probe = 0;
             probe_wait = 0;
         }
@@ -756,10 +875,10 @@ public abstract class KCP {
         if ((probe & IKCP_ASK_SEND) != 0) {
             seg.cmd = IKCP_CMD_WASK;
             if (offset + IKCP_OVERHEAD > mtu) {
-                output(buffer, offset);
+                output(buffer_, offset);
                 offset = 0;
             }
-            offset += seg.encode(buffer, offset);
+            offset += seg.encode(buffer_, offset);
         }
 
         // flush window probing commands(c#)
@@ -767,24 +886,27 @@ public abstract class KCP {
         if ((probe & IKCP_ASK_TELL) != 0) {
             seg.cmd = IKCP_CMD_WINS;
             if (offset + IKCP_OVERHEAD > mtu) {
-                output(buffer, offset);
+                output(buffer_, offset);
                 offset = 0;
             }
-            offset += seg.encode(buffer, offset);
+            offset += seg.encode(buffer_, offset);
         }
 
+        // 初始化命令
         probe = 0;
 
         // calculate window size
         long cwnd_ = _imin_(snd_wnd, rmt_wnd);
         // 如果采用拥塞控制
         if (0 == nocwnd) {
+            //cwnd=min(snd_wnd,rmt_wnd,cwnd)的最小值
             cwnd_ = _imin_(cwnd, cwnd_);
         }
 
         count = 0;
         // move data from snd_queue to snd_buf
         for (Segment nsnd_que1 : nsnd_que) {
+            // 如果要发送的数据大于拥塞窗口
             if (_itimediff(snd_nxt, snd_una + cwnd_) >= 0) {
                 break;
             }
@@ -804,42 +926,47 @@ public abstract class KCP {
             count++;
         }
 
-        if (0 < count) {
+        if (count > 0) {
             slice(nsnd_que, count, nsnd_que.size());
         }
 
         // calculate resent
+        // 触发快速重传的重复ack个数 ; 如果次数为0, 就给一个超级大的数
         long resent = (fastresend > 0) ? fastresend : 0xffffffff;
+        // 如果没有开启无延迟; 就按照 rto /2^3  8;
         long rtomin = (nodelay == 0) ? (rx_rto >> 3) : 0;
 
         // flush data segments
         for (Segment segment : nsnd_buf) {
             boolean needsend = false;
-            if (0 == segment.xmit) {
+            if (0 == segment.xmit) { // 重传的次数
                 // 第一次传输
                 needsend = true;
                 segment.xmit++;
                 segment.rto = rx_rto;
+                // 设置重发的时间戳
                 segment.repetitionSendTimestamp = current_ + segment.rto + rtomin;
             } else if (_itimediff(current_, segment.repetitionSendTimestamp) >= 0) {
                 // 丢包重传
                 needsend = true;
                 segment.xmit++;
-                xmit++;
+                //xmit++;
                 if (0 == nodelay) {
+                    // 如果不是无延迟 每次加倍
                     segment.rto += rx_rto;
                 } else {
+                    // 无延迟模式 每次加 0.5
                     segment.rto += rx_rto / 2;
                 }
                 segment.repetitionSendTimestamp = current_ + segment.rto;
-                lost = 1;
+                timeoutCount = 1;
             } else if (segment.fastAck >= resent) {
                 // 快速重传
                 needsend = true;
                 segment.xmit++;
                 segment.fastAck = 0;
                 segment.repetitionSendTimestamp = current_ + segment.rto;
-                change++;
+                fastReSendCount++;
             }
 
             if (needsend) {
@@ -859,6 +986,7 @@ public abstract class KCP {
                     offset += segment.data.length;
                 }
 
+                // 重发次数超过了 dead_link
                 if (segment.xmit >= dead_link) {
                     state = -1; // state = 0(c#)
                 }
@@ -872,7 +1000,9 @@ public abstract class KCP {
 
         // update ssthresh
         // 拥塞避免
-        if (change != 0) {
+        // 如果进行了快速重传
+        if (fastReSendCount != 0) {
+            // 直接取当前发送窗口大小
             long inflight = snd_nxt - snd_una;
             ssthresh = inflight / 2;
             if (ssthresh < IKCP_THRESH_MIN) {
@@ -882,7 +1012,7 @@ public abstract class KCP {
             incr = cwnd * mss;
         }
 
-        if (lost != 0) {
+        if (timeoutCount != 0) {
             ssthresh = cwnd / 2;
             if (ssthresh < IKCP_THRESH_MIN) {
                 ssthresh = IKCP_THRESH_MIN;
@@ -902,13 +1032,12 @@ public abstract class KCP {
     // ikcp_check when to call it again (without ikcp_input/_send calling).
     // 'current' - current timestamp in millisec.
     //---------------------------------------------------------------------
-    public void Update(long current_) {
-
+    public void Update1(long current_) {
         current = current_;
 
         // 首次调用Update
-        if (0 == updated) {
-            updated = 1;
+        if (updated) {
+            updated = false;
             ts_flush = current;
         }
 
@@ -921,6 +1050,7 @@ public abstract class KCP {
             slap = 0;
         }
 
+        // 这样设置是 为了保证尽量可以保证刷新频率
         // flush同时设置下一次更新时间
         if (slap >= 0) {
             ts_flush += interval;
@@ -929,6 +1059,25 @@ public abstract class KCP {
             }
             flush();
         }
+    }
+
+    // 改版刷新时间
+    public void Update(long current_) {
+        current = current_;
+
+        // 首次调用Update
+        if (updated) {
+            updated = false;
+            ts_flush = current;
+        }
+
+        // 如果没有到刷新时间
+        if (current_ < ts_flush) {
+            return;
+        }
+        // 更新刷新时间
+        ts_flush = current_ + interval;
+        flush();
     }
 
     //---------------------------------------------------------------------
@@ -947,7 +1096,7 @@ public abstract class KCP {
         long tm_packet = 0x7fffffff;
         long minimal;
 
-        if (0 == updated) {
+        if (updated) {
             return current_;
         }
 
@@ -966,11 +1115,12 @@ public abstract class KCP {
             if (diff <= 0) {
                 return current_;
             }
+            // 找到一个最小的将要发送的包
             if (diff < tm_packet) {
                 tm_packet = diff;
             }
         }
-
+        // 如果最小将要发送的包 < 当前时间距离下次刷新时间的时间间隔
         minimal = tm_packet < tm_flush ? tm_packet : tm_flush;
         if (minimal >= interval) {
             minimal = interval;
@@ -990,7 +1140,7 @@ public abstract class KCP {
             return -2;
         }
 
-        mtu = (long) mtu_;
+        mtu = mtu_;
         mss = mtu - IKCP_OVERHEAD;
         buffer = buffer_;
         return 0;
