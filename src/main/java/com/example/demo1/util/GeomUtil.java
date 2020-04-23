@@ -294,7 +294,7 @@ public class GeomUtil {
      * @param angle
      * @return
      */
-    private static double toUnityDegrees(double angle) {
+    public static double toUnityDegrees(double angle) {
         return 90 - Math.toDegrees(angle);
     }
 
