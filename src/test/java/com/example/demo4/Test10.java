@@ -79,6 +79,20 @@ public class Test10 {
 
        }
     }
+
+    @Test
+    public void test08() {
+       int result = 0B101001001;
+       int i = 0B110101;
+       int i1 = 0B1101;
+
+        System.out.println(result);
+        System.out.println(i*i1);
+
+        int aa = 0b1010;
+        int a1 = 0b10;
+        System.out.println(aa%a1);
+    }
 }
 
 
