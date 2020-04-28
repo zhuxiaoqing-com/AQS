@@ -27,4 +27,21 @@ public class Graph {
         adj[s].add(t);
         adj[t].add(s);
     }
+
+
+	public int getV() {
+		return v;
+	}
+
+	public void setV(int v) {
+		this.v = v;
+	}
+
+	public LinkedList<Integer>[] getAdj() {
+		return adj;
+	}
+
+	public void setAdj(LinkedList<Integer>[] adj) {
+		this.adj = adj;
+	}
 }

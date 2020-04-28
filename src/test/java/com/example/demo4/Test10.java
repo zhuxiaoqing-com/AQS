@@ -176,6 +176,16 @@ public class Test10 {
 
 		System.out.println(now);
 	}
+
+	@Test
+	public void test12()  {
+
+	}
+
+	public void printByFormat(String str, Object... param){
+		String format = String.format(str, param);
+
+	}
 }
 
 
