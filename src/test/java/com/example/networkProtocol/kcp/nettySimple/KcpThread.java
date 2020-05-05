@@ -116,6 +116,8 @@ public class KcpThread extends Thread {
                 KcpOnUdp ku = this.kcps.get(dp.sender());
                 ByteBuf content = dp.content();
                 if (ku == null) {
+                	// 这里可以对 convention 会话id 做校验. 查看会话id是否合法 合法进行连接 不合法就不创建连接
+					// 比如可以这样做: 会话id 的第 n~n+n 位 必须是某个数，不然就是不合法会话id
                     ku = new KcpOnUdp(this.out, dp.sender(), local, this.listerner);//初始化
                     ku.noDelay(nodelay, interval, resend, nc);
                     ku.wndSize(sndwnd, rcvwnd);
