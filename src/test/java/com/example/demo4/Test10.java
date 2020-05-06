@@ -142,6 +142,7 @@ public class Test10 {
 	/**
 	 * 803112612528400
 	 * 803122772524800
+	 *
 	 * @throws InterruptedException
 	 */
 	@Test
@@ -171,20 +172,31 @@ public class Test10 {
 		LocalDate now = LocalDate.now();
 		while (nano > 0) {
 			now = now.plusYears(1);
-			nano = now.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()*1000_000;
+			nano = now.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli() * 1000_000;
 		}
 
 		System.out.println(now);
 	}
 
 	@Test
-	public void test12()  {
-
+	public void test12() {
+		double pow = Math.pow(2, 52);
+		long l = -1L ^ (-1L << 52);
+		System.out.println(pow);
+		System.out.println((long) pow);
+		System.out.println(l);
+		System.out.println(pow == l);
 	}
 
-	public void printByFormat(String str, Object... param){
+	public void printByFormat(String str, Object... param) {
 		String format = String.format(str, param);
+	}
 
+	@Test
+	public void test13() {
+		System.out.println(Integer.toBinaryString(128));
+		System.out.println(Integer.toBinaryString(13));
+		System.out.println(Integer.toBinaryString(138));
 	}
 }
 

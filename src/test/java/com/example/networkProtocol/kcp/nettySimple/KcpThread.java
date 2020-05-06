@@ -120,7 +120,7 @@ public class KcpThread extends Thread {
 					// 比如可以这样做: 会话id 的第 n~n+n 位 必须是某个数，不然就是不合法会话id
                     ku = new KcpOnUdp(this.out, dp.sender(), local, this.listerner);//初始化
                     ku.noDelay(nodelay, interval, resend, nc);
-                    ku.wndSize(sndwnd, rcvwnd);
+					ku.wndSize(sndwnd, rcvwnd);
                     ku.setMtu(mtu);
                     // conv应该在客户端第一次建立时获取
                     int conv = content.getIntLE(0);
