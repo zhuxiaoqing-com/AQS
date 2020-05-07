@@ -198,6 +198,24 @@ public class Test10 {
 		System.out.println(Integer.toBinaryString(13));
 		System.out.println(Integer.toBinaryString(138));
 	}
+
+	@Test
+	public void test14() {
+		long start01 = System.nanoTime();
+		for(int i = 0; i<=1000_000_000; i++){
+			if(1>2){
+			}
+		}
+
+		System.out.println(System.nanoTime() - start01);
+
+		long start02 = System.nanoTime();
+		for(int i = 0; i<=1000_000_000; i++){
+			if(1>=2){
+			}
+		}
+		System.out.println(System.nanoTime() - start02);
+	}
 }
 
 
