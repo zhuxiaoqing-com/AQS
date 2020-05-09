@@ -247,14 +247,14 @@ public class Test10 {
 
 	@Test
 	public void test16() {
-		Map<Integer, Integer> hashMap1 = new HashMap<Integer, Integer>(){
+		Map<Integer, Integer> hashMap1 = new HashMap<Integer, Integer>() {
 			{
-				put(1,1);
+				put(1, 1);
 			}
 		};
-		Map<Integer, Integer> hashMap2 = new HashMap<Integer, Integer>(){
+		Map<Integer, Integer> hashMap2 = new HashMap<Integer, Integer>() {
 			{
-				put(1,1);
+				put(1, 1);
 			}
 		};
 
@@ -264,14 +264,15 @@ public class Test10 {
 }
 
 
-
-
-
-
-
-
-
-
+/**
+ * if(1频道){
+ * if(1线){
+ * 给角色一个无敌buff
+ * } else if(2线){
+ * 复活buff
+ * }
+ * }else if(2频道)
+ */
 
 
 
