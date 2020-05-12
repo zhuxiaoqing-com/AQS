@@ -6,6 +6,7 @@ import org.junit.Test;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
+import java.util.function.Function;
 
 public class Test10 {
 	@Test
@@ -261,6 +262,17 @@ public class Test10 {
 
 		System.out.println(hashMap1.equals(hashMap2));
 	}
+
+
+	@Test
+	public void fun17() {
+		TestUtil.testTime(()->{int s= 111111*1000;}, 10000000,"fd");
+		TestUtil.testTime(()->{float s= 111111*0.01f;}, 10000000,"fd");
+	}
+
+
+
+
 }
 
 
