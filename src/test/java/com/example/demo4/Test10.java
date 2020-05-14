@@ -270,6 +270,12 @@ public class Test10 {
 		TestUtil.testTime(()->{float s= 111111*0.01f;}, 10000000,"fd");
 	}
 
+	@Test
+	public void fun18() {
+		TestUtil.testTime(()->{new Object();}, 10_000_000,"fd");
+
+	}
+
 
 
 
