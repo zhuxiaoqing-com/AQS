@@ -276,6 +276,12 @@ public class Test10 {
 
 	}
 
+	@Test
+	public void fun19() {
+		System.out.println(Integer.toBinaryString(-1));
+		System.out.println(Long.toBinaryString(-1L));
+	}
+
 
 
 
