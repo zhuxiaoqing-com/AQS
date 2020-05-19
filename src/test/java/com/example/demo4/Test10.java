@@ -282,6 +282,31 @@ public class Test10 {
 		System.out.println(Long.toBinaryString(-1L));
 	}
 
+	@Test
+	public void fun20() {
+		try{
+			String s = "22335d";
+			Integer.parseInt(s);
+		}catch (Exception e){
+			System.out.println(e);
+		}
+		System.out.println("还能运行到这段代码嘛");
+	}
+
+	@Test
+	public void fun21() {
+		int param = 1;
+		switch (param){
+			case 1:{
+				System.out.println("哈哈哈");
+				if(true){
+					break;
+				}
+				System.out.println("还能运行到吗");
+			}
+		}
+	}
+
 
 
 
