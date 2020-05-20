@@ -266,13 +266,19 @@ public class Test10 {
 
 	@Test
 	public void fun17() {
-		TestUtil.testTime(()->{int s= 111111*1000;}, 10000000,"fd");
-		TestUtil.testTime(()->{float s= 111111*0.01f;}, 10000000,"fd");
+		TestUtil.testTime(() -> {
+			int s = 111111 * 1000;
+		}, 10000000, "fd");
+		TestUtil.testTime(() -> {
+			float s = 111111 * 0.01f;
+		}, 10000000, "fd");
 	}
 
 	@Test
 	public void fun18() {
-		TestUtil.testTime(()->{new Object();}, 10_000_000,"fd");
+		TestUtil.testTime(() -> {
+			new Object();
+		}, 10_000_000, "fd");
 
 	}
 
@@ -284,10 +290,10 @@ public class Test10 {
 
 	@Test
 	public void fun20() {
-		try{
+		try {
 			String s = "22335d";
 			Integer.parseInt(s);
-		}catch (Exception e){
+		} catch (Exception e) {
 			System.out.println(e);
 		}
 		System.out.println("还能运行到这段代码嘛");
@@ -296,10 +302,10 @@ public class Test10 {
 	@Test
 	public void fun21() {
 		int param = 1;
-		switch (param){
-			case 1:{
+		switch (param) {
+			case 1: {
 				System.out.println("哈哈哈");
-				if(true){
+				if (true) {
 					break;
 				}
 				System.out.println("还能运行到吗");
@@ -307,7 +313,27 @@ public class Test10 {
 		}
 	}
 
+	@Test
+	public void fun22() {
+		int a = a(9, 0);
+		System.out.println(a);
+		System.out.println(a2(9));
+	}
 
+	public int a(int num, int sum) {
+		if (num < 3) {
+			return sum + num;
+		}
+		return a(num / 3, sum + num);
+	}
+
+
+	public int a2(int num) {
+		if (num < 3) {
+			return num;
+		}
+		return a2(num / 3) + num;
+	}
 
 
 }
