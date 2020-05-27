@@ -3,6 +3,8 @@ package com.example.demo4;
 import com.example.demo1.util.GeomUtil;
 import org.junit.Test;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
@@ -46,9 +48,41 @@ public class Test11 {
 	}
 
 	@Test
-	public void test03() {
-		String s = "a231231s";
-		System.out.println(s.substring(1,s.length()-1));
+	public void test03() throws UnknownHostException {
+		List<Integer> objects = new LinkedList<>();
+		for(int i = 0; i<=100000; i++){
+			objects.add(i);
+		}
+		long startNano = System.nanoTime();
+		for (int i = 0; i < objects.size(); i++) {
+			Integer integer = objects.get(i);
+		}
+		System.out.println("____" + (System.nanoTime() - startNano));
+
+
+		 startNano = System.nanoTime();
+		for(Integer object : objects){
+
+		}
+		System.out.println("____" + (System.nanoTime() - startNano));
+	}
+
+	@Test
+	public void test04() throws UnknownHostException {
+		List<Integer> objects = new LinkedList<>();
+		for (int i = 0; i <= 100000; i++) {
+			objects.add(i);
+		}
+
+		Iterator<Integer> iterator = objects.iterator();
+		int i =0;
+		while (iterator.hasNext()){
+			if(i==3){
+				objects.remove(3);
+			}
+			System.out.println(iterator.next());
+			i++;
+		}
 	}
 
 
