@@ -85,6 +85,32 @@ public class Test11 {
 		}
 	}
 
+	@Test
+	public void test05() throws UnknownHostException {
+		TestUtil.testTime(()-> {double a = 2*3;}, 1000000000, "double");
+		TestUtil.testTime(()-> {long a = 2L*3L;}, 1000000000, "long");
+
+		TestUtil.testTime(()-> {int a = 2*3;}, 1000000000, "int");
+		//TestUtil.testTime(()-> {float a = 2f*3f;}, 1000000000, "float");
+		TestUtil.testTime(()-> {float a = 1.2f*3.4f;}, 1000000000, "float");
+
+
+	}
+
+
+	@Test
+	public void test06() throws UnknownHostException {
+		TestUtil.testTime(()-> {int a = 2*3;}, 1000000000, "int");
+	}
+
+
+	@Test
+	public void test07() throws UnknownHostException {
+		TestUtil.testTime(()-> {float a = 1.2f*3.4f;}, 1000000000, "float");
+
+
+	}
+
 
 }
 

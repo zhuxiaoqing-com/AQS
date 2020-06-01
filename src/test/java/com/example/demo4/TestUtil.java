@@ -16,4 +16,15 @@ public class TestUtil {
 		System.out.println(str + "____" + (System.nanoTime() - startNano));
 	}
 
+	
+
+	public static void testTime(Runnable runnable, long maxNum, String... param) {
+		long startNano = System.nanoTime();
+		for (long i = 0; i < maxNum; i++) {
+			runnable.run();
+		}
+		String str = param.length > 0 ? param[0] : "";
+		System.out.println(str + "____" + (System.nanoTime() - startNano));
+	}
+
 }

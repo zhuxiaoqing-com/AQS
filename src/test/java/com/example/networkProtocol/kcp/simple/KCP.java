@@ -771,7 +771,15 @@ public abstract class KCP {
             offset += (int) length;
         }
 
-        if (_itimediff(snd_una, s_una) > 0) {
+		/**
+		 * AA.s_una 是旧的 AA.snd_una
+		 *
+		 * 然后再收到新的包的时候回根据接收到的包的 s_una 来更新 AA.snd_una
+		 * 如果更新成功了 那 AA.snd_una 肯定就会 大于 AA.s_una
+		 *
+		 * 如果更新失败了 就说明收到了重复的包
+		 */
+		if (_itimediff(snd_una, s_una) > 0) {
             if (cwnd < rmt_wnd) {
                 long mss_ = mss;
                 if (cwnd < ssthresh) {
