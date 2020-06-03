@@ -111,6 +111,13 @@ public class Test11 {
 
 	}
 
+	@Test
+	public void test08() throws UnknownHostException {
+		int u = 1111111111;
+		long l = u/(u-1) *2;
+		System.out.println(l);
+	}
+
 
 }
 
