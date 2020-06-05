@@ -1,13 +1,14 @@
-package com.example.代码优化.设计模式之美.a_25针对非业务的通用框架开发.prototype.threeOptimize;
+package com.example.代码优化.设计模式之美.a_25针对非业务的通用框架开发.prototype.fourOptimize;
 
 import com.example.代码优化.设计模式之美.a_25针对非业务的通用框架开发.prototype.secondOptimize.MetricsStorage;
 import com.example.代码优化.设计模式之美.a_25针对非业务的通用框架开发.prototype.secondOptimize.entity.RequestInfo;
 import com.example.代码优化.设计模式之美.a_25针对非业务的通用框架开发.prototype.secondOptimize.entity.RequestStat;
+import com.example.代码优化.设计模式之美.a_25针对非业务的通用框架开发.prototype.threeOptimize.Aggregator;
+import com.example.代码优化.设计模式之美.a_25针对非业务的通用框架开发.prototype.threeOptimize.StatViewer;
 
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @Auther: zhuxiaoqing
@@ -16,7 +17,7 @@ import java.util.concurrent.TimeUnit;
  * 在将核心逻辑剥离出来之后，这个类的代码变得更加简洁、清晰，
  * 只负责组装各个类 来完成整个工作流程
  */
-public class EmailReporter {
+public class EmailReporter extends ScheduledReporter {
 	private static final Long DAY_HOURS_IN_SECONDS = 86400L;
 
 	private MetricsStorage metricsStorage;
@@ -25,20 +26,12 @@ public class EmailReporter {
 	private ScheduledExecutorService executor;
 
 	public EmailReporter(MetricsStorage metricsStorage, Aggregator aggregator, StatViewer viewer) {
-		this.metricsStorage = metricsStorage;
-		this.aggregator = aggregator;
-		this.viewer = viewer;
+		super(metricsStorage, aggregator, viewer);
 		this.executor = Executors.newSingleThreadScheduledExecutor();
 	}
 
 	public void startRepeatedReport() {
-		Calendar calendar = Calendar.getInstance();
-		calendar.add(Calendar.DATE, 1);
-		calendar.set(Calendar.HOUR_OF_DAY, 0);
-		calendar.set(Calendar.MINUTE, 0);
-		calendar.set(Calendar.SECOND, 0);
-		calendar.set(Calendar.MILLISECOND, 0);
-		Date firstTime = calendar.getTime();
+		Date firstTime = trimTimeFieldsToZeroOfNextDay(new Date());
 		Timer timer = new Timer();
 		timer.schedule(new TimerTask() {
 			@Override
@@ -48,15 +41,20 @@ public class EmailReporter {
 				long endTimeMillis = System.currentTimeMillis();
 				long startTimeMillis = endTimeMillis - durationInMillis;
 
-				Map<String, List<RequestInfo>> requestInfos = metricsStorage.getRequestInfos(startTimeMillis, endTimeMillis);
-				Map<String, RequestStat> aggregate = aggregator.aggregate(requestInfos, durationInMillis);
-				viewer.output(aggregate, startTimeMillis, endTimeMillis);
-
-				// todo将统计数据显示到终端(命令行或邮件)
-				// todo 格式化为 html 格式，并且发送邮件
-
+				doStatAndReport(startTimeMillis, endTimeMillis);
 			}
-		}, firstTime, DAY_HOURS_IN_SECONDS *1000);
+		}, firstTime, DAY_HOURS_IN_SECONDS * 1000);
+	}
+
+	private Date trimTimeFieldsToZeroOfNextDay(Date date) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		calendar.add(Calendar.DATE, 1);
+		calendar.set(Calendar.HOUR_OF_DAY, 0);
+		calendar.set(Calendar.MINUTE, 0);
+		calendar.set(Calendar.SECOND, 0);
+		calendar.set(Calendar.MILLISECOND, 0);
+		return calendar.getTime();
 	}
 
 }
