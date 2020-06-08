@@ -8,6 +8,7 @@ import java.net.UnknownHostException;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -163,8 +164,14 @@ public class Test11 {
 
 	@Test
 	public void test11() {
-		System.out.println(new Date(1591348427463L));
-		System.out.println(new Date(1591348437463L));
+		List<Integer> list = new ArrayList<>();
+		HashMap<Integer, Integer> map = new HashMap<>();
+		for(int i = 0; i<10;i++){
+			list.add(i);
+			map.put(i,i);
+		}
+		TestUtil.testTime(()->list.get(9), 1000000000);
+		TestUtil.testTime(()->map.get(9), 1000000000);
 	}
 
 
