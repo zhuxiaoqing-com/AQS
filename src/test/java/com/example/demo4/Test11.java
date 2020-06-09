@@ -174,6 +174,36 @@ public class Test11 {
 		TestUtil.testTime(()->map.get(9), 1000000000);
 	}
 
+	@Test
+	public void test12() {
+		List<Integer> list = new ArrayList<>();
+		HashMap<Integer, Integer> map = new HashMap<>();
+		for(int i = 0; i<10;i++){
+			list.add(i);
+			map.put(i,i);
+		}
+		Object[] objects = list.toArray();
+		System.out.println(objects);
+		objects[0] = new Object();
+	}
+
+	@Test
+	public void test13() {
+	String[] s = new String[]{"1","2"};
+		Object[] a = s;
+		System.out.println(a);
+	}
+
+	@Test
+	public void test14() {
+		List<String> strings = Arrays.asList("1", "2");
+		System.out.println(strings.toArray());
+	}
+
+	@Test
+	public void test15() {
+		System.out.println(new Date(1591733739036l));
+	}
 
 }
 
