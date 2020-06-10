@@ -6,6 +6,7 @@ import org.junit.Test;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Test02Stream {
     @Test
@@ -213,6 +214,14 @@ public class Test02Stream {
         //HashSet<Integer> collect = sets.stream().collect(HashSet::new, (set, entry) -> set.addAll(entry), HashSet::addAll);
         HashSet<Integer> collect = sets.stream().collect(HashSet::new, HashSet::addAll, HashSet::addAll);
         System.out.println(collect);
-    }
+
+		Set<Integer> collect1 = sets.stream().flatMap(Collection::stream).collect(Collectors.toSet());
+		System.out.println(collect1);
+
+		List<Integer> collect2 = sets.stream().flatMap(Collection::stream).collect(Collectors.toList());
+		System.out.println(collect2);
+
+
+	}
 
 }
