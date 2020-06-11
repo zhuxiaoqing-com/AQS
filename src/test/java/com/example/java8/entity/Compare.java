@@ -1,4 +1,4 @@
-package com.example.java8;
+package com.example.java8.entity;
 
 import org.junit.Test;
 

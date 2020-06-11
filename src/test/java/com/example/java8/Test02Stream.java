@@ -1,12 +1,12 @@
 package com.example.java8;
 
+import com.example.java8.entity.Employee;
 import com.google.common.collect.Lists;
 import org.junit.Test;
 
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class Test02Stream {
     @Test
@@ -221,7 +221,8 @@ public class Test02Stream {
 		List<Integer> collect2 = sets.stream().flatMap(Collection::stream).collect(Collectors.toList());
 		System.out.println(collect2);
 
-
+		Optional<Integer> min = s1.stream().max(Comparator.comparingInt(a -> a));
+		System.out.println(min);
 	}
 
 }

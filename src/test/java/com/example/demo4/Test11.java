@@ -202,7 +202,8 @@ public class Test11 {
 
 	@Test
 	public void test15() {
-		System.out.println(new Date(1591733739036l));
+		int i = Runtime.getRuntime().availableProcessors();
+		System.out.println(i);
 	}
 
 }

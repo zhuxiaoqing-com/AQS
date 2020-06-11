@@ -1,4 +1,4 @@
-package com.example.java8;
+package com.example.java8.entity;
 
 public class Employee {
     int id;
