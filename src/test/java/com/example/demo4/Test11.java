@@ -206,6 +206,16 @@ public class Test11 {
 		System.out.println(i);
 	}
 
+
+	@Test
+	public void test16() {
+		ArrayList<Object> objects = new ArrayList<>();
+		objects.add(1);
+		objects.add(2);
+		Object next = objects.iterator().next();
+		System.out.println(next);
+	}
+
 }
 
 
