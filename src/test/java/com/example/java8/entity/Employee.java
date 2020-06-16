@@ -4,8 +4,10 @@ public class Employee {
     int id;
     int age;
 
-    public Employee(Employee employee) {
-    }
+	public Employee(int id, int age) {
+		this.id = id;
+		this.age = age;
+	}
 
     public int getAge() {
         return age;
