@@ -1,10 +1,9 @@
-package com.example.demo3;
+package com.example.redis;
 
 import org.junit.Test;
 import redis.clients.jedis.*;
 import redis.clients.jedis.params.geo.GeoRadiusParam;
 
-import java.lang.instrument.Instrumentation;
 import java.time.Instant;
 import java.util.*;
 

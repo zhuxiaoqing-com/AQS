@@ -1,6 +1,7 @@
-package com.example.demo3;
+package com.example.redis;
 
 import org.junit.Test;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import redis.clients.jedis.*;
 
 import java.io.IOException;

@@ -1,14 +1,14 @@
 package com.example.demo3;
 
 import org.junit.Test;
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.Tuple;
 
 import java.security.SecureRandom;
 import java.time.Instant;
 import java.util.*;
-import java.util.concurrent.*;
-import java.util.stream.IntStream;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Test2List {
     private Random random = new Random();;
