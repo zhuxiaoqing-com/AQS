@@ -8,6 +8,7 @@ import java.net.UnknownHostException;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -216,6 +217,16 @@ public class Test11 {
 		System.out.println(next);
 	}
 
+	@Test
+	public void test17() {
+		int i = ThreadLocalRandom.current().nextInt();
+		System.out.println(i);
+	}
+
+	@Test
+	public void test18() {
+		System.out.println(0x28&0x0F);
+	}
 }
 
 

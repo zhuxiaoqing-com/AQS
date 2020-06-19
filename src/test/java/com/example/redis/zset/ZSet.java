@@ -1,5 +1,7 @@
 package com.example.redis.zset;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 /**
  * @Auther: zhuxiaoqing
  * @Date: 2020/6/18 17:03
@@ -38,6 +40,7 @@ public class ZSet {
 	 */
 	private ZSkipListNode zslCreateNode(int level, double score, Object obj) {
 		ZSkipListNode node = new ZSkipListNode();
+		node.setLevels(new ZSkipListLevel[level]);
 		node.setObj(obj);
 		node.setScore(score);
 		return node;
@@ -55,8 +58,102 @@ public class ZSet {
 
 		// 初始化表头
 		// T = O(1)
-		skipList.setHeader(zslCreateNode());
+		skipList.setHeader(zslCreateNode(ZSKIPLIST_MAXLEVEL, 0, null));
+		int j = 0;
+		for (j = 0; j < ZSKIPLIST_MAXLEVEL; j++) {
+			ZSkipListLevel zSkipListLevel = skipList.getHeader().getLevels()[j];
+			zSkipListLevel.setForward(null);
+			zSkipListLevel.setSpan(0);
+		}
+		skipList.getHeader().setBackward(null);
+		// 设置表尾
+		skipList.setTail(null);
+		return skipList;
 	}
 
+	/*
+	 * 释放给定的跳跃表节点
+	 *
+	 * T = O(1)
+	 */
+	void zslFreeNode(ZSkipListNode node) {
+		// 减少 Redis 对象引用。特别的，引用为零的时候会销毁对象 这里是不是跳表代码
+		//decrRefCount(node->obj);
+		// 释放内存
+		//zfree(node);
+	}
 
+	/*
+	 * 释放给定跳跃表，以及表中的所有节点
+	 *
+	 * T = O(N)
+	 */
+
+	private void zfree(ZSkipListNode node) {
+
+	}
+
+	/*
+	 * 释放给定跳跃表，以及表中的所有节点
+	 *
+	 * T = O(N)
+	 */
+	private void zSkipListFree(ZSkipList list) {
+		/*zskiplistNode *node = zsl->header->level[0].forward, *next;
+
+		// 释放表头
+		zfree(zsl->header);
+
+		// 释放表中所有节点
+		// T = O(N)
+		while(node) {
+
+			next = node->level[0].forward;
+
+			zslFreeNode(node);
+
+			node = next;
+		}
+
+		// 释放跳跃表结构
+		zfree(zsl);*/
+	}
+
+	/**
+	 * 返回一个随机值，用作跳跃表节点的层数
+	 * 返回值介于 1 和  ZSKIPLIST_MAXLEVEL 之间（包含 ZSKIPLIST_MAXLEVEL），
+	 * 根据随机算法所使用的幂次定律，越大的值生成的几率越小。
+	 * <p>
+	 * T = O(N)
+	 */
+	private int zslRandomLevel() {
+		/*
+		 C 语言的  random()&0xFFFF) < (ZSKIPLIST_P * 0xFFFF
+		 其实就是指 random()&0xFFFF 取低16位的值; ZSKIPLIST_P * 0xFFFF  低16位的百分比;(现在是0.25 就是 65535*0.25)
+		  */
+	/*	int level = 1;
+
+		while ((random()&0xFFFF) < (ZSKIPLIST_P * 0xFFFF))
+			level += 1;
+
+		return (level<ZSKIPLIST_MAXLEVEL) ? level : ZSKIPLIST_MAXLEVEL;*/
+		int level = 1;
+
+		while (ThreadLocalRandom.current().nextInt(100) < ZSKIPLIST_P * 100) {
+			level += 1;
+		}
+		return level;
+	}
+
+	/*
+	 * 创建一个成员为 obj ，分值为 score 的新节点，
+	 * 并将这个新节点插入到跳跃表 zsl 中。
+	 *
+	 * 函数的返回值为新节点。
+	 *
+	 * T_wrost = O(N^2), T_avg = O(N log N)
+	 */
+	ZSkipListNode zslInsert(ZSkipList list, double score, Object obj) {
+		return null;
+	}
 }

@@ -16,4 +16,20 @@ public class ZSkipListLevel {
 		this.forward = forward;
 		this.span = span;
 	}
+
+	public ZSkipListNode getForward() {
+		return forward;
+	}
+
+	public void setForward(ZSkipListNode forward) {
+		this.forward = forward;
+	}
+
+	public int getSpan() {
+		return span;
+	}
+
+	public void setSpan(int span) {
+		this.span = span;
+	}
 }

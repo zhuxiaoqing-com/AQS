@@ -12,6 +12,8 @@ public class ZSkipListNode {
 	private double score;
 	// 后退指针
 	private ZSkipListNode backward;
+	// 层
+	private ZSkipListLevel[] levels;
 
 	public Object getObj() {
 		return obj;
@@ -35,5 +37,13 @@ public class ZSkipListNode {
 
 	public void setBackward(ZSkipListNode backward) {
 		this.backward = backward;
+	}
+
+	public ZSkipListLevel[] getLevels() {
+		return levels;
+	}
+
+	public void setLevels(ZSkipListLevel[] levels) {
+		this.levels = levels;
 	}
 }
