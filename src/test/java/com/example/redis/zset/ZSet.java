@@ -59,8 +59,8 @@ public class ZSet {
 		// 初始化表头
 		// T = O(1)
 		skipList.setHeader(zslCreateNode(ZSKIPLIST_MAXLEVEL, 0, null));
-		int j = 0;
-		for (j = 0; j < ZSKIPLIST_MAXLEVEL; j++) {
+
+		for (int j = 0; j < ZSKIPLIST_MAXLEVEL; j++) {
 			ZSkipListLevel zSkipListLevel = skipList.getHeader().getLevels()[j];
 			zSkipListLevel.setForward(null);
 			zSkipListLevel.setSpan(0);
@@ -70,6 +70,130 @@ public class ZSet {
 		skipList.setTail(null);
 		return skipList;
 	}
+
+	/**
+	 * 返回一个随机值，用作跳跃表节点的层数
+	 * 返回值介于 1 和  ZSKIPLIST_MAXLEVEL 之间（包含 ZSKIPLIST_MAXLEVEL），
+	 * 根据随机算法所使用的幂次定律，越大的值生成的几率越小。
+	 * <p>
+	 * T = O(N)
+	 */
+	private int zslRandomLevel() {
+		/*
+		 C 语言的  random()&0xFFFF) < (ZSKIPLIST_P * 0xFFFF
+		 其实就是指 random()&0xFFFF 取低16位的值; ZSKIPLIST_P * 0xFFFF  低16位的百分比;(现在是0.25 就是 65535*0.25)
+		  */
+	/*	int level = 1;
+
+		while ((random()&0xFFFF) < (ZSKIPLIST_P * 0xFFFF))
+			level += 1;
+
+		return (level<ZSKIPLIST_MAXLEVEL) ? level : ZSKIPLIST_MAXLEVEL;*/
+		int level = 1;
+
+		while (ThreadLocalRandom.current().nextInt(100) < ZSKIPLIST_P * 100) {
+			level += 1;
+		}
+		return level;
+	}
+
+	/*
+	 * 创建一个成员为 obj ，分值为 score 的新节点，
+	 * 并将这个新节点插入到跳跃表 zsl 中。
+	 *
+	 * 函数的返回值为新节点。
+	 *
+	 * T_wrost = O(N^2), T_avg = O(N log N)
+	 */
+	ZSkipListNode zslInsert(ZSkipList list, double score, Object obj) {
+		// 在各个层查找节点的插入位置
+		// T_wrost = O(N^2), T_avg = O(N log N)
+
+		// 当前插入的节点的 某一层的上一个节点
+		ZSkipListNode[] update = new ZSkipListNode[ZSKIPLIST_MAXLEVEL];
+		// 当前要插入的节点在该层的  上一个节点的 rank;
+		int[] rank = new int[ZSKIPLIST_MAXLEVEL];
+
+		ZSkipListNode x = list.getHeader();
+
+		for (int i = list.getLevel() - 1; i >= 0; i--) {
+			/*
+			交叉到插入位置的存储顺序
+			如果 i 不是 ZSkipList->level-1 层
+			那么 i 层的起始 rank 值为 i+1 层的 rank 值
+			各个层的 rank 值一层层累积
+			最终 rank[0] 的值加一就是新节点的前置节点的rank
+			rank[0]会在后面成为计算 span 值和 rank 值的基础
+			 */
+			rank[i] = i == list.getLevel() - 1 ? 0 : rank[i + 1];
+
+			// 沿着前进指针遍历跳跃表
+			// T_wrost = O(N^2), T_avg = O(N log N)
+			ZSkipListNode forward = x.getLevels()[i].getForward();
+			while (forward != null &&
+					(forward.getScore() < score ||
+							(forward.getScore() == score &&
+									compareStringObjects(forward.getObj(), obj) < 0))
+					) {
+
+				// 记录沿途跨越了多少个节点
+				rank[i] += x.getLevels()[i].getSpan();
+				// 移动到下一个指针
+				x = forward;
+			}
+			// 记录将要和新节点相连接的节点
+			update[i] = x;
+		}
+
+		/*
+		 * zslInsert() 的调用者会确保同分值且同成员的元素不会出现，
+		 * 所以这里不需要进一步进行检查，可以直接创建新元素。
+		 */
+
+		// 获取一个随机值作为新节点的层数
+		// T = O(N)
+		int level = zslRandomLevel();
+		/*
+		如果新节点的层数比表中其他节点的层数都要大
+		那么初始化表头节点中未使用的层，并将它们记录到 update 数组中
+		将来也指向新节点
+		 */
+		if (level > list.getLevel()) {
+			// 初始化未使用的层
+			// T = O(1)
+			for (int i = list.getLevel(); i < level; i++) {
+				rank[i] = 0;
+				update[i] = list.getHeader();
+				update[i].getLevels()[i].setSpan(list.getLength());
+			}
+			// 更新表中节点最大层数
+			list.setLevel(level);
+		}
+
+		// 创建新节点
+		ZSkipListNode newNode = zslCreateNode(level, score, obj);
+
+		// 将前面记录的指针指向新节点，并做相应的设置
+		// T = O(1)
+		for (int i = 0; i < level; i++) {
+			// 设置新节点的 forward 指针
+			ZSkipListLevel updateLevel = update[i].getLevels()[i];
+			newNode.getLevels()[i].setForward(updateLevel.getForward());
+			// 将沿途记录的各个节点的 forward 指针指向新节点
+			updateLevel.setForward(newNode);
+			// 计算新节点跨越的节点数量
+			// 该层上一个节点和该层新节点之间的span = 该更新节点的0层rank - 该层的上一个节点的rank
+			// 该节点和下一个节点之间 有几个基础节点 =  该层新节点的上一个节点的span - 该层上一个节点和该层新节点之间的span
+			newNode.getLevels()[i].setSpan(updateLevel.getSpan() - (rank[0] - rank[i]));
+
+			// 更新新节点插入之后，沿途节点的 span 值
+			// 其中的 +1 计算的是新节点
+			updateLevel.setSpan(rank[0] - rank[i] + 1);
+		}
+
+		return null;
+	}
+
 
 	/*
 	 * 释放给定的跳跃表节点
@@ -120,40 +244,10 @@ public class ZSet {
 	}
 
 	/**
-	 * 返回一个随机值，用作跳跃表节点的层数
-	 * 返回值介于 1 和  ZSKIPLIST_MAXLEVEL 之间（包含 ZSKIPLIST_MAXLEVEL），
-	 * 根据随机算法所使用的幂次定律，越大的值生成的几率越小。
-	 * <p>
-	 * T = O(N)
+	 * 根据字典排序 位置小的排在前面
 	 */
-	private int zslRandomLevel() {
-		/*
-		 C 语言的  random()&0xFFFF) < (ZSKIPLIST_P * 0xFFFF
-		 其实就是指 random()&0xFFFF 取低16位的值; ZSKIPLIST_P * 0xFFFF  低16位的百分比;(现在是0.25 就是 65535*0.25)
-		  */
-	/*	int level = 1;
-
-		while ((random()&0xFFFF) < (ZSKIPLIST_P * 0xFFFF))
-			level += 1;
-
-		return (level<ZSKIPLIST_MAXLEVEL) ? level : ZSKIPLIST_MAXLEVEL;*/
-		int level = 1;
-
-		while (ThreadLocalRandom.current().nextInt(100) < ZSKIPLIST_P * 100) {
-			level += 1;
-		}
-		return level;
+	private int compareStringObjects(Object obj1, Object obj2) {
+		return 1;
 	}
 
-	/*
-	 * 创建一个成员为 obj ，分值为 score 的新节点，
-	 * 并将这个新节点插入到跳跃表 zsl 中。
-	 *
-	 * 函数的返回值为新节点。
-	 *
-	 * T_wrost = O(N^2), T_avg = O(N log N)
-	 */
-	ZSkipListNode zslInsert(ZSkipList list, double score, Object obj) {
-		return null;
-	}
 }
