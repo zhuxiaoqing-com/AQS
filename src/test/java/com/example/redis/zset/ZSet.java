@@ -1,5 +1,9 @@
 package com.example.redis.zset;
 
+import com.example.collection.skipList.SkipListNode;
+import com.example.datastruture.skipList.arraystyle.SkipList;
+
+import java.util.HashMap;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -105,7 +109,7 @@ public class ZSet {
 	 *
 	 * T_wrost = O(N^2), T_avg = O(N log N)
 	 */
-	ZSkipListNode zslInsert(ZSkipList list, double score, Object obj) {
+	private ZSkipListNode zslInsert(ZSkipList list, double score, Object obj) {
 		// 在各个层查找节点的插入位置
 		// T_wrost = O(N^2), T_avg = O(N log N)
 
@@ -114,7 +118,7 @@ public class ZSet {
 		// 当前要插入的节点在该层的  上一个节点的 rank;
 		int[] rank = new int[ZSKIPLIST_MAXLEVEL];
 
-		ZSkipListNode x = list.getHeader();
+		ZSkipListNode newAddNode = list.getHeader();
 
 		for (int i = list.getLevel() - 1; i >= 0; i--) {
 			/*
@@ -129,20 +133,19 @@ public class ZSet {
 
 			// 沿着前进指针遍历跳跃表
 			// T_wrost = O(N^2), T_avg = O(N log N)
-			ZSkipListNode forward = x.getLevels()[i].getForward();
-			while (forward != null &&
-					(forward.getScore() < score ||
-							(forward.getScore() == score &&
-									compareStringObjects(forward.getObj(), obj) < 0))
+			while (newAddNode.getLevels()[i].getForward() != null &&
+					(newAddNode.getLevels()[i].getForward().getScore() < score ||
+							(newAddNode.getLevels()[i].getForward().getScore() == score &&
+									compareStringObjects(newAddNode.getLevels()[i].getForward().getObj(), obj) < 0))
 					) {
 
 				// 记录沿途跨越了多少个节点
-				rank[i] += x.getLevels()[i].getSpan();
+				rank[i] += newAddNode.getLevels()[i].getSpan();
 				// 移动到下一个指针
-				x = forward;
+				newAddNode = newAddNode.getLevels()[i].getForward();
 			}
 			// 记录将要和新节点相连接的节点
-			update[i] = x;
+			update[i] = newAddNode;
 		}
 
 		/*
@@ -181,9 +184,16 @@ public class ZSet {
 			newNode.getLevels()[i].setForward(updateLevel.getForward());
 			// 将沿途记录的各个节点的 forward 指针指向新节点
 			updateLevel.setForward(newNode);
+
+			// 设该新节点为 newAddNode(层数); 例 newAddNode(curLevel),newAddNode(0)
+			// newAddNode(curLevel)上一个节点 和x(0)上一个节点之间的rank = newAddNode(0)上一个节点的rank - newAddNode(curLevel)上一个节点的rank
+			// newAddNode(curLevel)span =  newAddNode(curLevel)上一个节点span - newAddNode(curLevel)上一个节点和x(0)上一个节点之间的rank
+			// 因为该节点是新插入的节点，所以计算该节点的 span, 其实就是计算上一个节点的span
+
 			// 计算新节点跨越的节点数量
-			// 该层上一个节点和该层新节点之间的span = 该更新节点的0层rank - 该层的上一个节点的rank
-			// 该节点和下一个节点之间 有几个基础节点 =  该层新节点的上一个节点的span - 该层上一个节点和该层新节点之间的span
+			// (该层上一个节点)和(零层新节点的上一个节点)之间的rank = 该更新节点的上一个节点的0层rank - 该层的上一个节点的rank
+			// 该节点零层的上一个节点和下一个节点之间 有几个基础节点 =  该层新节点的上一个节点的span - (该层上一个节点)和(零层新节点的上一个节点)之间的rank
+			// 因为该节点是新插入的节点，所以计算该节点的 span, 其实就是计算上一个节点的span
 			newNode.getLevels()[i].setSpan(updateLevel.getSpan() - (rank[0] - rank[i]));
 
 			// 更新新节点插入之后，沿途节点的 span 值
@@ -191,7 +201,235 @@ public class ZSet {
 			updateLevel.setSpan(rank[0] - rank[i] + 1);
 		}
 
-		return null;
+		/*
+		 * 如果当前随机出来的 level 没有旧的总level高;
+		 * 那就需要把 level....list.getLevel 之间的上一个节点的 span 加一
+		 */
+		// 未接触的节点的 span 值也需要增一，这些节点直接从表头指向新节点
+		// T = O(1)
+		for (int i = level; i < list.getLevel(); i++) {
+			ZSkipListLevel tempLevelNode = update[i].getLevels()[i];
+			tempLevelNode.setSpan(tempLevelNode.getSpan() + 1);
+		}
+
+		// 设置新节点的后退节点
+		ZSkipListNode backward = update[0] == list.getHeader() ? null : update[0];
+		newAddNode.setBackward(backward);
+
+		if (newAddNode.getLevels()[0].getForward() != null) {
+			// 设置新节点下一个节点的后退指针为该指针
+			newAddNode.getLevels()[0].getForward().setBackward(newAddNode);
+		} else {
+			// 设置尾节点
+			list.setTail(newAddNode);
+		}
+		list.setLength(list.getLevel() + 1);
+		return newAddNode;
+	}
+
+
+	/**
+	 * Internal function used by zslDelete, zslDeleteByScore and zslDeleteByRank
+	 * <p>
+	 * 内部删除函数，
+	 * 被 zslDelete 、 zslDeleteRangeByScore 和 zslDeleteByRank 等函数调用。
+	 * <p>
+	 * T = O(1)
+	 *
+	 * @param updateArray 当前要删除的节点的 某一层的上一个节点;或者说是需要更新的节点数组
+	 */
+	private void zslDeleteNode(ZSkipList list, ZSkipListNode deleteNode, ZSkipListNode[] updateArray) {
+		// 更新所有和被删除节点 x 有关的节点的指针，解除它们之间的关系
+		// T = O(1)
+		for (int i = 0; i < list.getLevel(); i++) {
+			ZSkipListLevel zSkipListLevel = updateArray[i].getLevels()[i];
+			if (zSkipListLevel.getForward() == deleteNode) {
+				zSkipListLevel.setSpan(deleteNode.getLevels()[i].getSpan() - 1);
+				zSkipListLevel.setForward(deleteNode.getLevels()[i].getForward());
+			} else {
+				zSkipListLevel.setSpan(zSkipListLevel.getSpan() - 1);
+			}
+		}
+
+		// 更新被删除节点的下一个指针的后退指针
+		if (deleteNode.getLevels()[0].getForward() != null) {
+			deleteNode.getLevels()[0].getForward().setBackward(deleteNode.getBackward());
+		} else {
+			// 更新tail指针
+			list.setTail(deleteNode.getBackward());
+		}
+		// 更新跳跃表最大层数(只在被删除节点数跳跃表中最高节点时才执行)
+		// T = O(1)
+		while (list.getLevel() > 1 && list.getHeader().getLevels()[list.getLevel() - 1].getForward() == null) {
+			list.setLevel(list.getLevel() - 1);
+		}
+		// 跳跃表节点计数器减一
+		list.setLength(list.getLength() - 1);
+	}
+
+	/**
+	 * Delete an element with matching score/object from the skiplist.
+	 * <p>
+	 * 从跳跃表 zsl 中删除包含给定节点 score 并且带有指定对象 obj 的节点。
+	 * <p>
+	 * T_wrost = O(N^2), T_avg = O(N log N)
+	 */
+	public boolean zslDelete(ZSkipList list, double score, Object obj) {
+		ZSkipListNode[] update = new ZSkipListNode[ZSKIPLIST_MAXLEVEL];
+		ZSkipListNode tempUpdate = null;
+
+		// 遍历跳跃表，查找目标节点，并记录所有沿途节点
+		// T_wrost = O(N^2), T_avg = O(N log N)
+		tempUpdate = list.getHeader();
+		for (int i = list.getLevel() - 1; i >= 0; i--) {
+			// 遍历跳跃表的复杂度为 T_wrost = O(N), T_avg = O(log N)
+
+
+			while (tempUpdate.getLevels()[i].getForward() != null &&
+					// 比对分值和 比对对象字典
+					(tempUpdate.getLevels()[i].getForward().getScore() < score || (tempUpdate.getLevels()[i].getForward().getScore() == score && compareStringObjects(tempUpdate.getLevels()[i].getForward().getObj(), obj) < 0))) {
+				// 沿着前进指针移动
+				tempUpdate = tempUpdate.getLevels()[i].getForward();
+			}
+			// 记录沿途节点
+			update[i] = tempUpdate;
+		}
+
+		/* We may have multiple elements with the same score, what we need
+		 * is to find the element with both the right score and object.
+		 *
+		 * 检查找到的元素 x ，只有在它的分值和对象都相同时，才将它删除。
+		 */
+		ZSkipListNode deleteNode = tempUpdate.getLevels()[0].getForward();
+		if (deleteNode != null && deleteNode.getScore() == score && compareStringObjects(obj, deleteNode.getObj()) == 0) {
+			// T=O(1)
+			zslDeleteNode(list, deleteNode, update);
+			zslFreeNode(deleteNode);
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+
+	/* Delete all the elements with score between min and max from the skiplist.
+	 *
+	 * 删除所有分值在给定范围之内的节点。
+	 *
+	 * Min and max are inclusive, so a score >= min || score <= max is deleted.
+	 *
+	 * min 和 max 参数都是包含在范围之内的，所以分值 >= min 或 <= max 的节点都会被删除。
+	 *
+	 * Note that this function takes the reference to the hash table view of the
+	 * sorted set, in order to remove the elements from the hash table too.
+	 *
+	 * 节点不仅会从跳跃表中删除，而且会从相应的字典中删除。
+	 *
+	 * 返回值为被删除节点的数量
+	 *
+	 * T = O(N)
+	 */
+
+	public long zslDeleteRangeByScore(ZSkipList list, ZRangeSpec range, HashMap map) {
+		ZSkipListNode[] update = new ZSkipListNode[ZSKIPLIST_MAXLEVEL];
+		ZSkipListNode removeNode = null;
+		long removedNum = 0;
+
+		// 记录所有和被删除节点(们)有关的节点
+		removeNode = list.getHeader();
+		range.zslFirstInRange(list);
+		for (int i = list.getLevel() - 1; i >= 0; i--) {
+			// 获取第一个大于 min的值
+			while (removeNode.getLevels()[i].getForward() != null &&
+					!range.zslValueGteMin(removeNode.getLevels()[i].getForward().getScore())) {
+				removeNode = removeNode.getLevels()[i].getForward();
+			}
+			update[i] = removeNode;
+		}
+
+		// 定位到给定返回开始的第一个节点
+		removeNode = removeNode.getLevels()[0].getForward();
+		// 删除范围中的所有节点
+		// T = O(N)
+		// 要删除的第一个节点不为null 并且小于max
+		while (removeNode != null && range.zslValueLteMax(removeNode.getScore())) {
+			// 记录下个节点的指针
+			ZSkipListNode next = removeNode.getLevels()[0].getForward();
+			zslDeleteNode(list, removeNode, update);
+			map.remove(removeNode.getObj());
+			zslFreeNode(removeNode);
+			removedNum++;
+			removeNode = next;
+		}
+		return removedNum;
+	}
+
+	public long zslDeleteRangeByLex(ZSkipList list, ZlExRangeSpec range, HashMap map) {
+		ZSkipListNode[] update = new ZSkipListNode[ZSKIPLIST_MAXLEVEL];
+		ZSkipListNode removeNode = null;
+		long removedNum = 0;
+
+		removeNode = list.getHeader();
+		for (int i = list.getLevel() - 1; i >= 0; i--) {
+			while (removeNode.getLevels()[i].getForward() != null &&
+					!range.zslLexValueGteMin(removeNode.getLevels()[i].getForward().getObj())) {
+				removeNode = removeNode.getLevels()[i].getForward();
+			}
+		}
+
+		removeNode = removeNode.getLevels()[0].getForward();
+		while (removeNode != null && range.zslLexValueLteMax(removeNode.getObj())) {
+			ZSkipListNode tempNode = removeNode.getLevels()[0].getForward();
+			// 从跳跃表中删除当前节点
+			zslDeleteNode(list, removeNode, update);
+			// 从字典中删除当前节点
+			map.remove(removeNode.getObj());
+			// 释放当前跳跃表节点的结构
+			zslFreeNode(removeNode);
+			// 增加删除计数器
+			removedNum++;
+			// 继续处理下一个节点
+			removeNode = tempNode;
+		}
+		// 返回被删除节点的数量
+		return removedNum;
+	}
+
+	/* Delete all the elements with rank between start and end from the skiplist.
+	 *
+	 * 从跳跃表中删除所有给定排位内的节点。
+	 *
+	 * Start and end are inclusive. Note that start and end need to be 1-based
+	 *
+	 * start 和 end 两个位置都是包含在内的。注意它们都是以 1 为起始值。
+	 *
+	 * 函数的返回值为被删除节点的数量。
+	 *
+	 * T = O(N)
+	 */
+	public long zslDeleteRangeByRank(ZSkipList list, int start, int end, HashMap map) {
+		ZSkipListNode[] update = new ZSkipListNode[ZSKIPLIST_MAXLEVEL];
+		ZSkipListNode removeNode = null;
+		long removedNum = 0;
+		long traversed = 0;
+
+		// 沿着前进指针移动到指定rank的起始位置，并记录所有沿途指针
+		// T_wrost = O(N) , T_avg = O(log N)
+		removeNode = list.getHeader();
+		for (int i = list.getLevel() - 1; i >= 0; i--) {
+			while (removeNode.getLevels()[i].getForward() != null &&
+					(traversed + removeNode.getLevels()[i].getSpan() < start)) {
+				traversed += removeNode.getLevels()[i].getSpan();
+				removeNode = removeNode.getLevels()[i].getForward();
+			}
+			update[i] = removeNode;
+		}
+
+		// 移动到rank的起始的第一个节点
+		traversed++;
+		removeNode = removeNode.getLevels()[0].getForward();
+		// 删除所有在给定rank范围内的节点
+		// T = O(N)
 	}
 
 
@@ -247,7 +485,7 @@ public class ZSet {
 	 * 根据字典排序 位置小的排在前面
 	 */
 	private int compareStringObjects(Object obj1, Object obj2) {
-		return 1;
+		return ZSetUtil.compareStringObjects(obj1, obj2);
 	}
 
 }

@@ -6,7 +6,7 @@ package com.example.redis.zset;
  * @Description:
  */
 public class ZSkipList {
-	// 表头节点和表尾节点
+	// 表头节点和表尾节点;  表头节点obj 固定是 null;
 	private ZSkipListNode header, tail;
 	// 表中节点的数量
 	private	long length;

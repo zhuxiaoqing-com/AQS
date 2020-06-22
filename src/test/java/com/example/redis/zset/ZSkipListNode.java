@@ -3,7 +3,7 @@ package com.example.redis.zset;
 /**
  * @Auther: zhuxiaoqing
  * @Date: 2020/6/18 17:13
- * @Description:
+ * @Description: 该node 零层节点的数据
  */
 public class ZSkipListNode {
 	// 成员对象

@@ -10,7 +10,8 @@ public class ZSkipListLevel {
 	// 前进指针
 	private ZSkipListNode forward;
 
-	// 跨度 当前同层的 节点和下一个节点之间 有几个基础节点
+	// 跨度: 当前同层的节点和下一个节点(include)之间有几个基础节点
+	// 如果没有下一个节点那就是后面的全部节点
 	private long span;
 
 	public ZSkipListLevel(ZSkipListNode forward, int span) {
