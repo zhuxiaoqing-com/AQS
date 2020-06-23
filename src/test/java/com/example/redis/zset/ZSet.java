@@ -1,15 +1,14 @@
 package com.example.redis.zset;
 
-import com.example.collection.skipList.SkipListNode;
-import com.example.datastruture.skipList.arraystyle.SkipList;
-
 import java.util.HashMap;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * @Auther: zhuxiaoqing
  * @Date: 2020/6/18 17:03
- * @Description:
+ * @Description: 111
+ * https://github.com/huangz1990/redis-3.0-annotated/blob/unstable/src/t_zset.c
+ * http://zhangtielei.com/posts/blog-redis-skiplist.html
  */
 public class ZSet {
 	private static final int ZSKIPLIST_MAXLEVEL = 32; /* Should be enough for 2^32 elements */
@@ -430,8 +429,118 @@ public class ZSet {
 		removeNode = removeNode.getLevels()[0].getForward();
 		// 删除所有在给定rank范围内的节点
 		// T = O(N)
+		while (removeNode != null && traversed <= end) {
+			// 记录下一节点的指针
+			ZSkipListNode next = removeNode.getLevels()[0].getForward();
+			// 从字典中删除节点
+			map.remove(removeNode.getObj());
+			zslFreeNode(removeNode);
+			removedNum++;
+			// 为 rank 计数器增一
+			traversed++;
+			// 处理下个节点
+			removeNode = next;
+		}
+		// 返回删除节点的数量
+		return removedNum;
 	}
 
+	/* Find the rank for an element by both score and key.
+	 *
+	 * 查找包含给定分值和成员对象的节点在跳跃表中的排位。
+	 *
+	 * Returns 0 when the element cannot be found, rank otherwise.
+	 *
+	 * 如果没有包含给定分值和成员对象的节点，返回 0 ，否则返回排位。
+	 *
+	 * Note that the rank is 1-based due to the span of zsl->header to the
+	 * first element.
+	 *
+	 * 注意，因为跳跃表的表头也被计算在内，所以返回的排位以 1 为起始值。
+	 *
+	 * T_wrost = O(N), T_avg = O(log N)
+	 */
+	public long zslGetRank(ZSkipList list, double socre, Object obj) {
+		ZSkipListNode node;
+		long rank = 0;
+
+		// 遍历整个跳跃表
+		node = list.getHeader();
+		for (int i = list.getLevel() - 1; i >= 0; i--) {
+			while (node.getLevels()[i].getForward() != null &&
+					(node.getLevels()[i].getForward().getScore() < socre || (
+							node.getLevels()[i].getForward().getScore() == socre
+									// 注意：这里是 <= 0
+									&& compareStringObjects(node.getLevels()[i].getForward().getObj(), obj) <= 0
+					))) {
+				// 积累跨越的节点
+				rank += node.getLevels()[i].getSpan();
+				node = node.getLevels()[i].getForward();
+			}
+		}
+
+		/* x might be equal to zsl->header, so test if obj is non-NULL */
+		// 必须确保不仅分值相等，而且成员对象也要相等
+		// T = O(N)
+		if (node.getObj() != null && equalStringObjects(node.getObj(), obj)) {
+			return rank;
+		}
+		// 没找到
+		return 0;
+	}
+
+
+	/* Finds an element by its rank. The rank argument needs to be 1-based.
+	 *
+	 * 根据排位在跳跃表中查找元素。排位的起始值为 1 。
+	 *
+	 * 成功查找返回相应的跳跃表节点，没找到则返回 NULL 。
+	 *
+	 * T_wrost = O(N), T_avg = O(log N)
+	 */
+	public ZSkipListNode zslGetElementByRank(ZSkipList list, long rank) {
+		ZSkipListNode node;
+		long traversed = 0;
+		// T_wrost = O(N), T_avg = O(log N)
+
+		node = list.getHeader();
+		for (int i = list.getLevel() - 1; i >= 0; i--) {
+			while (node.getLevels()[i].getForward() != null &&
+					traversed + node.getLevels()[i].getSpan() <= rank) {
+				traversed += node.getLevels()[i].getSpan();
+				node = node.getLevels()[i].getForward();
+			}
+
+			// 如果越过的节点数量已经等于 rank
+			// 那么说明已经到达要找的节点
+			if (traversed == rank) {
+				return node;
+			}
+		}
+		// 没有找到目标节点
+		return null;
+	}
+
+
+	/*-----------------------------------------------------------------------------
+	 * Ziplist-backed sorted set API
+	 *----------------------------------------------------------------------------*/
+
+
+	/************************关联低的代码****************************/
+	/************************关联低的代码****************************/
+	/************************关联低的代码****************************/
+	/************************关联低的代码****************************/
+	/**
+	 * 根据字典排序 位置小的排在前面
+	 */
+	private int compareStringObjects(Object obj1, Object obj2) {
+		return ZSetUtil.compareStringObjects(obj1, obj2);
+	}
+
+	private boolean equalStringObjects(Object obj1, Object obj2) {
+		return obj1.equals(obj2);
+	}
 
 	/*
 	 * 释放给定的跳跃表节点
@@ -481,11 +590,51 @@ public class ZSet {
 		zfree(zsl);*/
 	}
 
-	/**
-	 * 根据字典排序 位置小的排在前面
+	/*
+	 * 取出 sptr 指向节点所保存的有序集合元素的分值
+	 * 应该是给个指针直接取该指针里面的 score
 	 */
-	private int compareStringObjects(Object obj1, Object obj2) {
-		return ZSetUtil.compareStringObjects(obj1, obj2);
+	double zzlGetScore(String sptr) {
+		String vstr;
+		int vlen;
+		long vlong;
+		int[] buf = new int[128];
+		double score;
+
+		if (sptr == null) {
+			return -1;
+		}
+		return 0;
+	}
+
+	/* Return a ziplist element as a Redis string object.
+	 * This simple abstraction can be used to simplifies some code at the
+	 * cost of some performance. */
+	Object ziplistGetObject(String sptr) {
+		return new Object();
+	}
+
+	/* Compare element in sorted set with given element.
+	 *
+	 * 将 eptr 中的元素和 cstr 进行对比。
+	 *
+	 * 相等返回 0 ，
+	 * 不相等并且 eptr 的字符串比 cstr 大时，返回正整数。
+	 * 不相等并且 eptr 的字符串比 cstr 小时，返回负整数。
+	 */
+	boolean zzlCompareElements(String eptr, String cstr) {
+		return eptr.equals(cstr);
+	}
+
+	/*
+	 * 返回跳跃表包含的元素数量
+	 */
+	long zzlLength(ZSkipList list) {
+		return list.getLength();
+	}
+
+	void zzlNext(String zl, String epstr) {
+
 	}
 
 }

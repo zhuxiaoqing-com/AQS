@@ -19,6 +19,12 @@ public class ZRangeSpec {
 		this.maxex = maxex;
 	}
 
+	public ZRangeSpec(double min, double max) {
+		this.min = min;
+		this.max = max;
+		this.minex = false;
+		this.maxex = false;
+	}
 
 	//T = O(1)
 	public boolean zslValueGteMin(double value) {
@@ -141,4 +147,72 @@ public class ZRangeSpec {
 		return last;
 	}
 
+
+	/* Populate the rangespec according to the objects min and max.
+	 *
+	 * 对 min 和 max 进行分析，并将区间的值保存在 spec 中。
+	 *
+	 * 分析成功返回 REDIS_OK ，分析出错导致失败返回 REDIS_ERR 。
+	 *
+	 * T = O(N)
+	 */
+	public static ZRangeSpec zslParseRange(Object min, Object max) {
+		return new ZRangeSpec(Double.parseDouble(min.toString()), Double.parseDouble(max.toString()));
+	}
+
+
+	/* Populate the rangespec according to the objects min and max.
+	 *
+	 * 对 min 和 max 进行分析，并将区间的值保存在 spec 中。
+	 *
+	 * 分析成功返回 REDIS_OK ，分析出错导致失败返回 REDIS_ERR 。
+	 *
+	 * T = O(N)
+	 */
+/*	static int zslParseRange(robj *min, robj *max, zrangespec *spec) {
+		char *eptr;
+
+		// 默认为闭区间
+		spec->minex = spec->maxex = 0;
+
+		*//* Parse the min-max interval. If one of the values is prefixed
+		 * by the "(" character, it's considered "open". For instance
+		 * ZRANGEBYSCORE zset (1.5 (2.5 will match min < x < max
+		 * ZRANGEBYSCORE zset 1.5 2.5 will instead match min <= x <= max *//*
+		if (min->encoding == REDIS_ENCODING_INT) {
+			// min 的值为整数，开区间
+			spec->min = (long)min->ptr;
+		} else {
+			// min 对象为字符串，分析 min 的值并决定区间
+			if (((char*)min->ptr)[0] == '(') {
+				// T = O(N)
+				spec->min = strtod((char*)min->ptr+1,&eptr);
+				if (eptr[0] != '\0' || isnan(spec->min)) return REDIS_ERR;
+				spec->minex = 1;
+			} else {
+				// T = O(N)
+				spec->min = strtod((char*)min->ptr,&eptr);
+				if (eptr[0] != '\0' || isnan(spec->min)) return REDIS_ERR;
+			}
+		}
+
+		if (max->encoding == REDIS_ENCODING_INT) {
+			// max 的值为整数，开区间
+			spec->max = (long)max->ptr;
+		} else {
+			// max 对象为字符串，分析 max 的值并决定区间
+			if (((char*)max->ptr)[0] == '(') {
+				// T = O(N)
+				spec->max = strtod((char*)max->ptr+1,&eptr);
+				if (eptr[0] != '\0' || isnan(spec->max)) return REDIS_ERR;
+				spec->maxex = 1;
+			} else {
+				// T = O(N)
+				spec->max = strtod((char*)max->ptr,&eptr);
+				if (eptr[0] != '\0' || isnan(spec->max)) return REDIS_ERR;
+			}
+		}
+
+		return REDIS_OK;
+	}*/
 }

@@ -4,7 +4,6 @@ package com.example.redis.zset;
  * @Auther: zhuxiaoqing
  * @Date: 2020/6/18 17:14
  * @Description:
- * @url http://zhangtielei.com/posts/blog-redis-skiplist.html
  */
 public class ZSkipListLevel {
 	// 前进指针

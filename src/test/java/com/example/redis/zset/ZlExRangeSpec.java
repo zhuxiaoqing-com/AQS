@@ -21,6 +21,13 @@ public class ZlExRangeSpec {
 		this.maxex = maxex;
 	}
 
+	public ZlExRangeSpec(Object min, Object max) {
+		this.min = min;
+		this.max = max;
+		this.minex = false;
+		this.maxex = false;
+	}
+
 	/* This is just a wrapper to compareStringObjects() that is able to
 	 * handle shared.minstring and shared.maxstring as the equivalent of
 	 * -inf and +inf for strings */
@@ -131,4 +138,101 @@ public class ZlExRangeSpec {
 		return ZSetUtil.compareStringObjects(obj1, obj2);
 	}
 
+
+	/* Populate the rangespec according to the objects min and max.
+	 *
+	 * Return REDIS_OK on success. On error REDIS_ERR is returned.
+	 * When OK is returned the structure must be freed with zslFreeLexRange(),
+	 * otherwise no release is needed. */
+	public static ZlExRangeSpec zslParseLexRange(Object min, Object max) {
+		return new ZlExRangeSpec(min, max);
+	}
+
+
+
+	/* Parse max or min argument of ZRANGEBYLEX.
+	 * (foo means foo (open interval)
+	 * [foo means foo (closed interval)
+	 * - means the min string possible
+	 * + means the max string possible
+	 *
+	 * If the string is valid the *dest pointer is set to the redis object
+	 * that will be used for the comparision, and ex will be set to 0 or 1
+	 * respectively if the item is exclusive or inclusive. REDIS_OK will be
+	 * returned.
+	 *
+	 * If the string is not a valid range REDIS_ERR is returned, and the value
+	 * of *dest and *ex is undefined. */
+
+
+	/* Parse max or min argument of ZRANGEBYLEX.
+	 * (foo means foo (open interval)
+	 * [foo means foo (closed interval)
+	 * - means the min string possible
+	 * + means the max string possible
+	 *
+	 * If the string is valid the *dest pointer is set to the redis object
+	 * that will be used for the comparision, and ex will be set to 0 or 1
+	 * respectively if the item is exclusive or inclusive. REDIS_OK will be
+	 * returned.
+	 *
+	 * If the string is not a valid range REDIS_ERR is returned, and the value
+	 * of *dest and *ex is undefined. */
+/*	int zslParseLexRangeItem(robj *item, robj **dest, int *ex) {
+		char *c = item->ptr;
+
+		switch(c[0]) {
+			case '+':
+				if (c[1] != '\0') return REDIS_ERR;
+        *ex = 0;
+        *dest = shared.maxstring;
+				incrRefCount(shared.maxstring);
+				return REDIS_OK;
+			case '-':
+				if (c[1] != '\0') return REDIS_ERR;
+        *ex = 0;
+        *dest = shared.minstring;
+				incrRefCount(shared.minstring);
+				return REDIS_OK;
+			case '(':
+        *ex = 1;
+        *dest = createStringObject(c+1,sdslen(c)-1);
+				return REDIS_OK;
+			case '[':
+        *ex = 0;
+        *dest = createStringObject(c+1,sdslen(c)-1);
+				return REDIS_OK;
+			default:
+				return REDIS_ERR;
+		}
+	}*/
+
+	/* Populate the rangespec according to the objects min and max.
+	 *
+	 * Return REDIS_OK on success. On error REDIS_ERR is returned.
+	 * When OK is returned the structure must be freed with zslFreeLexRange(),
+	 * otherwise no release is needed. */
+	/*	static int zslParseLexRange(robj *min, robj *max, zlexrangespec *spec) {
+	 *//* The range can't be valid if objects are integer encoded.
+	 * Every item must start with ( or [. *//*
+		if (min->encoding == REDIS_ENCODING_INT ||
+				max->encoding == REDIS_ENCODING_INT) return REDIS_ERR;
+
+		spec->min = spec->max = NULL;
+		if (zslParseLexRangeItem(min, &spec->min, &spec->minex) == REDIS_ERR ||
+				zslParseLexRangeItem(max, &spec->max, &spec->maxex) == REDIS_ERR) {
+			if (spec->min) decrRefCount(spec->min);
+			if (spec->max) decrRefCount(spec->max);
+			return REDIS_ERR;
+		} else {
+			return REDIS_OK;
+		}
+	}*/
+
+	/* Free a lex range structure, must be called only after zelParseLexRange()
+	 * populated the structure with success (REDIS_OK returned). */
+	/*void zslFreeLexRange(zlexrangespec *spec) {
+		decrRefCount(spec->min);
+		decrRefCount(spec->max);
+	}*/
 }
