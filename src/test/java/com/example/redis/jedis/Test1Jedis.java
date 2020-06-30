@@ -16,7 +16,9 @@ public class Test1Jedis {
     public void fun1() {
         jedis.zadd("zset1", 22, "a");
         jedis.zadd("zset1", 23, "b");
-    }
+		HostAndPort hostAndPort = new HostAndPort("", 1);
+		JedisCluster jedisCluster = new JedisCluster(hostAndPort);
+	}
 
     /**
      * 通过 区间取值
