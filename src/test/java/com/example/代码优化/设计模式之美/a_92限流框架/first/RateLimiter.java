@@ -17,6 +17,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * @Description:
  */
 public class RateLimiter {
+
+
 	// 为每个api在内存中存储限流计数器
 	private Map<String, RateLimitAlg> counters = new ConcurrentHashMap<>();
 	private RateLimitRule rule;
