@@ -1,5 +1,8 @@
 package com.example.redis.jedis.funnellimitflow;
 
+import com.google.common.util.concurrent.RateLimiter;
+import org.junit.Test;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -78,6 +81,10 @@ public class FunnelLimitFlow {
         return funnel.watering(1); // 需要1个quota
     }
 
+    @Test
     public void test01() {
-    }
+		// 令牌桶
+		RateLimiter rateLimiter = RateLimiter.create(100000.0);
+		rateLimiter.tryAcquire();
+	}
 }
