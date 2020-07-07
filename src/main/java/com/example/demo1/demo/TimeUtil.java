@@ -840,4 +840,5 @@ public class TimeUtil {
         calendar.set(Calendar.MILLISECOND, 0);
         return calendar.getTimeInMillis();
     }
+
 }
