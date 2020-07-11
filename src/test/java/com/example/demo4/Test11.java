@@ -167,21 +167,21 @@ public class Test11 {
 	public void test11() {
 		List<Integer> list = new ArrayList<>();
 		HashMap<Integer, Integer> map = new HashMap<>();
-		for(int i = 0; i<10;i++){
+		for (int i = 0; i < 10; i++) {
 			list.add(i);
-			map.put(i,i);
+			map.put(i, i);
 		}
-		TestUtil.testTime(()->list.get(9), 1000000000);
-		TestUtil.testTime(()->map.get(9), 1000000000);
+		TestUtil.testTime(() -> list.get(9), 1000000000);
+		TestUtil.testTime(() -> map.get(9), 1000000000);
 	}
 
 	@Test
 	public void test12() {
 		List<Integer> list = new ArrayList<>();
 		HashMap<Integer, Integer> map = new HashMap<>();
-		for(int i = 0; i<10;i++){
+		for (int i = 0; i < 10; i++) {
 			list.add(i);
-			map.put(i,i);
+			map.put(i, i);
 		}
 		Object[] objects = list.toArray();
 		System.out.println(objects);
@@ -190,7 +190,7 @@ public class Test11 {
 
 	@Test
 	public void test13() {
-	String[] s = new String[]{"1","2"};
+		String[] s = new String[]{"1", "2"};
 		Object[] a = s;
 		System.out.println(a);
 	}
@@ -225,7 +225,19 @@ public class Test11 {
 
 	@Test
 	public void test18() {
-		System.out.println(0x28&0x0F);
+		System.out.println(0x28 & 0x0F);
+	}
+
+	@Test
+	public void test19() {
+		List<String> strings = Arrays.asList("", "");
+		Collections.addAll(new ArrayList<>(), "");
+		int a = 2;
+		a = 1 | 0;
+		a |=1;
+		System.out.println(1|2);
+		System.out.println(1|2|3);
+		System.out.println(1|2|3|4);
 	}
 }
 
