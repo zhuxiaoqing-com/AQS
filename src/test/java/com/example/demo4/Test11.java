@@ -230,14 +230,8 @@ public class Test11 {
 
 	@Test
 	public void test19() {
-		List<String> strings = Arrays.asList("", "");
-		Collections.addAll(new ArrayList<>(), "");
-		int a = 2;
-		a = 1 | 0;
-		a |=1;
-		System.out.println(1|2);
-		System.out.println(1|2|3);
-		System.out.println(1|2|3|4);
+		boolean b = Boolean.parseBoolean(null);
+		System.out.println(b);
 	}
 }
 
