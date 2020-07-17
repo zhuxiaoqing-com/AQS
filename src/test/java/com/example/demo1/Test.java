@@ -122,8 +122,8 @@ public class Test {
     }
 
     public Date getTime() {
-        Long start = 946569600000l; //(2000)
-        Long end = 1514649600000l;//(2018)
+        Long start = 946569600000L; //(2000)
+        Long end = 1514649600000L;//(2018)
 
         long result = (long) (start + Math.random() * (end - start));
         return new Date(result);
