@@ -232,6 +232,9 @@ public class Test11 {
 	public void test19() {
 		boolean b = Boolean.parseBoolean(null);
 		System.out.println(b);
+
+		String s = "zhu.xiao.qing";
+		System.out.println(s.replace(".","/"));
 	}
 }
 
