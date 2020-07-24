@@ -1,17 +1,14 @@
 package com.example.demo4;
 
-import com.example.demo1.util.GeomUtil;
+import org.apache.commons.cli.*;
 import org.junit.Test;
 
-import java.net.InetAddress;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintWriter;
 import java.net.UnknownHostException;
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class Test11 {
 	@Test
@@ -236,6 +233,18 @@ public class Test11 {
 		String s = "zhu.xiao.qing";
 		System.out.println(s.replace(".","/"));
 	}
+
+	@Test
+	public void test20() {
+		boolean b = Boolean.parseBoolean(null);
+		System.out.println(b);
+		System.exit(1);
+		String s = "D:/xGenCode/bin/proto_java/Game_LogicServer_logic_player_handler.proto";
+		System.out.println(s.lastIndexOf("/"));
+	}
+
+
+
 }
 
 
