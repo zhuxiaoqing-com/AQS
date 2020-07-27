@@ -245,8 +245,7 @@ public class Test11 {
 
 	@Test
 	public void test21() {
-	 String a = "// {{{ XMLGEN_IMPORT_BEGIN";
-		public static final String DO_NOT_EDIT_THIS_START = "{{{ XMLGEN_DEFINE_BEGIN";
+
 	}
 
 
