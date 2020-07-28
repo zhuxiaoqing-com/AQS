@@ -1,10 +1,7 @@
 package com.example.demo1.util.excel.readExcel;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.File;
@@ -15,6 +12,7 @@ import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 
 /**
  * @Auther: zhuxiaoqing
@@ -109,7 +107,7 @@ public class ReadExcel {
 			return null;
 		}
 		String returnValue = null;
-		switch (cell.getCellType()) {
+		switch (cell.getCellTypeEnum()) {
 			case NUMERIC: //数字
 				Double doubleValue = cell.getNumericCellValue();
 

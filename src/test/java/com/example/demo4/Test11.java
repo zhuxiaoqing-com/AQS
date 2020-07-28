@@ -6,6 +6,7 @@ import org.junit.Test;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
 import java.net.UnknownHostException;
+import java.text.DecimalFormat;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
@@ -245,7 +246,14 @@ public class Test11 {
 
 	@Test
 	public void test21() {
+		String s = "111111111111111111111111111111111111111111111.100";
+		//System.out.println(Long.parseLong(s));
+		double v = Double.parseDouble(s);
+		DecimalFormat df = new DecimalFormat("0");
 
+		System.out.println(Double.parseDouble(s));
+		String format = df.format(1.111111111111111E44);
+		System.out.println(format);
 	}
 
 

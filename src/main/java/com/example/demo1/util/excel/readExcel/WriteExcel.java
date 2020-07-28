@@ -117,7 +117,7 @@ public class WriteExcel {
 			return null;
 		}
 		String returnValue = null;
-		switch (cell.getCellType()) {
+		switch (cell.getCellTypeEnum()) {
 			case NUMERIC: //数字
 				Double doubleValue = cell.getNumericCellValue();
 
