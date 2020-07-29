@@ -246,7 +246,9 @@ public class Test11 {
 
 	@Test
 	public void test21() {
-		String s = "111111111111111111111111111111111111111111111.100";
+		Long lon1 =Long.MAX_VALUE;
+		System.out.println(lon1);
+		String s = "111111111111111111111111111111111111111111111";
 		//System.out.println(Long.parseLong(s));
 		double v = Double.parseDouble(s);
 		DecimalFormat df = new DecimalFormat("0");
@@ -254,9 +256,21 @@ public class Test11 {
 		System.out.println(Double.parseDouble(s));
 		String format = df.format(1.111111111111111E44);
 		System.out.println(format);
+		double v1 = Double.parseDouble("1.111111111111111E44");
+		System.out.println(v1);
+		long l = Long.parseLong("9.22337E+18");
+		System.out.println(l);
 	}
 
 
+	@Test
+	public void test22() {
+		Long lon1 =Long.MAX_VALUE;
+		System.out.println(lon1);
+		String s = "111111111111111";
+		long l = Long.parseLong(s);
+		System.out.println(l);
+	}
 
 }
 
