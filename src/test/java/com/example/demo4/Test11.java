@@ -272,6 +272,13 @@ public class Test11 {
 		System.out.println(l);
 	}
 
+
+	@Test
+	public void test23() {
+		String s = "fa,s,fdfa,,fdf,,";
+		System.out.println(Arrays.toString(s.split(",")));
+		System.out.println(Arrays.toString(s.split(",", -1 )));
+	}
 }
 
 
