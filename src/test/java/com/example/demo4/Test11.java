@@ -279,6 +279,30 @@ public class Test11 {
 		System.out.println(Arrays.toString(s.split(",")));
 		System.out.println(Arrays.toString(s.split(",", -1 )));
 	}
+
+	@Test
+	public void test24() {
+		String s = "多余的数据";
+		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append(2).append("有用的数据").append(s);
+
+		StringBuilder delete = stringBuilder.delete(stringBuilder.length() - s.length(), stringBuilder.length());
+		System.out.println(delete.toString());
+
+	}
+
+
+	@Test
+	public void test25() {
+		String a = "a|b|c|d|e";
+		String[] split = a.split("\\|");
+		split[1] = "a";
+		System.out.println(Arrays.toString(split));
+		System.out.println(a);
+
+		String join = String.join("\\|", split);
+		System.out.println(join);
+	}
 }
 
 
