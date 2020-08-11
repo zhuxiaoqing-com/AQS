@@ -232,7 +232,7 @@ public class Test11 {
 		System.out.println(b);
 
 		String s = "zhu.xiao.qing";
-		System.out.println(s.replace(".","/"));
+		System.out.println(s.replace(".", "/"));
 	}
 
 	@Test
@@ -246,7 +246,7 @@ public class Test11 {
 
 	@Test
 	public void test21() {
-		Long lon1 =Long.MAX_VALUE;
+		Long lon1 = Long.MAX_VALUE;
 		System.out.println(lon1);
 		String s = "111111111111111111111111111111111111111111111";
 		//System.out.println(Long.parseLong(s));
@@ -265,7 +265,7 @@ public class Test11 {
 
 	@Test
 	public void test22() {
-		Long lon1 =Long.MAX_VALUE;
+		Long lon1 = Long.MAX_VALUE;
 		System.out.println(lon1);
 		String s = "111111111111111";
 		long l = Long.parseLong(s);
@@ -277,7 +277,7 @@ public class Test11 {
 	public void test23() {
 		String s = "fa,s,fdfa,,fdf,,";
 		System.out.println(Arrays.toString(s.split(",")));
-		System.out.println(Arrays.toString(s.split(",", -1 )));
+		System.out.println(Arrays.toString(s.split(",", -1)));
 	}
 
 	@Test
@@ -302,6 +302,19 @@ public class Test11 {
 
 		String join = String.join("\\|", split);
 		System.out.println(join);
+	}
+
+
+	@Test
+	public void test26() {
+		List<Integer> list = new ArrayList<>();
+
+		for (int i = 0; i < 10; i++) {
+			list.add(i);
+		}
+
+		List<Integer> collect = list.stream().filter(a -> a > 2).collect(Collectors.toList());
+		System.out.println(collect);
 	}
 }
 
