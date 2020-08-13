@@ -3,8 +3,7 @@ package com.example.demo4;
 import org.apache.commons.cli.*;
 import org.junit.Test;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.UnknownHostException;
 import java.text.DecimalFormat;
 import java.util.*;
@@ -315,6 +314,15 @@ public class Test11 {
 
 		List<Integer> collect = list.stream().filter(a -> a > 2).collect(Collectors.toList());
 		System.out.println(collect);
+	}
+
+	@Test
+	public void test27() throws IOException {
+
+		for (int i = 0; i < 1000; i++) {
+			FileInputStream fileInputStream = new FileInputStream("F:\\mh\\game_server-develop\\AQS\\src\\test\\java\\com\\example\\demo4\\Test10.java");
+			fileInputStream.close();
+		}
 	}
 }
 
