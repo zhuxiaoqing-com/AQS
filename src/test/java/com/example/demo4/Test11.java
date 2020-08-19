@@ -319,10 +319,11 @@ public class Test11 {
 	@Test
 	public void test27() throws IOException {
 
-		for (int i = 0; i < 1000; i++) {
+	/*	for (int i = 0; i < 1000; i++) {
 			FileInputStream fileInputStream = new FileInputStream("F:\\mh\\game_server-develop\\AQS\\src\\test\\java\\com\\example\\demo4\\Test10.java");
 			fileInputStream.close();
-		}
+		}*/
+		System.out.println("\ufffe");
 	}
 }
 
