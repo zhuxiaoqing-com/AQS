@@ -325,6 +325,10 @@ public class Test11 {
 		}*/
 		System.out.println("\ufffe");
 	}
+
+	@Test
+	public void test28() throws IOException {
+	}
 }
 
 
