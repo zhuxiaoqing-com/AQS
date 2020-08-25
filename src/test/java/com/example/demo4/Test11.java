@@ -328,6 +328,79 @@ public class Test11 {
 
 	@Test
 	public void test28() throws IOException {
+		if (a() || b() && c()) {
+		}
+	}
+
+	public boolean a() {
+		System.out.println("aaaaaaaaa");
+		return true;
+	}
+
+	public boolean b() {
+		System.out.println("bbbbbbb");
+		return true;
+	}
+
+	public boolean c() {
+		System.out.println("cccccccc");
+		return false;
+	}
+
+	@Test
+	public void test29() {
+		//System.out.println(numberA() + numberB() * numberC() > numberD() ? numberF() : 33333);
+		System.out.println(numberA() + numberB() * numberC() < numberD() ? numberF() : 4 > 3 ? numberD1() : numberF1());
+	}
+
+	public int numberA() {
+		System.out.println("numberA");
+		return 1;
+	}
+
+	public int numberB() {
+		System.out.println("numberB");
+		return 1;
+	}
+
+	public int numberC() {
+		System.out.println("numberC");
+		return 1;
+	}
+
+	public int numberD() {
+		System.out.println("numberD");
+		return 1;
+	}
+
+	public int numberF() {
+		System.out.println("numberD");
+		return 1;
+	}
+
+	public int numberG() {
+		System.out.println("numberD");
+		return 1;
+	}
+
+	public int numberC1() {
+		System.out.println("numberC1");
+		return 1;
+	}
+
+	public int numberD1() {
+		System.out.println("numberD1");
+		return 1;
+	}
+
+	public int numberF1() {
+		System.out.println("numberF1");
+		return 1;
+	}
+
+	public int numberG1() {
+		System.out.println("numberG1");
+		return 1;
 	}
 }
 

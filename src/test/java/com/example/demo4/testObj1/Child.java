@@ -7,7 +7,7 @@ import lombok.ToString;
 @ToString
 @Getter
 @Setter
-public class Child {
+public class Child extends Father {
     int id;
     String name;
 
@@ -15,7 +15,17 @@ public class Child {
     }*/
 
     public Child(int id, String name) {
+		//String print = print();
+		//super(print);
         this.id = id;
         this.name = name;
+        if(true || print()&&print()) {
+			System.out.println("ss");
+		}
     }
+
+    public static boolean print() {
+		System.out.println("测试");
+		return true;
+	}
 }
