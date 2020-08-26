@@ -322,7 +322,7 @@ public class Test11 {
 	/*	for (int i = 0; i < 1000; i++) {
 			FileInputStream fileInputStream = new FileInputStream("F:\\mh\\game_server-develop\\AQS\\src\\test\\java\\com\\example\\demo4\\Test10.java");
 			fileInputStream.close();
-		}*/
+		} */
 		System.out.println("\ufffe");
 	}
 
