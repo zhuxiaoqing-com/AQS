@@ -26,8 +26,8 @@ public class Heap<E> {
 	public Heap(E[] queue, Comparator<? super E> comparator) {
 		this.comparator = comparator;
 		this.queue = queue;
-		this.count = queue.length;
-		this.maxCount = queue.length;
+		this.count = queue.length - 1;
+		this.maxCount = queue.length - 1;
 
 		buildHeap(queue, count);
 	}
