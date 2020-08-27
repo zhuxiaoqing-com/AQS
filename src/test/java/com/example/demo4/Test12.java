@@ -39,4 +39,12 @@ public class Test12 {
 
 	public void a() {
 	}
+
+	@Test
+	public void test02() {
+		short a = -1;
+		System.out.println(a == -1);
+		System.out.println(Long.toBinaryString(-1));
+		System.out.println(Integer.toBinaryString(-1));
+	}
 }
