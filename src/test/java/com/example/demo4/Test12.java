@@ -46,4 +46,10 @@ public class Test12 {
 		System.out.println(Long.toBinaryString(-1));
 		System.out.println(Integer.toBinaryString(-1));
 	}
+
+	@Test
+	public void test03() {
+		Object[] objects = {2};
+		System.out.println(objects[0].getClass());
+	}
 }
