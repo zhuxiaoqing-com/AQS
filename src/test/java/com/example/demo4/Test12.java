@@ -184,10 +184,10 @@ public class Test12 {
 		int i1 = whileCount / 5;
 		for (float i = 0; i < whileCount; i += 5) {
 			sum1 *= i;
-			sum2 *= i + 1;
-			sum3 *= i + 2;
-			sum4 *= i + 3;
-			sum5 *= i + 4;
+			sum2 *= i+1;
+			sum3 *= i+2;
+			sum4 *= i+3;
+			sum5 *= i+4;
 		}
 		System.out.println(sum1 * sum2 * sum3 * sum4 * sum5);
 
@@ -227,5 +227,22 @@ public class Test12 {
 		Instant end = Instant.now();
 		System.out.println(end.toEpochMilli() - start.toEpochMilli());
 		System.out.println(sum);
+	}
+
+	int inlineVar = 0;
+	@Test
+	public void test13() {
+		int i = inlineVar;
+		test15();
+	}
+
+	@Test
+	public void test14() {
+		int i = inlineVar;
+		test15();
+	}
+	@Test
+	public void test15() {
+		System.out.println("inline method");
 	}
 }

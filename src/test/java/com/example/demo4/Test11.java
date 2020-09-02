@@ -402,6 +402,12 @@ public class Test11 {
 		System.out.println("numberG1");
 		return 1;
 	}
+
+
+	@Test
+	public void test30() {
+
+	}
 }
 
 
