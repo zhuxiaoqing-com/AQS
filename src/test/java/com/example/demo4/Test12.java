@@ -245,4 +245,30 @@ public class Test12 {
 	public void test15() {
 		System.out.println("inline method");
 	}
+
+	@Test
+	public void test16() {
+		Boolean a = true;
+		System.out.println(a.equals("true"));
+	}
+
+	@Test
+	public void test17() {
+		String s = "";
+		String[] ds = s.split(",", -1);
+		System.out.println(Arrays.toString(ds) +"...." + ds.length);
+	}
+
+	@Test
+	public void test18() {
+		HashSet<Object> set = new HashSet<>();
+		ArrayList<Object> list = new ArrayList<>();
+		for (int i = 0; i <2 ; i++) {
+			set.add(i);
+			list.add(i);
+		}
+
+		TestUtil.testTime(()-> list.contains(11),111111);
+		TestUtil.testTime(()-> set.contains(11),111111);
+	}
 }

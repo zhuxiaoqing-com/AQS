@@ -11,7 +11,8 @@ import java.util.Map;
  */
 public class DemoTest {
 	public static void main(String[] args) {
-		String rule = "key1 > 100 && (key3 < 30 || key3 < 100) || key4 == 88";
+		String rule = "key1 > 100 && key3 < 30 || key3 < 100 || key4 == 88 && !key1 && key2";
+		//String rule = "key1 > 100 && key3 < 30 || key3 < 100 || key4 == 88";
 		AlertRuleInterpreter interpreter = new AlertRuleInterpreter(rule);
 		Map<String, Long> stats = new HashMap<>();
 		stats.put("key1", 101l);
