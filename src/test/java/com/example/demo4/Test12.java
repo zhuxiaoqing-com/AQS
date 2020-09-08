@@ -2,7 +2,12 @@ package com.example.demo4;
 
 import com.youxi.util.RandomUtil;
 import org.junit.Test;
+import org.w3c.dom.Document;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.File;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
@@ -184,10 +189,10 @@ public class Test12 {
 		int i1 = whileCount / 5;
 		for (float i = 0; i < whileCount; i += 5) {
 			sum1 *= i;
-			sum2 *= i+1;
-			sum3 *= i+2;
-			sum4 *= i+3;
-			sum5 *= i+4;
+			sum2 *= i + 1;
+			sum3 *= i + 2;
+			sum4 *= i + 3;
+			sum5 *= i + 4;
 		}
 		System.out.println(sum1 * sum2 * sum3 * sum4 * sum5);
 
@@ -230,6 +235,7 @@ public class Test12 {
 	}
 
 	int inlineVar = 0;
+
 	@Test
 	public void test13() {
 		int i = inlineVar;
@@ -241,6 +247,7 @@ public class Test12 {
 		int i = inlineVar;
 		test15();
 	}
+
 	@Test
 	public void test15() {
 		System.out.println("inline method");
@@ -256,19 +263,54 @@ public class Test12 {
 	public void test17() {
 		String s = "";
 		String[] ds = s.split(",", -1);
-		System.out.println(Arrays.toString(ds) +"...." + ds.length);
+		System.out.println(Arrays.toString(ds) + "...." + ds.length);
 	}
 
 	@Test
 	public void test18() {
 		HashSet<Object> set = new HashSet<>();
 		ArrayList<Object> list = new ArrayList<>();
-		for (int i = 0; i <2 ; i++) {
+		for (int i = 0; i < 2; i++) {
 			set.add(i);
 			list.add(i);
 		}
 
-		TestUtil.testTime(()-> list.contains(11),111111);
-		TestUtil.testTime(()-> set.contains(11),111111);
+		TestUtil.testTime(() -> list.contains(11), 111111);
+		TestUtil.testTime(() -> set.contains(11), 111111);
 	}
+
+	@Test
+	public void test19() throws Exception {
+		String fileName = "1111.xml";
+		String absolutePath = new File(fileName).getAbsolutePath();
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		// 2.创建DocumentBuilder对象
+		DocumentBuilder builder = factory.newDocumentBuilder();
+		Document d = builder.parse(fileName);
+	}
+
+	@Test
+	public void test20() throws Exception {
+		String a = "\uFEFF<";
+		String b = "<";
+		String c = "<";
+	}
+
+	@Test
+	public void test21() throws Exception {
+		long start = System.currentTimeMillis();
+		long startNano =System.nanoTime();
+		int sum = 0;
+		for (int i = 0; i < 100; i++) {
+			sum++;
+		}
+
+		long end = System.currentTimeMillis();
+		long endNano =System.nanoTime();
+		System.out.println(end - start);
+		System.out.println(endNano - startNano);
+	}
+
 }
+
+

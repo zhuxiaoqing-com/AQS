@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<EventList>
+  <EventStarts>1,2,3</EventStarts>
+  <EventData>
+    <EventID>1</EventID>
+    <EventTip>到达2区刷3区怪</EventTip>
+    <ExecuteType>Event</ExecuteType>
+    <LimitNum>1</LimitNum>
+    <EntranceType>ENTER_AREA</EntranceType>
+    <Conditions>inArea(2) == 2</Conditions>
+    <EventBehaviors>
+      <Behavior>createAreaRes(3,1)</Behavior>
+    </EventBehaviors>
+    <NextNodes>3</NextNodes>
+  </EventData>
+  <EventData>
+    <EventID>2</EventID>
+    <EventTip>
+    </EventTip>
+    <ExecuteType>Timer</ExecuteType>
+    <ExeTime>30</ExeTime>
+    <LimitNum>0</LimitNum>
+    <EntranceType>ENTER_MAP</EntranceType>
+    <Conditions>ENTER_MAP.# == 90</Conditions>
+    <EventBehaviors>
+      <Behavior>createAreaRes(4,2)</Behavior>
+    </EventBehaviors>
+    <NextNodes>
+    </NextNodes>
+  </EventData>
+  <EventData>
+    <EventID>3</EventID>
+    <EventTip>3区域怪物全部死亡后刷新怪物</EventTip>
+    <ExecuteType>Event</ExecuteType>
+    <LimitNum>1</LimitNum>
+    <EntranceType>MONSTER_DIE</EntranceType>
+    <Conditions>getResTotalNumByArea(3) == 0</Conditions>
+    <EventBehaviors>
+      <Behavior>createAreaRes(3,1)</Behavior>
+    </EventBehaviors>
+    <NextNodes>
+    </NextNodes>
+  </EventData>
+</EventList>

@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<Dungeon>
+  <AreaList>
+    <AreaData id="0" center="8.6,11.4" size="111,111" type="rect">
+      <MonsterList>
+        <Prob id="1000" percent="100" />
+        <Monster srl="1" id="111" pos="0#0#0" />
+      </MonsterList>
+      <CollectionList>
+        <Prob id="11" percent="22" />
+        <Collection srl="2" id="11" pos="0.0#0.0#0.0" />
+      </CollectionList>
+      <NpcList />
+    </AreaData>
+  </AreaList>
+</Dungeon>
