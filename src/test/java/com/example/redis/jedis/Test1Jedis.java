@@ -9,8 +9,13 @@ import java.util.*;
 
 public class Test1Jedis {
 
-    Jedis jedis = new Jedis("127.0.0.1", 6379);
+    //Jedis jedis = new Jedis("127.0.0.1", 6379);
     //Jedis jedis = new Jedis("192.168.5.83", 6379);
+    Jedis jedis = new Jedis("10.0.0.105", 6379);
+
+    {
+    	jedis.auth("123456");
+	}
 
     @Test
     public void fun1() {

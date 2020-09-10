@@ -8,6 +8,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
@@ -311,6 +312,30 @@ public class Test12 {
 		System.out.println(endNano - startNano);
 	}
 
+	@Test
+	public void test22() {
+	/*	String aa = a1();
+		System.out.println(aa);*/
+		a2(1,3,4,5);
+	}
+
+	private void a2(Object... args) {
+		String[] strings1 = Arrays.asList(args).toArray(new String[0]);
+		System.out.println(Arrays.toString(strings1));
+	}
+
+	private String a1(String... args) {
+
+		String join = String.join(":", args);
+		return join;
+	}
+
+	@Test
+	public void test23() throws UnsupportedEncodingException {
+		String a = "我是";
+		System.out.println(Arrays.toString(a.getBytes("GBK"))); // [-50, -46, -54, -57]
+		System.out.println(Arrays.toString(a.getBytes())); // [-26, -120, -111, -26, -104, -81]
+	}
 }
 
 
