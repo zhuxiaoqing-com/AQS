@@ -1,6 +1,8 @@
 package com.example.demo4;
 
+import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import com.youxi.util.RandomUtil;
+import io.swagger.models.auth.In;
 import org.junit.Test;
 import org.w3c.dom.Document;
 
@@ -18,6 +20,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 
 /**
  * @Auther: zhuxiaoqing
@@ -300,14 +303,14 @@ public class Test12 {
 	@Test
 	public void test21() throws Exception {
 		long start = System.currentTimeMillis();
-		long startNano =System.nanoTime();
+		long startNano = System.nanoTime();
 		int sum = 0;
 		for (int i = 0; i < 100; i++) {
 			sum++;
 		}
 
 		long end = System.currentTimeMillis();
-		long endNano =System.nanoTime();
+		long endNano = System.nanoTime();
 		System.out.println(end - start);
 		System.out.println(endNano - startNano);
 	}
@@ -316,7 +319,7 @@ public class Test12 {
 	public void test22() {
 	/*	String aa = a1();
 		System.out.println(aa);*/
-		a2(1,3,4,5);
+		a2(1, 3, 4, 5);
 	}
 
 	private void a2(Object... args) {
@@ -335,6 +338,80 @@ public class Test12 {
 		String a = "我是";
 		System.out.println(Arrays.toString(a.getBytes("GBK"))); // [-50, -46, -54, -57]
 		System.out.println(Arrays.toString(a.getBytes())); // [-26, -120, -111, -26, -104, -81]
+	}
+
+	@Test
+	public void test24() {
+		String a = "\uD845\uDE3E";
+		byte[] bytes = a.getBytes();
+		for (byte aByte : bytes) {
+			int i = Byte.toUnsignedInt(aByte);
+			System.out.print(Integer.toBinaryString(aByte));
+			System.out.print("   ");
+		}
+	}
+
+	@Test
+	public void test25() {
+		String a = "我这个字\uD845\uDE3E无法识别";
+		String s = filterSpecialContent("\uD845\uDE3E");
+//		System.out.println(s);
+		String s1 = filterUtf84(a);
+		System.out.println(s1);
+		System.out.println("\u10000");
+		System.out.println("\u1FFFFF");
+		System.out.println(Integer.toBinaryString(0xD845));
+		System.out.println(Integer.toBinaryString(0xD845));
+	}
+
+
+	// 只保留名字中的 字母丶中文还有日文平假字[\u3040-\u309F]片假字[\u30A0-\u30ff]片假字扩展[\u31f0-\u31ff]
+	String special = "[^a-zA-Z丶\\u4e00-\\u9fa5\\u3040-\\u309F\\u30A0-\\u30ff\\u31f0-\\u31ff]";
+	Pattern NAME_SPECIAL = Pattern.compile(special);
+
+	/**
+	 * 将特殊符号空格等过滤掉
+	 */
+	private String filterSpecialContent(String content) {
+		return NAME_SPECIAL.matcher(content).replaceAll("*");
+	}
+
+	int baaaa = 0xf0;
+
+	private String filterUtf84(String a) {
+		byte[] bytes = a.getBytes();
+		byte[] bytes1 = new byte[bytes.length];
+		int bytes1Index = 0;
+		int utf84Index = -100;
+		for (int i = 0; i < bytes.length; i++) {
+			if ((bytes[i] & baaaa) == baaaa) {
+				utf84Index = i;
+				System.out.println("sss");
+			}
+			if(i <= utf84Index + 3) {
+				continue;
+			}
+			bytes1[bytes1Index++] = bytes[i];
+		}
+		return new String(bytes1);
+	}
+
+	@Test
+	public void test26() throws UnsupportedEncodingException {
+		System.out.println("\uD835\uDD46");
+		System.out.println(0xD835);
+		System.out.println(0xDD46);
+		System.out.println(0xD835 + 0xDD46);
+		System.out.println(0x1D546);
+		System.out.println(0x1D546);
+
+		System.out.println(Arrays.toString("a".getBytes("utf-8")));
+		System.out.println(Arrays.toString("a".getBytes("utf-16")));
+		System.out.println(Arrays.toString("a".getBytes("utf-32")));
+		System.out.println(Arrays.toString("\uD835\uDD46".getBytes("utf-8")));
+		System.out.println(Arrays.toString("\uD835\uDD46".getBytes("utf-16")));
+		System.out.println(Arrays.toString("\uD835\uDD46".getBytes("utf-32")));
+		//System.out.println(Arrays.toString("\uD845\uDE3E".getBytes("utf-16")));
 	}
 }
 
