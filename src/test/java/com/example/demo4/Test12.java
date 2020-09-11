@@ -332,7 +332,7 @@ public class Test12 {
 
 	@Test
 	public void test23() throws UnsupportedEncodingException {
-		String a = "我是的1";
+		String a = "我是的1e";
 		System.out.println(Arrays.toString(a.getBytes("GBK"))); // [-50, -46, -54, -57]
 		System.out.println(Arrays.toString(a.getBytes())); // [-26, -120, -111, -26, -104, -81]
 	}
