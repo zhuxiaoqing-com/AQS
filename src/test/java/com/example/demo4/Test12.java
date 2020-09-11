@@ -403,7 +403,7 @@ public class Test12 {
 		System.out.println(0xDD46);
 		System.out.println(0xD835 + 0xDD46);
 		System.out.println(0x1D546);
-		System.out.println(0x1D546);
+		System.out.println(0x1D546);打
 
 		System.out.println(Arrays.toString("a".getBytes("utf-8")));
 		System.out.println(Arrays.toString("a".getBytes("utf-16")));
