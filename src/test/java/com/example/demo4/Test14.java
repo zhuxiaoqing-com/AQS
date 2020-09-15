@@ -1,7 +1,13 @@
 package com.example.demo4;
 
-import io.swagger.models.auth.In;
+import freemarker.template.Configuration;
+import freemarker.template.Template;
 import org.junit.Test;
+
+import javax.mail.Address;
+import java.io.File;
+import java.io.OutputStreamWriter;
+import java.util.*;
 
 /**
  * @Auther: zhuxiaoqing
@@ -47,7 +53,55 @@ public class Test14 {
 		int s = (int) value & 127 | 128;
 		System.out.println(Integer.toBinaryString(value&127));
 		System.out.println(Integer.toBinaryString(value&127|128));
+	}
 
+	@Test
+	public void test03() {
+		String a = "\uD835\uDD46";
+		System.out.println("\uD835\uDD46");
+		char[] chars = "\uD835\uDD46".toCharArray();
+	}
+
+	@Test
+	public void test(){
+		freeMarkerSumup01();
+	}
+
+	/**
+	 * 对freeMarker进行总结
+	 */
+	public void freeMarkerSumup01(){
+
+		try {
+			//创建freeMarker配置实例
+			Configuration configuration = new Configuration();
+			configuration.setDirectoryForTemplateLoading(new File("WebRoot/templates"));
+
+			//创建数据模型
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("user", "徐书一");
+			map.put("randoms", Integer.parseInt(new Random().nextInt(100)+""));
+
+			List<Object> list = new ArrayList<Object>();
+			list.add(1);
+			list.add(1);
+			list.add(1);
+			list.add(1);
+			map.put("lst", list);
+
+			map.put("date1", new Date());
+
+			//加载模板文件
+			Template template = configuration.getTemplate("a.ftl");
+
+			//显示生成数据，并将数据打印到控制台
+			OutputStreamWriter writer = new OutputStreamWriter(System.out);
+			template.process(map, writer);
+			writer.flush();
+			writer.close();
+		} catch (Exception e) {
+			System.out.println(e.getLocalizedMessage());
+		}
 	}
 }
 
