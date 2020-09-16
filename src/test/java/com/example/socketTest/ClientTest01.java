@@ -22,7 +22,7 @@ import java.util.Map;
 public class ClientTest01 {
 	@Test
 	public void test01() throws Exception {
-		for (int i = 0; i < 71111; i++) {
+		for (int i = 0; i < 1; i++) {
 			a();
 		}
 	}
@@ -30,8 +30,9 @@ public class ClientTest01 {
 	public void a() throws IOException, InterruptedException {
 		Socket socket = new Socket();
 		try {
-			socket.connect(new InetSocketAddress("10.0.0.86", 8888));
-			//socket.connect(new InetSocketAddress("www.baidu.com", 80));
+			socket.bind(new InetSocketAddress(8888));
+			//socket.connect(new InetSocketAddress("10.0.0.86", 9999));
+			socket.connect(new InetSocketAddress("www.baidu.com", 80));
 			OutputStream outputStream = socket.getOutputStream();
 			/*for (int a = 1; a <= 10; a++) {
 				Thread.sleep(500);
