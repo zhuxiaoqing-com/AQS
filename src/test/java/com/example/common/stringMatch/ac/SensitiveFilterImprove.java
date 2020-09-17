@@ -1,6 +1,7 @@
 package com.example.common.stringMatch.ac;
 
 
+import com.example.common.stringMatch.LoadWords;
 import org.junit.Test;
 
 import java.io.BufferedReader;
@@ -229,13 +230,7 @@ public class SensitiveFilterImprove {
     //{政府=9, 李洪志=5, 法轮功=6, 中共=1, 共产党=2}
     @Test
     public void test02() throws IOException {
-        FileReader fileReader = new FileReader("D:/words.test");
-        BufferedReader br = new BufferedReader(fileReader);
-        ArrayList<String> words = new ArrayList<>();
-        String str;
-        while ((str = br.readLine()) != null) {
-            words.add(str);
-        }
+		List<String> words = LoadWords.load();
         buildTree(words);
 //        List<String> search = search(content);
         List<String> search = searchAndFindSensitive(filterNonChineseContent(content));

@@ -10,11 +10,23 @@ public class Misc {
 		return 0;
 	}
 
-	public static short getIntHigh(int centerPos) {
-		return 0;
+	public static short getIntLow(int index) {
+		return (short) (0xFFFF & index);
 	}
 
-	public static short getIntLow(int centerPos) {
-		return 0;
+	public static short getIntHigh(int index) {
+		return (short) ((0xFFFF0000 & index) >> 16);
+	}
+
+	public static long getLongIndexByXY(int high, int low) {
+		return ((long) low & 0xFFFFFFFFL) | (((long) high << 32) & 0xFFFFFFFF00000000L);
+	}
+
+	public static int getLongLow(long index) {
+		return (int) (0xFFFFFFFFL & index);
+	}
+
+	public static int getLongHigh(long index) {
+		return (int) ((0xFFFFFFFF00000000L & index) >> 32);
 	}
 }

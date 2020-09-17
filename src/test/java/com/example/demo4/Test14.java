@@ -1,5 +1,6 @@
 package com.example.demo4;
 
+import com.youxi.building.Misc;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import org.junit.Test;
@@ -102,6 +103,18 @@ public class Test14 {
 		} catch (Exception e) {
 			System.out.println(e.getLocalizedMessage());
 		}
+	}
+
+	@Test
+	public void test04() {
+		System.out.println(Integer.toBinaryString(0x00A2));
+	}
+	@Test
+	public void test05() {
+		System.out.println("客户端坐标" +  Misc.getIntHigh(3604525) + "___" + Misc.getIntLow(3604525));
+		System.out.println("服务器坐标" + Misc.getIntHigh(2818107) + "___" + Misc.getIntLow(2818107));
+
+
 	}
 }
 
