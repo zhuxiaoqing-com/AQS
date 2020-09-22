@@ -52,8 +52,8 @@ public class Test14 {
 	public void test02() {
 		int value = 555553135;
 		int s = (int) value & 127 | 128;
-		System.out.println(Integer.toBinaryString(value&127));
-		System.out.println(Integer.toBinaryString(value&127|128));
+		System.out.println(Integer.toBinaryString(value & 127));
+		System.out.println(Integer.toBinaryString(value & 127 | 128));
 	}
 
 	@Test
@@ -64,14 +64,14 @@ public class Test14 {
 	}
 
 	@Test
-	public void test(){
+	public void test() {
 		freeMarkerSumup01();
 	}
 
 	/**
 	 * 对freeMarker进行总结
 	 */
-	public void freeMarkerSumup01(){
+	public void freeMarkerSumup01() {
 
 		try {
 			//创建freeMarker配置实例
@@ -81,7 +81,7 @@ public class Test14 {
 			//创建数据模型
 			Map<String, Object> map = new HashMap<String, Object>();
 			map.put("user", "徐书一");
-			map.put("randoms", Integer.parseInt(new Random().nextInt(100)+""));
+			map.put("randoms", Integer.parseInt(new Random().nextInt(100) + ""));
 
 			List<Object> list = new ArrayList<Object>();
 			list.add(1);
@@ -109,12 +109,38 @@ public class Test14 {
 	public void test04() {
 		System.out.println(Integer.toBinaryString(0x00A2));
 	}
+
 	@Test
 	public void test05() {
-		System.out.println("客户端坐标" +  Misc.getIntHigh(3604525) + "___" + Misc.getIntLow(3604525));
+		System.out.println("客户端坐标" + Misc.getIntHigh(3604525) + "___" + Misc.getIntLow(3604525));
 		System.out.println("服务器坐标" + Misc.getIntHigh(2818107) + "___" + Misc.getIntLow(2818107));
+	}
+	volatile ArrayList<Object>  objects;
 
+	@Test
+	public void test06() {
+		long start = System.nanoTime();
+		for (int i = 0; i < 100; i++) {
+			String method = Thread.currentThread().getStackTrace()[1].getMethodName();
 
+		}
+		long end = System.nanoTime();
+		System.out.println((end - start)/1000/1000);
+
+		 start = System.nanoTime();
+		for (int i = 0; i < 100_000; i++) {
+			objects = new ArrayList<>();
+			objects.add(1);
+			objects.add(3);
+			objects.add(6);
+		}
+		 end = System.nanoTime();
+		System.out.println((end - start)/1000/1000);
+	}
+
+	@Test
+	public void test07() {
+		StackTraceElement stackTraceElement = Thread.currentThread().getStackTrace()[1];
 	}
 }
 
