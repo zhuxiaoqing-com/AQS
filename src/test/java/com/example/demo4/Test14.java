@@ -8,6 +8,7 @@ import org.junit.Test;
 import javax.mail.Address;
 import java.io.File;
 import java.io.OutputStreamWriter;
+import java.lang.reflect.Method;
 import java.util.*;
 
 /**
@@ -115,7 +116,8 @@ public class Test14 {
 		System.out.println("客户端坐标" + Misc.getIntHigh(3604525) + "___" + Misc.getIntLow(3604525));
 		System.out.println("服务器坐标" + Misc.getIntHigh(2818107) + "___" + Misc.getIntLow(2818107));
 	}
-	volatile ArrayList<Object>  objects;
+
+	volatile ArrayList<Object> objects;
 
 	@Test
 	public void test06() {
@@ -125,23 +127,39 @@ public class Test14 {
 
 		}
 		long end = System.nanoTime();
-		System.out.println((end - start)/1000/1000);
+		System.out.println((end - start) / 1000 / 1000);
 
-		 start = System.nanoTime();
+		start = System.nanoTime();
 		for (int i = 0; i < 100_000; i++) {
 			objects = new ArrayList<>();
 			objects.add(1);
 			objects.add(3);
 			objects.add(6);
 		}
-		 end = System.nanoTime();
-		System.out.println((end - start)/1000/1000);
+		end = System.nanoTime();
+		System.out.println((end - start) / 1000 / 1000);
 	}
 
 	@Test
 	public void test07() {
 		StackTraceElement stackTraceElement = Thread.currentThread().getStackTrace()[1];
 	}
+
+	@Test
+	public void test08() throws Exception {
+		Test14 test14 = new Test14();
+		Method a = test14.getClass().getDeclaredMethod("a", int[].class);
+		a.invoke(test14,new int[]{1,2});
+	}
+
+	/*public void a(int a) {
+		System.out.println("a(int a)");
+	}*/
+
+	public void a(int... a) {
+		System.out.println("a(int... a)");
+	}
+
 }
 
 
