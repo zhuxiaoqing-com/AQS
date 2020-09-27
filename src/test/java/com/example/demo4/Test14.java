@@ -149,7 +149,7 @@ public class Test14 {
 	public void test08() throws Exception {
 		Test14 test14 = new Test14();
 		Method a = test14.getClass().getDeclaredMethod("a", int[].class);
-		a.invoke(test14,new int[]{1,2});
+		a.invoke(test14, new int[]{1, 2});
 	}
 
 	/*public void a(int a) {
@@ -158,6 +158,25 @@ public class Test14 {
 
 	public void a(int... a) {
 		System.out.println("a(int... a)");
+	}
+
+
+	@Test
+	public void test09() {
+		StackTraceElement stackTraceElement = Thread.currentThread().getStackTrace()[1];
+	}
+
+	int currentStepId;
+	int default_currentStepId = 10;
+	int STEP = 10;
+
+	private Set<Set<Long>> a = new HashSet<>();
+
+	@Test
+	public void test10() {
+		String a1 = "a";
+		String a2 = "a";
+		//System.out.println("aa" + a1 == a2);
 	}
 
 }

@@ -1,15 +1,11 @@
 package com.example.demo3;
 
-import com.example.snowflakeIdWorker.BitMap;
-import com.example.snowflakeIdWorker.RobotRidObj;
-import com.sun.org.apache.bcel.internal.generic.NEW;
+import com.example.TestArithmetic.snowflakeIdWorker.BitMap;
+import com.example.TestArithmetic.snowflakeIdWorker.RobotRidObj;
 import org.junit.Test;
-import org.springframework.stereotype.Controller;
 
-import java.sql.SQLOutput;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.TemporalAccessor;
 import java.util.*;
 import java.util.concurrent.*;
 
