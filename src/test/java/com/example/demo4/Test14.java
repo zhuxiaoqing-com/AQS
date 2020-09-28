@@ -179,6 +179,31 @@ public class Test14 {
 		//System.out.println("aa" + a1 == a2);
 	}
 
+	@Test
+	public void test11() {
+		System.out.println(-1L ^ (-1L << 22));
+		System.out.println(-1L ^ (-1L << 2));
+		//System.out.println("aa" + a1 == a2);
+		System.out.println(-1L ^ (-1L << 18) / 16);
+
+		System.out.println(16383 * 4); // 65532
+		// 10位(1023)线程id + 22位(4194303)地图id +  自增id
+
+		/**
+		 * 现跨度为 16 的 一个线程最多可以有 16383 个地图
+		 * 现在有4个线程 可以有 65532 个地图
+		 *
+		 * 12位(空闲没有使用) + 18位(线程id + STEP*n) + 32位地图id
+		 * STEP 是跨度 现值为 16
+		 * threadId = sceneId >>32 % 16
+		 * 这样的话 如果 线程数大于 16 就会有问题;
+		 * 比如 17+16*1 = 33; 33 % 16 = 1; threadId = 1;
+		 * 本来应该是 线程id为17的; 结果threadId却为1了;
+		 *
+		 */
+	}
+
+
 }
 
 
