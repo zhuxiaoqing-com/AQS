@@ -9,9 +9,9 @@ import java.util.*;
 
 public class Test1Jedis {
 
-    //Jedis jedis = new Jedis("127.0.0.1", 6379);
+    Jedis jedis = new Jedis("127.0.0.1", 6379);
     //Jedis jedis = new Jedis("192.168.5.83", 6379);
-    Jedis jedis = new Jedis("10.0.0.105", 6379);
+    //Jedis jedis = new Jedis("10.0.0.105", 6379);
 
     {
     	jedis.auth("123456");
@@ -207,4 +207,20 @@ public class Test1Jedis {
        //List<GeoRadiusResponse> geoRadiusResponses = jedis.georadiusByMember("location", "32ds", 1, GeoUnit.KM, param);
         jedis.close();
     }
+
+	@Test
+	public void fun15() {
+		HashMap<String, String> map = new HashMap<>();
+		map.put("101", "player1");
+		map.put("102", "player2");
+		map.put("103", "player3");
+		String d = jedis.hmset("1_xkjdsjkadjklsajl$bilap", map);
+		Map<String, String> stringStringMap = jedis.hgetAll("1_xkjdsjkadjklsajl$bilap");
+		System.out.println(stringStringMap);
+		Long pp2 = jedis.hset("1_xkjdsjkadjklsajl$bilap", "102", "pp2");
+		System.out.println(pp2);
+		List<String> hmget = jedis.hmget("1_xkjdsjkadjklsajl$bilap", "102");
+		System.out.println(hmget);
+		jedis.close();
+	}
 }

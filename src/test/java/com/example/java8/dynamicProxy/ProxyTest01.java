@@ -26,3 +26,4 @@ public class ProxyTest01 {
 		Object invoke = a.invoke(o);
 	}
 }
+// 1_xkjdsjkadjklsajl$bilap    map<int,Player>   101->player  102->player
