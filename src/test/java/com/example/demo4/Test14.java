@@ -148,13 +148,17 @@ public class Test14 {
 	@Test
 	public void test08() throws Exception {
 		Test14 test14 = new Test14();
-		Method a = test14.getClass().getDeclaredMethod("a", int[].class);
-		a.invoke(test14, new int[]{1, 2});
+		Method a = test14.getClass().getDeclaredMethod("aa", null);
+		a.invoke(test14, null);
 	}
 
-	/*public void a(int a) {
+	public void aa() {
+		System.out.println("aa()");
+	}
+
+	public void a(int a) {
 		System.out.println("a(int a)");
-	}*/
+	}
 
 	public void a(int... a) {
 		System.out.println("a(int... a)");
