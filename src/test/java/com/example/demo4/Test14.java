@@ -207,6 +207,10 @@ public class Test14 {
 		 */
 	}
 
+	@Test
+	public void test12() {
+		System.out.println(365*2/24);
+	}
 
 }
 
