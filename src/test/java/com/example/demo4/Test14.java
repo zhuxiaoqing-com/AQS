@@ -3,6 +3,7 @@ package com.example.demo4;
 import com.youxi.building.Misc;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
+import io.swagger.models.auth.In;
 import org.junit.Test;
 
 import javax.mail.Address;
@@ -212,6 +213,38 @@ public class Test14 {
 		System.out.println(365*2/24);
 	}
 
+	@Test
+	public void test13(){
+		int a = 2;
+		switch (a) {
+			case 1:
+				System.out.println(1);
+			case 2:
+				System.out.println(2);
+			case 3:
+				System.out.println(3);
+			case 4:
+				System.out.println(4);
+		}
+	}
+	@Test
+	public void test14(){
+		int a = 2;
+		a+=3*4;
+		System.out.println(a);
+	}
+
 }
+
+
+
+
+
+
+
+
+
+
+
 
 
