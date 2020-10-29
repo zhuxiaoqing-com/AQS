@@ -1,4 +1,4 @@
-package com.youxi.test01.ranker;
+package com.youxi.ranker;
 
 import com.mongodb.*;
 import com.mongodb.client.FindIterable;

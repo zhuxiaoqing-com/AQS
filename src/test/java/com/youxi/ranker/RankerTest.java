@@ -1,4 +1,4 @@
-package com.youxi.test01.ranker;
+package com.youxi.ranker;
 
 
 import org.junit.Test;

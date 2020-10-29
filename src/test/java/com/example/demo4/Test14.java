@@ -210,11 +210,11 @@ public class Test14 {
 
 	@Test
 	public void test12() {
-		System.out.println(365*2/24);
+		System.out.println(365 * 2 / 24);
 	}
 
 	@Test
-	public void test13(){
+	public void test13() {
 		int a = 2;
 		switch (a) {
 			case 1:
@@ -227,11 +227,27 @@ public class Test14 {
 				System.out.println(4);
 		}
 	}
+
 	@Test
-	public void test14(){
+	public void test14() {
 		int a = 2;
-		a+=3*4;
+		a += 3 * 4;
 		System.out.println(a);
+	}
+
+
+	@Test
+	public void test15() {
+		int a = 2;
+		switch (a) {
+			case 1:
+				int b = 2;
+				System.out.println(b);
+				break;
+			case 2:
+				b = 4;
+				System.out.println(b);
+		}
 	}
 
 }

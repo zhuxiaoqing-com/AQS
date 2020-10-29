@@ -1,4 +1,4 @@
-package com.youxi.test01.ranker;
+package com.youxi.ranker;
 
 import java.util.Map;
 import java.util.Set;

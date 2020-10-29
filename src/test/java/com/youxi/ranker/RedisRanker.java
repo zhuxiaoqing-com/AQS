@@ -1,4 +1,4 @@
-package com.youxi.test01.ranker;
+package com.youxi.ranker;
 
 import redis.clients.jedis.Jedis;
 
@@ -12,6 +12,7 @@ import java.util.Set;
  */
 public class RedisRanker implements Ranker<Object> {
 	private static Jedis jedis = new Jedis("127.0.0.1", 6379);
+
 
 	/**
 	 * 根据排名区间
