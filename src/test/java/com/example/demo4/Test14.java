@@ -9,8 +9,10 @@ import org.junit.Test;
 import javax.mail.Address;
 import java.io.File;
 import java.io.OutputStreamWriter;
+import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @Auther: zhuxiaoqing
@@ -149,10 +151,11 @@ public class Test14 {
 	@Test
 	public void test08() throws Exception {
 		Test14 test14 = new Test14();
-		Method a = test14.getClass().getDeclaredMethod("aa", null);
-		a.invoke(test14, null);
-	}
+		Method a = test14.getClass().getDeclaredMethod("a", int[].class);
+		a.invoke(test14, new int[0]);
+}
 
+/*
 	public void aa() {
 		System.out.println("aa()");
 	}
@@ -160,6 +163,7 @@ public class Test14 {
 	public void a(int a) {
 		System.out.println("a(int a)");
 	}
+*/
 
 	public void a(int... a) {
 		System.out.println("a(int... a)");
@@ -250,6 +254,47 @@ public class Test14 {
 		}
 	}
 
+	/**
+	 * str hashcode计算
+	 * 31*x + y = 31*a + b
+	 * 31*x - 31*a = b - y;
+	 * 31*(x - a) = b - y;
+	 * x - a = 1;
+	 * b - y = 31;
+	 * <p>
+	 * 由上可得：对于任意两个字符串 xy 和 ab，
+	 * 如果它们满足 x-a=1，即第一个字符的 ASCII 码值相差为 1，
+	 * 同时满足 b-y=31，即第二个字符的 ASCII 码值相差为 -31。
+	 * 那么这两个字符的 hashCode 一定相等。
+	 */
+	@Test
+	public void test16() {
+		System.out.println("Aa".hashCode());
+		System.out.println("BB".hashCode());
+		System.out.println("AaBB".hashCode());
+		System.out.println("BBAa".hashCode());
+		System.out.println("BBAa".hashCode());
+		System.out.println("AaBB".hashCode());
+	}
+
+	@Test
+	public void test17() {
+		ArrayList<Integer> objects = new ArrayList<>();
+		for (int i = 0; i < 11; i++) {
+			objects.add(1);
+		}
+		Set<Integer> collect = objects.stream().collect(Collectors.toSet());
+		System.out.println(collect);
+	}
+	@Test
+	public void test18() {
+		String a = "d;g;h;;;g;";
+		System.out.println(Arrays.toString(a.split(";", -1)));;
+		String[] split = a.split(";");
+		for (String s : split) {
+			System.out.println(s);
+		}
+	}
 }
 
 
