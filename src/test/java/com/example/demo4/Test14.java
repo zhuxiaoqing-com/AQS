@@ -5,6 +5,7 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import io.swagger.models.auth.In;
 import org.junit.Test;
+import org.omg.SendingContext.RunTime;
 
 import javax.mail.Address;
 import java.io.File;
@@ -21,7 +22,7 @@ import java.util.stream.Collectors;
  */
 public class Test14 {
 
-	public static void main(String[] args) {
+	public static void main1(String[] args) {
 		int whileMax = 2000000000;
 
 		long start = System.currentTimeMillis();
@@ -153,7 +154,7 @@ public class Test14 {
 		Test14 test14 = new Test14();
 		Method a = test14.getClass().getDeclaredMethod("a", int[].class);
 		a.invoke(test14, new int[0]);
-}
+	}
 
 /*
 	public void aa() {
@@ -286,15 +287,45 @@ public class Test14 {
 		Set<Integer> collect = objects.stream().collect(Collectors.toSet());
 		System.out.println(collect);
 	}
+
 	@Test
 	public void test18() {
 		String a = "d;g;h;;;g;";
-		System.out.println(Arrays.toString(a.split(";", -1)));;
+		System.out.println(Arrays.toString(a.split(";", -1)));
+		;
 		String[] split = a.split(";");
 		for (String s : split) {
 			System.out.println(s);
 		}
 	}
+
+	public static void main(String[] args){
+	/*	Thread t = new Thread() {
+			@Override
+			public void run() {
+				while (true) {
+					System.out.println("111111");
+				}
+			}
+		};
+		t.setDaemon(true);
+		t.start();*/
+		new Thread(){
+			@Override
+			public void run() {
+				while (true){
+
+				}
+			}
+		}.start();
+		try {
+			Thread.sleep(5000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		System.err.println("Bye");
+	}
+
 }
 
 

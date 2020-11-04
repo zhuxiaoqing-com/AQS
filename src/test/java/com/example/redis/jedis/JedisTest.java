@@ -77,11 +77,11 @@ public class JedisTest {
     }
 
     @Test
-    public void TestJedisPool4(){
-        String key = "haha";
-        JedisPool jedisPool = new JedisPool();
-        Jedis jedis = jedisPool.getResource();
-        Set<String> strings = jedis.zrangeByScore(key, 0, 20);
-        System.out.println(strings);
-    }
+	public void TestJedisPool4(){
+		String key = "haha";
+		JedisPool jedisPool = new JedisPool();
+		Jedis jedis = jedisPool.getResource();
+		Set<String> strings = jedis.zrangeByScore(key, 0, 20);
+		System.out.println(strings);
+	}
 }
