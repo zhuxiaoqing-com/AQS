@@ -326,6 +326,22 @@ public class Test14 {
 		System.err.println("Bye");
 	}
 
+	@Test
+	public void test19() {
+		System.out.println();
+		System.out.println(Integer.toBinaryString(192));
+		System.out.println(Integer.toBinaryString(192));
+	}
+
+	@Test
+	public void test20() {
+		ArrayList<Integer> list = new ArrayList<>();
+		for (int i = 0; i < 11; i++) {
+			list.add(i);
+		}
+		List<Integer> collect = list.stream().sorted(Comparator.comparingInt(a -> (int) a)).collect(Collectors.toList());
+		System.out.println(collect);
+	}
 }
 
 
