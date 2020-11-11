@@ -328,9 +328,14 @@ public class Test14 {
 
 	@Test
 	public void test19() {
-		System.out.println();
-		System.out.println(Integer.toBinaryString(192));
-		System.out.println(Integer.toBinaryString(192));
+		System.out.println(Integer.parseInt("11111111", 2));
+		System.out.println(Integer.parseInt("11111110", 2));
+		System.out.println(Integer.parseInt("11111100", 2));
+		System.out.println(Integer.parseInt("11111000", 2));
+		System.out.println(Integer.parseInt("11110000", 2));
+		System.out.println(Integer.parseInt("11100000", 2));
+		System.out.println(Integer.parseInt("11000000", 2));
+		System.out.println(Integer.parseInt("10000000", 2));
 	}
 
 	@Test
@@ -341,6 +346,18 @@ public class Test14 {
 		}
 		List<Integer> collect = list.stream().sorted(Comparator.comparingInt(a -> (int) a)).collect(Collectors.toList());
 		System.out.println(collect);
+	}
+
+	@Test
+	public void test21() {
+		int a = 6;
+		int b = 3;
+		TestUtil.testTime(()-> {int aa = (int)Math.ceil(a/(float)b);}, 100000000);
+		TestUtil.testTime(()-> {int aa = (a+b-1)/b;}, 100000000);
+
+
+		System.out.println((a+b-1)/b);
+		System.out.println(Math.ceil(a/(float)b));
 	}
 }
 
