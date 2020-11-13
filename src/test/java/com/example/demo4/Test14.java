@@ -13,6 +13,7 @@ import java.io.OutputStreamWriter;
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -299,7 +300,7 @@ public class Test14 {
 		}
 	}
 
-	public static void main(String[] args){
+	public static void main(String[] args) {
 	/*	Thread t = new Thread() {
 			@Override
 			public void run() {
@@ -310,10 +311,10 @@ public class Test14 {
 		};
 		t.setDaemon(true);
 		t.start();*/
-		new Thread(){
+		new Thread() {
 			@Override
 			public void run() {
-				while (true){
+				while (true) {
 
 				}
 			}
@@ -352,13 +353,207 @@ public class Test14 {
 	public void test21() {
 		int a = 6;
 		int b = 3;
-		TestUtil.testTime(()-> {int aa = (int)Math.ceil(a/(float)b);}, 100000000);
-		TestUtil.testTime(()-> {int aa = (a+b-1)/b;}, 100000000);
+		TestUtil.testTime(() -> {
+			int aa = (int) Math.ceil(a / (float) b);
+		}, 100000000);
+		TestUtil.testTime(() -> {
+			int aa = (a + b - 1) / b;
+		}, 100000000);
 
 
-		System.out.println((a+b-1)/b);
-		System.out.println(Math.ceil(a/(float)b));
+		System.out.println((a + b - 1) / b);
+		System.out.println(Math.ceil(a / (float) b));
 	}
+
+	/**
+	 * ......................damagePercentFloor : 30
+	 * 93
+	 * 100
+	 * 51
+	 * 30
+	 * ......................damagePercentFloor : 100
+	 * 100
+	 * 100
+	 * 100
+	 * 100
+	 * ......................damagePercentFloor : 0
+	 * 90
+	 * 100
+	 * 30
+	 * 0
+	 * ......................damage : -1000
+	 * -900
+	 * -1000
+	 * -300
+	 * 0
+	 */
+	@Test
+	public void test22() {
+		System.out.println("......................damagePercentFloor : 30");
+		System.out.println(damageDamping(20, 90, 100));
+		System.out.println(damageDamping(30, 100, 100));
+		System.out.println(damageDamping(30, 30, 100));
+		System.out.println(damageDamping(30, 0, 100));
+
+		System.out.println("......................damagePercentFloor : 100");
+		System.out.println(damageDamping(100, 90, 100));
+		System.out.println(damageDamping(100, 100, 100));
+		System.out.println(damageDamping(100, 30, 100));
+		System.out.println(damageDamping(100, 0, 100));
+
+		System.out.println("......................damagePercentFloor : 0");
+		System.out.println(damageDamping(0, 90, 100));
+		System.out.println(damageDamping(0, 100, 100));
+		System.out.println(damageDamping(0, 30, 100));
+		System.out.println(damageDamping(0, 0, 100));
+
+		System.out.println("......................damage : -1000");
+		System.out.println(damageDamping(0, 90, -1000));
+		System.out.println(damageDamping(0, 100, -1000));
+		System.out.println(damageDamping(0, 30, -1000));
+		System.out.println(damageDamping(0, 0, -1000));
+	}
+
+	@Test
+	public void test24() {
+		System.out.println("......................damagePercentFloor : 30");
+		System.out.println(damageDamping2(20, 90, 100));
+		System.out.println(damageDamping2(30, 100, 100));
+		System.out.println(damageDamping2(30, 30, 100));
+		System.out.println(damageDamping2(30, 0, 100));
+
+		System.out.println("......................damagePercentFloor : 100");
+		System.out.println(damageDamping2(100, 90, 100));
+		System.out.println(damageDamping2(100, 100, 100));
+		System.out.println(damageDamping2(100, 30, 100));
+		System.out.println(damageDamping2(100, 0, 100));
+
+		System.out.println("......................damagePercentFloor : 0");
+		System.out.println(damageDamping2(0, 90, 100));
+		System.out.println(damageDamping2(0, 100, 100));
+		System.out.println(damageDamping2(0, 30, 100));
+		System.out.println(damageDamping2(0, 0, 100));
+
+		System.out.println("......................damage : -1000");
+		System.out.println(damageDamping2(0, 90, -1000));
+		System.out.println(damageDamping2(0, 100, -1000));
+		System.out.println(damageDamping2(0, 30, -1000));
+		System.out.println(damageDamping2(0, 0, -1000));
+	}
+
+	@Test
+	public void test25() {
+
+		TestUtil.testTime(()->damageDamping(0, 90, -1000), 2222222);
+		TestUtil.testTime(()->damageDamping2(0, 90, -1000), 2222222);
+
+		TestUtil.testTime(()->damageDamping(0, 90, -1000), 222222222);
+		TestUtil.testTime(()->damageDamping2(0, 90, -1000), 222222222);
+	}
+
+
+	/**
+	 * 衰减伤害百分比 = (100 - 距离中心点距离百分比) * (100 - 伤害波动下限) / 100
+	 * 衰减伤害 = 衰减伤害百分比 * 伤害 /100f
+	 * final伤害 = 总伤害 - 衰减伤害
+	 *
+	 * @param damagePercentFloor 伤害波动下限
+	 * @param centerDisPercent   距离中心点距离百分比 	 1 - 该单位距离中心点距离 / 中心点与最大边缘距离
+	 * @param damage             中心点伤害
+	 * @return 衰减后的伤害值
+	 */
+	public int damageDamping(int damagePercentFloor, int centerDisPercent, int damage) {
+		// 如果伤害百分比下限是百分之100 说明没有波动直接返回
+		if (damagePercentFloor == 100) {
+			return damage;
+		}
+		// 每距离离中心点百分之一远 就衰减 damageCentiDamping 伤害;
+		float damageCentiDamping = (100 - damagePercentFloor) / 100f;
+		// 计算到底衰减了百分之多少伤害
+		float damageTotalDamping = (100 - centerDisPercent) * damageCentiDamping;
+		// 衰减的伤害总值
+		float totalDampingDamage = damageTotalDamping * damage / 100f;
+		return (int) (damage - totalDampingDamage);
+	}
+
+	/**
+	 * 衰减伤害百分比 = (100 - 距离中心点距离百分比) * (100 - 伤害波动下限) / 100
+	 *
+	 * @param damagePercentFloor 伤害波动下限
+	 * @param centerDisPercent   距离中心点距离百分比 	 1 - 该单位距离中心点距离 / 中心点与最大边缘距离
+	 * @param damage             中心点伤害
+	 * @return 衰减后的伤害值
+	 */
+	public int damageDamping2(float damagePercentFloor, float centerDisPercent, int damage) {
+		damagePercentFloor = damagePercentFloor/100;
+		centerDisPercent = centerDisPercent/100;
+		float noCalcDamage = damage * damagePercentFloor;
+		float calcDamage = (damage - noCalcDamage) * centerDisPercent;
+		return (int) (calcDamage + noCalcDamage);
+	}
+
+	public int damageDamping111(float damagePercentFloor, float centerDisPercent, int damage) {
+		damagePercentFloor = damagePercentFloor/100;
+		centerDisPercent = centerDisPercent/100;
+		// 如果伤害百分比下限是百分之100 说明没有波动直接返回
+		if (damagePercentFloor == 1) {
+			return damage;
+		}
+		// 每距离离中心点百分之一远 就衰减 damageCentiDamping 伤害;
+		// 计算到底衰减了百分之多少伤害
+		float damageTotalDamping = (100 - centerDisPercent) * (100 - damagePercentFloor) / 100f;
+		damageTotalDamping = (100 - centerDisPercent) * (100 - damagePercentFloor) / 100f;
+		// 衰减的伤害总值
+		float totalDampingDamage = damageTotalDamping * damage / 100f;
+		return (int) (damage - totalDampingDamage);
+	}
+
+	/**
+	 * 	衰减伤害百分比 = (100 - 距离中心点距离百分比) * (100 - 伤害波动下限) / 100
+	 * 	衰减伤害 = 衰减伤害百分比 * 总伤害 /100f
+	 * 	final伤害 = 总伤害 - 衰减伤害
+	 *
+	 * 	final伤害 = 总伤害 -  衰减伤害百分比/100f * 总伤害
+	 *
+	 *	final伤害 = 总伤害(1 - 衰减伤害百分比/100f)
+	 *
+	 *
+	 * 	final伤害 = 总伤害*(1 - (1 - 距离中心点距离百分比/100) * (1 - 伤害波动下限/100))
+	 *
+	 *
+	 *
+	 * 	(1 - 距离中心点距离百分比/100) * (1 - 伤害波动下限/100)
+	 * 	= 1 - 伤害波动下限/100 - 距离中心点距离百分比/100 + 距离中心点距离百分比*伤害波动下限
+	 *
+	 *
+	 * 	final伤害 = 总伤害*(1 - (1 - 距离中心点距离百分比/100) * (1 - 伤害波动下限/100))
+	 * 	final伤害 = 总伤害* (-伤害波动下限/100 - 距离中心点距离百分比/100 + 距离中心点距离百分比*伤害波动下限)
+	 *
+	 *final伤害 = -总伤害*伤害波动下限/100 - 总伤害*距离中心点距离百分比/100 + 总伤害*距离中心点距离百分比*伤害波动下限
+	 *
+	 *
+	 */
+
+
+	public int damageDamping3(int damagePercentFloor, int centerDisPercent, int damage) {
+	return (int) (damage*(1-(1-centerDisPercent/100f) *(1-damagePercentFloor/100f)));
+	}
+
+	public int damageDamping4(float damagePercentFloor, float centerDisPercent, int damage) {
+		damagePercentFloor = damagePercentFloor/100;
+		centerDisPercent =  1 - centerDisPercent/100f;
+		return (int) (damage * (1 - centerDisPercent * (1-damagePercentFloor)));
+	}
+
+
+	@Test
+	public void test26() {
+		System.out.println(damageDamping(20, 10, 100));
+		System.out.println(damageDamping2(20, 10, 100));
+		System.out.println(damageDamping3(20, 10, 100));
+		System.out.println(damageDamping4(20, 10, 100));
+	}
+
 }
 
 
