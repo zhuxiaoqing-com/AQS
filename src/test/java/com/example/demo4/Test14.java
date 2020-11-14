@@ -446,9 +446,10 @@ public class Test14 {
 
 		TestUtil.testTime(()->damageDamping(0, 90, -1000), 2222222);
 		TestUtil.testTime(()->damageDamping2(0, 90, -1000), 2222222);
+		TestUtil.testTime(()->bombDamageDamping3(100, 90, 1000, 20), 2222222);
 
 		TestUtil.testTime(()->damageDamping(0, 90, -1000), 222222222);
-		TestUtil.testTime(()->damageDamping2(0, 90, -1000), 222222222);
+		TestUtil.testTime(()->bombDamageDamping3(100, 90, 1000, 20), 222222222);
 	}
 
 
@@ -492,66 +493,61 @@ public class Test14 {
 		return (int) (calcDamage + noCalcDamage);
 	}
 
-	public int damageDamping111(float damagePercentFloor, float centerDisPercent, int damage) {
-		damagePercentFloor = damagePercentFloor/100;
-		centerDisPercent = centerDisPercent/100;
-		// 如果伤害百分比下限是百分之100 说明没有波动直接返回
-		if (damagePercentFloor == 1) {
+	/**
+	 * 爆炸衰减公式
+	 * 默认伤害* [1 - 伤害计算点距离中心点距离/ 爆炸半径 * (1 - 最低伤害百分比) + 最低伤害百分比]
+	 *
+	 * @param damage             默认伤害
+	 * @param centerDistance     伤害计算点距离中心点距离
+	 * @param bombRadius         爆炸半径
+	 * @param damagePercentFloor 最低伤害百分比
+	 * @return 衰减后的伤害值
+	 */
+	public static int bombDamageDamping3(int damage, float centerDistance, float bombRadius, double damagePercentFloor) {
+		// bombRadius是除数不能为0
+		if(bombRadius == 0) {
 			return damage;
 		}
-		// 每距离离中心点百分之一远 就衰减 damageCentiDamping 伤害;
-		// 计算到底衰减了百分之多少伤害
-		float damageTotalDamping = (100 - centerDisPercent) * (100 - damagePercentFloor) / 100f;
-		damageTotalDamping = (100 - centerDisPercent) * (100 - damagePercentFloor) / 100f;
-		// 衰减的伤害总值
-		float totalDampingDamage = damageTotalDamping * damage / 100f;
-		return (int) (damage - totalDampingDamage);
+
+		// 最低伤害百分比 必须在 (0,1) 之间
+		if (damagePercentFloor >= 1 || damagePercentFloor <= 0) {
+			return damage;
+		}
+
+		centerDistance = Math.min(centerDistance, bombRadius);
+		return (int) (damage * (1 - centerDistance / bombRadius * (1 - damagePercentFloor) + damagePercentFloor));
 	}
 
 	/**
-	 * 	衰减伤害百分比 = (100 - 距离中心点距离百分比) * (100 - 伤害波动下限) / 100
-	 * 	衰减伤害 = 衰减伤害百分比 * 总伤害 /100f
-	 * 	final伤害 = 总伤害 - 衰减伤害
+	 * 爆炸衰减公式
+	 * 默认伤害* [(1 - 伤害计算点距离中心点距离/ 爆炸半径) * (1 - 最低伤害百分比) + 最低伤害百分比]
 	 *
-	 * 	final伤害 = 总伤害 -  衰减伤害百分比/100f * 总伤害
-	 *
-	 *	final伤害 = 总伤害(1 - 衰减伤害百分比/100f)
-	 *
-	 *
-	 * 	final伤害 = 总伤害*(1 - (1 - 距离中心点距离百分比/100) * (1 - 伤害波动下限/100))
-	 *
-	 *
-	 *
-	 * 	(1 - 距离中心点距离百分比/100) * (1 - 伤害波动下限/100)
-	 * 	= 1 - 伤害波动下限/100 - 距离中心点距离百分比/100 + 距离中心点距离百分比*伤害波动下限
-	 *
-	 *
-	 * 	final伤害 = 总伤害*(1 - (1 - 距离中心点距离百分比/100) * (1 - 伤害波动下限/100))
-	 * 	final伤害 = 总伤害* (-伤害波动下限/100 - 距离中心点距离百分比/100 + 距离中心点距离百分比*伤害波动下限)
-	 *
-	 *final伤害 = -总伤害*伤害波动下限/100 - 总伤害*距离中心点距离百分比/100 + 总伤害*距离中心点距离百分比*伤害波动下限
-	 *
-	 *
+	 * @param damage             默认伤害
+	 * @param centerDistance     伤害计算点距离中心点距离
+	 * @param bombRadius         爆炸半径
+	 * @param damagePercentFloor 最低伤害百分比
+	 * @return 衰减后的伤害值
 	 */
+	public static int bombDamageDamping4(int damage, float centerDistance, float bombRadius, double damagePercentFloor) {
+		// bombRadius是除数不能为0
+		if(bombRadius == 0) {
+			return damage;
+		}
 
+		// 最低伤害百分比 必须在 (0,1) 之间
+		if (damagePercentFloor >= 1 || damagePercentFloor <= 0) {
+			return damage;
+		}
 
-	public int damageDamping3(int damagePercentFloor, int centerDisPercent, int damage) {
-	return (int) (damage*(1-(1-centerDisPercent/100f) *(1-damagePercentFloor/100f)));
+		centerDistance = Math.min(centerDistance, bombRadius);
+		return (int) (damage * ((1 - centerDistance / bombRadius) * (1 - damagePercentFloor) + damagePercentFloor));
 	}
-
-	public int damageDamping4(float damagePercentFloor, float centerDisPercent, int damage) {
-		damagePercentFloor = damagePercentFloor/100;
-		centerDisPercent =  1 - centerDisPercent/100f;
-		return (int) (damage * (1 - centerDisPercent * (1-damagePercentFloor)));
-	}
-
-
 	@Test
 	public void test26() {
-		System.out.println(damageDamping(20, 10, 100));
-		System.out.println(damageDamping2(20, 10, 100));
-		System.out.println(damageDamping3(20, 10, 100));
-		System.out.println(damageDamping4(20, 10, 100));
+		System.out.println(damageDamping(20, (int) ((1 - 70 / 100f)*100), 100));
+		System.out.println(damageDamping2(0, 90, 100));
+		System.out.println(bombDamageDamping3(100, 70, 100, 0.2));
+		System.out.println(bombDamageDamping4(100, 70, 100, 0.2));
 	}
 
 }
