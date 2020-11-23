@@ -542,12 +542,20 @@ public class Test14 {
 		centerDistance = Math.min(centerDistance, bombRadius);
 		return (int) (damage * ((1 - centerDistance / bombRadius) * (1 - damagePercentFloor) + damagePercentFloor));
 	}
+
 	@Test
 	public void test26() {
 		System.out.println(damageDamping(20, (int) ((1 - 70 / 100f)*100), 100));
 		System.out.println(damageDamping2(0, 90, 100));
 		System.out.println(bombDamageDamping3(100, 70, 100, 0.2));
 		System.out.println(bombDamageDamping4(100, 70, 100, 0.2));
+	}
+
+	@Test
+	public void test27() {
+		Object[] objects = new Object[0];
+		System.out.println(objects.getClass().getSimpleName());
+
 	}
 
 }
