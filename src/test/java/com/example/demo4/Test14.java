@@ -1,5 +1,6 @@
 package com.example.demo4;
 
+import com.alibaba.fastjson.JSON;
 import com.youxi.building.Misc;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -557,6 +558,17 @@ public class Test14 {
 		System.out.println(objects.getClass().getSimpleName());
 
 	}
+
+	@Test
+	public void test28() {
+		int[] ints = new int[]{1,2,3,4,5,6,7,8,9,10};
+		String s = JSON.toJSONString(ints);
+		Object parse = JSON.parse(s);
+		System.out.println(parse);
+
+
+	}
+
 
 }
 
