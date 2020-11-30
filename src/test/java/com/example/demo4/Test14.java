@@ -301,7 +301,7 @@ public class Test14 {
 		}
 	}
 
-	public static void main(String[] args) {
+	public static void main2(String[] args) {
 	/*	Thread t = new Thread() {
 			@Override
 			public void run() {
@@ -565,11 +565,23 @@ public class Test14 {
 		String s = JSON.toJSONString(ints);
 		Object parse = JSON.parse(s);
 		System.out.println(parse);
+	}
 
+	@Test
+	public void test29() {
+		double a = 1000f/0;
+		System.out.println(a);
+		System.out.println((int)(a*1000));
+	}
+
+	@Test
+	public void test30() {
 
 	}
 
-
+	public static void main(String[] args) {
+		Runtime.getRuntime().addShutdownHook(new Thread(()-> System.out.println(".....ddfdfsfsf")));
+	}
 }
 
 
