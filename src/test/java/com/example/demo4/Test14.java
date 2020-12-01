@@ -576,7 +576,16 @@ public class Test14 {
 
 	@Test
 	public void test30() {
-
+		String a = "a";
+		switch (a) {
+			case "a" :
+				System.out.println("a");
+				break;
+			case "b":{
+				System.out.println("b");
+			}
+		}
+		Runnable runnable = () -> System.out.println();
 	}
 
 	public static void main(String[] args) {
