@@ -591,6 +591,26 @@ public class Test14 {
 	public static void main(String[] args) {
 		Runtime.getRuntime().addShutdownHook(new Thread(()-> System.out.println(".....ddfdfsfsf")));
 	}
+
+	@Test
+	public void test31() {
+		int i = 10;
+		for (int i1 = 0; i1 < i; i1++) {
+			System.out.println(Runtime.getRuntime().availableProcessors());
+		}
+	}
+
+	@Test
+	public void test32() {
+		ArrayList<Integer> objects = new ArrayList<>();
+		int i = 10;
+		for (int i1 = 0; i1 < i; i1++) {
+			objects.add(i1);
+		}
+
+		List<Integer> collect = objects.stream().sorted((a, b) -> -1).collect(Collectors.toList());
+		System.out.println(collect);
+	}
 }
 
 
