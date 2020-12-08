@@ -445,12 +445,12 @@ public class Test14 {
 	@Test
 	public void test25() {
 
-		TestUtil.testTime(()->damageDamping(0, 90, -1000), 2222222);
-		TestUtil.testTime(()->damageDamping2(0, 90, -1000), 2222222);
-		TestUtil.testTime(()->bombDamageDamping3(100, 90, 1000, 20), 2222222);
+		TestUtil.testTime(() -> damageDamping(0, 90, -1000), 2222222);
+		TestUtil.testTime(() -> damageDamping2(0, 90, -1000), 2222222);
+		TestUtil.testTime(() -> bombDamageDamping3(100, 90, 1000, 20), 2222222);
 
-		TestUtil.testTime(()->damageDamping(0, 90, -1000), 222222222);
-		TestUtil.testTime(()->bombDamageDamping3(100, 90, 1000, 20), 222222222);
+		TestUtil.testTime(() -> damageDamping(0, 90, -1000), 222222222);
+		TestUtil.testTime(() -> bombDamageDamping3(100, 90, 1000, 20), 222222222);
 	}
 
 
@@ -487,8 +487,8 @@ public class Test14 {
 	 * @return 衰减后的伤害值
 	 */
 	public int damageDamping2(float damagePercentFloor, float centerDisPercent, int damage) {
-		damagePercentFloor = damagePercentFloor/100;
-		centerDisPercent = centerDisPercent/100;
+		damagePercentFloor = damagePercentFloor / 100;
+		centerDisPercent = centerDisPercent / 100;
 		float noCalcDamage = damage * damagePercentFloor;
 		float calcDamage = (damage - noCalcDamage) * centerDisPercent;
 		return (int) (calcDamage + noCalcDamage);
@@ -506,7 +506,7 @@ public class Test14 {
 	 */
 	public static int bombDamageDamping3(int damage, float centerDistance, float bombRadius, double damagePercentFloor) {
 		// bombRadius是除数不能为0
-		if(bombRadius == 0) {
+		if (bombRadius == 0) {
 			return damage;
 		}
 
@@ -531,7 +531,7 @@ public class Test14 {
 	 */
 	public static int bombDamageDamping4(int damage, float centerDistance, float bombRadius, double damagePercentFloor) {
 		// bombRadius是除数不能为0
-		if(bombRadius == 0) {
+		if (bombRadius == 0) {
 			return damage;
 		}
 
@@ -546,7 +546,7 @@ public class Test14 {
 
 	@Test
 	public void test26() {
-		System.out.println(damageDamping(20, (int) ((1 - 70 / 100f)*100), 100));
+		System.out.println(damageDamping(20, (int) ((1 - 70 / 100f) * 100), 100));
 		System.out.println(damageDamping2(0, 90, 100));
 		System.out.println(bombDamageDamping3(100, 70, 100, 0.2));
 		System.out.println(bombDamageDamping4(100, 70, 100, 0.2));
@@ -561,7 +561,7 @@ public class Test14 {
 
 	@Test
 	public void test28() {
-		int[] ints = new int[]{1,2,3,4,5,6,7,8,9,10};
+		int[] ints = new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 		String s = JSON.toJSONString(ints);
 		Object parse = JSON.parse(s);
 		System.out.println(parse);
@@ -569,19 +569,19 @@ public class Test14 {
 
 	@Test
 	public void test29() {
-		double a = 1000f/0;
+		double a = 1000f / 0;
 		System.out.println(a);
-		System.out.println((int)(a*1000));
+		System.out.println((int) (a * 1000));
 	}
 
 	@Test
 	public void test30() {
 		String a = "a";
 		switch (a) {
-			case "a" :
+			case "a":
 				System.out.println("a");
 				break;
-			case "b":{
+			case "b": {
 				System.out.println("b");
 			}
 		}
@@ -589,7 +589,7 @@ public class Test14 {
 	}
 
 	public static void main(String[] args) {
-		Runtime.getRuntime().addShutdownHook(new Thread(()-> System.out.println(".....ddfdfsfsf")));
+		Runtime.getRuntime().addShutdownHook(new Thread(() -> System.out.println(".....ddfdfsfsf")));
 	}
 
 	@Test
@@ -611,6 +611,21 @@ public class Test14 {
 		List<Integer> collect = objects.stream().sorted((a, b) -> -1).collect(Collectors.toList());
 		System.out.println(collect);
 	}
+
+	@Test
+	public void test33() {
+		TreeMap<Integer, Integer> map = new TreeMap<>();
+		int i = 10;
+		for (int i1 = 0; i1 < i; i1++) {
+			map.put(i1, i1);
+		}
+		System.out.println(map);
+		System.out.println(map.lastKey());
+		System.out.println(map.firstKey());
+		System.out.println(map.higherKey(7));
+		System.out.println(map.ceilingKey(-1));
+	}
+
 }
 
 
