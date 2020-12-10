@@ -617,13 +617,27 @@ public class Test14 {
 		TreeMap<Integer, Integer> map = new TreeMap<>();
 		int i = 10;
 		for (int i1 = 0; i1 < i; i1++) {
-			map.put(i1, i1);
+			map.put(i1*10, i1);
 		}
 		System.out.println(map);
 		System.out.println(map.lastKey());
 		System.out.println(map.firstKey());
-		System.out.println(map.higherKey(7));
+		System.out.println(map.higherKey(70));
+		System.out.println(map.ceilingKey(79));
+		System.out.println(map.higherKey(80));
+		System.out.println(map.ceilingKey(80));
 		System.out.println(map.ceilingKey(-1));
+	}
+
+	@Test
+	public void test34() {
+		ArrayList<Object> objects = new ArrayList<>();
+		int i = 10;
+		for (int i1 = 0; i1 < i; i1++) {
+			objects.add(null);
+		}
+
+		objects.stream().filter(o->o.getClass() == null).collect(Collectors.toList());
 	}
 
 }
