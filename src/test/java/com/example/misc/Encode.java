@@ -1,14 +1,12 @@
-package com.example.demo4;
+package com.example.misc;
 
-import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
+import com.example.demo4.TestUtil;
 import com.youxi.util.RandomUtil;
-import io.swagger.models.auth.In;
 import org.junit.Test;
 import org.w3c.dom.Document;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.lang.invoke.MethodHandle;
@@ -19,7 +17,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 /**
@@ -27,11 +24,11 @@ import java.util.regex.Pattern;
  * @Date: 2020/8/26 16:13
  * @Description:
  */
-public class Test12 {
+public class Encode {
 	@Test
 	public void test01() throws Throwable {
 		int maxNum = 100000;
-		Test12 test12 = new Test12();
+		Encode test12 = new Encode();
 		long startNano;
 
 		startNano = System.nanoTime();
@@ -43,7 +40,7 @@ public class Test12 {
 		startNano = System.nanoTime();
 		for (int i = 0; i < maxNum; i++) {
 			MethodHandles.Lookup lookup = MethodHandles.lookup();
-			MethodHandle a = lookup.findVirtual(Test12.class, "a", MethodType.methodType(void.class));
+			MethodHandle a = lookup.findVirtual(Encode.class, "a", MethodType.methodType(void.class));
 			a.invoke(test12);
 		}
 		System.out.println((System.nanoTime() - startNano));
@@ -352,12 +349,15 @@ public class Test12 {
 	}
 
 	@Test
-	public void test25() {
-		String a = "我这个字\uD845\uDE3E无法识别";
-		String s = filterSpecialContent("\uD845\uDE3E");
+	public void test25() throws UnsupportedEncodingException {
+		String a = "这个字\uD845\uDE3E\uD855\uDE3E无法识别";
+		String s = filterSpecialContent("\uD855\uDE3E");
+		System.out.println("\uD855\uDE3E");
+		System.out.println("\uD865\uDE3F");
 //		System.out.println(s);
-		String s1 = filterUtf84(a);
-		System.out.println(s1);
+		//String s1 = filterUtf84(a);
+		System.out.println(filterUtf84(a));
+		System.out.println(filterUtf162(a));
 		System.out.println("\u10000");
 		System.out.println("\u1FFFFF");
 		System.out.println(Integer.toBinaryString(0xD845));
@@ -376,28 +376,62 @@ public class Test12 {
 		return NAME_SPECIAL.matcher(content).replaceAll("*");
 	}
 
-	int baaaa = 0xf0;
 
-	private String filterUtf84(String a) {
-		byte[] bytes = a.getBytes();
+	private String filterUtf84(String a) throws UnsupportedEncodingException {
+		byte[] bytes = a.getBytes("UTF-8");
 		byte[] bytes1 = new byte[bytes.length];
 		int bytes1Index = 0;
 		int utf84Index = -100;
 		for (int i = 0; i < bytes.length; i++) {
-			if ((bytes[i] & baaaa) == baaaa) {
+			String s = Integer.toBinaryString(bytes[i]);
+			if ((bytes[i] & 0xf0) == 0xf0) {
+			//	System.out.println(s.substring(s.length() - 8));
 				utf84Index = i;
-				System.out.println("sss");
 			}
-			if(i <= utf84Index + 3) {
+			if (i <= utf84Index + 3) {
+			//	System.out.println(s.substring(s.length() - 8));
 				continue;
 			}
 			bytes1[bytes1Index++] = bytes[i];
 		}
-		return new String(bytes1);
+		byte[] bytes2 = new byte[bytes1Index];
+		for (int i = 0; i < bytes2.length; i++) {
+			bytes2[i] = bytes1[i];
+		}
+		return new String(bytes2);
+	}
+
+	private String filterUtf162(String a) throws UnsupportedEncodingException {
+		byte[] bytes = a.getBytes("UTF-16");
+
+		byte[] bytes3 = new byte[bytes.length];
+
+		int bytes1Index = 0;
+		int utf84Index = -100;
+		for (int i = 0; i < bytes.length; i++) {
+			if ((i & 1) == 0 && (bytes[i] & 0xfc) == 0xd8) {
+				//System.out.println(byteToBinaryString(bytes[i]));
+				utf84Index = i;
+			}
+			if (i <= utf84Index + 3) {
+				//System.out.println(byteToBinaryString(bytes[i]));
+				continue;
+			}
+			bytes3[bytes1Index++] = bytes[i];
+		}
+		byte[] bytes4 = new byte[bytes1Index];
+		for (int i = 0; i < bytes4.length; i++) {
+			bytes4[i] = bytes3[i];
+		}
+		return new String(bytes4,"UTF-16");
 	}
 
 	@Test
 	public void test26() throws UnsupportedEncodingException {
+		String s = new String("\uD835\uDD46");
+		System.out.println(Arrays.toString(s.getBytes("UTF-8")));
+		System.out.println(s);
+		System.out.println(s.length());
 		System.out.println("\uD835\uDD46");
 		System.out.println(0xD835);
 		System.out.println(0xDD46);
@@ -413,6 +447,27 @@ public class Test12 {
 		System.out.println(Arrays.toString("\uD835\uDD46".getBytes("utf-32")));
 		//System.out.println(Arrays.toString("\uD845\uDE3E".getBytes("utf-16")));
 	}
+
+	private String byteToBinaryString(byte a) {
+		String s = Integer.toBinaryString(a);
+		if (a >= 0) {
+			return s;
+		}
+		return s.substring(s.length() - 8);
+	}
+
+	@Test
+	public void test27() throws UnsupportedEncodingException {
+		System.out.println(Integer.toBinaryString(78));
+		System.out.println(Integer.toBinaryString(79));
+		System.out.println(Integer.toBinaryString(-1));
+		System.out.println(Integer.toBinaryString(0xfc));
+	}
+
+	public void a(int a, int b, int c, int d) {
+
+	}
+
 }
 
 
