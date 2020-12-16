@@ -13,6 +13,10 @@ import java.io.File;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -588,7 +592,7 @@ public class Test14 {
 		Runnable runnable = () -> System.out.println();
 	}
 
-	public static void main(String[] args) {
+	public static void main11(String[] args) {
 		Runtime.getRuntime().addShutdownHook(new Thread(() -> System.out.println(".....ddfdfsfsf")));
 	}
 
@@ -617,7 +621,7 @@ public class Test14 {
 		TreeMap<Integer, Integer> map = new TreeMap<>();
 		int i = 10;
 		for (int i1 = 0; i1 < i; i1++) {
-			map.put(i1*10, i1);
+			map.put(i1 * 10, i1);
 		}
 		System.out.println(map);
 		System.out.println(map.lastKey());
@@ -637,9 +641,68 @@ public class Test14 {
 			objects.add(null);
 		}
 
-		objects.stream().filter(o->o.getClass() == null).collect(Collectors.toList());
+		objects.stream().filter(o -> o.getClass() == null).collect(Collectors.toList());
 	}
 
+	public static void main(String[] args) {
+		try {
+			test35();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Test
+	public static void test35() throws Exception {
+		//注册驱动
+		DriverManager.registerDriver(new com.mysql.jdbc.Driver());
+		//或者
+		//class.forName("cn.kgc.jdbc.Driver");
+
+		//获取连接，数据库连接地址和账户密码
+		String url = "jdbc:mysql://localhost:3306/test01" +
+				"?useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
+		String url2 = "jdbc:mysql://localhost:3306/test01?serverTimezone=Asia/Shanghai&useUnicode=true";
+		Connection connection = DriverManager.getConnection(url, "root", "123456");
+	/*	PreparedStatement p11 = connection.prepareStatement("SET  character_set_client = utf8mb4");
+		p11.execute();
+		PreparedStatement p12 = connection.prepareStatement("SET  character_set_connection  = utf8mb4;");
+		p12.execute();
+		PreparedStatement p13 = connection.prepareStatement("SET character_set_results  = utf8mb4;");
+		p13.execute();
+		PreparedStatement p14 = connection.prepareStatement("SET  character_set_server  = utf8mb4;");
+		p14.execute();
+		PreparedStatement p15 = connection.prepareStatement("SET character_set_database  = utf8mb4;");
+		p15.execute();*/
+
+		PreparedStatement p111 = connection.prepareStatement("SHOW GLOBAL VARIABLES LIKE 'character_set_%'");
+		ResultSet resultSet11 = p111.executeQuery();
+		System.out.println("全局");
+		while (resultSet11.next()) {
+			System.out.println(resultSet11.getString("variable_name") + "    " + resultSet11.getString("value"));
+		}
+
+		PreparedStatement p1 = connection.prepareStatement("SHOW  VARIABLES LIKE 'character_set_%'");
+		System.out.println("会话");
+		ResultSet resultSet1 = p1.executeQuery();
+		while (resultSet1.next()) {
+			System.out.println(resultSet1.getString("variable_name") + "    " + resultSet1.getString("value"));
+
+		}
+		//获取操作数据库的预处理对象
+		PreparedStatement preparedStatement = connection.prepareStatement("select * from bbb where k=?");
+		preparedStatement.setString(1, "\uD83D\uDE03");
+		//执行SQL语句
+		ResultSet resultSet = preparedStatement.executeQuery();
+		//遍历结果集
+		while (resultSet.next()) {
+			System.out.println(resultSet.getString("v"));
+		}
+		//释放资源
+		resultSet.close();
+		preparedStatement.close();
+		connection.close();
+	}
 }
 
 
