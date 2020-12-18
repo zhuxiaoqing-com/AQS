@@ -652,7 +652,6 @@ public class Test14 {
 		}
 	}
 
-	@Test
 	public static void test35() throws Exception {
 		//注册驱动
 		DriverManager.registerDriver(new com.mysql.jdbc.Driver());
@@ -702,6 +701,11 @@ public class Test14 {
 		resultSet.close();
 		preparedStatement.close();
 		connection.close();
+	}
+
+	@Test
+	public void test36() {
+		System.out.println(new Date(1607929930335L));
 	}
 }
 
