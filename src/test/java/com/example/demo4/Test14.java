@@ -706,6 +706,7 @@ public class Test14 {
 	@Test
 	public void test36() {
 		System.out.println(new Date(1607929930335L));
+		assert false;
 	}
 }
 
