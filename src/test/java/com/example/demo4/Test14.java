@@ -708,6 +708,11 @@ public class Test14 {
 		System.out.println(new Date(1607929930335L));
 		assert false;
 	}
+
+	@Test
+	public void test37() {
+		System.out.println(Math.sqrt(1));
+	}
 }
 
 
