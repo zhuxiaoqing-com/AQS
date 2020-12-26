@@ -712,6 +712,7 @@ public class Test14 {
 	@Test
 	public void test37() {
 		System.out.println(Math.sqrt(1));
+		System.out.println(Runtime.getRuntime().availableProcessors());
 	}
 }
 
