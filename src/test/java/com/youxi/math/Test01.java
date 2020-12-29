@@ -24,4 +24,11 @@ public class Test01 {
 		System.out.println(Math.atan2(-1, -1)*(180/Math.PI));
 		System.out.println(Math.atan2(1, 0)*(180/Math.PI));
 	}
+	/**
+	 * x^2 + y^2 = 距离
+	 * ax + by + c = 0;
+	 * x = (by-c)/ a;
+	 *
+	 * 如果公式 解;
+	 */
 }

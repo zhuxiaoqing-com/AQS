@@ -29,43 +29,25 @@ public class Test15 {
 
 	@Test
 	public void test01() {
-		HashMap<Integer, Object> map = find(1000);
-		System.out.println(map);
+
+
 	}
 
-	public static void main(String[] args) {
-		HashMap<Integer, Object> totalMap = new HashMap<>();
-		int num =1;
-		while (true) {
-		HashMap<Integer, Object> map = find(100000);
-			totalMap.putAll(map);
-			if(map.size() < 100000 || num++>=0) {
-				break;
-			}
-		}
-		System.out.println(totalMap);
-	}
-
-	public static HashMap<Integer, Object> find(int num) {
+	public static void find(int num) {
 		int threadNum = (num + SPAN - 1) / SPAN;
 		ExecutorService executor = Executors.newFixedThreadPool(threadNum);
 
-		ArrayList<Future<Integer>> objects = new ArrayList<>();
 		for (int i = 0; i < num; i += SPAN) {
-			int finalI = i;
-			Future<Integer> submit = executor.submit(() -> finalI);
-			objects.add(submit);
+			executor.execute(() -> {
+				while (true) {
+					// todo 在线程里面利用  SPAN 让每个线程都取不同的区间
+					// todo 插入到 阻塞队列; 如果阻塞队列满了 会自动阻塞住的;
+				}
+			});
 		}
+
 		executor.shutdown();
-		HashMap<Integer, Object> map = new HashMap<>(num);
-		for (Future<Integer> object : objects) {
-			try {
-				map.put(object.get(), object.get());
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		return map;
+		// todo 如果查询完了  可以插入阻塞队列一个特殊标识  标识 已经阻塞队列已经没有东西了;
 	}
 
 }

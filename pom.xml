@@ -295,9 +295,15 @@
 
 
         <dependency>
-        <groupId>org.freemarker</groupId>
-        <artifactId>freemarker</artifactId>
-        <version>2.3.23</version>
+            <groupId>org.freemarker</groupId>
+            <artifactId>freemarker</artifactId>
+            <version>2.3.23</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-math3</artifactId>
+            <version>3.6.1</version>
         </dependency>
 
     </dependencies>
