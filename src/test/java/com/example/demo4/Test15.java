@@ -1,6 +1,7 @@
 package com.example.demo4;
 
 import com.alibaba.fastjson.JSON;
+import com.example.代码优化.design_mode.TowerAOI.Vector2f;
 import com.youxi.building.Misc;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -29,8 +30,8 @@ public class Test15 {
 
 	@Test
 	public void test01() {
-
-
+		short changeType = 0x00;
+		System.out.println(changeType);
 	}
 
 	public static void find(int num) {
@@ -50,6 +51,16 @@ public class Test15 {
 		// todo 如果查询完了  可以插入阻塞队列一个特殊标识  标识 已经阻塞队列已经没有东西了;
 	}
 
+
+
+	@Test
+	public void test02() {
+
+	}
+
+	private float dot(Vector2f v1, Vector2f v2) {
+		return v1.getX() * v2.getX() + v1.getY() * v2.getY();
+	}
 }
 
 

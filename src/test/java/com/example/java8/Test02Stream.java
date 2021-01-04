@@ -4,9 +4,11 @@ import com.example.java8.entity.Employee;
 import com.google.common.collect.Lists;
 import org.junit.Test;
 
+import java.lang.reflect.Array;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Test02Stream {
 	@Test
@@ -246,6 +248,18 @@ public class Test02Stream {
 
 		Optional<Integer> max = integers.stream().max(Comparator.comparingInt(a -> a));
 		System.out.println(max);
+	}
+
+	@Test
+	public void test12() {
+		int[] ints = new int[10];
+		Arrays.fill(ints, -1);
+		Map<Long, Long> collect = Arrays.stream(ints)
+				.asLongStream()
+				.boxed()
+				// 一个输出跟输入一样的Lambda表达式对象
+				.collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+		System.out.println(collect);
 	}
 
 }
