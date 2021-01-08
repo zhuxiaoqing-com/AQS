@@ -55,7 +55,8 @@ public class Test15 {
 
 	@Test
 	public void test02() {
-
+		ArrayList<Object> objects = new ArrayList<>();
+		objects.add(0);
 	}
 
 	private float dot(Vector2f v1, Vector2f v2) {
