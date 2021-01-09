@@ -57,6 +57,11 @@ public class Test15 {
 	public void test02() {
 		ArrayList<Object> objects = new ArrayList<>();
 		objects.add(0);
+
+		System.out.println(Objects.hash(1,2,3));
+		System.out.println(Objects.hash(1,2,3));
+		HashMap<Object, Object> map = new HashMap<>();
+
 	}
 
 	private float dot(Vector2f v1, Vector2f v2) {
