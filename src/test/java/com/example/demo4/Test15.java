@@ -52,14 +52,13 @@ public class Test15 {
 	}
 
 
-
 	@Test
 	public void test02() {
 		ArrayList<Object> objects = new ArrayList<>();
 		objects.add(0);
 
-		System.out.println(Objects.hash(1,2,3));
-		System.out.println(Objects.hash(1,2,3));
+		System.out.println(Objects.hash(1, 2, 3));
+		System.out.println(Objects.hash(1, 2, 3));
 		HashMap<Object, Object> map = new HashMap<>();
 
 	}
@@ -67,14 +66,50 @@ public class Test15 {
 	private float dot(Vector2f v1, Vector2f v2) {
 		return v1.getX() * v2.getX() + v1.getY() * v2.getY();
 	}
+
+	@Test
+	public void test03() {
+		MyThread myThread = new MyThread();
+		myThread.start();
+
+		while (true) {
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			myThread.print();
+		}
+	}
+
+}
+
+class MyThread extends Thread {
+	public void print() {
+		System.out.println("print.....");
+	}
+
+	@Override
+	public void run() {
+		super.run();
+		int max = 10;
+		for (int i = 0; i < max; i++) {
+			System.out.println("run......");
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		throw new RuntimeException("runtimeException");
+	}
 }
 
 /**
  * 0001
  * 1110
- *
+ * <p>
  * 1111
- *
  */
 
 
