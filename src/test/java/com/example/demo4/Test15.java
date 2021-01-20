@@ -19,6 +19,7 @@ import java.sql.ResultSet;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @Auther: zhuxiaoqing
@@ -82,6 +83,12 @@ public class Test15 {
 		}
 	}
 
+	@Test
+	public void test04() {
+		float[] floats = new float[2];
+
+	}
+
 }
 
 class MyThread extends Thread {
@@ -104,6 +111,7 @@ class MyThread extends Thread {
 		throw new RuntimeException("runtimeException");
 	}
 }
+
 
 /**
  * 0001
