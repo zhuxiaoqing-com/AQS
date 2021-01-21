@@ -2,6 +2,7 @@ package com.youxi.math;
 
 import com.example.代码优化.design_mode.TowerAOI.Vector2f;
 import com.youxi.sssh.fsm.Vector3f;
+import org.junit.Test;
 
 import java.util.List;
 
@@ -96,5 +97,11 @@ public class YouxiMath {
 	 */
 	public boolean segmentPolygonCrossing(List<Vector2f> polygon, Vector2f segmentStart, Vector2f segmentEnd) {
 		return true;
+	}
+
+
+	@Test
+	public void test01() {
+		//circleSegmentCrossing(500, new Vector2f(108.19f, 23.38f), , )
 	}
 }
