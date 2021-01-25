@@ -86,9 +86,17 @@ public class Test15 {
 	@Test
 	public void test04() {
 		float[] floats = new float[2];
-
+		System.out.println(new Date(1611317154094L));
+		System.out.println(new Date(1611317161126L));
 	}
 
+	@Test
+	public void test05() {
+		System.out.println(Integer.toBinaryString(194));
+		System.out.println(Integer.toBinaryString(198));
+		System.out.println(Integer.toBinaryString(200));
+		System.out.println(Integer.toBinaryString(202));
+	}
 }
 
 class MyThread extends Thread {
