@@ -714,6 +714,11 @@ public class Test14 {
 		System.out.println(Math.sqrt(1));
 		System.out.println(Runtime.getRuntime().availableProcessors());
 	}
+
+	@Test
+	public void test38() {
+		System.out.println(Integer.toBinaryString(60));
+	}
 }
 
 

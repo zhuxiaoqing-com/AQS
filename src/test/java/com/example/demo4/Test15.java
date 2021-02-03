@@ -97,6 +97,19 @@ public class Test15 {
 		System.out.println(Integer.toBinaryString(200));
 		System.out.println(Integer.toBinaryString(202));
 	}
+
+	@Test
+	public void test06() {
+		for (int i = 0; i< fun1(); i++) {
+
+		}
+	}
+
+	int i = 3;
+	public int fun1() {
+		System.out.println(++i);
+		return i;
+	}
 }
 
 class MyThread extends Thread {

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script>
+
+
+        var aa = 2 || 0;
+        alert(aa);
+        var bb = 0 || 4;
+        alert(bb);
+
+        var bb2 = 1 || 4;
+        alert(bb2);
+
+        var bb3 = -1 || 4;
+        alert(bb3);
+
+
+        var typeMap = {};
+
+        a("player1", 1);
+        a("player2", 2);
+        a("player1", 3);
+        a("player1", 1);
+        function  a(type, id) {
+            typeMap[type] = typeMap[type]||{};
+            typeMap[type][id] = id;
+        }
+    </script>
+</head>
+<body>
+
+</body>
+</html>

@@ -28,8 +28,8 @@ public class TestDijkstra {
 	@Test
 	public void test01() {
 		Dijkstra dijkstra = new Dijkstra(graph);
-		//dijkstra.dijkstra(0, 5);
-		dijkstra.dijkstra02(0, 50);
+		dijkstra.dijkstra(0, 5);
+		//dijkstra.dijkstra02(0, 50);
 	}
 
 }

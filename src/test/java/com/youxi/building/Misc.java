@@ -6,8 +6,8 @@ package com.youxi.building;
  * @Description:
  */
 public class Misc {
-	public static int getIntIndexByXY(short chunkX, short chunkY) {
-		return 0;
+	public static int getIntIndexByXY(int chunkX, int chunkY) {
+		return chunkX << 16 | chunkY;
 	}
 
 	public static short getIntLow(int index) {
