@@ -16,6 +16,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.text.NumberFormat;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
@@ -83,6 +84,27 @@ public class Test15 {
 		}
 	}
 
+	private static class MyThread extends Thread {
+		public void print() {
+			System.out.println("print.....");
+		}
+
+		@Override
+		public void run() {
+			super.run();
+			int max = 10;
+			for (int i = 0; i < max; i++) {
+				System.out.println("run......");
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+			throw new RuntimeException("runtimeException");
+		}
+	}
+
 	@Test
 	public void test04() {
 		float[] floats = new float[2];
@@ -100,36 +122,78 @@ public class Test15 {
 
 	@Test
 	public void test06() {
-		for (int i = 0; i< fun1(); i++) {
+		for (int i = 0; i < fun1(); i++) {
 
 		}
 	}
 
 	int i = 3;
+
 	public int fun1() {
 		System.out.println(++i);
 		return i;
 	}
-}
 
-class MyThread extends Thread {
-	public void print() {
-		System.out.println("print.....");
+	/**
+	 *   101 1111 0 000 0000 0000 0000 0000 0000
+	 *
+	 *    10 1101 0 010 1111 1110 1011 1111 1111
+	 *   011 1111 1 000 0000 0000 0000 0000 0000
+	 *   110 1110 0 000 0000 0000 0000 0000 0000
+	 * 0 100 1111 0 000 0000 0000 0000 0000 0000
+	 * 0 101 0110 0 000 0000 0000 0000 0000 0000
+	 * 0 101 1110 1 000 0000 0000 0000 0000 0000
+	 */
+	@Test
+	public void test07() {
+		long a1 = 1L << 61;
+		float b = a1;
+		System.out.println(a1);
+		System.out.println(b);
+		System.out.println(Integer.toBinaryString(Float.floatToIntBits(b * b * b)));
+		System.out.println(b == a1);
+
+		NumberFormat nf = NumberFormat.getInstance();
+		nf.setGroupingUsed(false);// 不用科学计数
+		System.out.println("禁用科学计数法：num=" + nf.format(b));
+		System.out.println(Integer.toBinaryString(Float.floatToIntBits(0.00000000001f)));
+
 	}
 
-	@Override
-	public void run() {
-		super.run();
-		int max = 10;
-		for (int i = 0; i < max; i++) {
-			System.out.println("run......");
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-		throw new RuntimeException("runtimeException");
+	@Test
+	public void test08() {
+		long a1 = 1L << 60;
+		float b = a1;
+		System.out.println((long) b);
+		System.out.println(a1);
+		System.out.println(b);
+		NumberFormat nf = NumberFormat.getInstance();
+		nf.setGroupingUsed(false);// 不用科学计数
+		System.out.println(Integer.toBinaryString(Float.floatToIntBits(b)));
+		System.out.println(Long.toBinaryString(Double.doubleToLongBits(b)));
+		System.out.println("禁用科学计数法：num=" + nf.format(b));
+	}
+
+	@Test
+	public void test09() {
+		long a1 = 1L << 62;
+		float b = a1 - 1;
+		System.out.println(Long.toBinaryString(a1));
+		fun1(a1-33333);
+		fun1((long) b);
+		System.out.println(Integer.toBinaryString(Float.floatToIntBits(b)));
+		System.out.println(Long.toBinaryString(a1-1));
+		/*System.out.println(b);
+		System.out.println((long) b);
+		System.out.println(a1 - 1);*/
+
+		NumberFormat nf = NumberFormat.getInstance();
+		nf.setGroupingUsed(false);// 不用科学计数
+		System.out.println("禁用科学计数法：num=" + nf.format(b));
+	}
+
+	public void fun1(long a) {
+		System.out.println(a);
 	}
 }
 
