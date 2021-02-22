@@ -195,6 +195,11 @@ public class Test15 {
 	public void fun1(long a) {
 		System.out.println(a);
 	}
+
+	@Test
+	public void test10() {
+
+	}
 }
 
 
