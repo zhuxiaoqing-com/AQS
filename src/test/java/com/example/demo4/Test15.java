@@ -198,7 +198,7 @@ public class Test15 {
 
 	@Test
 	public void test10() {
-
+		System.out.println(24*60*60);
 	}
 }
 
