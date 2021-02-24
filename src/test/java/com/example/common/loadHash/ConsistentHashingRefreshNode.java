@@ -3,6 +3,7 @@ package com.example.common.loadHash;
 import org.junit.Test;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @Auther: zhuxiaoqing
@@ -44,23 +45,35 @@ public class ConsistentHashingRefreshNode {
 		virtualNodes.clear();
 		// 将虚拟节点映射到hash环上
 		for (String realGroup : realGroups) {
-			for (int i = 0; i < VIRTUAL_NODE_NUM; i++) {
-				String virtualNodeName = getVirtualNodeName(realGroup, i);
-				int hash = HashUtil.getHash(virtualNodeName);
-				//System.out.println("[" + virtualNodeName + "] launched @ " + hash);
-				virtualNodes.put(hash, virtualNodeName);
-			}
+			createVirtualNode(realGroup);
+		}
+	}
+
+	private static void createVirtualNode(String realGroup) {
+		for (int i = 0; i < VIRTUAL_NODE_NUM; i++) {
+			String virtualNodeName = getVirtualNodeName(realGroup, i);
+			int hash = HashUtil.getHash(virtualNodeName);
+			//System.out.println("[" + virtualNodeName + "] launched @ " + hash);
+			virtualNodes.put(hash, virtualNodeName);
 		}
 	}
 
 	private static void addGroup(String identifier) {
 		realGroups.add(identifier);
-		refreshHashCircle();
+		createVirtualNode(identifier);
+		//refreshHashCircle();
 	}
 	private static void removeGroup(String identifier) {
 		boolean remove = realGroups.remove(identifier);
 		if(remove) {
-			refreshHashCircle();
+			//refreshHashCircle();
+			List<Integer> collect = virtualNodes.entrySet().stream()
+					.filter(virtualName -> getRealNodeName(virtualName.getValue()).equals(identifier))
+					.map(Map.Entry::getKey)
+					.collect(Collectors.toList());
+			for (Integer integer : collect) {
+				virtualNodes.remove(integer);
+			}
 		}
 	}
 
