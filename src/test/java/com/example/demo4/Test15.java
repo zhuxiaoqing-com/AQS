@@ -198,7 +198,11 @@ public class Test15 {
 
 	@Test
 	public void test10() {
-		System.out.println(24*60*60);
+		String a = "30;22";
+		String[] split = a.split(";");
+
+		System.out.println(Float.parseFloat(split[0]));
+		System.out.println(Float.parseFloat(split[1]));
 	}
 }
 
