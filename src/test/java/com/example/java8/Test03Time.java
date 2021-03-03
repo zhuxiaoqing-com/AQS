@@ -6,6 +6,7 @@ import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoField;
 import java.time.temporal.TemporalAccessor;
+import java.time.temporal.TemporalAdjusters;
 import java.util.Date;
 
 public class Test03Time {
@@ -121,6 +122,20 @@ public class Test03Time {
 
 	private long toConvert(LocalDateTime time) {
 		return time.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+	}
+
+
+	@Test
+	public void test08() {
+		int i = LocalDate.now().get(ChronoField.DAY_OF_WEEK);
+		System.out.println(i);
+		// 1：是星期1    7：是星期天
+		LocalDate of = LocalDate.of(2021, 3, 8);
+		System.out.println(of.get(ChronoField.DAY_OF_WEEK));
+
+		// 获取调整后的最近的一个星期 如果已经符合对象就直接返回
+		LocalDateTime with = LocalDateTime.now().with(TemporalAdjusters.nextOrSame(DayOfWeek.of(3)));
+		System.out.println(with);
 	}
 }
 
