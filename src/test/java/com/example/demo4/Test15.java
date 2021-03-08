@@ -204,7 +204,7 @@ public class Test15 {
 		System.out.println(Float.parseFloat(split[0]));
 		System.out.println(Float.parseFloat(split[1]));
 		Integer c = 31651;
-		System.out.println(c.);
+		System.out.println(76-43);
 	}
 }
 
