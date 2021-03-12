@@ -717,7 +717,10 @@ public class Test14 {
 
 	@Test
 	public void test38() {
-		System.out.println(Integer.toBinaryString(60));
+		System.out.println(Integer.toBinaryString(10));
+		System.out.println(Integer.toBinaryString(172));
+		System.out.println(Integer.toBinaryString(224));
+		System.out.println(Integer.toBinaryString(192));
 	}
 }
 
