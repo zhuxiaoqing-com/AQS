@@ -16,6 +16,7 @@ public class CreateHeap {
 	 */
 	private void heapify(int[] a, int i, int n) {
 		// 这里为什么要无限 while 循环
+		int index = 0;
 		while (true) {
 			int maxPos = i;
 			if (i * 2 <= n && a[i * 2] > a[i]) maxPos = i * 2;
@@ -23,6 +24,9 @@ public class CreateHeap {
 			if (maxPos == i) {
 				break;
 			}
+		/*	if(++index >=2) {
+				System.out.println(111);
+			}*/
 			swap(a, i, maxPos);
 			i = maxPos;
 		}

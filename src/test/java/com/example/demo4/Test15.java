@@ -198,14 +198,14 @@ public class Test15 {
 
 	@Test
 	public void test10() {
-		String a = "30;22";
-		String[] split = a.split(";");
-
-		System.out.println(Float.parseFloat(split[0]));
-		System.out.println(Float.parseFloat(split[1]));
-		Integer c = 31651;
-		System.out.println(76-43);
+		LinkedHashMap<Integer, Integer> map = new LinkedHashMap<>();
+		map.put(1, 1);
+		map.put(2, 2);
+		map.remove(1);
+		Set<Integer> integers = map.keySet();
+		System.out.println(integers);
 	}
+
 }
 
 
