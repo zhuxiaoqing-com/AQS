@@ -198,7 +198,7 @@ public class Test15 {
 
 	@Test
 	public void test10() {
-		LinkedHashMap<Integer, Integer> map = new LinkedHashMap<>();
+		LinkedHashMap<Integer, Integer> map = new  LinkedHashMap<>();
 		map.put(1, 1);
 		map.put(2, 2);
 		map.remove(1);
