@@ -201,7 +201,7 @@ public class Test15 {
 		LinkedHashMap<Integer, Integer> map = new  LinkedHashMap<>();
 		map.put(1, 1);
 		map.put(2, 2);
-		map.remove(1);
+		map.remove(2);
 		Set<Integer> integers = map.keySet();
 		System.out.println(integers);
 	}
