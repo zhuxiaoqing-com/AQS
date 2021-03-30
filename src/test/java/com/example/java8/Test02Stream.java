@@ -24,10 +24,10 @@ public class Test02Stream {
 	@Test
 	public void test02() {
 		ArrayList<A> resources = new ArrayList<>();
-		resources.add(new A(1, 3));
-		resources.add(new A(1, 2));
-		resources.add(new A(2, 3));
-		resources.add(new A(2, 3));
+		resources.add(new A(1, 3,1));
+		resources.add(new A(1, 2,1));
+		resources.add(new A(2, 3,1));
+		resources.add(new A(2, 3,1));
 		Map<Integer, Integer> collect = resources.stream()
 				.collect(Collectors.groupingBy(A::getId, Collectors.summingInt(A::getCount)));
 		System.out.println(collect);
@@ -39,10 +39,12 @@ public class Test02Stream {
 	class A {
 		int id;
 		int count;
+		int coun2;
 
-		public A(int id, int count) {
+		public A(int id, int count, int coun2) {
 			this.id = id;
 			this.count = count;
+			this.coun2 = coun2;
 		}
 
 		public int getId() {
@@ -61,11 +63,20 @@ public class Test02Stream {
 			this.count = count;
 		}
 
+		public int getCoun2() {
+			return coun2;
+		}
+
+		public void setCoun2(int coun2) {
+			this.coun2 = coun2;
+		}
+
 		@Override
 		public String toString() {
 			return "A{" +
 					"id=" + id +
 					", count=" + count +
+					", coun2=" + coun2 +
 					'}';
 		}
 	}
@@ -175,12 +186,12 @@ public class Test02Stream {
 	@Test
 	public void test08() {
 		HashMap<Integer, A> hashMap = new HashMap<>();
-		hashMap.put(1, new A(2, 3));
-		hashMap.put(2, new A(2, 2));
-		hashMap.put(3, new A(3, 4));
-		hashMap.put(4, new A(3, 5));
-		hashMap.put(5, new A(1, 4));
-		hashMap.put(6, new A(1, 5));
+		hashMap.put(1, new A(2, 3,1));
+		hashMap.put(2, new A(2, 2,1));
+		hashMap.put(3, new A(3, 4,1));
+		hashMap.put(4, new A(3, 5,1));
+		hashMap.put(5, new A(1, 4,1));
+		hashMap.put(6, new A(1, 5,1));
 
 		TreeMap<Integer, List<A>> collect = hashMap.values().stream().collect(Collectors.groupingBy(A::getId, TreeMap::new, Collectors.toList()));
 		System.out.println(collect);
@@ -260,6 +271,28 @@ public class Test02Stream {
 				// 一个输出跟输入一样的Lambda表达式对象
 				.collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
 		System.out.println(collect);
+	}
+
+	/**
+	 * Compare
+	 */
+	@Test
+	public void test13() {
+		ArrayList<A> objects = new ArrayList<>();
+		objects.add(new A(1, 11,1));
+		objects.add(new A(1, 22,1));
+		objects.add(new A(1, 33,1));
+		objects.add(new A(2, 1,1));
+		objects.add(new A(2, 2,1));
+
+		List<A> collect = objects.stream().sorted(Comparator.comparing(A::getId).reversed().thenComparing(A::getCount))
+				.collect(Collectors.toList());
+		System.out.println(collect);
+
+		List<A> collect1 = objects.stream().sorted(Comparator.comparing(A::getId).reversed().thenComparing(A::getCount).reversed())
+				.collect(Collectors.toList());
+		System.out.println(collect1);
+
 	}
 
 }
