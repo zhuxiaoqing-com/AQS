@@ -1,1 +1,37 @@
-[2020-03-12 15:18:01.854 INFO ] BootStarter:70 - Package Complete!
+[2021-04-02 15:36:15.286 DEBUG] RequestAddCookies:123 - CookieSpec selected: default
+[2021-04-02 15:36:15.295 DEBUG] RequestAuthCache:77 - Auth cache not set in the context
+[2021-04-02 15:36:15.296 DEBUG] PoolingHttpClientConnectionManager:255 - Connection request: [route: {}->http://127.0.0.1:11000][total kept alive: 0; route allocated: 0 of 5; total allocated: 0 of 10]
+[2021-04-02 15:36:15.307 DEBUG] PoolingHttpClientConnectionManager:288 - Connection leased: [id: 0][route: {}->http://127.0.0.1:11000][total kept alive: 0; route allocated: 1 of 5; total allocated: 1 of 10]
+[2021-04-02 15:36:15.308 DEBUG] MainClientExec:235 - Opening connection {}->http://127.0.0.1:11000
+[2021-04-02 15:36:15.311 DEBUG] DefaultHttpClientConnectionOperator:139 - Connecting to /127.0.0.1:11000
+[2021-04-02 15:36:15.313 DEBUG] DefaultHttpClientConnectionOperator:146 - Connection established 127.0.0.1:65519<->127.0.0.1:11000
+[2021-04-02 15:36:15.313 DEBUG] MainClientExec:256 - Executing request POST /run HTTP/1.1
+[2021-04-02 15:36:15.313 DEBUG] MainClientExec:261 - Target auth state: UNCHALLENGED
+[2021-04-02 15:36:15.314 DEBUG] MainClientExec:267 - Proxy auth state: UNCHALLENGED
+[2021-04-02 15:36:15.316 DEBUG] LoggingManagedHttpClientConnection:133 - http-outgoing-0 >> POST /run HTTP/1.1
+[2021-04-02 15:36:15.316 DEBUG] LoggingManagedHttpClientConnection:136 - http-outgoing-0 >> Content-type: application/json; charset=utf-8
+[2021-04-02 15:36:15.316 DEBUG] LoggingManagedHttpClientConnection:136 - http-outgoing-0 >> Content-Length: 37
+[2021-04-02 15:36:15.316 DEBUG] LoggingManagedHttpClientConnection:136 - http-outgoing-0 >> Host: 127.0.0.1:11000
+[2021-04-02 15:36:15.316 DEBUG] LoggingManagedHttpClientConnection:136 - http-outgoing-0 >> Connection: Keep-Alive
+[2021-04-02 15:36:15.317 DEBUG] LoggingManagedHttpClientConnection:136 - http-outgoing-0 >> User-Agent: Apache-HttpClient/4.5.3 (Java/1.8.0_102)
+[2021-04-02 15:36:15.317 DEBUG] LoggingManagedHttpClientConnection:136 - http-outgoing-0 >> Accept-Encoding: gzip,deflate
+[2021-04-02 15:36:15.317 DEBUG] Wire:73 - http-outgoing-0 >> "POST /run HTTP/1.1[\r][\n]"
+[2021-04-02 15:36:15.317 DEBUG] Wire:73 - http-outgoing-0 >> "Content-type: application/json; charset=utf-8[\r][\n]"
+[2021-04-02 15:36:15.317 DEBUG] Wire:73 - http-outgoing-0 >> "Content-Length: 37[\r][\n]"
+[2021-04-02 15:36:15.317 DEBUG] Wire:73 - http-outgoing-0 >> "Host: 127.0.0.1:11000[\r][\n]"
+[2021-04-02 15:36:15.318 DEBUG] Wire:73 - http-outgoing-0 >> "Connection: Keep-Alive[\r][\n]"
+[2021-04-02 15:36:15.318 DEBUG] Wire:73 - http-outgoing-0 >> "User-Agent: Apache-HttpClient/4.5.3 (Java/1.8.0_102)[\r][\n]"
+[2021-04-02 15:36:15.318 DEBUG] Wire:73 - http-outgoing-0 >> "Accept-Encoding: gzip,deflate[\r][\n]"
+[2021-04-02 15:36:15.318 DEBUG] Wire:73 - http-outgoing-0 >> "[\r][\n]"
+[2021-04-02 15:36:15.319 DEBUG] Wire:87 - http-outgoing-0 >> "sign=e9510e1a8efb67ac1ae65373be22c605"
+[2021-04-02 15:36:15.877 DEBUG] Wire:73 - http-outgoing-0 << "HTTP/1.1 200 OK[\r][\n]"
+[2021-04-02 15:36:15.877 DEBUG] Wire:73 - http-outgoing-0 << "content-type: text/plain;charset=utf-8[\r][\n]"
+[2021-04-02 15:36:15.877 DEBUG] Wire:73 - http-outgoing-0 << "content-length: 2[\r][\n]"
+[2021-04-02 15:36:15.878 DEBUG] Wire:73 - http-outgoing-0 << "[\r][\n]"
+[2021-04-02 15:36:15.878 DEBUG] Wire:87 - http-outgoing-0 << """"
+[2021-04-02 15:36:15.880 DEBUG] LoggingManagedHttpClientConnection:122 - http-outgoing-0 << HTTP/1.1 200 OK
+[2021-04-02 15:36:15.880 DEBUG] LoggingManagedHttpClientConnection:125 - http-outgoing-0 << content-type: text/plain;charset=utf-8
+[2021-04-02 15:36:15.880 DEBUG] LoggingManagedHttpClientConnection:125 - http-outgoing-0 << content-length: 2
+[2021-04-02 15:36:15.883 DEBUG] MainClientExec:285 - Connection can be kept alive indefinitely
+[2021-04-02 15:36:15.885 DEBUG] PoolingHttpClientConnectionManager:320 - Connection [id: 0][route: {}->http://127.0.0.1:11000] can be kept alive indefinitely
+[2021-04-02 15:36:15.885 DEBUG] PoolingHttpClientConnectionManager:326 - Connection released: [id: 0][route: {}->http://127.0.0.1:11000][total kept alive: 1; route allocated: 1 of 5; total allocated: 1 of 10]

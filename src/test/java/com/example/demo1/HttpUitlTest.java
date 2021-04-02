@@ -1,5 +1,8 @@
 package com.example.demo1;
 
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.joran.JoranConfigurator;
+import ch.qos.logback.core.util.StatusPrinter;
 import com.example.demo1.demo.HttpUtil;
 import com.example.demo1.demo.SignUtil;
 import org.junit.Test;
@@ -16,6 +19,22 @@ import java.util.Map;
  * @author zhuxiaoqing
  */
 public class HttpUitlTest {
+	static {
+		//configLog("F:\\mh\\game_server-develop\\AQS\\src\\logback.xml");
+	}
+	public static boolean configLog(String cfgPath) {
+		LoggerContext loggerContext = (LoggerContext) org.slf4j.LoggerFactory.getILoggerFactory();
+		JoranConfigurator joranConfigurator = new JoranConfigurator();
+		joranConfigurator.setContext(loggerContext);
+		loggerContext.reset();
+		try {
+			joranConfigurator.doConfigure(cfgPath);
+		} catch (Exception e) {
+			return false;
+		}
+		return true;
+	}
+
     /**
      * 道具查询接口
      */
@@ -419,6 +438,15 @@ public class HttpUitlTest {
         String result = post(params, uri);
     }
 
+	/**
+	 * 热更新活动
+	 */
+	@Test
+	public void run() {
+		String uri = "/run";
+		Map<String, String> params = new LinkedHashMap<>();
+		String result = post(params, uri);
+	}
 
     String content1 = "1995年中共执政当局开始寻求强化法轮功的组织构架及与政府的关系。" +
             "中国政府的国家体委、公共健康部和气功科研会，访问李洪志，要求联合成立法轮功协会，但李洪志表示拒绝。" +
@@ -485,10 +513,11 @@ public class HttpUitlTest {
     private String post(Map<String, String> map, String uri) {
         //String url = "http://192.168.5.128:11001" + uri; // 内网一
         //String url = "http://10.40.2.68:11000" + uri; // 俞樟鹏
-        String url = "http://10.42.0.50:11000" + uri; // 本机 游戏服务器
+        //String url = "http://10.42.0.50:11000" + uri; // 本机 游戏服务器
         //String url = "http://10.42.0.35:11000" + uri;
         //String url = "http://10.42.0.50:8089" + uri; // 本机 gmweb
         //String url = "http://106.52.215.79:8015" + uri;// XY 线上
+		String url = "http://127.0.0.1:11000" + uri;
         Collection<String> values = map.values();
         String sign = SignUtil.getMD5ForGM(values.toArray(new String[values.size()]));
         map.put("sign", sign);
@@ -507,7 +536,8 @@ public class HttpUitlTest {
         //System.setProperty("org.apache.commons.logging.simplelog.log.org.apache.commons.httpclient", "stdout");
 
         //String url = "http://10.42.0.50:11000" + uri;
-        String url = "http://10.42.0.50:8089" + uri;
+        //String url = "http://10.42.0.50:8089" + uri;
+        String url = "http://127.0.0.1:8089" + uri;
         return HttpUtil.doGet(url);
     }
 
