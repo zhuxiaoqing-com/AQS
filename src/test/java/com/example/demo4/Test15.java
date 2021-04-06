@@ -206,6 +206,16 @@ public class Test15 {
 		System.out.println(integers);
 	}
 
+
+	@Test
+	public void test11() {
+		HashMap<Integer, Integer> map = new  HashMap<>();
+		map.put(3, 3);
+		map.put(1, 1);
+		map.put(2, 2);
+		List<Map.Entry<Integer, Integer>> collect = map.entrySet().stream().sorted(Map.Entry.comparingByValue(Comparator.reverseOrder())).collect(Collectors.toList());
+		System.out.println(collect);
+	}
 }
 
 
