@@ -257,6 +257,9 @@ public class Test02Stream {
 			integers.add(i);
 		}
 
+		Collections.sort(integers, Comparator.reverseOrder());
+		List<Integer> collect = integers.stream().sorted(Comparator.reverseOrder()).collect(Collectors.toList());
+		System.out.println(collect);
 		Optional<Integer> max = integers.stream().max(Comparator.comparingInt(a -> a));
 		System.out.println(max);
 	}
