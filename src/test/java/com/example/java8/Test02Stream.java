@@ -296,6 +296,9 @@ public class Test02Stream {
 				.collect(Collectors.toList());
 		System.out.println(collect1);
 
+		objects.stream().sorted(Comparator.comparing(a->a.getCount()));
+		objects.stream().sorted(Comparator.<A>comparingInt(a->a.getCount()).reversed());
+
 	}
 
 }
