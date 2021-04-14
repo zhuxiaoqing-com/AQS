@@ -215,6 +215,12 @@ public class Test15 {
 		map.put(2, 2);
 		List<Map.Entry<Integer, Integer>> collect = map.entrySet().stream().sorted(Map.Entry.comparingByValue(Comparator.reverseOrder())).collect(Collectors.toList());
 		System.out.println(collect);
+		ConcurrentSkipListSet<Object> objects = new ConcurrentSkipListSet<>();
+		objects.size();
+
+		ConcurrentHashMap<Object, Object> objectObjectConcurrentHashMap = new ConcurrentHashMap<>();
+		Set<Object> objects1 = ConcurrentHashMap.newKeySet();
+		objectObjectConcurrentHashMap.size();
 	}
 }
 
