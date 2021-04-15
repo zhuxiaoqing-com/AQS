@@ -221,6 +221,9 @@ public class Test15 {
 		ConcurrentHashMap<Object, Object> objectObjectConcurrentHashMap = new ConcurrentHashMap<>();
 		Set<Object> objects1 = ConcurrentHashMap.newKeySet();
 		objectObjectConcurrentHashMap.size();
+
+		File file = new File("");
+
 	}
 }
 

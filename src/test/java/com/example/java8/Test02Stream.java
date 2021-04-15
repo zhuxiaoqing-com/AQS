@@ -301,4 +301,18 @@ public class Test02Stream {
 
 	}
 
+	@Test
+	public void test14() {
+		List<Integer> integers = new ArrayList<>();
+		for (int i = 0; i <= 10; i++) {
+			integers.add(i);
+		}
+
+		List<Integer> collect = integers.stream().skip(2).limit(2).collect(Collectors.toList());
+		System.out.println(collect);
+
+		Stream<Integer> limit = integers.stream().filter(a -> a != 0).skip(2).limit(2);
+		System.out.println(limit.collect(Collectors.toList()));
+
+	}
 }
