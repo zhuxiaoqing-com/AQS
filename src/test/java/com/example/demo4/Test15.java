@@ -223,8 +223,24 @@ public class Test15 {
 		objectObjectConcurrentHashMap.size();
 
 		File file = new File("");
-
 	}
+
+	@Test
+	public void test12() {
+		String a = "\u51C9";
+		String b = "\uF979";
+		System.out.println(Integer.toHexString("凉".codePointAt(0)));
+		System.out.println(a);
+		System.out.println(b);
+		System.out.println(a == b);
+	}
+
+
+	@Test
+	public void test13() {
+		System.out.println(3+3+3+4+2+10+3+2+2+7);
+	}
+	
 }
 
 
