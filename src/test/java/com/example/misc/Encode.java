@@ -351,7 +351,6 @@ public class Encode {
 	@Test
 	public void test25() throws UnsupportedEncodingException {
 		String a = "这个字\uD845\uDE3E\uD855\uDE3E无法识别";
-		String s = filterSpecialContent("\uD855\uDE3E");
 		System.out.println("\uD855\uDE3E");
 		System.out.println("\uD865\uDE3F");
 //		System.out.println(s);
@@ -384,6 +383,7 @@ public class Encode {
 		int utf84Index = -100;
 		for (int i = 0; i < bytes.length; i++) {
 			String s = Integer.toBinaryString(bytes[i]);
+			// 1111 0000
 			if ((bytes[i] & 0xf0) == 0xf0) {
 			//	System.out.println(s.substring(s.length() - 8));
 				utf84Index = i;
