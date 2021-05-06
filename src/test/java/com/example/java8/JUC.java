@@ -21,6 +21,8 @@ public class JUC {
 
 		ConcurrentHashMap<Object, Object> concurrentHashMap = new ConcurrentHashMap<>();
 		Set<Object> objects1 = ConcurrentHashMap.newKeySet();
+		objects1.add(1);
+		System.out.println(objects1);
 		concurrentHashMap.size();
 		CopyOnWriteArrayList<Object> list = new CopyOnWriteArrayList<>();
 		list.size();
