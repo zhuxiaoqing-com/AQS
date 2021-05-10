@@ -13,6 +13,18 @@ import java.util.regex.Pattern;
  * @Description:
  */
 public class RegexTest {
+	/**
+	 * appendReplacement方法：sb是一个StringBuffer，replaceContext待替换的字符串，
+	 * 这个方法会把匹配到的内容替换为replaceContext，并且把从上次替换的位置到这次替换位置之间的字符串也拿到，
+	 * 然后，加上这次替换后的结果一起追加到StringBuffer里（假如这次替换是第一次替换，那就是只追加替换后的字符串啦）。
+	 *
+	 *
+	 *
+	 * appendTail方法：sb是一个StringBuffer，这个方法是把最后一次匹配到内容之后的字符串追加到StringBuffer中。
+	 * ————————————————
+	 * 版权声明：本文为CSDN博主「xiaojie119120」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。
+	 * 原文链接：https://blog.csdn.net/xiaojie119120/article/details/65439872
+	 */
 
 	@Test
 	public void testGroup() {
@@ -183,10 +195,13 @@ public class RegexTest {
 
 		System.out.println("---------------------");
 
-		String str2 = "ab c<icon>自动</icon>" + System.lineSeparator() +
+/*
+		String str2 = "ab 1<icon>自动</icon>" + System.lineSeparator() +
 				"   deftfh<icon>填   充</icon>b<icon>的测试" + System.lineSeparator() + "字符串</icon>sdas";
+		Matcher matcher = p.matcher(str2);*/
 
-		Matcher matcher = p.matcher(str2);
+		String str3 = "123456789";
+		Matcher matcher = p.matcher(str3);
 		StringBuffer sb = new StringBuffer();
 
 		while(matcher.find()) {

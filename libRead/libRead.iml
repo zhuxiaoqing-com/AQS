@@ -14,5 +14,7 @@
     <orderEntry type="library" name="ExcelHelper" level="project" />
     <orderEntry type="library" name="NavMeshCheck" level="project" />
     <orderEntry type="library" name="GameServer" level="project" />
+    <orderEntry type="library" name="modao_java" level="project" />
+    <orderEntry type="library" name="modao (2)" level="project" />
   </component>
 </module>
