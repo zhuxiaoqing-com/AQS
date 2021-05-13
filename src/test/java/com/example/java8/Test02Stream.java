@@ -24,10 +24,10 @@ public class Test02Stream {
 	@Test
 	public void test02() {
 		ArrayList<A> resources = new ArrayList<>();
-		resources.add(new A(1, 3,1));
-		resources.add(new A(1, 2,1));
-		resources.add(new A(2, 3,1));
-		resources.add(new A(2, 3,1));
+		resources.add(new A(1, 3, 1));
+		resources.add(new A(1, 2, 1));
+		resources.add(new A(2, 3, 1));
+		resources.add(new A(2, 3, 1));
 		Map<Integer, Integer> collect = resources.stream()
 				.collect(Collectors.groupingBy(A::getId, Collectors.summingInt(A::getCount)));
 		System.out.println(collect);
@@ -186,12 +186,12 @@ public class Test02Stream {
 	@Test
 	public void test08() {
 		HashMap<Integer, A> hashMap = new HashMap<>();
-		hashMap.put(1, new A(2, 3,1));
-		hashMap.put(2, new A(2, 2,1));
-		hashMap.put(3, new A(3, 4,1));
-		hashMap.put(4, new A(3, 5,1));
-		hashMap.put(5, new A(1, 4,1));
-		hashMap.put(6, new A(1, 5,1));
+		hashMap.put(1, new A(2, 3, 1));
+		hashMap.put(2, new A(2, 2, 1));
+		hashMap.put(3, new A(3, 4, 1));
+		hashMap.put(4, new A(3, 5, 1));
+		hashMap.put(5, new A(1, 4, 1));
+		hashMap.put(6, new A(1, 5, 1));
 
 		TreeMap<Integer, List<A>> collect = hashMap.values().stream().collect(Collectors.groupingBy(A::getId, TreeMap::new, Collectors.toList()));
 		System.out.println(collect);
@@ -282,11 +282,11 @@ public class Test02Stream {
 	@Test
 	public void test13() {
 		ArrayList<A> objects = new ArrayList<>();
-		objects.add(new A(1, 11,1));
-		objects.add(new A(1, 22,1));
-		objects.add(new A(1, 33,1));
-		objects.add(new A(2, 1,1));
-		objects.add(new A(2, 2,1));
+		objects.add(new A(1, 11, 1));
+		objects.add(new A(1, 22, 1));
+		objects.add(new A(1, 33, 1));
+		objects.add(new A(2, 1, 1));
+		objects.add(new A(2, 2, 1));
 
 		List<A> collect = objects.stream().sorted(Comparator.comparing(A::getId).reversed().thenComparing(A::getCount))
 				.collect(Collectors.toList());
@@ -296,8 +296,8 @@ public class Test02Stream {
 				.collect(Collectors.toList());
 		System.out.println(collect1);
 
-		objects.stream().sorted(Comparator.comparing(a->a.getCount()));
-		objects.stream().sorted(Comparator.<A>comparingInt(a->a.getCount()).reversed());
+		objects.stream().sorted(Comparator.comparing(a -> a.getCount()));
+		objects.stream().sorted(Comparator.<A>comparingInt(a -> a.getCount()).reversed());
 
 	}
 
@@ -315,4 +315,26 @@ public class Test02Stream {
 		System.out.println(limit.collect(Collectors.toList()));
 
 	}
+
+	@Test
+	public void test15() {
+		HashMap<Integer, Integer> map = new HashMap<>();
+		int a = 10;
+		for (int i = 0; i < a; i++) {
+			map.put(i, i);
+		}
+		//map.entrySet().removeIf(e -> e.getValue() > 4);
+		map.values().removeIf(e->e>4);
+		System.out.println(map);
+	}
 }
+
+
+
+
+
+
+
+
+
+
