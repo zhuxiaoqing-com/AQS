@@ -83,5 +83,8 @@ public class JedisTest {
 		Jedis jedis = jedisPool.getResource();
 		Set<String> strings = jedis.zrangeByScore(key, 0, 20);
 		System.out.println(strings);
+	/*	jedis.zadd(, , );
+		jedis.zrank(, );
+		jedis.zrange(, , );*/
 	}
 }

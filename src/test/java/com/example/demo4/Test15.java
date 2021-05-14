@@ -240,6 +240,19 @@ public class Test15 {
 	public void test13() {
 		System.out.println(3+3+3+4+2+10+3+2+2+7);
 	}
+
+	@Test
+	public void test14() {
+		ArrayList<Integer> objects = new ArrayList<>();
+		int a = 10;
+		for (int i1 = 0; i1 < a; i1++) {
+			objects.add(i1);
+		}
+
+		//objects.add(4,33);
+		objects.set(4,33);
+		System.out.println(objects);
+	}
 	
 }
 
