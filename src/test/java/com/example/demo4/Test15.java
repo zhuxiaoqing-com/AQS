@@ -253,7 +253,35 @@ public class Test15 {
 		objects.set(4,33);
 		System.out.println(objects);
 	}
-	
+
+	@Test
+	public void test15() {
+		int aa = 1111;
+		long x = -1L ^ (-1L << 54) - aa;
+		System.out.println(x);
+		System.out.println((long)(double) x);
+		System.out.println();
+
+		x = (-1L ^ (-1L << 53)) - (-1L ^ (-1L << 52));
+		System.out.println(Long.toBinaryString(x));
+		System.out.println(Long.toBinaryString(x));
+		System.out.println(x);
+		System.out.println((long)(double) x);
+		System.out.println();
+
+		x = -1L ^ (-1L << 52) - aa;
+		System.out.println(x);
+		System.out.println((long)(double) x);
+		System.out.println();
+
+		x = -1L ^ (-1L << 51) - aa;
+		System.out.println(x);
+		System.out.println((long)(double) x);
+		System.out.println();
+
+		System.out.println(Long.toBinaryString(-1L ^ (-1L << 2)).length());
+
+	}
 }
 
 

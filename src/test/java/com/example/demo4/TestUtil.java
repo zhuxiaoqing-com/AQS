@@ -8,6 +8,10 @@ package com.example.demo4;
 public class TestUtil {
 
 	public static void testTime(Runnable runnable, int maxNum, String... param) {
+		// 先来十次预热一下
+		for (int i = 0; i < 10; i++) {
+			runnable.run();
+		}
 		long startNano = System.nanoTime();
 		for (int i = 0; i < maxNum; i++) {
 			runnable.run();
