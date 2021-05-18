@@ -256,7 +256,7 @@ public class Test15 {
 
 	@Test
 	public void test15() {
-		int aa = 1111;
+		int aa = 1111;//
 		long x = -1L ^ (-1L << 54) - aa;
 		System.out.println(x);
 		System.out.println((long)(double) x);
