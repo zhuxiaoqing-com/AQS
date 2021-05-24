@@ -55,4 +55,12 @@ public class Test01 {
 		System.out.println("\u0300\u6211");
 		System.out.println("\u0300\u0033");
 	}
+
+
+	@Test
+	public void test03() throws Exception {
+		String aa = "a";
+		byte[] gbks = aa.getBytes("GBK");
+		System.out.println(printHex(gbks));
+	}
 }

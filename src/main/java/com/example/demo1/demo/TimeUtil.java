@@ -1,11 +1,8 @@
 package com.example.demo1.demo;
 
-import com.example.demo1.util.FileUtil;
-import org.apache.logging.log4j.util.PropertiesUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.io.IOException;
 import java.sql.Time;
 import java.text.DateFormat;
