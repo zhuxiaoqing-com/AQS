@@ -1,6 +1,7 @@
 package com.example.demo4;
 
 import com.alibaba.fastjson.JSON;
+import com.example.demo1.hah.Role;
 import com.example.代码优化.design_mode.TowerAOI.Vector2f;
 import com.youxi.building.Misc;
 import freemarker.template.Configuration;
@@ -281,6 +282,36 @@ public class Test15 {
 
 		System.out.println(Long.toBinaryString(-1L ^ (-1L << 2)).length());
 
+	}
+
+	@Test
+	public void test16() throws InterruptedException {
+		System.out.println(new Date(1622766630000L));
+		while (true) {
+			Thread.sleep(1111);
+		}
+	}
+
+	@Test
+	public void test17() throws InterruptedException {
+		Object test15 = new Test15();
+		//java.lang.Class.isInstance(Object);
+		Runnable runnable = () -> {
+			if(test15 == null) {
+
+			}
+		};
+		/**
+		 * ____3315_400
+		 * ____3273_400
+		 * ____3613_600
+		 * ____4168100
+		 * ____3274800
+		 * --------------------
+		 * ____3173500
+		 * ____3100300
+		 */
+		TestUtil.testTime(runnable, 10000000);
 	}
 }
 
