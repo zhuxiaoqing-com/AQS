@@ -313,6 +313,12 @@ public class Test15 {
 		 */
 		TestUtil.testTime(runnable, 10000000);
 	}
+
+	@Test
+	public void test18() throws InterruptedException {
+		System.out.println("ddddd\ndddd");
+		System.out.println("ddddd\r\ndddd");
+	}
 }
 
 
