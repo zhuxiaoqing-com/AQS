@@ -2,6 +2,8 @@ package com.example.demo4;
 
 import com.alibaba.fastjson.JSON;
 import com.example.demo1.hah.Role;
+import com.example.demo4.testObj1.AA;
+import com.example.demo4.testObj1.AClass;
 import com.example.代码优化.design_mode.TowerAOI.Vector2f;
 import com.youxi.building.Misc;
 import freemarker.template.Configuration;
@@ -13,6 +15,7 @@ import java.io.File;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -318,6 +321,19 @@ public class Test15 {
 	public void test18() throws InterruptedException {
 		System.out.println("ddddd\ndddd");
 		System.out.println("ddddd\r\ndddd");
+	}
+
+	@Test
+	public void test19() throws Exception {
+		AClass aClass = new AClass();
+		Method default1 = aClass.getClass().getDeclaredMethod("default1");
+		if(default1.isDefault()) {
+			Object defaultValue = default1.getDefaultValue();
+			System.out.println(defaultValue);
+		}
+		Object invoke = default1.invoke(aClass);
+		//System.out.println(invoke);
+		BigDecimal bigDecimal = new BigDecimal(1);
 	}
 }
 
