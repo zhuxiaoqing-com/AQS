@@ -139,11 +139,11 @@ public class Test15 {
 	}
 
 	/**
-	 *   101 1111 0 000 0000 0000 0000 0000 0000
-	 *
-	 *    10 1101 0 010 1111 1110 1011 1111 1111
-	 *   011 1111 1 000 0000 0000 0000 0000 0000
-	 *   110 1110 0 000 0000 0000 0000 0000 0000
+	 * 101 1111 0 000 0000 0000 0000 0000 0000
+	 * <p>
+	 * 10 1101 0 010 1111 1110 1011 1111 1111
+	 * 011 1111 1 000 0000 0000 0000 0000 0000
+	 * 110 1110 0 000 0000 0000 0000 0000 0000
 	 * 0 100 1111 0 000 0000 0000 0000 0000 0000
 	 * 0 101 0110 0 000 0000 0000 0000 0000 0000
 	 * 0 101 1110 1 000 0000 0000 0000 0000 0000
@@ -183,10 +183,10 @@ public class Test15 {
 		long a1 = 1L << 62;
 		float b = a1 - 1;
 		System.out.println(Long.toBinaryString(a1));
-		fun1(a1-33333);
+		fun1(a1 - 33333);
 		fun1((long) b);
 		System.out.println(Integer.toBinaryString(Float.floatToIntBits(b)));
-		System.out.println(Long.toBinaryString(a1-1));
+		System.out.println(Long.toBinaryString(a1 - 1));
 		/*System.out.println(b);
 		System.out.println((long) b);
 		System.out.println(a1 - 1);*/
@@ -202,7 +202,7 @@ public class Test15 {
 
 	@Test
 	public void test10() {
-		LinkedHashMap<Integer, Integer> map = new  LinkedHashMap<>();
+		LinkedHashMap<Integer, Integer> map = new LinkedHashMap<>();
 		map.put(1, 1);
 		map.put(2, 2);
 		map.remove(2);
@@ -213,7 +213,7 @@ public class Test15 {
 
 	@Test
 	public void test11() {
-		HashMap<Integer, Integer> map = new  HashMap<>();
+		HashMap<Integer, Integer> map = new HashMap<>();
 		map.put(3, 3);
 		map.put(1, 1);
 		map.put(2, 2);
@@ -242,7 +242,7 @@ public class Test15 {
 
 	@Test
 	public void test13() {
-		System.out.println(3+3+3+4+2+10+3+2+2+7);
+		System.out.println(3 + 3 + 3 + 4 + 2 + 10 + 3 + 2 + 2 + 7);
 	}
 
 	@Test
@@ -254,7 +254,7 @@ public class Test15 {
 		}
 
 		//objects.add(4,33);
-		objects.set(4,33);
+		objects.set(4, 33);
 		System.out.println(objects);
 	}
 
@@ -263,24 +263,24 @@ public class Test15 {
 		int aa = 1111;//
 		long x = -1L ^ (-1L << 54) - aa;
 		System.out.println(x);
-		System.out.println((long)(double) x);
+		System.out.println((long) (double) x);
 		System.out.println();
 
 		x = (-1L ^ (-1L << 53)) - (-1L ^ (-1L << 52));
 		System.out.println(Long.toBinaryString(x));
 		System.out.println(Long.toBinaryString(x));
 		System.out.println(x);
-		System.out.println((long)(double) x);
+		System.out.println((long) (double) x);
 		System.out.println();
 
 		x = -1L ^ (-1L << 52) - aa;
 		System.out.println(x);
-		System.out.println((long)(double) x);
+		System.out.println((long) (double) x);
 		System.out.println();
 
 		x = -1L ^ (-1L << 51) - aa;
 		System.out.println(x);
-		System.out.println((long)(double) x);
+		System.out.println((long) (double) x);
 		System.out.println();
 
 		System.out.println(Long.toBinaryString(-1L ^ (-1L << 2)).length());
@@ -300,7 +300,7 @@ public class Test15 {
 		Object test15 = new Test15();
 		//java.lang.Class.isInstance(Object);
 		Runnable runnable = () -> {
-			if(test15 == null) {
+			if (test15 == null) {
 
 			}
 		};
@@ -327,13 +327,21 @@ public class Test15 {
 	public void test19() throws Exception {
 		AClass aClass = new AClass();
 		Method default1 = aClass.getClass().getDeclaredMethod("default1");
-		if(default1.isDefault()) {
+		if (default1.isDefault()) {
 			Object defaultValue = default1.getDefaultValue();
 			System.out.println(defaultValue);
 		}
 		Object invoke = default1.invoke(aClass);
 		//System.out.println(invoke);
 		BigDecimal bigDecimal = new BigDecimal(1);
+	}
+
+	@Test
+	public void test20() {
+		int i = 1000;
+		for (int i1 = 0; i1 < i; i1++) {
+			System.out.println(ThreadLocalRandom.current().nextInt(2));
+		}
 	}
 }
 
