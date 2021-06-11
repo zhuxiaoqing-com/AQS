@@ -338,11 +338,24 @@ public class Test15 {
 
 	@Test
 	public void test20() {
-		int i = 1000;
+		/*int i = 1000;
 		for (int i1 = 0; i1 < i; i1++) {
 			System.out.println(ThreadLocalRandom.current().nextInt(2));
-		}
+		}*/
+		System.out.println("\\\\\\'a");
 	}
+
+	@Test
+	public void test21() {
+		int i = 10;
+		HashMap<Integer, Integer> map = new HashMap<>();
+		for (int i1 = 0; i1 < i; i1++) {
+			map.put(i1, i1);
+		}
+		String collect = map.entrySet().stream().map(e -> e.getKey() + "   " + e.getValue()).collect(Collectors.joining(System.getProperty("line.separator")));
+		System.out.println(collect);
+	}
+
 }
 
 
