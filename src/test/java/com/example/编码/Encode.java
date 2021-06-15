@@ -12,6 +12,7 @@ import java.io.UnsupportedEncodingException;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -466,6 +467,18 @@ public class Encode {
 
 	public void a(int a, int b, int c, int d) {
 
+	}
+
+	@Test
+	public void test28() throws UnsupportedEncodingException {
+		String a = "我";
+		System.out.println(Arrays.toString(a.getBytes(StandardCharsets.UTF_16BE)));
+
+		System.out.println((Test01.printHex(a.getBytes(StandardCharsets.UTF_16BE))));
+		System.out.println((Test01.printHex(a.getBytes(StandardCharsets.UTF_16LE))));
+		System.out.println((Test01.printHex(a.getBytes(StandardCharsets.UTF_16))));
+
+		System.out.println(Arrays.toString(a.getBytes("UTF-32")));
 	}
 
 }
