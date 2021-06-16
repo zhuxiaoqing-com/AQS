@@ -479,6 +479,9 @@ public class Encode {
 		System.out.println((Test01.printHex(a.getBytes(StandardCharsets.UTF_16))));
 
 		System.out.println(Arrays.toString(a.getBytes("UTF-32")));
+
+		System.out.println("\uD835\uDD46");
+		System.out.println("\uD835\uDD46".length());
 	}
 
 }
