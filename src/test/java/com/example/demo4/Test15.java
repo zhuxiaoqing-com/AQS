@@ -356,6 +356,13 @@ public class Test15 {
 		System.out.println(collect);
 	}
 
+
+	@Test
+	public void test22() {
+		int i = 10;
+		i*=0.2;
+		System.out.println(i);
+	}
 }
 
 
