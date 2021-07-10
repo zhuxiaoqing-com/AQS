@@ -359,10 +359,15 @@ public class Test15 {
 
 	@Test
 	public void test22() {
-		int i = 10;
+	/*	int i = 10;
 		i*=0.2;
 		System.out.println(i);
-		System.out.println(new Date(1625122200000L));
+		System.out.println(new Date(1625122200000L));*/
+		c();
+	}
+
+	public void c(int... a) {
+		System.out.println(a);
 	}
 }
 
