@@ -369,6 +369,12 @@ public class Test15 {
 	public void c(int... a) {
 		System.out.println(a);
 	}
+
+	@Test
+	public void test23() {
+		String a = "D:\\\\陈哈哈\\\\加班')";
+		System.out.println(a);
+	}
 }
 
 
