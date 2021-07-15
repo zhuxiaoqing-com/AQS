@@ -374,6 +374,8 @@ public class Test15 {
 	public void test23() {
 		String a = "D:\\\\陈哈哈\\\\加班')";
 		System.out.println(a);
+		int i = 1;
+		System.out.println((Integer)i);
 	}
 }
 
