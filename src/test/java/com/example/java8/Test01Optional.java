@@ -44,6 +44,16 @@ public class Test01Optional {
         System.out.println(name1.orElse("aaa"));
     }
 
+	@Test
+	public void fun07() {
+		String name = "John";
+		Optional<String> name1 = Optional.ofNullable(null);
+		System.out.println(name1.orElse("aaa"));
+
+		Optional<String> name2 = Optional.of(name);
+		Integer integer = name2.map(String::hashCode).orElse(0);
+	}
+
     @Test
     public void fun06() {
         Set<Integer> set = new HashSet<Integer>();

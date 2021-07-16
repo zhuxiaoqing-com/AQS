@@ -6,6 +6,7 @@ import org.junit.Test;
 
 import java.lang.reflect.Array;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -298,7 +299,33 @@ public class Test02Stream {
 
 		objects.stream().sorted(Comparator.comparing(a -> a.getCount()));
 		objects.stream().sorted(Comparator.<A>comparingInt(a -> a.getCount()).reversed());
+	}
 
+	@Test
+	public void test16() {
+		HashMap<Integer, AtomicLong> map = new HashMap<>();
+		int a = 10;
+		for (int i1 = 0; i1 < a; i1++) {
+			map.put(i1, new AtomicLong(i1));
+		}
+
+		List<Map.Entry<Integer, AtomicLong>> collect = map.entrySet().stream()
+				.sorted(Comparator.<Map.Entry<Integer, AtomicLong>>comparingLong(entry -> entry.getValue().get()).reversed())
+				.collect(Collectors.toList());
+
+		List<Map.Entry<Integer, AtomicLong>> collect1 = map.entrySet().stream()
+				.sorted(Comparator.comparing(entry -> entry.getValue().get(), Collections.reverseOrder()))
+				.collect(Collectors.toList());
+
+		List<Map.Entry<Integer, AtomicLong>> collect2 = map.entrySet().stream()
+				.sorted(Comparator.<Map.Entry<Integer, AtomicLong>, Comparable>comparing(entry -> entry.getValue().get()).reversed())
+				.collect(Collectors.toList());
+
+		List<Map.Entry<Integer, AtomicLong>> collect3 = map.entrySet().stream()
+				.sorted(Comparator.comparing((Map.Entry<Integer, AtomicLong>entry) -> entry.getValue().get()).reversed())
+				.collect(Collectors.toList());
+
+		System.out.println(collect);
 	}
 
 	@Test
