@@ -274,7 +274,20 @@ public class Test02Stream {
 				.boxed()
 				// 一个输出跟输入一样的Lambda表达式对象
 				.collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
-		System.out.println(collect);
+
+
+		HashMap<Integer, String> map = new HashMap<>();
+		int i =10;
+		ArrayList<Integer> list = new ArrayList<>();
+		for (int i1 = 0; i1 < i; i1++) {
+			list.add(i1);
+			map.put(i1,i1+"dd");
+		}
+
+		Map<String, Long> collect1 =list.stream()
+				// 一个输出跟输入一样的Lambda表达式对象
+				.collect(Collectors.groupingBy(a->map.get(a), Collectors.counting()));
+		System.out.println(collect1);
 	}
 
 	/**

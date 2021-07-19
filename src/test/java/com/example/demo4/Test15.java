@@ -401,6 +401,11 @@ public class Test15 {
 
 		System.out.println(collect);
 	}
+
+	@Test
+	public void test25() {
+		System.out.println(getClass().getName());
+	}
 }
 
 
