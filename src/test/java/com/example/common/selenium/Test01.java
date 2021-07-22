@@ -25,7 +25,6 @@ public class Test01 {
 
 		for (String s : collect) {
 			int length = "F:\\mh\\a\\cpu开发者手册\\325462-sdm-vol-1-2abcd-3abcd\\".length() + 1;
-			String substring = s.substring(length - 1, s.lastIndexOf("-"));
 			System.out.println("翻译文件start name" + s + "  ...time:" + new Date());
 			sogouTranslation.sogoufanyi(s);
 			System.out.println("翻译文件end name" + s + "...time:" + new Date());
@@ -37,8 +36,15 @@ public class Test01 {
 
 	@Test
 	public void test02() {
+		File file = new File("F:\\mh\\a\\cpu开发者手册\\325462-sdm-vol-1-2abcd-3abcd");
 		Collection<Integer> successFile = findSuccessFile();
-		System.out.println(successFile);
+		String collect = Arrays.stream(Objects.requireNonNull(file.listFiles()))
+				.filter(f -> !successFile.contains(Integer.parseInt(f.getName().substring(0, f.getName().indexOf("-")))))
+				.sorted(Comparator.comparing(f -> Integer.parseInt(f.getName().substring(0, f.getName().indexOf("-")))))
+				.map(File::getAbsolutePath)
+				.collect(Collectors.joining("\r\n"));
+
+		System.out.println(file.listFiles().length - successFile.size());
 	}
 
 	private Collection<Integer> findSuccessFile() {
