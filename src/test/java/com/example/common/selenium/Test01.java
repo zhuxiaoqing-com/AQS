@@ -17,14 +17,16 @@ public class Test01 {
 		SogouTranslation sogouTranslation = new SogouTranslation();
 		File file = new File("F:\\mh\\a\\cpu开发者手册\\325462-sdm-vol-1-2abcd-3abcd");
 		Collection<Integer> successFile = findSuccessFile();
+		successFile.add(481);
+		successFile.add(461);
+		successFile.add(4361);
 		List<String> collect = Arrays.stream(Objects.requireNonNull(file.listFiles()))
 				.filter(f -> !successFile.contains(Integer.parseInt(f.getName().substring(0, f.getName().indexOf("-")))))
-				.sorted(Comparator.comparing(f -> Integer.parseInt(f.getName().substring(0, f.getName().indexOf("-")))))
+				.sorted(Comparator.comparing(f -> Integer.parseInt(f.getName().substring(0, f.getName().indexOf("-"))), Comparator.reverseOrder()))
 				.map(File::getAbsolutePath)
 				.collect(Collectors.toList());
 
 		for (String s : collect) {
-			int length = "F:\\mh\\a\\cpu开发者手册\\325462-sdm-vol-1-2abcd-3abcd\\".length() + 1;
 			System.out.println("翻译文件start name" + s + "  ...time:" + new Date());
 			sogouTranslation.sogoufanyi(s);
 			System.out.println("翻译文件end name" + s + "...time:" + new Date());
@@ -45,6 +47,7 @@ public class Test01 {
 				.collect(Collectors.joining("\r\n"));
 
 		System.out.println(file.listFiles().length - successFile.size());
+		System.out.println(collect);
 	}
 
 	private Collection<Integer> findSuccessFile() {
