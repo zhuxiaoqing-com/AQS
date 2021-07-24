@@ -19,7 +19,6 @@ public class Test01 {
 		Collection<Integer> successFile = findSuccessFile();
 		successFile.add(481);
 		successFile.add(461);
-		successFile.add(4361);
 		List<String> collect = Arrays.stream(Objects.requireNonNull(file.listFiles()))
 				.filter(f -> !successFile.contains(Integer.parseInt(f.getName().substring(0, f.getName().indexOf("-")))))
 				.sorted(Comparator.comparing(f -> Integer.parseInt(f.getName().substring(0, f.getName().indexOf("-"))), Comparator.reverseOrder()))
