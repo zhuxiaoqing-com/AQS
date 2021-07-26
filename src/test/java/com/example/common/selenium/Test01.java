@@ -21,7 +21,7 @@ public class Test01 {
 		successFile.add(461);
 		List<String> collect = Arrays.stream(Objects.requireNonNull(file.listFiles()))
 				.filter(f -> !successFile.contains(Integer.parseInt(f.getName().substring(0, f.getName().indexOf("-")))))
-				.sorted(Comparator.comparing(f -> Integer.parseInt(f.getName().substring(0, f.getName().indexOf("-"))), Comparator.reverseOrder()))
+				.sorted(Comparator.comparing(f -> Integer.parseInt(f.getName().substring(0, f.getName().indexOf("-")))))
 				.map(File::getAbsolutePath)
 				.collect(Collectors.toList());
 
