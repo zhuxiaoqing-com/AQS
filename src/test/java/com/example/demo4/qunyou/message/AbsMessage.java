@@ -10,23 +10,6 @@ import java.util.List;
  */
 public abstract class AbsMessage {
 
-	public void addStr(List<Byte> messageList, String a) {
-		byte[] bytes1 = a.getBytes(StandardCharsets.US_ASCII);
-		messageList.add((byte) (bytes1.length >> 8));
-		messageList.add((byte) (bytes1.length));
-		for (byte b : bytes1) {
-			messageList.add(b);
-		}
-	}
-
-	public byte[] toByteArray(List<Byte> messageList) {
-		byte[] btyes = new byte[messageList.size()];
-		for (int i = 0; i < messageList.size(); i++) {
-			btyes[i] = messageList.get(i);
-		}
-		return btyes;
-	}
-
 	/**
 	 * 打印16进制
 	 * @param byteArray byteArray

@@ -2,8 +2,6 @@ package com.example.demo4.qunyou.message;
 
 import com.example.demo4.qunyou.MessageConstant;
 
-import java.nio.Buffer;
-import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,18 +29,38 @@ public class Connect extends AbsMessage {
 
 	public byte[] array() {
 		ArrayList<Byte> messageList = new ArrayList<>();
-		messageList.add((byte) (frameType << 4 & flags));
+		messageList.add((byte) ((frameType << 4) | flags));
 		messageList.add((byte) keepalive);
-		addStr(messageList, clientId);
+		byte[] bytes11 = clientId.getBytes(StandardCharsets.US_ASCII);
+		((List<Byte>) messageList).add((byte) (bytes11.length >> 8));
+		((List<Byte>) messageList).add((byte) (bytes11.length));
+		for (byte b1 : bytes11) {
+			((List<Byte>) messageList).add(b1);
+		}
 		if (userName != null && !userName.isEmpty()) {
-			addStr(messageList, userName);
+			byte[] bytes1 = userName.getBytes(StandardCharsets.US_ASCII);
+			((List<Byte>) messageList).add((byte) (bytes1.length >> 8));
+			((List<Byte>) messageList).add((byte) (bytes1.length));
+			for (byte b : bytes1) {
+				((List<Byte>) messageList).add(b);
+			}
 		}
 		if (password != null && !password.isEmpty()) {
-			addStr(messageList, password);
+			byte[] bytes1 = password.getBytes(StandardCharsets.US_ASCII);
+			((List<Byte>) messageList).add((byte) (bytes1.length >> 8));
+			((List<Byte>) messageList).add((byte) (bytes1.length));
+			for (byte b : bytes1) {
+				((List<Byte>) messageList).add(b);
+			}
 		}
-		messageList.add(1, (byte) ((messageList.size() - 1) >> 8));
-		messageList.add(2, (byte) (messageList.size() - 1));
+		int bodyLength = messageList.size() - 1;
+		messageList.add(1, (byte) (bodyLength >> 8));
+		messageList.add(2, (byte) bodyLength);
 
-		return toByteArray(messageList);
+		byte[] btyes = new byte[((List<Byte>) messageList).size()];
+		for (int i = 0; i < ((List<Byte>) messageList).size(); i++) {
+			btyes[i] = ((List<Byte>) messageList).get(i);
+		}
+		return btyes;
 	}
 }

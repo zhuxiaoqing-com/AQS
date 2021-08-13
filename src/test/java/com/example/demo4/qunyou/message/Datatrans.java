@@ -3,6 +3,7 @@ package com.example.demo4.qunyou.message;
 import com.example.demo4.qunyou.MessageConstant;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @Auther: zhuxiaoqing
@@ -28,7 +29,11 @@ public class Datatrans extends AbsMessage {
 			messageList.add(mess);
 		}
 
-		return toByteArray(messageList);
+		byte[] btyes = new byte[((List<Byte>) messageList).size()];
+		for (int i = 0; i < ((List<Byte>) messageList).size(); i++) {
+			btyes[i] = ((List<Byte>) messageList).get(i);
+		}
+		return btyes;
 	}
 
 }

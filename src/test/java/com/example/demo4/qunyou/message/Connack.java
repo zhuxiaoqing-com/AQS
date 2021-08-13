@@ -2,9 +2,9 @@ package com.example.demo4.qunyou.message;
 
 import com.example.demo4.qunyou.MessageConstant;
 
-import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @Auther: zhuxiaoqing
@@ -25,9 +25,17 @@ public class Connack  extends AbsMessage {
 
 	public byte[] array() {
 		ArrayList<Byte> messageList = new ArrayList<>();
-		messageList.add((byte) (frameType << 4 & flags));
-		addStr(messageList,messageStr);
-		return toByteArray(messageList);
+		messageList.add((byte) ((frameType << 4) | flags));
+		byte[] bytes1 = messageStr.getBytes(StandardCharsets.US_ASCII);
+		((List<Byte>) messageList).add((byte) (bytes1.length >> 8));
+		((List<Byte>) messageList).add((byte) (bytes1.length));
+		for (byte b : bytes1) {
+			((List<Byte>) messageList).add(b);
+		}
+		byte[] btyes = new byte[((List<Byte>) messageList).size()];
+		for (int i = 0; i < ((List<Byte>) messageList).size(); i++) {
+			btyes[i] = ((List<Byte>) messageList).get(i);
+		}
+		return btyes;
 	}
-
 }
