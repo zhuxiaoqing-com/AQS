@@ -310,6 +310,13 @@ public class Test02Stream {
 				.collect(Collectors.toList());
 		System.out.println(collect1);
 
+		List<A> collect2 = objects.stream().sorted(Comparator.comparing(A::getId).thenComparing(A::getCount).reversed())
+				.collect(Collectors.toList());
+		System.out.println(collect2);
+
+		Optional<A> max = objects.stream().max(Comparator.comparing(A::getId).thenComparing(A::getCount));
+		System.out.println(max.get());
+
 		objects.stream().sorted(Comparator.comparing(a -> a.getCount()));
 		objects.stream().sorted(Comparator.<A>comparingInt(a -> a.getCount()).reversed());
 	}
