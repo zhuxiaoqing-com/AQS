@@ -137,6 +137,13 @@ public class Test03Time {
 		LocalDateTime with = LocalDateTime.now().with(TemporalAdjusters.nextOrSame(DayOfWeek.of(3)));
 		System.out.println(with);
 	}
+
+	@Test
+	public void test09() {
+		LocalDateTime now = LocalDateTime.now();
+		LocalDateTime localDateTime = now.withMinute(0);
+		System.out.println(localDateTime);
+	}
 }
 
 

@@ -14,7 +14,7 @@ public class Main {
 		System.out.println("ss");
 		System.out.println("ssd");
 		System.out.println("ssdf");
-		logger.error("ssss");
+		logger.error("ssss", new RuntimeException());
 
 	}
 
