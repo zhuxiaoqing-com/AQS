@@ -21,6 +21,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.text.NumberFormat;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicLong;
@@ -405,6 +406,7 @@ public class Test15 {
 	@Test
 	public void test25() {
 		System.out.println(getClass().getName());
+		System.out.println(LocalDate.now().getDayOfWeek().getValue());
 	}
 }
 

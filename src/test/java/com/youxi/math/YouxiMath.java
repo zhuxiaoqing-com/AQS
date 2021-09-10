@@ -24,11 +24,14 @@ public class YouxiMath {
 		double startDistanceSquare = findDistanceSquare(circleCenter, segmentStart);
 		double endDistanceSquare = findDistanceSquare(circleCenter, segmentEnd);
 		// 线段在圆内
-		if (startDistanceSquare > radius && endDistanceSquare > radius) {
+		if (startDistanceSquare < radius && endDistanceSquare < radius) {
 			return true;
 		}
 		// 线段和圆相交
-		if (startDistanceSquare > radius || endDistanceSquare > radius) {
+		if (startDistanceSquare > radius && endDistanceSquare < radius) {
+			return true;
+		}
+		if (startDistanceSquare < radius && endDistanceSquare > radius) {
 			return true;
 		}
 

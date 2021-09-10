@@ -1,0 +1,185 @@
+2021-09-03 11:03:41.350 [INFO] [main] com.example.bdownload.Download  -  开始下载视频 b站视频id:BV1xK4y187qB title:选眼镜框有个公式你知道吗？_哔哩哔哩_bilibili
+2021-09-03 11:03:42.466 [INFO] [main] com.example.bdownload.Download  -  --------------开始下载视频文件--------------
+2021-09-03 11:06:16.910 [INFO] [main] com.example.bdownload.Download  -  --------------视频文件下载完成--------------
+2021-09-03 11:06:16.910 [INFO] [main] com.example.bdownload.Download  -  --------------开始下载音频文件--------------
+2021-09-03 11:06:25.023 [INFO] [main] com.example.bdownload.Download  -  --------------音频文件下载完成--------------
+2021-09-03 11:06:25.024 [INFO] [main] com.example.bdownload.Download  -  --------------开始合并音视频-------------- file:E:\测试\bDownload\选眼镜框有个公式你知道吗？_哔哩哔哩_bilibili_BV1xK4y187qB.mp4
+2021-09-03 11:06:25.793 [INFO] [main] com.example.bdownload.Download  -  --------------音视频合并完成--------------
+2021-09-03 11:06:26.471 [INFO] [main] com.example.bdownload.Download  -  开始下载视频 b站视频id:BV1pJ411n7FC title:别再傻傻的交智商税了！_哔哩哔哩_bilibili
+2021-09-03 11:06:27.301 [INFO] [main] com.example.bdownload.Download  -  --------------开始下载视频文件--------------
+2021-09-03 11:06:27.405 [INFO] [main] com.example.bdownload.Download  -  --------------视频文件下载完成--------------
+2021-09-03 11:06:27.405 [INFO] [main] com.example.bdownload.Download  -  --------------开始下载音频文件--------------
+2021-09-03 11:06:27.516 [INFO] [main] com.example.bdownload.Download  -  --------------音频文件下载完成--------------
+2021-09-03 11:06:27.516 [INFO] [main] com.example.bdownload.Download  -  --------------开始合并音视频-------------- file:E:\测试\bDownload\别再傻傻的交智商税了！_哔哩哔哩_bilibili_BV1pJ411n7FC.mp4
+2021-09-03 11:06:27.696 [INFO] [main] com.example.bdownload.Download  -  --------------音视频合并完成--------------
+2021-09-03 11:06:28.502 [INFO] [main] com.example.bdownload.Download  -  开始下载视频 b站视频id:BV1mp4y1Y7g5 title:温医大眼视光相关视频_哔哩哔哩_bilibili
+2021-09-03 11:06:29.102 [INFO] [main] com.example.bdownload.Download  -  url地址 = https://www.bilibili.com/video/BV1mp4y1Y7g5?p=1
+2021-09-03 11:06:29.511 [INFO] [main] com.example.bdownload.Download  -  视频名称== 1.远视力表检查
+2021-09-03 11:06:30.688 [INFO] [main] com.example.bdownload.Download  -  --------------开始下载视频文件--------------
+2021-09-03 11:06:53.987 [INFO] [main] com.example.bdownload.Download  -  --------------视频文件下载完成--------------
+2021-09-03 11:06:53.987 [INFO] [main] com.example.bdownload.Download  -  --------------开始下载音频文件--------------
+2021-09-03 11:06:58.650 [INFO] [main] com.example.bdownload.Download  -  --------------音频文件下载完成--------------
+2021-09-03 11:06:58.650 [INFO] [main] com.example.bdownload.Download  -  --------------开始合并音视频-------------- file:E:\测试\bDownload\1.远视力表检查_BV1mp4y1Y7g5.mp4
+2021-09-03 11:06:59.061 [INFO] [main] com.example.bdownload.Download  -  --------------音视频合并完成--------------
+2021-09-03 11:06:59.065 [INFO] [main] com.example.bdownload.Download  -  url地址 = https://www.bilibili.com/video/BV1mp4y1Y7g5?p=2
+2021-09-03 11:06:59.493 [INFO] [main] com.example.bdownload.Download  -  视频名称== 2.远视力-指数检查
+2021-09-03 11:07:00.187 [INFO] [main] com.example.bdownload.Download  -  --------------开始下载视频文件--------------
+2021-09-03 11:07:15.046 [INFO] [main] com.example.bdownload.Download  -  --------------视频文件下载完成--------------
+2021-09-03 11:07:15.046 [INFO] [main] com.example.bdownload.Download  -  --------------开始下载音频文件--------------
+2021-09-03 11:07:16.445 [INFO] [main] com.example.bdownload.Download  -  --------------音频文件下载完成--------------
+2021-09-03 11:07:16.446 [INFO] [main] com.example.bdownload.Download  -  --------------开始合并音视频-------------- file:E:\测试\bDownload\2.远视力-指数检查_BV1mp4y1Y7g5.mp4
+2021-09-03 11:07:16.849 [INFO] [main] com.example.bdownload.Download  -  --------------音视频合并完成--------------
+2021-09-03 11:07:16.852 [INFO] [main] com.example.bdownload.Download  -  url地址 = https://www.bilibili.com/video/BV1mp4y1Y7g5?p=3
+2021-09-03 11:07:18.021 [INFO] [main] com.example.bdownload.Download  -  视频名称== 3.远视力检查（手动检查）
+2021-09-03 11:07:18.598 [INFO] [main] com.example.bdownload.Download  -  --------------开始下载视频文件--------------
+2021-09-03 11:07:21.826 [INFO] [main] com.example.bdownload.Download  -  --------------视频文件下载完成--------------
+2021-09-03 11:07:21.827 [INFO] [main] com.example.bdownload.Download  -  --------------开始下载音频文件--------------
+2021-09-03 11:07:22.239 [INFO] [main] com.example.bdownload.Download  -  --------------音频文件下载完成--------------
+2021-09-03 11:07:22.240 [INFO] [main] com.example.bdownload.Download  -  --------------开始合并音视频-------------- file:E:\测试\bDownload\3.远视力检查（手动检查）_BV1mp4y1Y7g5.mp4
+2021-09-03 11:07:22.638 [INFO] [main] com.example.bdownload.Download  -  --------------音视频合并完成--------------
+2021-09-03 11:07:22.641 [INFO] [main] com.example.bdownload.Download  -  url地址 = https://www.bilibili.com/video/BV1mp4y1Y7g5?p=4
+2021-09-03 11:07:23.427 [INFO] [main] com.example.bdownload.Download  -  视频名称== 4.远视力检查（光感检查）
+2021-09-03 11:07:24.102 [INFO] [main] com.example.bdownload.Download  -  --------------开始下载视频文件--------------
+2021-09-03 11:08:00.157 [INFO] [main] com.example.bdownload.Download  -  --------------视频文件下载完成--------------
+2021-09-03 11:08:00.158 [INFO] [main] com.example.bdownload.Download  -  --------------开始下载音频文件--------------
+2021-09-03 11:08:02.582 [INFO] [main] com.example.bdownload.Download  -  --------------音频文件下载完成--------------
+2021-09-03 11:08:02.582 [INFO] [main] com.example.bdownload.Download  -  --------------开始合并音视频-------------- file:E:\测试\bDownload\4.远视力检查（光感检查）_BV1mp4y1Y7g5.mp4
+2021-09-03 11:08:03.060 [INFO] [main] com.example.bdownload.Download  -  --------------音视频合并完成--------------
+2021-09-03 11:08:03.064 [INFO] [main] com.example.bdownload.Download  -  url地址 = https://www.bilibili.com/video/BV1mp4y1Y7g5?p=5
+2021-09-03 11:08:04.281 [INFO] [main] com.example.bdownload.Download  -  视频名称== 5.近视力检查
+2021-09-03 11:08:04.609 [INFO] [main] com.example.bdownload.Download  -  --------------开始下载视频文件--------------
+2021-09-03 11:08:59.710 [INFO] [main] com.example.bdownload.Download  -  --------------视频文件下载完成--------------
+2021-09-03 11:08:59.710 [INFO] [main] com.example.bdownload.Download  -  --------------开始下载音频文件--------------
+2021-09-03 11:09:08.011 [INFO] [main] com.example.bdownload.Download  -  --------------音频文件下载完成--------------
+2021-09-03 11:09:08.011 [INFO] [main] com.example.bdownload.Download  -  --------------开始合并音视频-------------- file:E:\测试\bDownload\5.近视力检查_BV1mp4y1Y7g5.mp4
+2021-09-03 11:09:08.434 [INFO] [main] com.example.bdownload.Download  -  --------------音视频合并完成--------------
+2021-09-03 11:09:08.439 [INFO] [main] com.example.bdownload.Download  -  url地址 = https://www.bilibili.com/video/BV1mp4y1Y7g5?p=6
+2021-09-03 11:09:10.321 [INFO] [main] com.example.bdownload.Download  -  视频名称== 6.视野检查
+2021-09-03 11:09:10.522 [INFO] [main] com.example.bdownload.Download  -  --------------开始下载视频文件--------------
+2021-09-03 11:09:29.911 [INFO] [main] com.example.bdownload.Download  -  --------------视频文件下载完成--------------
+2021-09-03 11:09:29.912 [INFO] [main] com.example.bdownload.Download  -  --------------开始下载音频文件--------------
+2021-09-03 11:09:35.807 [INFO] [main] com.example.bdownload.Download  -  --------------音频文件下载完成--------------
+2021-09-03 11:09:35.807 [INFO] [main] com.example.bdownload.Download  -  --------------开始合并音视频-------------- file:E:\测试\bDownload\6.视野检查_BV1mp4y1Y7g5.mp4
+2021-09-03 11:09:36.233 [INFO] [main] com.example.bdownload.Download  -  --------------音视频合并完成--------------
+2021-09-03 11:09:36.237 [INFO] [main] com.example.bdownload.Download  -  url地址 = https://www.bilibili.com/video/BV1mp4y1Y7g5?p=7
+2021-09-03 11:09:36.630 [INFO] [main] com.example.bdownload.Download  -  视频名称== 7.光具座结构
+2021-09-03 11:09:37.332 [INFO] [main] com.example.bdownload.Download  -  --------------开始下载视频文件--------------
+2021-09-03 11:10:13.071 [INFO] [main] com.example.bdownload.Download  -  --------------视频文件下载完成--------------
+2021-09-03 11:10:13.071 [INFO] [main] com.example.bdownload.Download  -  --------------开始下载音频文件--------------
+2021-09-03 11:10:16.675 [INFO] [main] com.example.bdownload.Download  -  --------------音频文件下载完成--------------
+2021-09-03 11:10:16.675 [INFO] [main] com.example.bdownload.Download  -  --------------开始合并音视频-------------- file:E:\测试\bDownload\7.光具座结构_BV1mp4y1Y7g5.mp4
+2021-09-03 11:10:17.081 [INFO] [main] com.example.bdownload.Download  -  --------------音视频合并完成--------------
+2021-09-03 11:10:17.085 [INFO] [main] com.example.bdownload.Download  -  url地址 = https://www.bilibili.com/video/BV1mp4y1Y7g5?p=8
+2021-09-03 11:10:17.509 [INFO] [main] com.example.bdownload.Download  -  视频名称== 8.正视眼成像
+2021-09-03 11:10:17.901 [INFO] [main] com.example.bdownload.Download  -  --------------开始下载视频文件--------------
+2021-09-03 11:10:26.326 [INFO] [main] com.example.bdownload.Download  -  --------------视频文件下载完成--------------
+2021-09-03 11:10:26.326 [INFO] [main] com.example.bdownload.Download  -  --------------开始下载音频文件--------------
+2021-09-03 11:10:27.281 [INFO] [main] com.example.bdownload.Download  -  --------------音频文件下载完成--------------
+2021-09-03 11:10:27.281 [INFO] [main] com.example.bdownload.Download  -  --------------开始合并音视频-------------- file:E:\测试\bDownload\8.正视眼成像_BV1mp4y1Y7g5.mp4
+2021-09-03 11:10:27.677 [INFO] [main] com.example.bdownload.Download  -  --------------音视频合并完成--------------
+2021-09-03 11:10:27.680 [INFO] [main] com.example.bdownload.Download  -  url地址 = https://www.bilibili.com/video/BV1mp4y1Y7g5?p=9
+2021-09-03 11:10:28.132 [INFO] [main] com.example.bdownload.Download  -  视频名称== 9.近视眼成像
+2021-09-03 11:10:28.468 [INFO] [main] com.example.bdownload.Download  -  --------------开始下载视频文件--------------
+2021-09-03 11:10:47.539 [INFO] [main] com.example.bdownload.Download  -  --------------视频文件下载完成--------------
+2021-09-03 11:10:47.540 [INFO] [main] com.example.bdownload.Download  -  --------------开始下载音频文件--------------
+2021-09-03 11:10:50.360 [INFO] [main] com.example.bdownload.Download  -  --------------音频文件下载完成--------------
+2021-09-03 11:10:50.360 [INFO] [main] com.example.bdownload.Download  -  --------------开始合并音视频-------------- file:E:\测试\bDownload\9.近视眼成像_BV1mp4y1Y7g5.mp4
+2021-09-03 11:10:50.765 [INFO] [main] com.example.bdownload.Download  -  --------------音视频合并完成--------------
+2021-09-03 11:10:50.769 [INFO] [main] com.example.bdownload.Download  -  url地址 = https://www.bilibili.com/video/BV1mp4y1Y7g5?p=10
+2021-09-03 11:10:52.453 [INFO] [main] com.example.bdownload.Download  -  视频名称== 10.近视眼纠正原理
+2021-09-03 11:10:53.245 [INFO] [main] com.example.bdownload.Download  -  --------------开始下载视频文件--------------
+2021-09-03 11:12:04.528 [INFO] [main] com.example.bdownload.Download  -  --------------视频文件下载完成--------------
+2021-09-03 11:12:04.528 [INFO] [main] com.example.bdownload.Download  -  --------------开始下载音频文件--------------
+2021-09-03 11:12:10.467 [INFO] [main] com.example.bdownload.Download  -  --------------音频文件下载完成--------------
+2021-09-03 11:12:10.468 [INFO] [main] com.example.bdownload.Download  -  --------------开始合并音视频-------------- file:E:\测试\bDownload\10.近视眼纠正原理_BV1mp4y1Y7g5.mp4
+2021-09-03 11:12:10.896 [INFO] [main] com.example.bdownload.Download  -  --------------音视频合并完成--------------
+2021-09-03 11:12:10.900 [INFO] [main] com.example.bdownload.Download  -  url地址 = https://www.bilibili.com/video/BV1mp4y1Y7g5?p=11
+2021-09-03 11:12:11.441 [INFO] [main] com.example.bdownload.Download  -  视频名称== 11.远视眼成像
+2021-09-03 11:12:12.147 [INFO] [main] com.example.bdownload.Download  -  --------------开始下载视频文件--------------
+2021-09-03 11:12:24.955 [INFO] [main] com.example.bdownload.Download  -  --------------视频文件下载完成--------------
+2021-09-03 11:12:24.955 [INFO] [main] com.example.bdownload.Download  -  --------------开始下载音频文件--------------
+2021-09-03 11:12:26.848 [INFO] [main] com.example.bdownload.Download  -  --------------音频文件下载完成--------------
+2021-09-03 11:12:26.848 [INFO] [main] com.example.bdownload.Download  -  --------------开始合并音视频-------------- file:E:\测试\bDownload\11.远视眼成像_BV1mp4y1Y7g5.mp4
+2021-09-03 11:12:27.252 [INFO] [main] com.example.bdownload.Download  -  --------------音视频合并完成--------------
+2021-09-03 11:12:27.255 [INFO] [main] com.example.bdownload.Download  -  url地址 = https://www.bilibili.com/video/BV1mp4y1Y7g5?p=12
+2021-09-03 11:12:27.679 [INFO] [main] com.example.bdownload.Download  -  视频名称== 12.远视眼纠正原理
+2021-09-03 11:12:29.162 [INFO] [main] com.example.bdownload.Download  -  --------------开始下载视频文件--------------
+2021-09-03 11:12:58.366 [INFO] [main] com.example.bdownload.Download  -  --------------视频文件下载完成--------------
+2021-09-03 11:12:58.366 [INFO] [main] com.example.bdownload.Download  -  --------------开始下载音频文件--------------
+2021-09-03 11:13:01.240 [INFO] [main] com.example.bdownload.Download  -  --------------音频文件下载完成--------------
+2021-09-03 11:13:01.241 [INFO] [main] com.example.bdownload.Download  -  --------------开始合并音视频-------------- file:E:\测试\bDownload\12.远视眼纠正原理_BV1mp4y1Y7g5.mp4
+2021-09-03 11:13:01.647 [INFO] [main] com.example.bdownload.Download  -  --------------音视频合并完成--------------
+2021-09-03 11:13:01.650 [INFO] [main] com.example.bdownload.Download  -  url地址 = https://www.bilibili.com/video/BV1mp4y1Y7g5?p=13
+2021-09-03 11:13:02.040 [INFO] [main] com.example.bdownload.Download  -  视频名称== 13.瞳孔对屈光系统的影响
+2021-09-03 11:13:02.526 [INFO] [main] com.example.bdownload.Download  -  --------------开始下载视频文件--------------
+2021-09-03 11:13:37.529 [INFO] [main] com.example.bdownload.Download  -  --------------视频文件下载完成--------------
+2021-09-03 11:13:37.529 [INFO] [main] com.example.bdownload.Download  -  --------------开始下载音频文件--------------
+2021-09-03 11:13:40.009 [INFO] [main] com.example.bdownload.Download  -  --------------音频文件下载完成--------------
+2021-09-03 11:13:40.009 [INFO] [main] com.example.bdownload.Download  -  --------------开始合并音视频-------------- file:E:\测试\bDownload\13.瞳孔对屈光系统的影响_BV1mp4y1Y7g5.mp4
+2021-09-03 11:13:40.426 [INFO] [main] com.example.bdownload.Download  -  --------------音视频合并完成--------------
+2021-09-03 11:13:40.429 [INFO] [main] com.example.bdownload.Download  -  url地址 = https://www.bilibili.com/video/BV1mp4y1Y7g5?p=14
+2021-09-03 11:13:40.890 [INFO] [main] com.example.bdownload.Download  -  视频名称== 14.裂隙灯显微镜结构
+2021-09-03 11:13:41.587 [INFO] [main] com.example.bdownload.Download  -  --------------开始下载视频文件--------------
+2021-09-03 11:13:58.257 [INFO] [main] com.example.bdownload.Download  -  --------------视频文件下载完成--------------
+2021-09-03 11:13:58.257 [INFO] [main] com.example.bdownload.Download  -  --------------开始下载音频文件--------------
+2021-09-03 11:13:58.707 [INFO] [main] com.example.bdownload.Download  -  --------------音频文件下载完成--------------
+2021-09-03 11:13:58.707 [INFO] [main] com.example.bdownload.Download  -  --------------开始合并音视频-------------- file:E:\测试\bDownload\14.裂隙灯显微镜结构_BV1mp4y1Y7g5.mp4
+2021-09-03 11:13:59.119 [INFO] [main] com.example.bdownload.Download  -  --------------音视频合并完成--------------
+2021-09-03 11:13:59.122 [INFO] [main] com.example.bdownload.Download  -  url地址 = https://www.bilibili.com/video/BV1mp4y1Y7g5?p=15
+2021-09-03 11:14:00.266 [INFO] [main] com.example.bdownload.Download  -  视频名称== 15.裂隙灯对焦
+2021-09-03 11:14:00.505 [INFO] [main] com.example.bdownload.Download  -  --------------开始下载视频文件--------------
+2021-09-03 11:38:02.775 [INFO] [main] com.example.bdownload.DownPageVideo  -  /C:/Users/Administrator/IdeaProjects/bdownload/target/classes/cfg.properties
+2021-09-03 11:47:37.821 [INFO] [main] com.example.bdownload.DownPageVideo  -  /C:/Users/Administrator/IdeaProjects/bdownload/target/classes/
+2021-09-03 12:13:44.652 [INFO] [main] com.example.bdownload.Download  -  开始下载视频 b站视频id:BV1pJ411n7FC title:别再傻傻的交智商税了！_哔哩哔哩_bilibili
+2021-09-03 12:13:45.348 [INFO] [main] com.example.bdownload.Download  -  --------------开始下载视频文件--------------
+2021-09-03 12:13:45.420 [INFO] [main] com.example.bdownload.Download  -  --------------视频文件下载完成--------------
+2021-09-03 12:13:45.420 [INFO] [main] com.example.bdownload.Download  -  --------------开始下载音频文件--------------
+2021-09-03 12:13:45.493 [INFO] [main] com.example.bdownload.Download  -  --------------音频文件下载完成--------------
+2021-09-03 12:13:45.493 [INFO] [main] com.example.bdownload.Download  -  --------------开始合并音视频-------------- file:E:\测试\bDownload\别再傻傻的交智商税了！_哔哩哔哩_bilibili_BV1pJ411n7FC.mp4
+2021-09-03 12:13:47.812 [INFO] [main] com.example.bdownload.Download  -  --------------音视频合并完成--------------
+2021-09-03 12:16:23.015 [INFO] [main] com.example.bdownload.DownPageVideo  -  C:\Users\Administrator\IdeaProjects\bdownload
+2021-09-03 12:19:21.391 [INFO] [main] com.example.bdownload.Download  -  开始下载视频 b站视频id:BV1pJ411n7FC title:别再傻傻的交智商税了！_哔哩哔哩_bilibili
+2021-09-03 12:19:22.441 [INFO] [main] com.example.bdownload.Download  -  --------------开始下载视频文件--------------
+2021-09-03 12:24:05.377 [INFO] [main] com.example.bdownload.Download  -  开始下载视频 b站视频id:BV1pJ411n7FC title:别再傻傻的交智商税了！_哔哩哔哩_bilibili
+2021-09-03 12:28:41.319 [INFO] [main] com.example.bdownload.Download  -  开始下载视频 b站视频id:BV1pJ411n7FC title:别再傻傻的交智商税了！_哔哩哔哩_bilibili
+2021-09-03 14:17:54.995 [INFO] [main] com.example.bdownload.Main  -  info
+2021-09-03 14:17:55.018 [WARN] [main] com.example.bdownload.Main  -  warn
+2021-09-03 14:17:55.018 [ERROR] [main] com.example.bdownload.Main  -  error
+2021-09-03 14:35:19.261 [INFO] [main] com.example.bdownload.Download  -  开始下载视频 b站视频id:BV1pJ411n7FC title:别再傻傻的交智商税了！_哔哩哔哩_bilibili
+2021-09-03 14:35:19.391 [INFO] [main] com.example.bdownload.Download  -  --------------开始下载视频文件--------------
+2021-09-03 14:35:19.404 [INFO] [main] com.example.bdownload.Download  -  --------------视频文件下载完成--------------
+2021-09-03 14:35:19.404 [INFO] [main] com.example.bdownload.Download  -  --------------开始下载音频文件--------------
+2021-09-03 14:35:19.419 [INFO] [main] com.example.bdownload.Download  -  --------------音频文件下载完成--------------
+2021-09-03 14:35:19.419 [INFO] [main] com.example.bdownload.Download  -  --------------开始合并音视频-------------- file:E:\测试\b站爬虫\aaa\别再傻傻的交智商税了！_哔哩哔哩_bilibili_BV1pJ411n7FC.mp4
+2021-09-03 14:35:21.118 [INFO] [main] com.example.bdownload.Download  -  --------------音视频合并完成--------------
+2021-09-03 14:35:21.268 [INFO] [main] com.example.bdownload.Download  -  开始下载视频 b站视频id:BV1pJ411q7un title:千万别再戴这种眼镜框了！_哔哩哔哩_bilibili
+2021-09-03 14:35:21.363 [INFO] [main] com.example.bdownload.Download  -  --------------开始下载视频文件--------------
+2021-09-03 14:35:21.376 [INFO] [main] com.example.bdownload.Download  -  --------------视频文件下载完成--------------
+2021-09-03 14:35:21.376 [INFO] [main] com.example.bdownload.Download  -  --------------开始下载音频文件--------------
+2021-09-03 14:35:21.388 [INFO] [main] com.example.bdownload.Download  -  --------------音频文件下载完成--------------
+2021-09-03 14:35:21.388 [INFO] [main] com.example.bdownload.Download  -  --------------开始合并音视频-------------- file:E:\测试\b站爬虫\aaa\千万别再戴这种眼镜框了！_哔哩哔哩_bilibili_BV1pJ411q7un.mp4
+2021-09-03 14:35:21.555 [INFO] [main] com.example.bdownload.Download  -  --------------音视频合并完成--------------
+2021-09-03 14:35:21.700 [INFO] [main] com.example.bdownload.Download  -  开始下载视频 b站视频id:BV18v411z7UF title:【眼视光理论和方法】直播课录屏（不全）_哔哩哔哩_bilibili
+2021-09-03 14:35:21.939 [INFO] [main] com.example.bdownload.Download  -  url地址 = https://www.bilibili.com/video/BV18v411z7UF?p=1
+2021-09-03 14:35:22.085 [INFO] [main] com.example.bdownload.Download  -  视频名称== 1，2
+2021-09-03 14:35:22.161 [INFO] [main] com.example.bdownload.Download  -  --------------开始下载音频文件--------------
+2021-09-03 14:35:34.595 [INFO] [main] com.example.bdownload.Download  -  --------------音频文件下载完成--------------
+2021-09-03 14:35:34.595 [INFO] [main] com.example.bdownload.Download  -  --------------开始合并音视频-------------- file:E:\测试\b站爬虫\aaa\1，2_BV18v411z7UF.mp4
+2021-09-03 14:35:35.828 [INFO] [main] com.example.bdownload.Download  -  --------------音视频合并完成--------------
+2021-09-03 14:35:35.851 [INFO] [main] com.example.bdownload.Download  -  url地址 = https://www.bilibili.com/video/BV18v411z7UF?p=2
+2021-09-03 14:35:36.069 [INFO] [main] com.example.bdownload.Download  -  视频名称== 3
+2021-09-03 14:35:36.203 [INFO] [main] com.example.bdownload.Download  -  --------------开始下载视频文件--------------
+2021-09-03 14:36:40.369 [INFO] [main] com.example.bdownload.Download  -  --------------视频文件下载完成--------------
+2021-09-03 14:36:40.370 [INFO] [main] com.example.bdownload.Download  -  --------------开始下载音频文件--------------
+2021-09-03 14:37:13.715 [INFO] [main] com.example.bdownload.Download  -  --------------音频文件下载完成--------------
+2021-09-03 14:37:13.715 [INFO] [main] com.example.bdownload.Download  -  --------------开始合并音视频-------------- file:E:\测试\b站爬虫\aaa\3_BV18v411z7UF.mp4
+2021-09-03 14:37:15.175 [INFO] [main] com.example.bdownload.Download  -  --------------音视频合并完成--------------
+2021-09-03 14:37:15.200 [INFO] [main] com.example.bdownload.Download  -  url地址 = https://www.bilibili.com/video/BV18v411z7UF?p=3
+2021-09-03 14:37:15.354 [INFO] [main] com.example.bdownload.Download  -  视频名称== 4
+2021-09-03 14:37:15.475 [INFO] [main] com.example.bdownload.Download  -  --------------开始下载视频文件--------------
+2021-09-03 14:38:19.096 [INFO] [main] com.example.bdownload.Download  -  开始下载视频 b站视频id:BV1pJ411n7FC title:别再傻傻的交智商税了！_哔哩哔哩_bilibili
+2021-09-03 14:38:19.273 [INFO] [main] com.example.bdownload.Download  -  --------------开始下载视频文件--------------
+2021-09-03 14:38:19.291 [INFO] [main] com.example.bdownload.Download  -  --------------视频文件下载完成--------------
+2021-09-03 14:38:19.291 [INFO] [main] com.example.bdownload.Download  -  --------------开始下载音频文件--------------
+2021-09-03 14:38:19.314 [INFO] [main] com.example.bdownload.Download  -  --------------音频文件下载完成--------------
+2021-09-03 14:38:19.314 [INFO] [main] com.example.bdownload.Download  -  --------------开始合并音视频-------------- file:E:\测试\b站爬虫\aaa\别再傻傻的交智商税了！_哔哩哔哩_bilibili_BV1pJ411n7FC.mp4

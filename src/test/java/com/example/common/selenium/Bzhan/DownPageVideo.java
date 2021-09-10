@@ -1,0 +1,91 @@
+package com.example.common.selenium.Bzhan;
+
+import cn.hutool.http.HttpRequest;
+import cn.hutool.http.HttpResponse;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
+
+/**
+ * @Auther: zhuxiaoqing
+ * @Date: 2021/9/2 19:48
+ * @Description:
+ */
+public class DownPageVideo {
+
+	private int num;
+	public String searchAddr = "https://search.bilibili.com/all?keyword=";
+
+	public String pageParam = "&page=";
+
+	public static void main(String[] args) throws Exception {
+		new DownPageVideo().a("视光");
+	}
+	public void a(String keyWord) throws Exception {
+		HttpResponse res = HttpRequest.get(findSearchAddr(keyWord, 1)).timeout(2000).execute();
+		String html = res.body();
+		Document document = Jsoup.parse(html);
+
+		String lastPage = findLastPage(document);
+		findVideoNames(document);
+	}
+
+	private void downSinglePage(String keyWord, int pageNum) throws Exception {
+		HttpResponse res = HttpRequest.get(findSearchAddr(keyWord, pageNum)).timeout(2000).execute();
+		String html = res.body();
+		Document document = Jsoup.parse(html);
+
+		List<String> videoNames = findVideoNames(document);
+		for (String videoName : videoNames) {
+			// 每下载10个视频休息3到5分钟
+			if(num%10 == 0) {
+				Thread.sleep(random(3*60*1000,5*60*1000));
+			}
+			Download download = new Download(videoName, "E:\\测试\\bDownload");
+			download.parser();
+			num++;
+		}
+	}
+
+
+
+	private List<String> findVideoNames(Document document) {
+		ArrayList<String> videosName = new ArrayList<>();
+		Elements elementsByClass = document.getElementsByClass("video-item matrix");
+		for (Element byClass : elementsByClass) {
+			String href = byClass.getElementsByTag("a").attr("href");
+			String name = href.substring(href.lastIndexOf("/") + 1, href.indexOf("?"));
+			System.out.println(name);
+			videosName.add(name);
+		}
+		return videosName;
+	}
+
+	private String findLastPage(Document document) {
+		Elements elementsByClass = document.getElementsByClass("page-item last");
+		String button = elementsByClass.get(0).getElementsByTag("button").get(0).text();
+		System.out.println(button);
+		return button;
+	}
+
+	public String findSearchAddr(String keyWord, int pageNum) throws Exception {
+		String encode = URLEncoder.encode(keyWord, "utf-8");
+		if (pageNum <= 1) {
+			return searchAddr + encode;
+		}
+		return searchAddr + keyWord + pageParam + pageNum;
+	}
+
+	public static int random(int min, int max) {
+		if (min >= max) {
+			return min;
+		}
+		return ThreadLocalRandom.current().nextInt(max - min + 1) + min;
+	}
+}

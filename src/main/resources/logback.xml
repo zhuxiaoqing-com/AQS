@@ -9,8 +9,8 @@
 
     <property name="log.level" value="ERROR"/>
     <!-- 定义日志文件 输出位置 -->
-    <!--  <property name="log.home_dir" value="log"/>
-      <property name="log.app_name" value="game"/>-->
+      <property name="log.home_dir" value="/log"/>
+      <property name="log.app_name" value="game"/>
     <!-- ConsoleAppender 控制台输出日志 -->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
@@ -18,6 +18,28 @@
             </pattern>
         </encoder>
     </appender>
+
+    <!-- info日志 -->
+    <appender name="fileInfoLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 过滤日志 -->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>DENY</onMatch>  <!-- 如果命中就禁止这条日志 -->
+            <onMismatch>ACCEPT</onMismatch>  <!-- 如果没有命中就使用这条规则 -->
+        </filter>
+
+        <encoder>
+            <pattern>
+                %msg%n
+            </pattern>
+        </encoder>
+        <!-- 滚动策略 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- 设置info日志路径 -->
+            <fileNamePattern>E:\\IntelliJ IDEA\\logback\\info.%d.log</fileNamePattern>
+        </rollingPolicy>
+    </appender>
+
     <!-- root级别   DEBUG -->
     <root>
         <!-- 打印日志及以上级别日志 -->
