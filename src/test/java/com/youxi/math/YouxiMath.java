@@ -23,7 +23,7 @@ public class YouxiMath {
 		// 判断两个点是否在圆内
 		double startDistanceSquare = findDistanceSquare(circleCenter, segmentStart);
 		double endDistanceSquare = findDistanceSquare(circleCenter, segmentEnd);
-		// 线段在圆内
+		// 线段在圆内3
 		if (startDistanceSquare < radius && endDistanceSquare < radius) {
 			return true;
 		}
