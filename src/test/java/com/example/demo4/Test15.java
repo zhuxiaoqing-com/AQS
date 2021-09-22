@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.example.demo1.hah.Role;
 import com.example.demo4.testObj1.AA;
 import com.example.demo4.testObj1.AClass;
+import com.example.demo4.testObj1.CeShiObj1;
 import com.example.代码优化.design_mode.TowerAOI.Vector2f;
 import com.youxi.building.Misc;
 import freemarker.template.Configuration;
@@ -405,8 +406,9 @@ public class Test15 {
 
 	@Test
 	public void test25() {
-		System.out.println(getClass().getName());
-		System.out.println(LocalDate.now().getDayOfWeek().getValue());
+		CeShiObj1 ceShiObj1 = new CeShiObj1();
+		Method[] declaredMethods = ceShiObj1.getClass().getMethods();
+		System.out.println(Arrays.toString(declaredMethods));
 	}
 }
 
