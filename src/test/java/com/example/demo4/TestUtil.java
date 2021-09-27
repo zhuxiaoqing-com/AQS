@@ -17,7 +17,7 @@ public class TestUtil {
 			runnable.run();
 		}
 		String str = param.length > 0 ? param[0] : "";
-		System.out.println(str + "____" + (System.nanoTime() - startNano));
+		System.out.println(str + "____nano:" + (System.nanoTime() - startNano));
 	}
 
 	

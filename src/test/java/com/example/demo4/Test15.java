@@ -27,6 +27,7 @@ import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 /**
@@ -410,6 +411,33 @@ public class Test15 {
 		Method[] declaredMethods = ceShiObj1.getClass().getMethods();
 		System.out.println(Arrays.toString(declaredMethods));
 	}
+
+	@Test
+	public void test26() {
+		//double x = 180/Math.PI;
+		double x = 1;
+		System.out.println(Math.atan2(1,1)*x);
+		System.out.println(Math.atan2(1,-1)*x);
+		System.out.println(Math.atan2(-1,-1)*x);
+		System.out.println(Math.atan2(-1,1)*x);
+
+		 x = 180/Math.PI;
+		System.out.println(Math.atan2(1,1)*x);
+		System.out.println(Math.atan2(1,-1)*x);
+		System.out.println(Math.atan2(-1,-1)*x);
+		System.out.println(Math.atan2(-1,1)*x);
+	}
+
+	@Test
+	public void test27() {
+		IntStream stream = Arrays.stream(new int[]{1, 3, 4, 2});
+	/*	OptionalInt max = stream.max();
+		System.out.println(max.getAsInt());
+		System.out.println(stream.min().getAsInt());*/
+		Optional<Integer> any = stream.boxed().sorted().filter(a->a!=1).findAny();
+		System.out.println(any);
+	}
+
 }
 
 
