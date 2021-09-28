@@ -430,12 +430,19 @@ public class Test15 {
 
 	@Test
 	public void test27() {
-		IntStream stream = Arrays.stream(new int[]{1, 3, 4, 2});
-	/*	OptionalInt max = stream.max();
-		System.out.println(max.getAsInt());
-		System.out.println(stream.min().getAsInt());*/
-		Optional<Integer> any = stream.boxed().sorted().filter(a->a!=1).findAny();
-		System.out.println(any);
+		HashMap<Object, Long> map = new HashMap<>();
+		map.put(new Object(),1L);
+		map.put(new Object(),2L);
+		map.put(new Object(),3L);
+		map.put(new Object(),4L);
+		System.out.println(map);
+
+		map = new LinkedHashMap<>();
+		map.put(new Object(),1L);
+		map.put(new Object(),2L);
+		map.put(new Object(),3L);
+		map.put(new Object(),4L);
+		System.out.println(map);
 	}
 
 }
