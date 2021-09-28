@@ -145,6 +145,7 @@ public class Test02Stream {
 		}, HashMap::new));
 		System.out.println(collect);
 
+	collect = list.stream().collect(Collectors.toMap(a -> a.id, a -> a.count, (o1, o2) -> o1, HashMap::new));
 	}
 
 
