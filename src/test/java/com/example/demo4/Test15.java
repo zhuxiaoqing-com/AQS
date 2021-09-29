@@ -10,6 +10,7 @@ import com.youxi.building.Misc;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import io.swagger.models.auth.In;
+import org.apache.commons.math3.stat.inference.TestUtils;
 import org.junit.Test;
 
 import java.io.File;
@@ -445,6 +446,23 @@ public class Test15 {
 		System.out.println(map);
 	}
 
+
+	@Test
+	public void test28() {
+		long a = 1000002321324321421L;
+		int count = 1000000000;
+		TestUtil.testTime(()->{long aa = a*a;}, count);
+		TestUtil.testTime(()->{long aa = a*a;}, count);
+		TestUtil.testTime(()->{
+			double sqrt = Math.sqrt(a);
+		}, count);
+		TestUtil.testTime(()->{
+			double sqrt = Math.sqrt(a);
+		}, count);
+		TestUtil.testTime(()->{long aa = a*a;}, count);
+
+
+	}
 }
 
 
