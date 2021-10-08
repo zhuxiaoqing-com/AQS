@@ -29,7 +29,7 @@ public class MainAgentTestServer {
                 reloadAgent();
             }
         } catch (Exception e) {
-            e.getMessage();
+            e.printStackTrace();
         }
     }
 

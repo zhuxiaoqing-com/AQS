@@ -38,9 +38,11 @@ public class Test1 {
     }
 
     public void singleFun1() {
-        System.out.println("singleFun1");
-        System.out.println(map);
-        System.out.println(aa);
+    	System.out.println();
+        System.out.print("singleFun1");
+        System.out.print(map);
+        System.out.print(aa);
+    	System.out.println();
         // System.out.println("singleFun1 mainAgent!!!!!");
     }
 
