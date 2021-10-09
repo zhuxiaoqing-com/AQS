@@ -375,6 +375,28 @@ public class Test02Stream {
 		map.values().removeIf(e->e>4);
 		System.out.println(map);
 	}
+
+	@Test
+	public void test17() {
+		int a = 100;
+		List<Integer> collect = Stream.iterate(1, f -> f + 1).limit(32).collect(Collectors.toList());
+		//System.out.println(collect);
+
+	/*	System.out.println(splitList(collect, 10));
+		System.out.println(splitList(collect, 1));
+		System.out.println(splitList(collect, 110));*/
+	//	System.out.println(splitList(collect, -1));
+		System.out.println(splitList(collect, Integer.MAX_VALUE));
+		System.out.println(splitList(collect, Integer.MIN_VALUE));
+	}
+
+	private <T> List<List<T>> splitList(List<T> list, int num) {
+		// 向上取整
+		int limit = (list.size() + num - 1) / num;
+		return Stream.iterate(0, f -> f + 1).limit(limit)
+				.map(a -> list.stream().skip((long) a * num).limit(num).collect(Collectors.toList()))
+				.collect(Collectors.toList());
+	}
 }
 
 

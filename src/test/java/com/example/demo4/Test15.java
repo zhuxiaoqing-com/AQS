@@ -6,6 +6,7 @@ import com.example.demo4.testObj1.AA;
 import com.example.demo4.testObj1.AClass;
 import com.example.demo4.testObj1.CeShiObj1;
 import com.example.代码优化.design_mode.TowerAOI.Vector2f;
+import com.google.common.collect.Lists;
 import com.youxi.building.Misc;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -460,6 +461,7 @@ public class Test15 {
 			double sqrt = Math.sqrt(a);
 		}, count);
 		TestUtil.testTime(()->{long aa = a*a;}, count);
+		List<List<Object>> partition = Lists.partition(new ArrayList<>(), 11);
 
 
 	}
