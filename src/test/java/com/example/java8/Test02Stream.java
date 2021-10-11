@@ -374,6 +374,9 @@ public class Test02Stream {
 		//map.entrySet().removeIf(e -> e.getValue() > 4);
 		map.values().removeIf(e->e>4);
 		System.out.println(map);
+
+		String collect = map.values().stream().map(Object::toString).collect(Collectors.joining("连接符", "前缀", "后缀"));
+		System.out.println(collect);
 	}
 
 	@Test
