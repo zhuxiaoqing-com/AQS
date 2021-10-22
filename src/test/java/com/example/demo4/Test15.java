@@ -462,8 +462,12 @@ public class Test15 {
 		}, count);
 		TestUtil.testTime(()->{long aa = a*a;}, count);
 		List<List<Object>> partition = Lists.partition(new ArrayList<>(), 11);
+	}
 
-
+	@Test
+	public void test29() {
+		System.out.println(System.currentTimeMillis());
+		System.out.println(System.nanoTime()/1000_000);
 	}
 }
 

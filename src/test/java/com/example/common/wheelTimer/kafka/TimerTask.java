@@ -37,4 +37,10 @@ public class TimerTask implements Runnable{
 	public TimerTaskEntry getTimerTaskEntry() {
 		return timerTaskEntry;
 	}
+
+
+	@Override
+	public void run() {
+
+	}
 }
