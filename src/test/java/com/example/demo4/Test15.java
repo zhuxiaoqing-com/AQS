@@ -469,6 +469,14 @@ public class Test15 {
 		System.out.println(System.currentTimeMillis());
 		System.out.println(System.nanoTime()/1000_000);
 	}
+
+	@Test
+	public void test30() {
+		int a = 2;
+		int b = 4;
+		Integer c = -2;
+		System.out.println(Integer.toUnsignedLong(c));
+	}
 }
 
 

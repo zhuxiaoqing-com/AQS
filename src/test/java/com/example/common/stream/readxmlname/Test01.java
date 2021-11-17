@@ -10,4 +10,12 @@ public class Test01 {
         ReadXmlName readXmlName = new ReadXmlName();
         readXmlName.start(path);
     }
+
+	@Test
+	public void test02() {
+	 int a = 2;
+	 int b = 4;
+	 Integer c = -2;
+	 System.out.println(Integer.toUnsignedLong(c));
+	}
 }
