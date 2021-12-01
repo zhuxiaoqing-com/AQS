@@ -3,6 +3,7 @@ package com.example.编码;
 import org.junit.Test;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 
 /**
  * @Auther: zhuxiaoqing
@@ -59,8 +60,12 @@ public class Test01 {
 
 	@Test
 	public void test03() throws Exception {
-		String aa = "a";
+		String aa = "我";
 		byte[] gbks = aa.getBytes("GBK");
+		System.out.println(printHex(gbks));
+
+		 aa = "我";
+		gbks = aa.getBytes(StandardCharsets.UTF_8);
 		System.out.println(printHex(gbks));
 	}
 }
