@@ -477,6 +477,15 @@ public class Test15 {
 		Integer c = -2;
 		System.out.println(Integer.toUnsignedLong(c));
 	}
+
+	@Test
+	public void test31() {
+	Float a = 1.1f;
+	int i = Float.floatToIntBits(a);
+	System.out.println(i);
+	System.out.println(Integer.toBinaryString(i).toString().length());
+	System.out.println(Integer.toBinaryString(i));
+	}
 }
 
 

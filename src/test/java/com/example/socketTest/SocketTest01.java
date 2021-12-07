@@ -16,7 +16,7 @@ import java.util.HashSet;
 public class SocketTest01 {
 	@Test
 	public void test01() throws IOException, InterruptedException {
-		ServerSocket serverSocket = new ServerSocket(8888);
+		ServerSocket serverSocket = new ServerSocket(9999);
 		int i = 0;
 		HashSet<Integer> sets = new HashSet<>();
 		while (i < 2000000) {
@@ -24,6 +24,9 @@ public class SocketTest01 {
 			try {
 				client = serverSocket.accept();
 				//System.out.println("receive client connect, localPort=" + client.getPort());
+				System.out.println("getInetAddress: "+client.getInetAddress());
+				System.out.println("getLocalAddress: "+client.getLocalAddress());
+				System.out.println("getPort: "+client.getPort());
 				InputStream inputStream = client.getInputStream();
 			/*	while (true) {
 					int read = inputStream.read();
