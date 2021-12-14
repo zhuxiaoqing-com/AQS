@@ -486,6 +486,7 @@ public class Test15 {
 	System.out.println(Integer.toBinaryString(i).toString().length());
 	System.out.println(Integer.toBinaryString(i));
 	}
+
 }
 
 
