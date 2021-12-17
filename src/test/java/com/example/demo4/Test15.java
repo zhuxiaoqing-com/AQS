@@ -480,11 +480,10 @@ public class Test15 {
 
 	@Test
 	public void test31() {
-	Float a = 1.1f;
-	int i = Float.floatToIntBits(a);
-	System.out.println(i);
-	System.out.println(Integer.toBinaryString(i).toString().length());
-	System.out.println(Integer.toBinaryString(i));
+		int size = 50;
+		int bytes = 200;
+		System.out.println(bytes*100);
+		System.out.println(40000); // 一人40kb 1000个人; = 40mb
 	}
 
 }
