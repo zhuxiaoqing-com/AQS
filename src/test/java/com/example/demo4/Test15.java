@@ -381,7 +381,7 @@ public class Test15 {
 		String a = "D:\\\\陈哈哈\\\\加班')";
 		System.out.println(a);
 		int i = 1;
-		System.out.println((Integer)i);
+		System.out.println((Integer) i);
 	}
 
 	@Test
@@ -418,32 +418,32 @@ public class Test15 {
 	public void test26() {
 		//double x = 180/Math.PI;
 		double x = 1;
-		System.out.println(Math.atan2(1,1)*x);
-		System.out.println(Math.atan2(1,-1)*x);
-		System.out.println(Math.atan2(-1,-1)*x);
-		System.out.println(Math.atan2(-1,1)*x);
+		System.out.println(Math.atan2(1, 1) * x);
+		System.out.println(Math.atan2(1, -1) * x);
+		System.out.println(Math.atan2(-1, -1) * x);
+		System.out.println(Math.atan2(-1, 1) * x);
 
-		 x = 180/Math.PI;
-		System.out.println(Math.atan2(1,1)*x);
-		System.out.println(Math.atan2(1,-1)*x);
-		System.out.println(Math.atan2(-1,-1)*x);
-		System.out.println(Math.atan2(-1,1)*x);
+		x = 180 / Math.PI;
+		System.out.println(Math.atan2(1, 1) * x);
+		System.out.println(Math.atan2(1, -1) * x);
+		System.out.println(Math.atan2(-1, -1) * x);
+		System.out.println(Math.atan2(-1, 1) * x);
 	}
 
 	@Test
 	public void test27() {
 		HashMap<Object, Long> map = new HashMap<>();
-		map.put(new Object(),1L);
-		map.put(new Object(),2L);
-		map.put(new Object(),3L);
-		map.put(new Object(),4L);
+		map.put(new Object(), 1L);
+		map.put(new Object(), 2L);
+		map.put(new Object(), 3L);
+		map.put(new Object(), 4L);
 		System.out.println(map);
 
 		map = new LinkedHashMap<>();
-		map.put(new Object(),1L);
-		map.put(new Object(),2L);
-		map.put(new Object(),3L);
-		map.put(new Object(),4L);
+		map.put(new Object(), 1L);
+		map.put(new Object(), 2L);
+		map.put(new Object(), 3L);
+		map.put(new Object(), 4L);
 		System.out.println(map);
 	}
 
@@ -452,22 +452,28 @@ public class Test15 {
 	public void test28() {
 		long a = 1000002321324321421L;
 		int count = 1000000000;
-		TestUtil.testTime(()->{long aa = a*a;}, count);
-		TestUtil.testTime(()->{long aa = a*a;}, count);
-		TestUtil.testTime(()->{
+		TestUtil.testTime(() -> {
+			long aa = a * a;
+		}, count);
+		TestUtil.testTime(() -> {
+			long aa = a * a;
+		}, count);
+		TestUtil.testTime(() -> {
 			double sqrt = Math.sqrt(a);
 		}, count);
-		TestUtil.testTime(()->{
+		TestUtil.testTime(() -> {
 			double sqrt = Math.sqrt(a);
 		}, count);
-		TestUtil.testTime(()->{long aa = a*a;}, count);
+		TestUtil.testTime(() -> {
+			long aa = a * a;
+		}, count);
 		List<List<Object>> partition = Lists.partition(new ArrayList<>(), 11);
 	}
 
 	@Test
 	public void test29() {
 		System.out.println(System.currentTimeMillis());
-		System.out.println(System.nanoTime()/1000_000);
+		System.out.println(System.nanoTime() / 1000_000);
 	}
 
 	@Test
@@ -482,10 +488,69 @@ public class Test15 {
 	public void test31() {
 		int size = 50;
 		int bytes = 200;
-		System.out.println(bytes*100);
+		System.out.println(bytes * 100);
 		System.out.println(40000); // 一人40kb 1000个人; = 40mb
 	}
 
+	@Test
+	public void test32() {
+		int i = 100;
+		ArrayList<Long> list = new ArrayList<>();
+		long now = System.currentTimeMillis() / 1000;
+		for (int i1 = 0; i1 < i; i1++) {
+			list.add(createBuildingId((int) now + i1));
+		}
+
+		ArrayList<Integer> count1 = new ArrayList<>();
+		for (Long aLong : list) {
+			int l = (int) (aLong & 3);
+			count1.add(l);
+		}
+
+	/*	ArrayList<Integer> count2 = new ArrayList<>();
+		ArrayList<Integer> hashCount = new ArrayList<>();
+		for (Long aLong : list) {
+			int l = (int) (aLong.hashCode() & 3);
+			hashCount.add(aLong.hashCode());
+			count2.add(l);
+		}
+*/
+
+		ArrayList<Integer> count3 = new ArrayList<>();
+		ArrayList<Integer> hashCount = new ArrayList<>();
+		for (Long aLong : list) {
+			int longHash = aLong.hashCode();
+			int h = longHash ^ (longHash >>> 16);
+			int l = (int) (h % 6);
+			hashCount.add(h);
+			count3.add(l);
+		}
+
+		System.out.println(count1);
+		//System.out.println(count2);
+		System.out.println(count3);
+
+	/*
+		System.out.println(hashCount);
+		for (Integer integer : hashCount) {
+			System.out.println(Integer.toBinaryString(integer));
+		}*/
+/*
+		for (Long aLong : list) {
+			String s = Long.toBinaryString(aLong);
+			//System.out.println(s);
+			//System.out.println(s.substring(0,s.length() - 32));
+			System.out.println(s.substring(s.length() - 32));
+			System.out.println();
+		}*/
+	}
+
+	/**
+	 * 生成用户id 每秒生成32768个id
+	 **/
+	public synchronized static long createBuildingId(int second) {
+		return (100 * 1L << 47) + (second * 1L << 15) + 0;
+	}
 }
 
 
