@@ -545,6 +545,34 @@ public class Test15 {
 		}*/
 	}
 
+	@Test
+	public void test33() {
+		Vector2f vector2f1 = new Vector2f(89496, 74646);
+		Vector2f vector2f2 = new Vector2f(90996, 73146);
+
+		Vector2f vector2f3 = new Vector2f(91289, 72853);
+		Vector2f vector2f4 = new Vector2f(89778, 74364);
+
+		System.out.println(getScreenPos(vector2f1));
+		System.out.println(getScreenPos(vector2f2));
+		System.out.println(getScreenPos(vector2f3));
+		System.out.println(getScreenPos(vector2f4));
+
+	}
+
+	public Vector2f getScreenPos(Vector2f p) {
+		int x = (int) (p.getX() / 45000);
+		int z = (int) (p.getY() / 45000);
+
+		return new Vector2f(x,z);
+	}
+
+	public static long getIndexByPos(int x, int z){
+		long _x = x;
+		return _x<<32 | z;
+	}
+
+
 	/**
 	 * 生成用户id 每秒生成32768个id
 	 **/
