@@ -42,6 +42,7 @@ public class Utils2 {
 		return lists;
 	}
 
+
 	void findAdd1(int sum, int start, int tempSum, List<List<Integer>> lists, List<Integer> list) {
 		if (tempSum == sum) {
 			lists.add(new ArrayList<>(list));
@@ -72,14 +73,30 @@ public class Utils2 {
 		return lists;
 	}
 
+	List<List<Integer>> add3(int sum, int maxNum) {
+		int tempSum = 0;
+		List<Integer> v = new ArrayList<>();
+		List<List<Integer>> lists = new ArrayList<>();
+		findAdd(sum, maxNum, tempSum, lists, v);
+		return lists;
+	}
+
 
 	/**
 	 *
 	 */
 	@Test
 	public void test01() {
-		List<List<Integer>> add = add(5);
-		print(add);
+		/*List<List<Integer>> add = add(5);
+		print(add);*/
+		List<List<Integer>> lists1 = add3(5, 5);
+		System.out.println(lists1.size());
+		List<List<Integer>> lists2 = add3(10, 5);
+		print(lists2);
+		System.out.println(lists2.size());
+		List<List<Integer>> lists3 = add3(15, 5);
+		System.out.println(lists3.size());
+		//print(lists);
 	}
 
 	@Test
