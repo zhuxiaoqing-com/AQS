@@ -92,7 +92,7 @@ public class Utils2 {
 		List<List<Integer>> lists1 = add3(5, 5);
 		System.out.println(lists1.size());
 		List<List<Integer>> lists2 = add3(10, 5);
-		print(lists2);
+		//print(lists2);
 		System.out.println(lists2.size());
 		List<List<Integer>> lists3 = add3(15, 5);
 		System.out.println(lists3.size());
