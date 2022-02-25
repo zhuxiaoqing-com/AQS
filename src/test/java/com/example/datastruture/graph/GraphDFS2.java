@@ -1,8 +1,8 @@
 package com.example.datastruture.graph;
 
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.Queue;
+import io.swagger.models.auth.In;
+
+import java.util.*;
 
 /**
  * 无向图 广度优先搜索
@@ -31,7 +31,7 @@ public class GraphDFS2 {
 	 * @param t 结束顶点
 	 */
 	public void dfs(int s, int t) {
-		fount= false;
+		fount = false;
 
 		/**
 		 * 需要 prev 记录搜索路径
@@ -81,7 +81,7 @@ public class GraphDFS2 {
 
 
 	public void dfs2(int s, int t) {
-		fount= false;
+		fount = false;
 
 		/**
 		 * 访问过的顶点
@@ -117,7 +117,7 @@ public class GraphDFS2 {
 		}
 		LinkedList<Integer> list = adj[curr];
 		for (Integer degree : list) {
-			if(visited[degree]){
+			if (visited[degree]) {
 				continue;
 			}
 			prevPath[degree] = curr;
@@ -126,6 +126,27 @@ public class GraphDFS2 {
 		}
 	}
 
+
+	public void dfs3(int s, int t) {
+		doDfs3(new ArrayList<>(), s, t);
+	}
+
+	private void doDfs3(List<Integer> path, Integer s, Integer t) {
+		if (path.contains(s)) {
+			return;
+		}
+		if (s.equals(t)) {
+			System.out.println(path);
+			return;
+		}
+
+		path.add(s);
+		LinkedList<Integer> list = adj[s];
+		for (Integer integer : list) {
+			doDfs3(path, integer, t);
+		}
+		path.remove(t);
+	}
 
 }
 

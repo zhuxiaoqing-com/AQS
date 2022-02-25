@@ -56,6 +56,7 @@ public class TestGraph {
 		GraphDFS2 graphBFS2 = new GraphDFS2(graph);
 		graphBFS2.dfs2(0, 6);
 		graphBFS2.dfs(0, 6);
+		graphBFS2.dfs3(0, 6);
 	/*	testTime(() -> graphBFS2.bfs03(0, 6), "");
 		testTime(() -> graphBFS2.bfs02(0, 6), "");*/
 	}

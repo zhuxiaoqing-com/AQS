@@ -9,7 +9,10 @@ public class DirectionGraph {
     private int v;// 顶点的个数
     private LinkedList<Integer> adj[];// 邻接表
 
-    public DirectionGraph(int v) {
+	public DirectionGraph() {
+	}
+
+	public DirectionGraph(int v) {
         this.v = v;
         adj = new LinkedList[v];
         for (int i = 0; i < v; i++) {
