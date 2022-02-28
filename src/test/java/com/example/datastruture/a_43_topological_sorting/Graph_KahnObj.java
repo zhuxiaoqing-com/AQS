@@ -116,10 +116,11 @@ public class Graph_KahnObj extends DirectionGraph {
 		LinkedList<Integer> linkedList = adjMap.get(point);
 		if (linkedList != null) {
 			for (Integer integer : linkedList) {
+				//System.out.println(integer);
 				visit(path, integer);
 			}
-		}else {
-			if(path.size() > 3) {
+		} else {
+			if (path.size() > 3) {
 				System.out.println("too long!!!!!!! " + path);
 			}
 		}
@@ -129,24 +130,55 @@ public class Graph_KahnObj extends DirectionGraph {
 
 	/**
 	 * visit(路径, 点)
-	 *   if 点在路径里
-	 *     return
-	 *   if 点是终点
-	 *     输出路径,点
-	 *     return
-	 *   点加入路径
-	 *   for 点的所有邻居
-	 *     visit(路径, 邻居)
-	 *   点从路径中删除
-	 *
+	 * if 点在路径里
+	 * return
+	 * if 点是终点
+	 * 输出路径,点
+	 * return
+	 * 点加入路径
+	 * for 点的所有邻居
+	 * visit(路径, 邻居)
+	 * 点从路径中删除
+	 * <p>
 	 * main
-	 *   清空路径
-	 *   visit(路径, 起点)
-	 *
+	 * 清空路径
+	 * visit(路径, 起点)
+	 * <p>
 	 * 作者：海鹏
 	 * 链接：https://www.zhihu.com/question/384697042/answer/1130555530
 	 * 来源：知乎
 	 * 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
 	 */
 
+
+	public boolean check2() {
+		for (Integer integer : getAdjMap().keySet()) {
+			System.out.println("---------------------- " + integer);
+			a(integer);
+		}
+		return error;
+	}
+
+	public void a(int a) {
+		ArrayDeque<Integer> queue = new ArrayDeque<>();
+		Queue<Integer> path = new ArrayDeque<>();
+		queue.add(a);
+		while (!queue.isEmpty()) {
+			Integer poll = queue.poll();
+			//System.out.println(poll);
+			if (path.contains(poll)) {
+				System.out.println("  repeated " + path);
+				return;
+			}
+			path.add(poll);
+			LinkedList<Integer> linkedList = getAdjMap().get(poll);
+			if (linkedList != null) {
+				linkedList.descendingIterator().forEachRemaining(queue::addFirst);
+			} else {
+				if (path.size() > 3) {
+					System.out.println(path.size() + "too long!!!!!!!  " + path);
+				}
+			}
+		}
+	}
 }

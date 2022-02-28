@@ -58,5 +58,9 @@ public class TestTopological {
 		//dGraphObj.topoSortByKahn02();
 
 			dGraphObj.check();
+		System.out.println();
+		System.out.println();
+		System.out.println();
+			dGraphObj.check2();
 	}
 }
