@@ -228,7 +228,7 @@ public class AStar {
 				{0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 		};
 		maps = RandomGenMap.randomGenMap(3000, 3000);
-		MapInfo info = new MapInfo(maps, maps[0].length, maps.length, new Node(1, 1, null, 1), new Node(maps[0].length-1,  maps.length-1, null, 1));
+		MapInfo info = new MapInfo(maps, maps[0].length, maps.length, new Node(1, 1, null, 1), new Node(maps[0].length+1,  maps.length+1, null, 1));
 		new AStar().search(info);
 		new AStar2().test2(maps);
 

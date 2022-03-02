@@ -179,8 +179,11 @@ public class Dijkstra {
 			// 取堆顶元素并删除
 			Vertex minVertex = queue.poll();
 			// 最短路径产生了
-			if (minVertex.id == t) break;
+			if (minVertex.id == t) {
+				break;
+			}
 			for (int i = 0; i < adj[minVertex.id].size(); i++) {
+				LinkedList<Edge> edges = adj[minVertex.id];
 				Edge edge = adj[minVertex.id].get(i);
 				Vertex vertex = vertexes[edge.tid];
 				if (minVertex.dist + edge.w < vertex.dist) {

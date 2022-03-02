@@ -14,7 +14,7 @@ public class TestDijkstra {
 	GraphDijkstra graph;
 
 	{
-		graph = new GraphDijkstra(6);
+		/*graph = new GraphDijkstra(6);
 		graph.addEdge(0, 1, 10);
 		graph.addEdge(0, 4, 15);
 		graph.addEdge(1, 2, 15);
@@ -22,13 +22,20 @@ public class TestDijkstra {
 		graph.addEdge(4, 5, 10);
 		graph.addEdge(2, 5, 5);
 		graph.addEdge(3, 2, 1);
-		graph.addEdge(3, 5, 12);
+		graph.addEdge(3, 5, 12);*/
+
+		graph = new GraphDijkstra(6);
+		graph.addEdge(0, 1, 1);
+		graph.addEdge(1, 2, 1);
+		graph.addEdge(2, 1, 1);
+		graph.addEdge(2, 3, 1);
+		graph.addEdge(3, 5, 1);
 	}
 
 	@Test
 	public void test01() {
 		Dijkstra dijkstra = new Dijkstra(graph);
-		dijkstra.dijkstra(0, 5);
+		dijkstra.dijkstra(0, 4);
 		//dijkstra.dijkstra02(0, 50);
 	}
 
