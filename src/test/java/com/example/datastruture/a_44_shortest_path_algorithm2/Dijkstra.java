@@ -76,13 +76,12 @@ public class Dijkstra {
 
 	/**
 	 * 时间复杂度是 E * logV
-	 *
-	 *
+	 * <p>
+	 * <p>
 	 * 1、while(){for} 循环 这个嵌套循环最多循环的次数不会超过 E 条边; 这个while(){for}就是最多每条边都遍历过一次
 	 * 2、其次就是 堆的 add update remove  这个的复杂度是 logV ; 因为堆里面的元素最多不会超过 V 个;
-	 *
+	 * <p>
 	 * 相乘 就是 E * logV
-	 *
 	 *
 	 * @param s
 	 * @param t
@@ -144,8 +143,10 @@ public class Dijkstra {
 	}
 
 	private void update(java.util.PriorityQueue<Vertex> queue, Vertex vertex) {
-		queue.remove(vertex);
-		queue.add(vertex);
+		boolean remove = queue.remove(vertex);
+		if (remove) {
+			queue.add(vertex);
+		}
 	}
 
 
