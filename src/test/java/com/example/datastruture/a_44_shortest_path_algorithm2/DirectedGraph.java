@@ -23,10 +23,21 @@ public class DirectedGraph {
 		LinkedList<Integer> linkedList = adjMap.computeIfAbsent(s, a -> new LinkedList<>());
 		linkedList.add(t);
 	}*/
-	public void addEdge(int s, int t) {
+	/**
+	 * edge 边
+	 * 增加 边
+	 * <p>
+	 * 有向图
+	 */
+	public void addVertexAndEdge(int s, int t) {
 		ArrayDeque<Integer> linkedList = adjMap.computeIfAbsent(s, a -> new ArrayDeque<>());
 		linkedList.add(t);
 	}
+
+	public void addVertex(int s) {
+		adjMap.computeIfAbsent(s, a -> new ArrayDeque<>());
+	}
+
 
 
 	public Map<Integer, ArrayDeque<Integer>> getAdjMap() {
