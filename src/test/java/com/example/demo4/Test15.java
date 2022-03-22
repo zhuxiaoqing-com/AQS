@@ -1,36 +1,19 @@
 package com.example.demo4;
 
-import com.alibaba.fastjson.JSON;
-import com.example.demo1.hah.Role;
-import com.example.demo4.testObj1.AA;
 import com.example.demo4.testObj1.AClass;
 import com.example.demo4.testObj1.CeShiObj1;
 import com.example.代码优化.design_mode.TowerAOI.Vector2f;
 import com.google.common.collect.Lists;
-import com.youxi.building.Misc;
-import freemarker.template.Configuration;
-import freemarker.template.Template;
-import io.swagger.models.auth.In;
-import org.apache.commons.math3.stat.inference.TestUtils;
 import org.junit.Test;
 
 import java.io.File;
-import java.io.OutputStreamWriter;
-import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.text.NumberFormat;
-import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 /**
  * @Auther: zhuxiaoqing
@@ -578,6 +561,21 @@ public class Test15 {
 	 **/
 	public synchronized static long createBuildingId(int second) {
 		return (100 * 1L << 47) + (second * 1L << 15) + 0;
+	}
+
+
+	@Test
+	public void test34() {
+		ArrayList<Object> list = createList();
+		System.out.println(li);
+	}
+
+	private ArrayList createList() {
+		ArrayList intList = new ArrayList<>();
+		intList.add(2);
+		intList.add(3);
+		intList.add(4);
+		return intList;
 	}
 }
 
