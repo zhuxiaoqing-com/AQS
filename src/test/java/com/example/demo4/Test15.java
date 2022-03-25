@@ -567,7 +567,6 @@ public class Test15 {
 	@Test
 	public void test34() {
 		ArrayList<Object> list = createList();
-		System.out.println(li);
 	}
 
 	private ArrayList createList() {
