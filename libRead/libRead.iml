@@ -12,5 +12,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="hotagent" level="project" />
+    <orderEntry type="library" name="ExcelHelper (2)" level="project" />
   </component>
 </module>
