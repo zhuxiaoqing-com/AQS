@@ -9,6 +9,7 @@ import org.junit.Test;
 import java.io.File;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
 import java.text.NumberFormat;
 import java.util.*;
 import java.util.concurrent.*;
@@ -566,7 +567,10 @@ public class Test15 {
 
 	@Test
 	public void test34() {
-		ArrayList<Object> list = createList();
+		String a = " ";
+		String a1 = " ";
+		System.out.println(a.codePointAt(0));
+		System.out.println(a1.codePointAt(0));
 	}
 
 	private ArrayList createList() {
