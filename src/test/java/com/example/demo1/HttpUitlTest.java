@@ -448,6 +448,30 @@ public class HttpUitlTest {
 		String result = post(params, uri);
 	}
 
+	/**
+	 * 服务器列表
+	 */
+	@Test
+	public void serverlist() {
+		String uri = "/serverlist";
+		Map<String, String> params = new LinkedHashMap<>();
+		params.put("channel","222");
+		params.put("account","222");
+		String result = post(params, uri);
+		System.out.println(result);
+	}
+
+	/**
+	 * 服务器列表
+	 */
+	@Test
+	public void serverlist2() {
+		String uri = "/serverlist";
+		uri += "?channel=" + "2312a"+"&account="+"w212";
+		String result = get(uri);
+		System.out.println(result);
+	}
+
     String content1 = "1995年中共执政当局开始寻求强化法轮功的组织构架及与政府的关系。" +
             "中国政府的国家体委、公共健康部和气功科研会，访问李洪志，要求联合成立法轮功协会，但李洪志表示拒绝。" +
             "同年，气功科研会通过一项新规定，命令所有气功分会必须建立中国共产党党支部，但李洪志再次表示拒绝。" +
@@ -517,12 +541,13 @@ public class HttpUitlTest {
         //String url = "http://10.42.0.35:11000" + uri;
         //String url = "http://10.42.0.50:8089" + uri; // 本机 gmweb
         //String url = "http://106.52.215.79:8015" + uri;// XY 线上
-		String url = "http://127.0.0.1:11000" + uri;
+		//String url = "http://127.0.0.1:11000" + uri;
+		String url = "http://127.0.0.1:8181" + uri;
         Collection<String> values = map.values();
-        String sign = SignUtil.getMD5ForGM(values.toArray(new String[values.size()]));
+     /*   String sign = SignUtil.getMD5ForGM(values.toArray(new String[values.size()]));
         map.put("sign", sign);
         System.out.println("参数: " + map);
-        System.out.println(url);
+        System.out.println(url);*/
         return HttpUtil.doPost(url, map);
     }
 
@@ -537,7 +562,7 @@ public class HttpUitlTest {
 
         //String url = "http://10.42.0.50:11000" + uri;
         //String url = "http://10.42.0.50:8089" + uri;
-        String url = "http://127.0.0.1:8089" + uri;
+        String url = "http://127.0.0.1:8181" + uri;
         return HttpUtil.doGet(url);
     }
 
