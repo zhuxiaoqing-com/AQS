@@ -17,11 +17,18 @@ public class Test {
     long end;
     long start;
 
-    String driverName = "com.mysql.jdbc.Driver";
+   /* String driverName = "com.mysql.jdbc.Driver";
     String url = "jdbc:mysql://localhost:3306/test1?rewriteBatchedStatements=true";
     String user = "root";
-    String password = "123";
-    {
+    String password = "123";*/
+
+	 String driverName = "com.mysql.jdbc.Driver";
+    String url = "jdbc:mysql://127.0.0.1:3306/hunter_gm?useSSL=false&useUnicode=true&characterEncoding=UTF-8&noAccessToProcedureBodies=true&serverTimezone=Asia/Shanghai";
+    String user = "root";
+    String password = "123456";
+
+
+	{
         try {
             Class.forName(driverName);
         } catch (ClassNotFoundException e) {
