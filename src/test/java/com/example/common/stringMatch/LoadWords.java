@@ -13,9 +13,9 @@ public class LoadWords {
         BufferedReader br = null;
         ArrayList<String> words = new ArrayList<>();
         try {
-            URL resource = LoadWords.class.getClassLoader().getResource("words.test");
+            //URL resource = LoadWords.class.getClassLoader().getResource("D:/words.test");
             //System.out.println(resource);
-            br = new BufferedReader(new FileReader(resource.getFile()));
+            br = new BufferedReader(new FileReader(new File("D:/words.test")));
             String str;
             while ((str = br.readLine()) != null) {
                 words.add(str);

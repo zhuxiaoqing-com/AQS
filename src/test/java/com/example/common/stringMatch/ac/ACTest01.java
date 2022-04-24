@@ -1,6 +1,7 @@
 package com.example.common.stringMatch.ac;
 
 import com.example.common.stringMatch.LoadWords;
+import com.example.datastruture.stringmatch.ac.AC1;
 import com.example.demo4.TestUtil;
 import org.junit.Test;
 
@@ -29,17 +30,29 @@ public class ACTest01 {
 
 	@Test
 	public void test01() {
-		KeyWordsACFilter keyWordsACFilter = new KeyWordsACFilter();
 		List<String> words = LoadWords.load();
-		keyWordsACFilter.initialize(words.toArray(new String[words.size()]));
-		//        List<String> search = search(content);
 
-		SensitiveFilterImprove sensitiveFilterImprove = new SensitiveFilterImprove();
-		sensitiveFilterImprove.buildTree(words);
+		KeyWordsACFilter a1 = new KeyWordsACFilter();
+		a1.initialize(words.toArray(new String[0]));
+
+		SensitiveFilterImprove a2 = new SensitiveFilterImprove();
+		a2.buildTree(words);
+
+		AC1 a3 = new AC1();
+		a3.buildTree(words);
+
+		System.out.println(a1.contain(content));
+		System.out.println(a2.search(content));
+		System.out.println(a3.match(content));
 
 
-		TestUtil.testTime(()-> keyWordsACFilter.contain(content), 100000, "a");
-		TestUtil.testTime(()-> sensitiveFilterImprove.search(content), 100000, "b");
+
+		System.out.println(a1.filt(content));
+		System.out.println(a3.match(content));
+
+
+	/*	TestUtil.testTime(()-> a1.contain(content), 100000, "a");
+		TestUtil.testTime(()-> a2.search(content), 100000, "b");*/
 
 
 	}
