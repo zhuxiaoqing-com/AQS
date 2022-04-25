@@ -1,7 +1,10 @@
 package com.example.common.stringMatch.ac;
 
+import cn.hutool.dfa.WordTree;
 import com.example.common.stringMatch.LoadWords;
 import com.example.datastruture.stringmatch.ac.AC1;
+import com.example.datastruture.stringmatch.ac.DeepWordTree;
+import com.example.datastruture.stringmatch.ac.SimpleStopChar;
 import com.example.demo4.TestUtil;
 import org.junit.Test;
 
@@ -26,6 +29,7 @@ public class ACTest01 {
 			"法轮功起初并没有受批评，但在1996年3月退出中国气功协会后，失去了政府体制的保护。";
 
 	String content2 = "我是习d近 DF平";
+	String content3 = "我是习共近产党平";
 
 
 	@Test
@@ -35,25 +39,39 @@ public class ACTest01 {
 		KeyWordsACFilter a1 = new KeyWordsACFilter();
 		a1.initialize(words.toArray(new String[0]));
 
-		SensitiveFilterImprove a2 = new SensitiveFilterImprove();
-		a2.buildTree(words);
+		DeepWordTree a2 = new DeepWordTree();
+		DeepWordTree.setMatchDeep(2);
+		DeepWordTree.setCharFilter(SimpleStopChar::isNotStopChar);
+		a2.addWords(words);
 
 		AC1 a3 = new AC1();
 		a3.buildTree(words);
 
-		System.out.println(a1.contain(content));
-		System.out.println(a2.search(content));
-		System.out.println(a3.match(content));
+		String content = this.content;
+		content = content2;
+		content = content3;
 
+		System.out.println(a1.contain(content));
+		System.out.println(a2.isMatch(content));
+		System.out.println(a3.match(content));
 
 
 		System.out.println(a1.filt(content));
-		System.out.println(a3.match(content));
+		System.out.println(a2.filterChatMsg(content, "*"));
+		System.out.println(a3.replace(content, '*'));
+
+		//System.out.println(a1.filt(content).equals(a3.replace(content, '*')));
 
 
-	/*	TestUtil.testTime(()-> a1.contain(content), 100000, "a");
-		TestUtil.testTime(()-> a2.search(content), 100000, "b");*/
+		String finalContent = content;
+		TestUtil.testTime(()-> a1.contain(finalContent), 100000, "a1");
+		TestUtil.testTime(()-> a2.isMatch(finalContent), 100000, "a2");
+		TestUtil.testTime(()-> a3.match(finalContent), 100000, "a3");
 
+
+		TestUtil.testTime(()-> a1.filt(finalContent), 100000, "a1");
+		TestUtil.testTime(()-> a2.filterChatMsg(finalContent,"*"), 100000, "a2");
+		TestUtil.testTime(()-> a3.replace(finalContent,'*'), 100000, "a3");
 
 	}
 }

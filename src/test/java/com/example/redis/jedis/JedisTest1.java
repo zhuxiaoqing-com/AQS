@@ -326,4 +326,24 @@ public class JedisTest1 {
 
 
 	}
+
+	@Test
+	public void test1() {
+		hset("key1","field1", "value1", 100);
+	}
+	public void hset(String key, String field, String value, int second) {
+		Jedis jedis = null;
+		try {
+			jedis = this.jedis;
+			if (second <= 0) {
+				jedis.hset(key, field, value);
+			} else {
+				String script = "redis.call('hset', KEYS[1], ARGV[1], ARGV[2]);redis.call('expire', KEYS[1], ARGV[3]);return 1; ";
+				jedis.eval(script, Collections.singletonList(key), Arrays.asList(field, value, String.valueOf(second)));
+			}
+		} catch (Exception e) {
+		} finally {
+			jedis.close();
+		}
+	}
 }

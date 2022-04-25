@@ -85,11 +85,10 @@ public class AC1 {
 			AcNode poll = queue.poll();
 			for (AcNode value : poll.children.values()) {
 				AcNode fail = poll.fail;
-
 				while (fail != null) {
 					AcNode acNode = fail.children.get(value.data);
 					if (acNode != null) {
-						poll.fail = acNode;
+						value.fail = acNode;
 						break;
 					}
 					fail = fail.fail;
@@ -98,7 +97,6 @@ public class AC1 {
 				if (value.fail == null) {
 					value.fail = root;
 				}
-
 				queue.add(value);
 			}
 		}
@@ -119,7 +117,7 @@ public class AC1 {
 				node = root;
 			}
 
-			if(node.isEndingChar) {
+			if (node.isEndingChar) {
 				return true;
 			}
 		}
@@ -127,8 +125,8 @@ public class AC1 {
 	}
 
 
-	public String replace(String text, Character replaceChar) {
-		StringBuilder stringBuilder = new StringBuilder(text);
+	public String replace(String text, char replaceChar) {
+		char[] chars = text.toCharArray();
 		AcNode node = root;
 		for (int i = 0; i < text.length(); i++) {
 			char c = text.charAt(i);
@@ -143,10 +141,13 @@ public class AC1 {
 			}
 
 			if (node.isEndingChar) {
-				stringBuilder.replace(i - node.length + 1, i + 1, String.valueOf(replaceChar));
+				int j = i - node.length + 1;
+				for (int charIndex = j; charIndex <= i; charIndex++) {
+					chars[charIndex] = replaceChar;
+				}
 			}
 		}
-		return stringBuilder.toString();
+		return new String(chars);
 	}
 }
 
