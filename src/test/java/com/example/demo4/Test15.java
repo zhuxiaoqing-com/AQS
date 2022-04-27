@@ -505,14 +505,16 @@ public class Test15 {
 		for (Long aLong : list) {
 			int longHash = aLong.hashCode();
 			int h = longHash ^ (longHash >>> 16);
-			int l = (int) (h % 6);
+			int l = (int) (h % 2);
 			hashCount.add(h);
 			count3.add(l);
 		}
 
+		System.out.println(list);
 		System.out.println(count1);
 		//System.out.println(count2);
 		System.out.println(count3);
+		System.out.println(hashCount);
 
 	/*
 		System.out.println(hashCount);
