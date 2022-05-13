@@ -4,6 +4,7 @@ import com.example.demo4.testObj1.AClass;
 import com.example.demo4.testObj1.CeShiObj1;
 import com.example.代码优化.design_mode.TowerAOI.Vector2f;
 import com.google.common.collect.Lists;
+import io.swagger.models.auth.In;
 import org.junit.Test;
 
 import java.io.File;
@@ -582,6 +583,33 @@ public class Test15 {
 		intList.add(4);
 		return intList;
 	}
+
+	@Test
+	public void test35() {
+	int index = 10;
+		TreeMap<Integer, Integer> map = new TreeMap<>();
+		for (int i1 = 0; i1 < index; i1++) {
+			map.put(i1,i1);
+		}
+
+		System.out.println(	map.ceilingKey(-1));
+		System.out.println(	map.ceilingKey(0));
+		System.out.println(	map.ceilingKey(1));
+		System.out.println(	map.ceilingKey(5));
+		System.out.println(	map.ceilingKey(9));
+		System.out.println(	map.ceilingKey(10));
+		System.out.println(	map.ceilingKey(11));
+
+		System.out.println("---------------------");
+		System.out.println(	map.floorKey(-1));
+		System.out.println(	map.floorKey(0));
+		System.out.println(	map.floorKey(1));
+		System.out.println(	map.floorKey(5));
+		System.out.println(	map.floorKey(9));
+		System.out.println(	map.floorKey(10));
+		System.out.println(	map.floorKey(11));
+	}
+
 }
 
 
