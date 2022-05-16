@@ -509,4 +509,32 @@ public class FileUtil {
     }
 
 
+	public static String readFile(File file) {
+		BufferedReader reader = null;
+		try {
+			StringBuilder builder = new StringBuilder();
+			reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"));
+			String tempString;
+			while ((tempString = reader.readLine()) != null) {
+				builder.append(tempString);
+				builder.append(System.lineSeparator());
+			}
+			// 去除最后的分隔符
+			if (builder.length() > 0) {
+				builder.delete(builder.length() - System.lineSeparator().length(), builder.length());
+			}
+			return builder.toString();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (reader != null) {
+				try {
+					reader.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return "";
+	}
 }

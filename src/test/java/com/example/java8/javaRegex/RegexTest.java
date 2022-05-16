@@ -133,12 +133,13 @@ public class RegexTest {
 		String REGEX = "a*b";
 		String INPUT = "aabfooaabfooabfoobkkk";
 		String REPLACE = "-";
+		int REPLACE2 = 2;
 		Pattern p = Pattern.compile(REGEX);
 		// 获取 matcher 对象
 		Matcher m = p.matcher(INPUT);
 		StringBuffer sb = new StringBuffer();
 		while (m.find()) {
-			m.appendReplacement(sb, REPLACE);
+			m.appendReplacement(sb, String.valueOf(REPLACE2++));
 		}
 		//m.appendTail(sb);
 		System.out.println(sb.toString());
