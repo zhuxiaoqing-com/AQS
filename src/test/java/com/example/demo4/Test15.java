@@ -610,6 +610,27 @@ public class Test15 {
 		System.out.println(	map.floorKey(11));
 	}
 
+	@Test
+	public void test36() {
+		int nverts = 4;
+
+		for (int i = 0, j = nverts - 1; i < nverts; j = i++) {
+			System.out.println("i: " + i);
+			System.out.println("j: " + j);
+			System.out.println("--------------");
+		}
+	}
+
+	@Test
+	public void test37() {
+		long l = System.currentTimeMillis();
+		System.out.println(l/1000);
+		int l1 = (int) (l / 1000);
+		System.out.println(l1);
+
+		System.out.println(Integer.MAX_VALUE/1000/60/60/24);
+	}
+
 }
 
 

@@ -297,29 +297,37 @@ public class Test02Stream {
 	@Test
 	public void test13() {
 		ArrayList<A> objects = new ArrayList<>();
-		objects.add(new A(1, 11, 1));
-		objects.add(new A(1, 22, 1));
-		objects.add(new A(1, 33, 1));
-		objects.add(new A(2, 1, 1));
-		objects.add(new A(2, 2, 1));
+		
+		int index = 2;
+		for (int i = 0; i < index; i++) {
+			for (int i1 = 0; i1 < index; i1++) {
+				for (int i2 = 0; i2 < index; i2++) {
+					objects.add(new A(i,i1,i2));
+				}
+			}
+		}
 
-		List<A> collect = objects.stream().sorted(Comparator.comparing(A::getId).reversed().thenComparing(A::getCount))
+		List<A> collect = objects.stream().sorted(Comparator.comparing(A::getId).reversed().thenComparing(A::getCount).thenComparingInt(A::getCoun2))
 				.collect(Collectors.toList());
 		System.out.println(collect);
 
-		List<A> collect1 = objects.stream().sorted(Comparator.comparing(A::getId).reversed().thenComparing(A::getCount).reversed())
+		List<A> collect1 = objects.stream().sorted(Comparator.comparing(A::getId).reversed().thenComparing(A::getCount).thenComparingInt(A::getCoun2).reversed())
 				.collect(Collectors.toList());
 		System.out.println(collect1);
 
-		List<A> collect2 = objects.stream().sorted(Comparator.comparing(A::getId).thenComparing(A::getCount).reversed())
+		List<A> collect2 = objects.stream().sorted(Comparator.comparing(A::getId).thenComparing(A::getCount).reversed().thenComparingInt(A::getCoun2))
 				.collect(Collectors.toList());
 		System.out.println(collect2);
 
+
+
+
 		Optional<A> max = objects.stream().max(Comparator.comparing(A::getId).thenComparing(A::getCount));
-		System.out.println(max.get());
+		//System.out.println(max.get());
 
 		objects.stream().sorted(Comparator.comparing(a -> a.getCount()));
 		objects.stream().sorted(Comparator.<A>comparingInt(a -> a.getCount()).reversed());
+
 	}
 
 	@Test

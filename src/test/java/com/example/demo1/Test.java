@@ -2,10 +2,8 @@ package com.example.demo1;
 
 
 import java.sql.*;
-import java.util.Calendar;
+import java.util.*;
 import java.sql.Date;
-import java.util.Random;
-import java.util.UUID;
 
 
 public class Test {
@@ -23,7 +21,7 @@ public class Test {
     String password = "123";*/
 
 	 String driverName = "com.mysql.jdbc.Driver";
-    String url = "jdbc:mysql://127.0.0.1:3306/hunter_gm?useSSL=false&useUnicode=true&characterEncoding=UTF-8&noAccessToProcedureBodies=true&serverTimezone=Asia/Shanghai";
+    String url = "jdbc:mysql://10.0.0.101:3306/SECONDWAR_401?useUnicode=true&amp;characterEncoding=utf-8&amp;useSSL=false&amp;rewriteBatchedStatements=true&amp;user=root&amp;password=123456";
     String user = "root";
     String password = "123456";
 
@@ -31,10 +29,17 @@ public class Test {
 	{
         try {
             Class.forName(driverName);
+
+			try {
+				conn = DriverManager.getConnection(url, user, password);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
+
 
     @org.junit.Test
     public void fun1() {
@@ -132,8 +137,42 @@ public class Test {
         Long start = 946569600000L; //(2000)
         Long end = 1514649600000L;//(2018)
 
-        long result = (long) (start + Math.random() * (end - start));
-        return new Date(result);
-    }
+		long result = (long) (start + Math.random() * (end - start));
+		return new Date(result);
+	}
+
+	@org.junit.Test
+	public void test02() throws SQLException {
+		List<String> allTableName = getAllTableName(conn);
+		for (String s : allTableName) {
+			selectTable(s);
+		}
+	}
+
+	public static List<String> getAllTableName(Connection cnn) throws SQLException {
+		List<String> tables = new ArrayList<>();
+		DatabaseMetaData dbMetaData = cnn.getMetaData();
+
+		String[] types = {"TABLE"};
+
+		ResultSet tabs = dbMetaData.getTables(null, null, null, types/*只要表就好了*/);
+
+		while (tabs.next()) {
+			tables.add((String) tabs.getObject("TABLE_NAME"));
+		}
+		System.out.println(tables);
+		return tables;
+	}
+
+	private void selectTable(String tableName) throws SQLException {
+		String sql = "SELECT * FROM " + tableName + " LIMIT 100;";
+		Statement statement = conn.createStatement();
+
+		ResultSet resultSet = statement.executeQuery(sql);
+		while (resultSet.next()) {
+			String string = resultSet.getString(2);
+			System.out.println(string);
+		}
+	}
 
 }
