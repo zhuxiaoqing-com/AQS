@@ -631,6 +631,16 @@ public class Test15 {
 		System.out.println(Integer.MAX_VALUE/1000/60/60/24);
 	}
 
+	@Test
+	public void test38() {
+		long send = 111;
+		//System.out.println(	new Random(send).nextInt());
+		System.out.println(	new Random(send).nextInt(1));
+		System.out.println(	new Random(send).nextInt(10));
+		System.out.println(	new Random(send).nextInt(100));
+		System.out.println(	new Random(send).nextInt(1000));
+	}
+
 }
 
 
