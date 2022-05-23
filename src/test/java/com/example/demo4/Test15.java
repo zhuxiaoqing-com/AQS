@@ -633,12 +633,27 @@ public class Test15 {
 
 	@Test
 	public void test38() {
-		long send = 111;
-		//System.out.println(	new Random(send).nextInt());
-		System.out.println(	new Random(send).nextInt(1));
-		System.out.println(	new Random(send).nextInt(10));
-		System.out.println(	new Random(send).nextInt(100));
-		System.out.println(	new Random(send).nextInt(1000));
+		int index = 10;
+			SkillRandom skillRandom = new SkillRandom(1000);
+		for (int i1 = 0; i1 < index; i1++) {
+			System.out.println(skillRandom.nextInt(1000));
+		}
+	}
+
+	@Test
+	public void test39() {
+		int index = 10;
+
+		for (int i1 = -5; i1 < 6; i1++) {
+			System.out.println(i1>>>2);
+		}
+
+		System.out.println("---------------------");
+		System.out.println("---------------------");
+		System.out.println("---------------------");
+		for (int i1 = -5; i1 < 6; i1++) {
+			System.out.println(i1>>2);
+		}
 	}
 
 }
