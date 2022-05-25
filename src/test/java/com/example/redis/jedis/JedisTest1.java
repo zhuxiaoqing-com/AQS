@@ -246,7 +246,7 @@ public class JedisTest1 {
 
 	/**
 	 * bitmap 测试
-	 *
+	 * <p>
 	 * offset 参数必须大于或等于 0 ，小于 2^32 (bit 映射被限制在 512 MB 之内)。
 	 */
 	@Test
@@ -280,7 +280,7 @@ public class JedisTest1 {
 
 	/**
 	 * bitmap 测试
-	 *
+	 * <p>
 	 * offset 参数必须大于或等于 0 ，小于 2^32 (bit 映射被限制在 512 MB 之内)。
 	 */
 	@Test
@@ -329,8 +329,12 @@ public class JedisTest1 {
 
 	@Test
 	public void test1() {
-		hset("key1","field1", "value1", 100);
+		//hset("key1","field1", "value1", 100);
+		//System.out.println(	msetnx("b","b", 0));
+		System.out.println(setnx2("aa", "c", 111111));
+		System.out.println(setnx2("aa", "c", 11111));
 	}
+
 	public void hset(String key, String field, String value, int second) {
 		Jedis jedis = null;
 		try {
@@ -342,6 +346,58 @@ public class JedisTest1 {
 				jedis.eval(script, Collections.singletonList(key), Arrays.asList(field, value, String.valueOf(second)));
 			}
 		} catch (Exception e) {
+		} finally {
+			jedis.close();
+		}
+	}
+
+	public long msetnx(String key, String value) {
+		Jedis jedis = null;
+		try {
+			jedis = this.jedis;
+			return jedis.msetnx(key, value);
+		} catch (Exception e) {
+		} finally {
+			jedis.close();
+		}
+		return -1;
+	}
+
+	/**
+	 * local old = redis.call('get', KEYS[1])
+	 * 	  if old then
+	 * 	    return 0
+	 * 	  else
+	 * 	    redis.call('setex', KEYS[1], ARGV[1], ARGV[2])
+	 * 	    return 1
+	 * 	 end
+	 */
+	/**
+	 * 将其KEY value 设置进去 仅当给定key不存在时
+	 *
+	 * @return true: key设置成功 false:设置失败
+	 */
+	public Object msetnx(String key, String value, long second) {
+		Jedis jedis = this.jedis;
+		try {
+			if (second > 0) {
+				String script = "local old = redis.call('get', KEYS[1]) if old then "
+						+ "return 0 else redis.call('setex', KEYS[1], ARGV[2], ARGV[1])  return 1 end ";
+				Object result = jedis.eval(script, Collections.singletonList(key),
+						Arrays.asList(value, String.valueOf(second)));
+				return result;
+			} else {
+				return jedis.msetnx(key, value);
+			}
+		} finally {
+			jedis.close();
+		}
+	}
+
+	public Object setnx2(String key, String value, long second) {
+		Jedis jedis = this.jedis;
+		try {
+			return jedis.set(key, value, "nx", "ex", second);
 		} finally {
 			jedis.close();
 		}
