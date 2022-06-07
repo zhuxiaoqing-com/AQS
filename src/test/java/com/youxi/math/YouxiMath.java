@@ -1,6 +1,7 @@
 package com.youxi.math;
 
 import com.example.代码优化.design_mode.TowerAOI.Vector2f;
+import com.youxi.entity.Position;
 import com.youxi.sssh.fsm.Vector3f;
 import org.junit.Test;
 
@@ -91,6 +92,10 @@ public class YouxiMath {
 		return v1.getX() * v2.getY() - v1.getY() * v2.getX();
 	}
 
+	private double cross(Position v1, Position v2) {
+		return v1.getX() * v2.getY() - v1.getY() * v2.getX();
+	}
+
 
 	/**
 	 * 线段和多边形相交
@@ -102,9 +107,18 @@ public class YouxiMath {
 		return true;
 	}
 
+	public boolean pointSegment(Position a, Position b, Position c){
+		double cross = cross(c.sub(a), b.sub(a));
+		return cross == 0;
+	}
 
 	@Test
 	public void test01() {
+		Position a = new Position(49861, 84411);
+		Position b = new Position(56261, 85811);
+		Position c = new Position(50176, 80613);
+		boolean b1 = pointSegment(a, b, c);
+		System.out.println(b1);
 		//circleSegmentCrossing(500, new Vector2f(108.19f, 23.38f), , )
 	}
 }

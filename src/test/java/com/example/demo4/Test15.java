@@ -656,6 +656,15 @@ public class Test15 {
 		}
 	}
 
+	@Test
+	public void test40() {
+		double v = Math.atan2(85811 - 84411, 56261 - 49861);
+		System.out.println(v);
+
+		 v = Math.atan2(80613 - 84411, 50176 - 49861);
+		System.out.println(v);
+	}
+
 }
 
 
