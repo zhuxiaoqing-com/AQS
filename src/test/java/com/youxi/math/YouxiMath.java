@@ -107,15 +107,23 @@ public class YouxiMath {
 		return true;
 	}
 
+	/**
+	 * https://zhuanlan.zhihu.com/p/160112849
+	 * 点p是否在线段AB上
+	 * 用点乘/两个线段的长度可以求出 cos值
+	 *
+	 * 方法一: 先检测AB两点是否重合, 以及p点和AB两点是否重合, 判断 [公式] 和 [公式] 的夹角余弦值是否是-1
+	 *
+	 * @param start
+	 * @param end
+	 * @param point
+	 * @return
+	 */
 	public boolean pointSegment(Position start, Position end, Position point) {
 		Position pointStart = point.sub(start);
 		Position endStart = end.sub(start);
-		double cross = cross(pointStart, endStart);
-		if (cross != 0) {
-			return false;
-		}
-
 		Position pointEnd = point.sub(end);
+
 		int length = pointStart.length();
 		int length1 = pointEnd.length();
 		int length2 = endStart.length();
