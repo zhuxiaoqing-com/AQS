@@ -93,7 +93,7 @@ public class YouxiMath {
 	}
 
 	private double cross(Position v1, Position v2) {
-		return v1.getX() * v2.getY() - v1.getY() * v2.getX();
+		return v1.getX() * v2.getZ() - v1.getZ() * v2.getX();
 	}
 
 
@@ -107,18 +107,39 @@ public class YouxiMath {
 		return true;
 	}
 
-	public boolean pointSegment(Position a, Position b, Position c){
-		double cross = cross(c.sub(a), b.sub(a));
-		return cross == 0;
+	public boolean pointSegment(Position start, Position end, Position point) {
+		Position pointStart = point.sub(start);
+		Position endStart = end.sub(start);
+		double cross = cross(pointStart, endStart);
+		if (cross != 0) {
+			return false;
+		}
+
+		Position pointEnd = point.sub(end);
+		int length = pointStart.length();
+		int length1 = pointEnd.length();
+		int length2 = endStart.length();
+		return length + length1 == length2;
 	}
 
 	@Test
 	public void test01() {
-		Position a = new Position(49861, 84411);
-		Position b = new Position(56261, 85811);
-		Position c = new Position(50176, 80613);
-		boolean b1 = pointSegment(a, b, c);
+		Position start = new Position(49861, 84411);
+		Position end = new Position(56261, 85811);
+		Position point = new Position(50176, 80613);
+		boolean b1 = pointSegment(start, end, point);
 		System.out.println(b1);
 		//circleSegmentCrossing(500, new Vector2f(108.19f, 23.38f), , )
 	}
+
+	@Test
+	public void test02() {
+		Position start = new Position(49, 84);
+		Position end = new Position(56, 85);
+		Position point = new Position(50, 80);
+		boolean b1 = pointSegment(start, end, point);
+		System.out.println(b1);
+		//circleSegmentCrossing(500, new Vector2f(108.19f, 23.38f), , )
+	}
+
 }
