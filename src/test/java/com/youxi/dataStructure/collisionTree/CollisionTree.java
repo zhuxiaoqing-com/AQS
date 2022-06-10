@@ -12,14 +12,14 @@ import java.util.List;
  */
 public class CollisionTree {
 	private Rect rect;
-	private int level;
+	private int level; //  当前层数
 	private CollisionTree parent;
-	List<CollisionTree> nodes;
-	List<Object> objects;
-	List<Object> invalid_objects;
+	List<CollisionTree> nodes; //  4个子节点队列。
+	List<Rect> objects; // 当前节点内的待检测的对象。
+	List<Rect> invalid_objects;
 
-	public static final int MAX_OBJECTS = 10;
-	public static final int MAX_LEVELS = 5;
+	public static final int MAX_OBJECTS = 10; // 是每个节点能容纳的最多对象超过 则分割4个节点, 我们并不是事先就分好格子， 而是在插入对象的时候才进行划分。
+	public static final int MAX_LEVELS = 5; // 是 四叉树的最大层数 超过 则不再划分 从根节点开始 最多6 层。
 
 	public CollisionTree(Rect rect, int level, CollisionTree parent) {
 		this.rect = rect;
@@ -39,7 +39,7 @@ public class CollisionTree {
 	 * 分裂
 	 */
 	public boolean split() {
-		if (this.nodes.size() <= 0) {
+		if (this.nodes.size() > 0) {
 			return false;
 		}
 
@@ -106,6 +106,9 @@ public class CollisionTree {
 	}
 
 
+	public int getIndex(Rect rect) {
+		return getIndex(rect, false);
+	}
 	public int getIndex(Rect rect, boolean checkIsInner) {
 		if (checkIsInner && !this.rect.contain(rect)) {
 			if (!this.rect.intersect(rect)) {
@@ -168,5 +171,35 @@ public class CollisionTree {
 		 *     当index>=0时，则调用index对象象限的insert方法
 		 *     当index为-2或-1时，并且parent为假，则将rect添加到objs里面
 		 */
+		if (index <= -3 && this.parent!= null) {
+			this.parent.insert(rect);
+			return;
+		} else if (index == -4) {
+			this.invalid_objects.add(rect);
+			return;
+		} else if (index >= 0) {
+			this.nodes.get(index).insert(rect);
+			return;
+		}
+
+		List<Rect> objs = this.objects;
+		List<CollisionTree> nodes = this.nodes;
+
+		// 存储rect
+		objs.add(rect);
+
+		// 判断当前rect数量是否超过阈值
+		if (nodes.size() <= 0 && objs.size() > MAX_OBJECTS && this.level < MAX_LEVELS) {
+			this.split();
+			this.objects = new ArrayList<>();
+			for (int i = objs.size() - 1; i >= 0; i--) {
+				index = this.getIndex(objs.get(i));
+				if (index >= 0) {
+					nodes[index].insert(objs[i]);
+				} else {
+					this.objects.push(objs[i]);
+				}
+			}
+		}
 	}
 }
