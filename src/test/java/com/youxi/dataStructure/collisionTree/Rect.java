@@ -5,7 +5,7 @@ package com.youxi.dataStructure.collisionTree;
  * @Date: 2022/6/8 15:59
  * @Description: 这个矩形没有管角度
  */
-public class Rect {
+public class Rect extends Entity {
 	private int x; // 是矩形的左下角坐标
 	private int y; // 是矩形的左下角坐标
 	private int width; // 宽
@@ -81,7 +81,7 @@ public class Rect {
 	/**
 	 * 测试自身矩形是否包含rect矩形
 	 */
-	public boolean contain(Rect rect) {`
+	public boolean contain(Rect rect) {
 		return this.minX <= rect.maxX &&
 				this.minY <= rect.maxY &&
 				this.maxX >= rect.minX &&

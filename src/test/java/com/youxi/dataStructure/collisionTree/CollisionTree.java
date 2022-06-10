@@ -119,27 +119,20 @@ public class CollisionTree {
 		return result;
 	}
 
-	private void extracted(ArrayList<Integer> result, int i, int i2) {
-		if (i < result.size()) {
-			result.remove(i);
-
-		}
-		if (i2 < result.size()) {
-			result.remove(i2);
-		}
-	}
-
-	private void resultRemove(ArrayList<Integer> result, int... removeIndex) {
-
-	}
-
 
 	public int getIndex(Rect rect) {
 		return getIndex(rect, false);
 	}
 
+	/**
+	 * 0123 是四个象限
+	 * <p>
+	 * 象限：
+	 * 2   1
+	 * 3   4
+	 */
 	public int getIndex(Rect rect, boolean checkIsInner) {
-		if (checkIsInner && !this.rect.contain(rect)) {
+		if (/*checkIsInner &&*/ !this.rect.contain(rect)) {
 			if (!this.rect.intersect(rect)) {
 				/**
 				 * 不相交
@@ -158,8 +151,8 @@ public class CollisionTree {
 		boolean bottom = rect.getMaxY() <= this.rect.getMidY();
 
 		if (this.nodes.size() <= 0) {
-			/**
-			 * 自身没有孩子节点，rect属于自身
+			/*
+			  自身没有孩子节点，rect属于自身
 			 */
 			return -1;
 		}
@@ -176,7 +169,7 @@ public class CollisionTree {
 				return 3;
 			}
 		}
-		/**
+		/*
 		 * 不单单属于某一个象限
 		 */
 		return -2;
@@ -241,19 +234,20 @@ public class CollisionTree {
 		List<CollisionTree> nodes = this.nodes;
 
 		int i;
+		// 只有root节点才有 iobjs
 		if (this.isRoot() && iobjs.size() > 0) {
 			this.invalid_objects = new ArrayList<>();
-			for (i = iobjs.size() - 1; i >= 0; i--) {
-				if (iobjs.get(i).isValid()) {
-					this.insert(iobjs.get(i));
+			for (Rect iobj : iobjs) {
+				if (iobj.isValid()) {
+					this.insert(iobj);
 				}
 			}
 		}
 
 		this.objects = new ArrayList<>();
-		for (i = objs.size() - 1; i >= 0; i--) {
-			if (objs.get(i).isValid()) {
-				this.insert(objs.get(i));
+		for (Rect obj : objs) {
+			if (obj.isValid()) {
+				this.insert(obj);
 			}
 		}
 
@@ -273,15 +267,15 @@ public class CollisionTree {
 		List<Integer> indexs;
 
 		index = this.getIndex(rect);
-		// rect与自身不想交
+		// rect与自身不相交
 		if (index == -4) {
 			return result;
 			// rect与自身相交
 			// rect不单单属于某一个象限
 		} else if (index == -3 || index == -2) {
 			indexs = this.getIndexs(rect);
-			for (i = 0; i < indexs.size(); i++) {
-				result.addAll(this.nodes.get(indexs.get(i)).getCollisions(rect));
+			for (Integer nodeIndex : indexs) {
+				result.addAll(this.nodes.get(nodeIndex).getCollisions(rect));
 			}
 			// 自己没有子节点，rect属于自己
 		} else if (index == -1) {

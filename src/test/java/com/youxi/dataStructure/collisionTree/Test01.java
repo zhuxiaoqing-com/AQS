@@ -29,10 +29,10 @@ public class Test01 {
 		rectsArr.forEach(tree::insert);
 
 		// 移动
-		rectsArr.forEach(rect -> rect.rePosition(600, 50));
+	//	rectsArr.forEach(rect -> rect.rePosition(600, 50));
 
 		// 更新树
-		tree.refresh();
+	//	tree.refresh();
 
 		System.out.printf("碰撞体： %s 个", rectsArr.size());
 		System.out.println();
@@ -60,7 +60,7 @@ public class Test01 {
 			}
 		}
 		end = System.currentTimeMillis();
-		System.out.printf("碰撞树 time: %s  n: %s 次", end - start, m);
+		System.out.printf("碰撞树 time: %s  n: %s 次", end - start, n);
 		System.out.println();
 
 		System.out.printf("运算次数减少 %s 百分比", (1 - n / m) * 100);
