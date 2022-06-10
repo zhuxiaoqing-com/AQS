@@ -68,6 +68,9 @@ public class CollisionTree {
 		return n + objects.size();
 	}
 
+	/**
+	 * 获取 rect 在哪几个象限中
+	 */
 	public List<Integer> getIndexs(Rect rect) {
 		if (!rect.intersect(rect)) {
 			return Collections.emptyList();
@@ -78,37 +81,63 @@ public class CollisionTree {
 		boolean top = rect.getMinY() >= this.rect.getMidY();
 		boolean bottom = rect.getMaxY() <= this.rect.getMidY();
 
+		/**
+		 * 0123 是四个象限
+		 *
+		 * 象限：
+		 * 2   1
+		 * 3   4
+		 */
 		ArrayList<Integer> result = new ArrayList<>(Arrays.asList(0, 1, 2, 3));
 
 		if (!left) {
 			//result.splice(1, 2);
-			result.remove(1);
-			result.remove(2);
+			// 不在左边 删除象限 2,3
+			result.remove(new Integer(2));
+			result.remove(new Integer(3));
 		}
 		if (!rigth) {
+			// 不在右边 删除象限 1,4
 			//result.splice(3, 1);
 			//result.splice(0, 1);
-			result.remove(0);
-			result.remove(2);
+			result.remove(new Integer(1));
+			result.remove(new Integer(4));
 		}
 		if (!top) {
+			// 不在上边 删除象限 1,2
 			//result.splice(0, 2);
-			result.remove(0);
-			result.remove(1);
+			result.remove(new Integer(1));
+			result.remove(new Integer(2));
 		}
 		if (!bottom) {
+			// 不在下边 删除象限 3,4
 			//result.splice(2, 2);
-			result.remove(2);
-			result.remove(3);
+			result.remove(new Integer(3));
+			result.remove(new Integer(4));
 		}
 
 		return result;
+	}
+
+	private void extracted(ArrayList<Integer> result, int i, int i2) {
+		if (i < result.size()) {
+			result.remove(i);
+
+		}
+		if (i2 < result.size()) {
+			result.remove(i2);
+		}
+	}
+
+	private void resultRemove(ArrayList<Integer> result, int... removeIndex) {
+
 	}
 
 
 	public int getIndex(Rect rect) {
 		return getIndex(rect, false);
 	}
+
 	public int getIndex(Rect rect, boolean checkIsInner) {
 		if (checkIsInner && !this.rect.contain(rect)) {
 			if (!this.rect.intersect(rect)) {
@@ -160,7 +189,6 @@ public class CollisionTree {
 	 *   - 如果当前节点[ 存在 ]子节点，则检查物体到底属于哪个子节点，如果能匹配到子节点，则将该物体插入到该子节点中
 	 *   - 如果当前节点[ 不存在 ]子节点，将该物体存储在当前节点。随后，检查当前节点的存储数量，如果超过了最大存储数量，则对当前节点进行划分，划分完成后，将当前节点存储的物体重新分配到四个子节点中。
 	 */
-
 	public void insert(Rect rect) {
 		int index = getIndex(rect, true);
 
@@ -171,7 +199,7 @@ public class CollisionTree {
 		 *     当index>=0时，则调用index对象象限的insert方法
 		 *     当index为-2或-1时，并且parent为假，则将rect添加到objs里面
 		 */
-		if (index <= -3 && this.parent!= null) {
+		if (index <= -3 && this.parent != null) {
 			this.parent.insert(rect);
 			return;
 		} else if (index == -4) {
@@ -195,11 +223,75 @@ public class CollisionTree {
 			for (int i = objs.size() - 1; i >= 0; i--) {
 				index = this.getIndex(objs.get(i));
 				if (index >= 0) {
-					nodes[index].insert(objs[i]);
+					nodes.get(index).insert(objs.get(i));
 				} else {
-					this.objects.push(objs[i]);
+					this.objects.add(objs.get(i));
 				}
 			}
 		}
 	}
+
+
+	/**
+	 * 刷新
+	 */
+	public void refresh() {
+		List<Rect> objs = this.objects;
+		List<Rect> iobjs = this.invalid_objects;
+		List<CollisionTree> nodes = this.nodes;
+
+		int i;
+		if (this.isRoot() && iobjs.size() > 0) {
+			this.invalid_objects = new ArrayList<>();
+			for (i = iobjs.size() - 1; i >= 0; i--) {
+				if (iobjs.get(i).isValid()) {
+					this.insert(iobjs.get(i));
+				}
+			}
+		}
+
+		this.objects = new ArrayList<>();
+		for (i = objs.size() - 1; i >= 0; i--) {
+			if (objs.get(i).isValid()) {
+				this.insert(objs.get(i));
+			}
+		}
+
+		// 递归刷新子树
+		for (i = 0; i < nodes.size(); i++) {
+			nodes.get(i).refresh();
+		}
+	}
+
+	/**
+	 * 检索功能：
+	 * 给出一个物体对象，该函数负责将该物体可能发生碰撞的所有物体选取出来。该函数先查找物体所属的象限，该象限下的物体都是有可能发生碰撞的，然后再递归地查找子象限...
+	 */
+	public List<Rect> getCollisions(Rect rect) {
+		List<Rect> result = new ArrayList<>();
+		int i, index;
+		List<Integer> indexs;
+
+		index = this.getIndex(rect);
+		// rect与自身不想交
+		if (index == -4) {
+			return result;
+			// rect与自身相交
+			// rect不单单属于某一个象限
+		} else if (index == -3 || index == -2) {
+			indexs = this.getIndexs(rect);
+			for (i = 0; i < indexs.size(); i++) {
+				result.addAll(this.nodes.get(indexs.get(i)).getCollisions(rect));
+			}
+			// 自己没有子节点，rect属于自己
+		} else if (index == -1) {
+			// rect属于某一象限
+		} else {
+			result.addAll(this.nodes.get(index).getCollisions(rect));
+		}
+
+		result.addAll(this.objects);
+		return result;
+	}
+
 }

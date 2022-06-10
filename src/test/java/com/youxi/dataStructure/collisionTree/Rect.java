@@ -3,23 +3,24 @@ package com.youxi.dataStructure.collisionTree;
 /**
  * @Auther: zhuxiaoqing
  * @Date: 2022/6/8 15:59
- * @Description:
+ * @Description: 这个矩形没有管角度
  */
 public class Rect {
-	private int x;
-	private int y;
-	private int width;
-	private int height;
+	private int x; // 是矩形的左下角坐标
+	private int y; // 是矩形的左下角坐标
+	private int width; // 宽
+	private int height; // 高
 
-	private int minX;
-	private int midX;
-	private int maxX;
+	private int minX; // 最小点
+	private int midX; // 中心点
+	private int maxX; // 最大点
 
 	private int minY;
 	private int midY;
 	private int maxY;
 
 	private boolean isValid;
+
 
 	public Rect(int x, int y, int width, int height) {
 		this.width = width;
@@ -65,25 +66,25 @@ public class Rect {
 	}
 
 	/**
-	 * 这里没有算角度
-	 *
 	 * 测试自身矩形是否与rect矩形相交
 	 */
 	public boolean intersect(Rect rect) {
 		return rect.maxX >= this.minX &&
-				rect.minX <= this.maxX &&
 				rect.maxY >= this.minY &&
+				rect.minX <= this.maxX &&
 				rect.minY <= this.maxY;
+
+
 	}
 
 
 	/**
 	 * 测试自身矩形是否包含rect矩形
 	 */
-	public boolean contain(Rect rect) {
+	public boolean contain(Rect rect) {`
 		return this.minX <= rect.maxX &&
-				this.maxX >= rect.minX &&
 				this.minY <= rect.maxY &&
+				this.maxX >= rect.minX &&
 				this.maxY >= rect.minY;
 	}
 
