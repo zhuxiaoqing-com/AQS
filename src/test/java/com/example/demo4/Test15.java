@@ -551,12 +551,12 @@ public class Test15 {
 		int x = (int) (p.getX() / 45000);
 		int z = (int) (p.getY() / 45000);
 
-		return new Vector2f(x,z);
+		return new Vector2f(x, z);
 	}
 
-	public static long getIndexByPos(int x, int z){
+	public static long getIndexByPos(int x, int z) {
 		long _x = x;
-		return _x<<32 | z;
+		return _x << 32 | z;
 	}
 
 
@@ -586,28 +586,28 @@ public class Test15 {
 
 	@Test
 	public void test35() {
-	int index = 10;
+		int index = 10;
 		TreeMap<Integer, Integer> map = new TreeMap<>();
 		for (int i1 = 0; i1 < index; i1++) {
-			map.put(i1,i1);
+			map.put(i1, i1);
 		}
 
-		System.out.println(	map.ceilingKey(-1));
-		System.out.println(	map.ceilingKey(0));
-		System.out.println(	map.ceilingKey(1));
-		System.out.println(	map.ceilingKey(5));
-		System.out.println(	map.ceilingKey(9));
-		System.out.println(	map.ceilingKey(10));
-		System.out.println(	map.ceilingKey(11));
+		System.out.println(map.ceilingKey(-1));
+		System.out.println(map.ceilingKey(0));
+		System.out.println(map.ceilingKey(1));
+		System.out.println(map.ceilingKey(5));
+		System.out.println(map.ceilingKey(9));
+		System.out.println(map.ceilingKey(10));
+		System.out.println(map.ceilingKey(11));
 
 		System.out.println("---------------------");
-		System.out.println(	map.floorKey(-1));
-		System.out.println(	map.floorKey(0));
-		System.out.println(	map.floorKey(1));
-		System.out.println(	map.floorKey(5));
-		System.out.println(	map.floorKey(9));
-		System.out.println(	map.floorKey(10));
-		System.out.println(	map.floorKey(11));
+		System.out.println(map.floorKey(-1));
+		System.out.println(map.floorKey(0));
+		System.out.println(map.floorKey(1));
+		System.out.println(map.floorKey(5));
+		System.out.println(map.floorKey(9));
+		System.out.println(map.floorKey(10));
+		System.out.println(map.floorKey(11));
 	}
 
 	@Test
@@ -624,17 +624,17 @@ public class Test15 {
 	@Test
 	public void test37() {
 		long l = System.currentTimeMillis();
-		System.out.println(l/1000);
+		System.out.println(l / 1000);
 		int l1 = (int) (l / 1000);
 		System.out.println(l1);
 
-		System.out.println(Integer.MAX_VALUE/1000/60/60/24);
+		System.out.println(Integer.MAX_VALUE / 1000 / 60 / 60 / 24);
 	}
 
 	@Test
 	public void test38() {
 		int index = 10;
-			SkillRandom skillRandom = new SkillRandom(1000);
+		SkillRandom skillRandom = new SkillRandom(1000);
 		for (int i1 = 0; i1 < index; i1++) {
 			System.out.println(skillRandom.nextInt(1000));
 		}
@@ -645,24 +645,21 @@ public class Test15 {
 		int index = 10;
 
 		for (int i1 = -5; i1 < 6; i1++) {
-			System.out.println(i1>>>2);
+			System.out.println(i1 >>> 2);
 		}
 
 		System.out.println("---------------------");
 		System.out.println("---------------------");
 		System.out.println("---------------------");
 		for (int i1 = -5; i1 < 6; i1++) {
-			System.out.println(i1>>2);
+			System.out.println(i1 >> 2);
 		}
 	}
 
 	@Test
 	public void test40() {
-		double v = Math.atan2(85811 - 84411, 56261 - 49861);
-		System.out.println(v);
-
-		 v = Math.atan2(80613 - 84411, 50176 - 49861);
-		System.out.println(v);
+		int[] a = new int[4];
+		System.out.println(a.length);
 	}
 
 }
