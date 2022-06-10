@@ -5,7 +5,7 @@ package com.youxi.dataStructure.collisionTree;
  * @Date: 2022/6/8 15:59
  * @Description: 这个矩形没有管角度
  */
-public class Rect extends Entity {
+public class Rect {
 	private int x; // 是矩形的左下角坐标
 	private int y; // 是矩形的左下角坐标
 	private int width; // 宽

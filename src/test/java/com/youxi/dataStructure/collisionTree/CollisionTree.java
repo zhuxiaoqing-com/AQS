@@ -15,8 +15,8 @@ public class CollisionTree {
 	private int level; //  当前层数
 	private CollisionTree parent;
 	List<CollisionTree> nodes; //  4个子节点队列。
-	List<Rect> objects; // 当前节点内的待检测的对象。
-	List<Rect> invalid_objects;
+	List<Entity> objects; // 当前节点内的待检测的对象。
+	List<Entity> invalid_objects;
 
 	public static final int MAX_OBJECTS = 10; // 是每个节点能容纳的最多对象超过 则分割4个节点, 我们并不是事先就分好格子， 而是在插入对象的时候才进行划分。
 	public static final int MAX_LEVELS = 5; // 是 四叉树的最大层数 超过 则不再划分 从根节点开始 最多6 层。
@@ -182,8 +182,8 @@ public class CollisionTree {
 	 *   - 如果当前节点[ 存在 ]子节点，则检查物体到底属于哪个子节点，如果能匹配到子节点，则将该物体插入到该子节点中
 	 *   - 如果当前节点[ 不存在 ]子节点，将该物体存储在当前节点。随后，检查当前节点的存储数量，如果超过了最大存储数量，则对当前节点进行划分，划分完成后，将当前节点存储的物体重新分配到四个子节点中。
 	 */
-	public void insert(Rect rect) {
-		int index = getIndex(rect, true);
+	public void insert(Entity rect) {
+		int index = getIndex(rect.getRect(), true);
 
 		/**
 		 * index为-4、-3、-2、-1、0、1、2、3时
@@ -203,7 +203,7 @@ public class CollisionTree {
 			return;
 		}
 
-		List<Rect> objs = this.objects;
+		List<Entity> objs = this.objects;
 		List<CollisionTree> nodes = this.nodes;
 
 		// 存储rect
@@ -214,7 +214,7 @@ public class CollisionTree {
 			this.split();
 			this.objects = new ArrayList<>();
 			for (int i = objs.size() - 1; i >= 0; i--) {
-				index = this.getIndex(objs.get(i));
+				index = this.getIndex(objs.get(i).getRect());
 				if (index >= 0) {
 					nodes.get(index).insert(objs.get(i));
 				} else {
@@ -229,24 +229,24 @@ public class CollisionTree {
 	 * 刷新
 	 */
 	public void refresh() {
-		List<Rect> objs = this.objects;
-		List<Rect> iobjs = this.invalid_objects;
+		List<Entity> objs = this.objects;
+		List<Entity> iobjs = this.invalid_objects;
 		List<CollisionTree> nodes = this.nodes;
 
 		int i;
 		// 只有root节点才有 iobjs
 		if (this.isRoot() && iobjs.size() > 0) {
 			this.invalid_objects = new ArrayList<>();
-			for (Rect iobj : iobjs) {
-				if (iobj.isValid()) {
+			for (Entity iobj : iobjs) {
+				if (iobj.getRect().isValid()) {
 					this.insert(iobj);
 				}
 			}
 		}
 
 		this.objects = new ArrayList<>();
-		for (Rect obj : objs) {
-			if (obj.isValid()) {
+		for (Entity obj : objs) {
+			if (obj.getRect().isValid()) {
 				this.insert(obj);
 			}
 		}
@@ -261,27 +261,27 @@ public class CollisionTree {
 	 * 检索功能：
 	 * 给出一个物体对象，该函数负责将该物体可能发生碰撞的所有物体选取出来。该函数先查找物体所属的象限，该象限下的物体都是有可能发生碰撞的，然后再递归地查找子象限...
 	 */
-	public List<Rect> getCollisions(Rect rect) {
-		List<Rect> result = new ArrayList<>();
+	public List<Entity> getCollisions(Entity entity) {
+		List<Entity> result = new ArrayList<>();
 		int i, index;
 		List<Integer> indexs;
 
-		index = this.getIndex(rect);
+		index = this.getIndex(entity.getRect());
 		// rect与自身不相交
 		if (index == -4) {
 			return result;
 			// rect与自身相交
 			// rect不单单属于某一个象限
 		} else if (index == -3 || index == -2) {
-			indexs = this.getIndexs(rect);
+			indexs = this.getIndexs(entity.getRect());
 			for (Integer nodeIndex : indexs) {
-				result.addAll(this.nodes.get(nodeIndex).getCollisions(rect));
+				result.addAll(this.nodes.get(nodeIndex).getCollisions(entity));
 			}
 			// 自己没有子节点，rect属于自己
 		} else if (index == -1) {
 			// rect属于某一象限
 		} else {
-			result.addAll(this.nodes.get(index).getCollisions(rect));
+			result.addAll(this.nodes.get(index).getCollisions(entity));
 		}
 
 		result.addAll(this.objects);

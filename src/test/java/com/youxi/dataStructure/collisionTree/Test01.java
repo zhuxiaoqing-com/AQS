@@ -15,33 +15,33 @@ public class Test01 {
 	public void test01() {
 		int w = 1000;
 		int h = 500;
-		ArrayList<Rect> rectsArr = new ArrayList<>();
+		ArrayList<Entity> rectsArr = new ArrayList<>();
 		CollisionTree tree;
 
 		tree = new CollisionTree(new Rect(0, 0, w, h), 0, null);
 
 		// 随机创建
 		for (int i = 0; i < 5000; i++) {
-			rectsArr.add(new Rect((int) (Math.random() * (w - 20)), (int) Math.floor(Math.random() * (h - 20)), 20, 20));
+			rectsArr.add(new AABB((int) (Math.random() * (w - 20)), (int) Math.floor(Math.random() * (h - 20)), 20, 20));
 		}
 
 		// 添加到树
 		rectsArr.forEach(tree::insert);
 
 		// 移动
-	//	rectsArr.forEach(rect -> rect.rePosition(600, 50));
+		//	rectsArr.forEach(rect -> rect.rePosition(600, 50));
 
 		// 更新树
-	//	tree.refresh();
+		//	tree.refresh();
 
 		System.out.printf("碰撞体： %s 个", rectsArr.size());
 		System.out.println();
 
 		int m = 0;
 		long start = System.currentTimeMillis();
-		for (Rect rect : rectsArr) {
-			for (Rect rect1 : rectsArr) {
-				rect1.intersect(rect);
+		for (Entity rect : rectsArr) {
+			for (Entity rect1 : rectsArr) {
+				((AABB) rect1).intersect((AABB) rect);
 				m++;
 			}
 		}
@@ -52,10 +52,10 @@ public class Test01 {
 
 		int n = 0;
 		start = System.currentTimeMillis();
-		for (Rect rect : rectsArr) {
-			List<Rect> collisions = tree.getCollisions(rect);
-			for (Rect collision : collisions) {
-				collision.intersect(rect);
+		for (Entity rect : rectsArr) {
+			List<Entity> collisions = tree.getCollisions(rect);
+			for (Entity collision : collisions) {
+				((AABB) collision).intersect((AABB) rect);
 				n++;
 			}
 		}
