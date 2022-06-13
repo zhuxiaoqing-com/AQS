@@ -27,7 +27,6 @@ public class AABB {
 		// 射线方向
 		Dir dir = p1.sub(p0).toDir();
 
-
 		for (int i = 0, j = verts.size() - 1; i < verts.size(); j = i++) {
 			// 多边形的一条边
 			Position edge = verts.get(i).sub(verts.get(j));
@@ -55,4 +54,19 @@ public class AABB {
 
 		return true;
 	}
+
+	public boolean dtIntersectSegmentPoly2D2(Position p0, Position p1, List<Position> verts) {
+		int tmin = 0;
+		int tmax = 1;
+		int segMin = -1;
+		int segMax = -1;
+
+		// 射线方向
+		Dir dir = p1.sub(p0).toDir();
+
+		for (Position vert : verts) {
+			long denom = CMath.Dot2D(vert, dir);
+			v
+		}
+		}
 }

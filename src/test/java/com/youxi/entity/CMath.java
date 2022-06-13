@@ -22,7 +22,7 @@ public class CMath {
 		return (long) (u.getX() * v.getZ() * PRECISION_FACTOR) - (long) (u.getZ() * v.getX() * PRECISION_FACTOR);
 	}
 
-	public static long Dot2D(Position d1, Position d2) {
+	public static long Dot2D(Position d1, Dir d2) {
 		return Dot2D(d1.getX(), d1.getZ(), d2.getX(), d2.getZ());
 	}
 
