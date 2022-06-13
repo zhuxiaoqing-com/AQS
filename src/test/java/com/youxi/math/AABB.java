@@ -19,8 +19,8 @@ public class AABB {
 	 * @param verts 顶点数组
 	 */
 	public boolean dtIntersectSegmentPoly2D(Position p0, Position p1, List<Position> verts) {
-		int tmin = 0;
-		int tmax = 1;
+		double tmin = 0;
+		double tmax = 1;
 		int segMin = -1;
 		int segMax = -1;
 
@@ -38,35 +38,44 @@ public class AABB {
 			long d = CMath.Cross2D(edge, dir.toPosition());
 
 			// 如果 dir 和 edge 基本上平行
-			if (d < 1) {
+			if (d < 0.0001) {
 				// diff在edge的左边 就永远不可能相交
-				if(n<0) {
+				if (n < 0) {
 					return false;
-				}else {
+				} else {
 					continue;
 				}
 			}
 
 			// 两条线段之比
 			double t = n * 1.0 / d;
-
+			if (d < 0)
+			{
+				// segment S is entering across this edge
+				if (t > tmin)
+				{
+					tmin = t;
+					segMin = j;
+					// S enters after leaving polygon
+					if (tmin > tmax)
+						return false;
+				}
+			}
+			else
+			{
+				// segment S is leaving across this edge
+				if (t < tmax)
+				{
+					tmax = t;
+					segMax = j;
+					// S leaves before entering polygon
+					if (tmax < tmin)
+						return false;
+				}
+			}
 		}
 
 		return true;
 	}
 
-	public boolean dtIntersectSegmentPoly2D2(Position p0, Position p1, List<Position> verts) {
-		int tmin = 0;
-		int tmax = 1;
-		int segMin = -1;
-		int segMax = -1;
-
-		// 射线方向
-		Dir dir = p1.sub(p0).toDir();
-
-		for (Position vert : verts) {
-			long denom = CMath.Dot2D(vert, dir);
-			v
-		}
-		}
 }
