@@ -408,6 +408,34 @@ public class Test02Stream {
 				.map(a -> list.stream().skip((long) a * num).limit(num).collect(Collectors.toList()))
 				.collect(Collectors.toList());
 	}
+
+
+
+	static int count = 0;
+	static int count2 = 0;
+	@Test
+	public void test18() {
+		ArrayList<A> aArrayList = new ArrayList<>();
+		aArrayList.add(new A(1,1,1 ));
+		aArrayList.add(new A(6,1,1 ));
+		aArrayList.add(new A(5,1,1 ));
+		aArrayList.add(new A(3,1,1 ));
+		aArrayList.add(new A(2,1,1 ));
+		aArrayList.add(new A(4,1,1 ));
+
+		List<A> collect = aArrayList.stream().sorted(Comparator.comparingInt(a -> {
+			count++;
+			return a.id;
+		})).collect(Collectors.toList());
+
+		Optional<A> first = aArrayList.stream().max(Comparator.comparingInt(a -> {
+			count2++;
+			return a.id;
+		}));
+
+		System.out.println(count);
+		System.out.println(count2);
+	}
 }
 
 
