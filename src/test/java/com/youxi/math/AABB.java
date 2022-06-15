@@ -19,10 +19,10 @@ public class AABB {
 	 * @param verts 顶点数组
 	 */
 	public boolean dtIntersectSegmentPoly2D(Position p0, Position p1, List<Position> verts) {
-		double tmin = 0;
-		double tmax = 1;
-		int segMin = -1;
-		int segMax = -1;
+		double tmin = 0; // 这条线段目前相交的部分是从百分之多少到百分之多少
+		double tmax = 1; // 这条线段目前相交的部分是从百分之多少到百分之多少
+		int segMin = -1; // 最先碰撞到的线段
+		int segMax = -1; // 最后碰撞到的线段
 
 		// 射线方向
 		Dir dir = p1.sub(p0).toDir();
@@ -35,10 +35,14 @@ public class AABB {
 
 			// diff x edge y  n>0说明 diff在edge的右边
 			long n = CMath.Cross2D(diff, edge);
+			// d == 0 说明方向和边平行;  d<0 说明方向是在边的右边  d>0说明方向在边的左边
 			long d = CMath.Cross2D(edge, dir.toPosition());
 
 			// 如果 dir 和 edge 基本上平行
 			if (d < 0.0001) {
+				/*
+				 * 这里如果平行了 射线的起始点还在多边形外面,那就永远不可能相交
+				 */
 				// diff在edge的左边 就永远不可能相交
 				if (n < 0) {
 					return false;
