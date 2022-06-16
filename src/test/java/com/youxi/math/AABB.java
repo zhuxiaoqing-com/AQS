@@ -47,6 +47,7 @@ public class AABB {
 				if (n < 0) {
 					return false;
 				} else {
+					// 射线与这条边平行 就这条边不用检测了
 					continue;
 				}
 			}
