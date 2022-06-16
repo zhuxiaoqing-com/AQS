@@ -14,6 +14,11 @@ import java.util.List;
 public class AABB {
 
 	/**
+	 * 两条线段之比这里的 t 是什么意思;
+	 * n是dir投射到edge的点、
+	 * 投影之比就是
+	 */
+	/**
 	 * @param p0    射线起点
 	 * @param p1    射线终点
 	 * @param verts 顶点数组
