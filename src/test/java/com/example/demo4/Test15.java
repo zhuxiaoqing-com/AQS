@@ -658,8 +658,8 @@ public class Test15 {
 
 	@Test
 	public void test40() {
-		int[] a = new int[4];
-		System.out.println(a.length);
+		String a = "sdad$11111";
+		System.out.println(a.substring(0, a.indexOf("$")));
 	}
 
 }
