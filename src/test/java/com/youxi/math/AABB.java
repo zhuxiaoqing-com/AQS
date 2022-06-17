@@ -15,8 +15,11 @@ public class AABB {
 
 	/**
 	 * 两条线段之比这里的 t 是什么意思;
-	 * n是dir投射到edge的点、
-	 * 投影之比就是
+	 * n = diff dot edge
+	 * d = dir dot edge
+	 *
+	 * t = n/d;
+	 * 因为 n/d 点乘都是edge 所以就是,
 	 */
 	/**
 	 * @param p0    射线起点
