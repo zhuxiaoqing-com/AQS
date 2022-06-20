@@ -14,12 +14,22 @@ import java.util.List;
 public class AABB {
 
 	/**
+	 * B-A 是射线
+	 * D-C 是边
+	 * a = B-A;
+	 * b = C-A;
+	 * c = D-C;
+	 *
+	 *at=b+cu;
+	 */
+	/**
 	 * 两条线段之比这里的 t 是什么意思;
-	 * n = diff dot edge
-	 * d = dir dot edge
+	 * n = diff cross edge
+	 * d = dir cross edge
 	 *
 	 * t = n/d;
-	 * 因为 n/d 点乘都是edge 所以就是,
+	 *
+	 * https://www.cnblogs.com/zhb2000/p/vector-cross-product-solve-intersection.html
 	 */
 	/**
 	 * @param p0    射线起点
