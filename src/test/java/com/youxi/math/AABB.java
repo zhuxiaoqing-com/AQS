@@ -34,7 +34,7 @@ public class AABB {
 	/**
 	 * @param p0    射线起点
 	 * @param p1    射线终点
-	 * @param verts 顶点数组
+	 * @param verts 顶点数组 得顺时针给点  如果是逆时针给那射线出口入口的判断得改
 	 */
 	public boolean dtIntersectSegmentPoly2D(Position p0, Position p1, List<Position> verts) {
 		double tmin = 0; // 这条线段目前相交的部分是从百分之多少到百分之多少
@@ -72,23 +72,19 @@ public class AABB {
 
 			// 两条线段之比
 			double t = n * 1.0 / d;
-			if (d < 0)
-			{
+			// 方向在边的右边说明是往里面的 是入口
+			if (d < 0) {
 				// segment S is entering across this edge
-				if (t > tmin)
-				{
+				if (t > tmin) {
 					tmin = t;
 					segMin = j;
 					// S enters after leaving polygon
 					if (tmin > tmax)
 						return false;
 				}
-			}
-			else
-			{
+			} else {
 				// segment S is leaving across this edge
-				if (t < tmax)
-				{
+				if (t < tmax) {
 					tmax = t;
 					segMax = j;
 					// S leaves before entering polygon
