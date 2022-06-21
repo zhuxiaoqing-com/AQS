@@ -12,6 +12,8 @@ import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.text.NumberFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicLong;
@@ -658,8 +660,12 @@ public class Test15 {
 
 	@Test
 	public void test40() {
-		String a = "sdad$11111";
-		System.out.println(a.substring(0, a.indexOf("$")));
+		LocalDateTime of = LocalDateTime.of(2022, 6, 20, 21, 56, 0);
+		System.out.println(of.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
+		System.out.println(new Date(1655723002512L));
+		System.out.println(new Date(1655724541595L));
+		System.out.println(new Date(1655724541595L));
+		System.out.println(new Date(1655724492198L));
 	}
 
 }
