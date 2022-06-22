@@ -668,6 +668,27 @@ public class Test15 {
 		System.out.println(new Date(1655724492198L));
 	}
 
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		try {
+			soe();
+		} catch (Throwable e) {
+			System.out.println("Caught:" + e
+					+ ", everything went better than expected.");
+		}
+
+		System.out.println("a");
+		System.out.println("b");
+		System.out.println("c");
+	}
+	/**
+	 * Method producing StackOverflowError
+	 */
+	public static void soe() {
+		soe();
+	}
 }
 
 
