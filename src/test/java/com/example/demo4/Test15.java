@@ -668,6 +668,12 @@ public class Test15 {
 		System.out.println(new Date(1655724492198L));
 	}
 
+
+	@Test
+	public void test42() {
+	}
+
+
 	/**
 	 * @param args
 	 */
