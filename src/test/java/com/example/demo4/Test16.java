@@ -24,6 +24,8 @@ import java.util.stream.Collectors;
 public class Test16 {
 	@Test
 	public void test01() {
+		System.out.println(1656315072407L - 1656315071654L);
+		System.out.println(1656315074539L - 1656315074619L);
 	}
 }
 
