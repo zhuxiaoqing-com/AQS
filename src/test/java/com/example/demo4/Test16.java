@@ -23,9 +23,24 @@ import java.util.stream.Collectors;
  */
 public class Test16 {
 	@Test
-	public void test01() {
-		System.out.println(1656315072407L - 1656315071654L);
-		System.out.println(1656315074539L - 1656315074619L);
+	public void test01() throws InterruptedException {
+		int[] ints = new int[1000 * 1000 * 1000];
+		while (true){
+			Thread.sleep(3000);
+		for (int anInt : ints) {
+		}
+
+		}
+
+	}
+
+	@Test
+	public void test02() throws InterruptedException {
+	test01();
+	}
+	@Test
+	public void test03() throws InterruptedException {
+		test01();
 	}
 }
 
