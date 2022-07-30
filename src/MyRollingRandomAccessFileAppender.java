@@ -34,7 +34,7 @@ import java.util.zip.Deflater;
 
 /**
  * An appender that writes to random access files and can roll over at
- * intervals.
+ * intervals. sdq
  */
 @Plugin(name = "MyRollingRandomAccessFile", category = Core.CATEGORY_NAME, elementType = Appender.ELEMENT_TYPE, printObject = true)
 public final class MyRollingRandomAccessFileAppender extends AbstractOutputStreamAppender<MyRollingRandomAccessFileManager> {
