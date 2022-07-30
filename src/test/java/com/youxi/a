@@ -1,0 +1,24 @@
+-XX:+UseG1GC
+ -verbose:gc  // 在控制台输出gc日志
+-Xloggc:/export/logs/game/gc-4010001.log  //gc日志路径
+-XX:+PrintGCDetails  // gc日志详细信息
+-XX:+PrintGCDateStamps // gc 日志详细信息事件戳
+-XX:+PrintHeapAtGC  // gc 前后堆栈
+-XX:+PrintGCApplicationStoppedTime //显示应用程序在安全点停止了多少时间。大多数情况下，安全点是由垃圾收集的停止世界阶段造成的
+-XX:+PrintGCApplicationConcurrentTime  // 是应用程序不停止工作多少时间，即两个连续安全点之间的时间。
+-XX:+G1PrintRegionLivenessInfo // region 存活状态
+-XX:+UnlockDiagnosticVMOptions // region 存活状态
+-XX:+ParallelRefProcEnabled // ref-proc 阶段多线程处理
+-XX:+PrintReferenceGC // 在日志中看到 ref-proc 阶段中的耗时详情：
+-XX:+G1TraceConcRefinement // 并行回收阶段的日志
+-XX:+PrintAdaptiveSizePolicy // 显示收集器工效
+-XX:+PrintTenuringDistribution: Survivor区的使用和分布  可以查看每次回收期间，Survivor区的分布信息。可以帮助我们查看对象年龄的变化。
+-XX:+G1SummarizeRSetStats -XX:G1SummarizeRSetStatsPeriod=2 查看一下 rset 占用情况
+# GC日志输出的文件路径
+-Xloggc:/path/to/gc.log
+# 开启日志文件分割
+-XX:+UseGCLogFileRotation
+# 最多分割几个文件，超过之后从头开始写
+-XX:NumberOfGCLogFiles=14
+# 每个文件上限大小，超过就触发分割
+-XX:GCLogFileSize=100M
