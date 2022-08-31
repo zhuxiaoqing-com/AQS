@@ -22,3 +22,109 @@
 -XX:NumberOfGCLogFiles=14
 # 每个文件上限大小，超过就触发分割
 -XX:GCLogFileSize=100M
+    有关处理参考对象所用时间的信息显示在Reference Processing阶段中。
+    在此Reference Processing阶段，G1 根据特定类型的参考对象的要求更新参考对象的所指对象。
+    默认情况下，G1 尝试Reference Processing使用以下启发式方法并行化子阶段：对于每个-XX:ReferencesPerThread引用对象启动一个线程，由-XX:ParallelGCThreads.
+    可以通过设置-XX:ReferencesPerThread为 0 来禁用此启发式，
+    以默认使用所有可用线程，或者完全禁用并行化-XX:-ParallelRefProcEnabled。
+-XX:ReferencesPerThread=0
+-XX:+UnlockExperimentalVMOptions
+-XX:+G1PrintHeapRegions 默认值false, G1 将输出那些 regions 被分配和回收的信息
+-XX:G1LogLevel=finest
+
+
+-Xloggc:/export/logs/game/gc-4010001.log
+-XX:+UseG1GC
+-XX:+PrintGCDetails
+-XX:+PrintGCDateStamps
+-XX:+PrintHeapAtGC
+-XX:+UnlockDiagnosticVMOptions
+-XX:+G1PrintRegionLivenessInfo
+-XX:+ParallelRefProcEnabled
+-XX:+PrintReferenceGC
+-XX:+G1TraceConcRefinement
+-XX:+PrintAdaptiveSizePolicy
+-XX:+PrintTenuringDistribution
+-XX:+G1SummarizeRSetStats
+-XX:G1SummarizeRSetStatsPeriod=2
+-XX:+UseGCLogFileRotation
+-XX:NumberOfGCLogFiles=14
+-XX:GCLogFileSize=300M
+-XX:+ParallelRefProcEnabled
+-XX:+G1PrintHeapRegions
+-XX:ReferencesPerThread=0
+-XX:+G1PrintHeapRegions
+-XX:+UnlockExperimentalVMOptions
+-XX:G1LogLevel=finest
+
+
+
+  [Parallel Time: 48.4 ms, GC Workers: 10]
+      [GC Worker Start (ms): Min: 69926888.1, Avg: 69926888.5, Max: 69926889.6, Diff: 1.5]
+      [Ext Root Scanning (ms): Min: 0.0, Avg: 4.0, Max: 32.4, Diff: 32.4, Sum: 39.5]
+      [Update RS (ms): Min: 0.0, Avg: 10.3, Max: 12.4, Diff: 12.4, Sum: 102.9]
+         [Processed Buffers: Min: 0, Avg: 26.8, Max: 37, Diff: 37, Sum: 268]
+      [Scan RS (ms): Min: 0.5, Avg: 2.1, Max: 2.4, Diff: 1.9, Sum: 20.9]
+      [Code Root Scanning (ms): Min: 0.0, Avg: 0.0, Max: 0.0, Diff: 0.0, Sum: 0.0]
+      [Object Copy (ms): Min: 15.0, Avg: 31.4, Max: 33.3, Diff: 18.2, Sum: 313.9]
+      [Termination (ms): Min: 0.0, Avg: 0.0, Max: 0.0, Diff: 0.0, Sum: 0.0]
+         [Termination Attempts: Min: 1, Avg: 5.8, Max: 9, Diff: 8, Sum: 58]
+      [GC Worker Other (ms): Min: 0.0, Avg: 0.0, Max: 0.1, Diff: 0.0, Sum: 0.4]
+      [GC Worker Total (ms): Min: 46.7, Avg: 47.8, Max: 48.2, Diff: 1.5, Sum: 477.6]
+      [GC Worker End (ms): Min: 69926936.3, Avg: 69926936.3, Max: 69926936.3, Diff: 0.1]
+   [Code Root Fixup: 0.0 ms]
+   [Code Root Purge: 0.0 ms]
+   [Clear CT: 0.5 ms]
+   [Other: 30.0 ms]
+      [Choose CSet: 0.0 ms]
+      [Ref Proc: 5.6 ms]
+      [Ref Enq: 0.1 ms]
+      [Redirty Cards: 0.1 ms]
+      [Humongous Register: 0.0 ms]
+      [Humongous Reclaim: 0.0 ms]
+      [Free CSet: 0.6 ms]
+   [Eden: 2218.0M(2218.0M)->0.0B(2202.0M) Survivors: 96.0M->102.0M Heap: 3588.3M(4096.0M)->1380.3M(4096.0M)]
+Heap after GC invocations=3836 (full 0):
+ garbage-first heap   total 4194304K, used 1413385K [0x00000006e0800000, 0x00000006e0a04000, 0x00000007e0800000)
+  region size 2048K, 51 young (104448K), 51 survivors (104448K)
+ Metaspace       used 112283K, capacity 167506K, committed 242944K, reserved 1208320K
+  class space    used 15161K, capacity 41564K, committed 83200K, reserved 1048576K
+}
+ [Times: user=0.34 sys=0.17, real=0.07 secs]
+
+ [Parallel Time: 43.0 ms, GC Workers: 10]
+      [GC Worker Start (ms): Min: 69909896.1, Avg: 69909896.2, Max: 69909896.2, Diff: 0.1]
+      [Ext Root Scanning (ms): Min: 0.3, Avg: 2.7, Max: 20.7, Diff: 20.4, Sum: 27.4]
+      [Update RS (ms): Min: 0.0, Avg: 9.8, Max: 11.5, Diff: 11.5, Sum: 97.5]
+         [Processed Buffers: Min: 0, Avg: 24.8, Max: 32, Diff: 32, Sum: 248]
+      [Scan RS (ms): Min: 0.2, Avg: 1.9, Max: 2.2, Diff: 2.0, Sum: 19.1]
+      [Code Root Scanning (ms): Min: 0.0, Avg: 0.0, Max: 0.0, Diff: 0.0, Sum: 0.0]
+      [Object Copy (ms): Min: 21.7, Avg: 28.2, Max: 29.0, Diff: 7.4, Sum: 282.2]
+      [Termination (ms): Min: 0.0, Avg: 0.0, Max: 0.0, Diff: 0.0, Sum: 0.2]
+         [Termination Attempts: Min: 1, Avg: 25.2, Max: 36, Diff: 35, Sum: 252]
+      [GC Worker Other (ms): Min: 0.0, Avg: 0.1, Max: 0.2, Diff: 0.2, Sum: 0.9]
+      [GC Worker Total (ms): Min: 42.6, Avg: 42.7, Max: 42.8, Diff: 0.2, Sum: 427.3]
+      [GC Worker End (ms): Min: 69909938.8, Avg: 69909938.9, Max: 69909939.0, Diff: 0.2]
+   [Code Root Fixup: 0.0 ms]
+   [Code Root Purge: 0.0 ms]
+   [Clear CT: 0.4 ms]
+   [Other: 27.0 ms]
+      [Choose CSet: 0.0 ms]
+      [Ref Proc: 4.2 ms]
+      [Ref Enq: 0.1 ms]
+      [Redirty Cards: 0.1 ms]
+      [Humongous Register: 0.0 ms]
+      [Humongous Reclaim: 0.0 ms]
+      [Free CSet: 0.5 ms]
+   [Eden: 2208.0M(2208.0M)->0.0B(2218.0M) Survivors: 104.0M->96.0M Heap: 3579.1M(4096.0M)->1370.3M(4096.0M)]
+Heap after GC invocations=3835 (full 0):
+ garbage-first heap   total 4194304K, used 1403232K [0x00000006e0800000, 0x00000006e0a04000, 0x00000007e0800000)
+  region size 2048K, 48 young (98304K), 48 survivors (98304K)
+ Metaspace       used 111816K, capacity 166560K, committed 242944K, reserved 1208320K
+  class space    used 15079K, capacity 41250K, committed 83200K, reserved 1048576K
+}
+ [Times: user=0.46 sys=0.00, real=0.07 secs]
+G1-Refine-activated worker 1, on threshold 204, current 224
+G1-Refine-deactivated worker 1, off threshold 177, current 177
+
+

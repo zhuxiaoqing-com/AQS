@@ -26,6 +26,10 @@ public class CMath {
 		return Dot2D(d1.getX(), d1.getZ(), d2.getX(), d2.getZ());
 	}
 
+	public static long Dot2D(Position d1, Position d2) {
+		return Dot2D(d1.getX(), d1.getZ(), d2.getX(), d2.getZ());
+	}
+
 	public static long Dot2D(long x1, long z1, long x2, long z2) {
 		return (long) (x1 * x2 * PRECISION_FACTOR) + (long) (z1 * z2 * PRECISION_FACTOR);
 	}
@@ -49,6 +53,27 @@ public class CMath {
 
 	public static long sqrt(long v) {
 		return (long) (Math.sqrt(v * PRECISION));
+	}
+
+
+	public static long min(long... value) {
+		long min = Long.MAX_VALUE;
+		for (long l : value) {
+			if(l< min) {
+				min = l;
+			}
+		}
+		return min;
+	}
+
+	public static long max(long... value) {
+		long max = Long.MIN_VALUE;
+		for (long l : value) {
+			if(l> max) {
+				max = l;
+			}
+		}
+		return max;
 	}
 
 	public static void main(String[] args) {

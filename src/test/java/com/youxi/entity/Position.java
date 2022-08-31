@@ -93,4 +93,11 @@ public final class Position extends BasicPos {
 		// 由于精度问题允许50的误差
 		return distanceIgnoreY <= 50;
 	}
+
+	public Position normalize() {
+		double oaLength = Math.sqrt(getX() * getX() + getZ() * getZ());
+		float oaNormalizeX = (float) (getX() / oaLength);
+		float oaNormalizeZ = (float) (getZ() / oaLength);
+		return new Position(oaNormalizeX, 0, oaNormalizeZ);
+	}
 }

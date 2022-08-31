@@ -11,7 +11,7 @@ import java.util.List;
  * @Date: 2022/5/23 17:09
  * @Description:
  */
-public class AABB {
+public class RayPolygon {
 
 	/**
 	 * B-A 是射线
