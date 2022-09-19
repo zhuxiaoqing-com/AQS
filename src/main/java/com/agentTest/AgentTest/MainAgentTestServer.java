@@ -17,7 +17,7 @@ import java.net.Socket;
  * @Description:
  */
 public class MainAgentTestServer {
-    private static final String agentPath = "F:\\mh\\game_server-develop\\AQS\\game-agent\\target\\game-agent-0.0.1-SNAPSHOT.jar";
+    private static final String agentPath = "G:\\mh\\game_server-develop\\AQS\\game-agent\\target\\game-agent-0.0.1-SNAPSHOT.jar";
 
     public static void openServer() {
         int port = 12333;

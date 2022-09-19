@@ -1,7 +1,9 @@
 package com.youxi.entity;
 
 public class OBB2D {
-	private Position size;
+	private Position center;
+	private Dir sizeDir;
+	private float dir;
 
 	private Position p0;
 	private Position p1;
@@ -42,10 +44,28 @@ public class OBB2D {
 	}
 
 	public Position getCenter() {
-		return size;
+		return center;
 	}
 
-	public void setSize(Position size) {
-		this.size = size;
+
+	public Dir getSizeDir() {
+		return sizeDir;
+	}
+
+	public float getDir() {
+		return dir;
+	}
+
+
+	public void setSizeDir(Dir sizeDir) {
+		this.sizeDir = sizeDir;
+	}
+
+	public void setDir(float dir) {
+		this.dir = dir;
+	}
+
+	public void setCenter(Position center) {
+		this.center = center;
 	}
 }

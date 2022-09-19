@@ -1,6 +1,7 @@
 package com.youxi.math;
 
 import com.youxi.entity.CMath;
+import com.youxi.entity.Dir;
 import com.youxi.entity.OBB2D;
 import com.youxi.entity.Position;
 
@@ -8,9 +9,10 @@ public class OBBOBB {
 
 	/**
 	 * https://www.cnblogs.com/hont/p/9501169.html
-	 *
+	 * <p>
 	 * 在两个凸多边形中找到一根轴，凸多边形所有在这根轴上的投影点不产生相交，则这两个凸多边形不相交。
 	 * 这根轴一般取每个边的垂线，逐个投影进行测试。
+	 *
 	 * @param aaa
 	 * @param bbb
 	 * @return
@@ -21,7 +23,6 @@ public class OBBOBB {
 
 		Position axis3 = bbb.getP3().sub(aaa.getP0()).normalize();
 		Position axis4 = bbb.getP3().sub(aaa.getP0()).normalize();
-
 
 
 		// 只要有一个不相交就是不相交
@@ -63,19 +64,6 @@ public class OBBOBB {
 	}
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 	////////////////////////第二种实现方法///////////////////////////
 	////////////////////////第二种实现方法///////////////////////////
 	////////////////////////第二种实现方法///////////////////////////
@@ -86,7 +74,40 @@ public class OBBOBB {
 	public boolean isIntersect2(OBB2D aaa, OBB2D bbb) {
 		Position t = aaa.getCenter().sub(bbb.getCenter());
 		return true;
-		
+
+	}
+
+
+	public static boolean in(OBB2D aaa, Position position) {
+		Position rotateDir = position.sub(aaa.getCenter()).getRotateDir(aaa.getDir());
+
+		int x = aaa.getSizeDir().getX();
+		int z = aaa.getSizeDir().getZ();
+
+		return rotateDir.getX() > -x  && rotateDir.getX() < x  && rotateDir.getZ() > -z && rotateDir.getZ() < z;
+	}
+
+	public static boolean in2(OBB2D aaa, Position position) {
+		Position rotateDir = position.sub(aaa.getCenter()).getRotateDir(aaa.getDir());
+
+		int x = aaa.getSizeDir().getX();
+		int z = aaa.getSizeDir().getZ();
+
+		Position center = aaa.getCenter();
+		return rotateDir.getX() > center.getX()-x  && rotateDir.getX() < center.getX()+ x
+				&& rotateDir.getZ() > center.getZ()-z  && rotateDir.getZ() < center.getZ()+z ;
+	}
+
+	public static void main(String[] args) {
+		OBB2D obb2D = new OBB2D();
+		obb2D.setDir(0);
+		obb2D.setSizeDir(new Dir(1,1));
+		obb2D.setCenter(new Position(2,2));
+
+
+		Position point = new Position(2,2);
+		System.out.println(in(obb2D, point));
+		System.out.println(in2(obb2D, point));
 	}
 
 

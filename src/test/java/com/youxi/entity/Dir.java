@@ -102,4 +102,10 @@ public class Dir {
 		return new Dir(oaNormalizeX, 0, oaNormalizeZ);
 	}
 
+	public Dir getRotateDir(float radians) {
+		double cos = Math.cos(radians);
+		double sin = Math.sin(radians);
+		return new Dir((int) (getX() * cos - getZ() * sin),
+				(int) ((getZ() * cos + getX() * sin)));
+	}
 }

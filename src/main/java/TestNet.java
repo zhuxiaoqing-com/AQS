@@ -1,9 +1,15 @@
 import java.io.IOException;
-import java.net.ServerSocket;
+import java.util.Random;
 
 public class TestNet {
 	public static void main(String[] args) throws IOException, InterruptedException {
-		ServerSocket serverSocket = new ServerSocket(10101);
-		Thread.sleep(1000_000);
+		Random random = new Random();
+		while (true) {
+			int skillId = random.nextInt(100);
+			if(skillId == 0) {
+				break;
+			}
+		}
+		System.out.println("success");
 	}
 }

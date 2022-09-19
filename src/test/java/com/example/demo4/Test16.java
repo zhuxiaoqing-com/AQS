@@ -366,6 +366,13 @@ public class Test16 {
 	public void test17() throws InterruptedException {
 	// \u000d System.out.println("coder Hydra");
 	}
+
+	@Test
+	public void test18() throws InterruptedException {
+		System.out.println((int)Float.POSITIVE_INFINITY);
+		System.out.println((int)Float.NEGATIVE_INFINITY);
+		System.out.println((int)Float.NaN);
+	}
 }
 
 /**
