@@ -373,6 +373,11 @@ public class Test16 {
 		System.out.println((int)Float.NEGATIVE_INFINITY);
 		System.out.println((int)Float.NaN);
 	}
+
+	@Test
+	public void test19() {
+		System.out.println((16382+4094)&~4095);
+	}
 }
 
 /**
