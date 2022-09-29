@@ -376,7 +376,12 @@ public class Test16 {
 
 	@Test
 	public void test19() {
-		System.out.println((16382+4094)&~4095);
+		//System.out.println((16382+4094)&~4095);
+		/*System.out.println((1<<17)-1);
+		System.out.println(0xfff);
+		System.out.println(1000*1000*4);*/
+
+		System.out.println(0x9FFFF / 1024);
 	}
 }
 
