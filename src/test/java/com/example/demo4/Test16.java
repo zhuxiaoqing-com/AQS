@@ -381,7 +381,27 @@ public class Test16 {
 		System.out.println(0xfff);
 		System.out.println(1000*1000*4);*/
 
-		System.out.println(0x9FFFF / 1024);
+		/*System.out.println(0x9FFFF / 1024);
+		System.out.println(0xfffffff8- 0xfffff000);
+		System.out.println(0xfffff000- 0xffffe000);
+		*/
+		Integer a = 0xfffffff8;
+		a(a);
+		a = 0xfffff000;
+		a(a);
+		a = 0xffffe000;
+		a(a);
+	}
+
+	private void a(Integer a) {
+		String x = Integer.toBinaryString(a);
+		String a1 = x.substring(0, 10);
+		String a2 = x.substring(10, 20);
+		String a3 = x.substring(20, 32);
+		System.out.println(Integer.parseInt(a1,2));
+		System.out.println(Integer.parseInt(a2,2));
+		System.out.println(Integer.parseInt(a3,2));
+		System.out.println("---------------");
 	}
 }
 
