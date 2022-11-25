@@ -1,7 +1,10 @@
 package com.example.demo4;
 
 import com.alibaba.fastjson.JSON;
+import com.example.demo4.testObj1.Temp;
 import com.youxi.building.Misc;
+import com.youxi.entity.CMath;
+import com.youxi.entity.Position;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import io.netty.buffer.ByteBuf;
@@ -12,12 +15,15 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Method;
+import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -356,7 +362,7 @@ public class Test16 {
 	@Test
 	public void test16() throws InterruptedException {
 		long id = 1423006710225633280L;
-		System.out.println(id&65535);
+		System.out.println(id & 65535);
 
 		ArrayList<Object> objects = new ArrayList<>();
 		objects.containsAll(new ArrayList<>());
@@ -364,14 +370,14 @@ public class Test16 {
 
 	@Test
 	public void test17() throws InterruptedException {
-	// \u000d System.out.println("coder Hydra");
+		// \u000d System.out.println("coder Hydra");
 	}
 
 	@Test
 	public void test18() throws InterruptedException {
-		System.out.println((int)Float.POSITIVE_INFINITY);
-		System.out.println((int)Float.NEGATIVE_INFINITY);
-		System.out.println((int)Float.NaN);
+		System.out.println((int) Float.POSITIVE_INFINITY);
+		System.out.println((int) Float.NEGATIVE_INFINITY);
+		System.out.println((int) Float.NaN);
 	}
 
 	@Test
@@ -398,10 +404,105 @@ public class Test16 {
 		String a1 = x.substring(0, 10);
 		String a2 = x.substring(10, 20);
 		String a3 = x.substring(20, 32);
-		System.out.println(Integer.parseInt(a1,2));
-		System.out.println(Integer.parseInt(a2,2));
-		System.out.println(Integer.parseInt(a3,2));
+		System.out.println(Integer.parseInt(a1, 2));
+		System.out.println(Integer.parseInt(a2, 2));
+		System.out.println(Integer.parseInt(a3, 2));
 		System.out.println("---------------");
+	}
+
+	@Test
+	public void test20() throws UnsupportedEncodingException {
+	/*	System.out.println(1193180/1000);
+		long l = System.currentTimeMillis();
+		int currSeed = (int) (l / 1000);
+
+		int index =10;
+	*//*	for (int skillId = 0; skillId < index; skillId++) {
+		System.out.println("第 "+skillId +" 次---- 结果："+ new Random(currSeed+skillId).nextInt(10000));
+		}
+
+		System.out.println("----------------------------");
+		currSeed=currSeed+1022;
+		for (int skillId = 0; skillId < index; skillId++) {
+			System.out.println("第 "+skillId +" 次---- 结果："+ new Random(currSeed+skillId).nextInt(10000));
+		}*//*
+
+		Random random = new Random(-222);
+		for (int skillId = 0; skillId < index; skillId++) {
+			System.out.println(random.nextInt(1000));
+		}*/
+		String a = "测试123";
+		System.out.println(TestUtil.printHex(a.getBytes("GBK")));
+	}
+
+
+	@Test
+	public void test21() {
+		ConcurrentHashMap<Object, Object> map = new ConcurrentHashMap<>();
+		map.put(1, 1);
+		System.out.println(map.putIfAbsent(1, 2));
+		System.out.println(map.putIfAbsent(2, 2));
+		System.out.println(map);
+
+		System.out.println(Math.pow(10, 0));
+	}
+
+	@Test
+	public void test22() {
+		ArrayList<Integer> objects = new ArrayList<>();
+		int index = 10;
+		for (int i = 1; i < index; i++) {
+			objects.add(i);
+		}
+
+		List<Integer> collect = objects.stream().skip(1).collect(Collectors.toList());
+		System.out.println(collect);
+	}
+
+
+	@Test
+	public void test23() {
+		Temp temp = JSON.parseObject("", Temp.class);
+		System.out.println(temp);
+	}
+
+	@Test
+	public void test24() {
+		long a = 1423006872251629568L;
+		System.out.println(a >> 47);
+		a = 1577818112484573184L;
+		System.out.println(a >> 47);
+		a = 1423006857546268672L;
+		System.out.println(a >> 47);
+
+		String aa = "2232$5555";
+		System.out.println(aa.split("//$")[0]);
+		System.out.println(aa.split("/$")[0]);
+		System.out.println(aa.split("\\$")[0]);
+
+		Object[] b = new Object[]{1, 2, 3};
+		a(b);
+	}
+
+
+	public void a(Object... a) {
+		for (Object o : a) {
+			System.out.println(o);
+		}
+		System.out.println(Arrays.toString(a));
+	}
+
+
+	@Test
+	public void test25() {
+		int a = 111;
+		System.out.println(Integer.toBinaryString(a));
+
+		System.out.println(Integer.toBinaryString(a(a,2)));
+	}
+
+	public static int a(int value, int index) {
+		return value &= ~(1 << index);
 	}
 }
 

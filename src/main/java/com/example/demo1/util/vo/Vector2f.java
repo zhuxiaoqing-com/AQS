@@ -35,4 +35,19 @@ public class Vector2f {
         this.y = y;
     }
 
+    public Vector2f add(Vector2f vector2f) {
+        return new Vector2f(x+ vector2f.x, y+ vector2f.y);
+    }
+
+    public Vector2f multiply(float v) {
+        return new Vector2f(x * v, y * v);
+    }
+
+    @Override
+    public String toString() {
+        return "Vector2f{" +
+                "x=" + x +
+                ", y=" + y +
+                '}';
+    }
 }

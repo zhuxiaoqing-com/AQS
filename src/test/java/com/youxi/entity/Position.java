@@ -6,6 +6,7 @@ package com.youxi.entity;
  */
 public final class Position extends BasicPos {
 
+	public static final Position ZERO = new Position(0, 0, 0);
 	public Position(float x, float y, float z) {
 		super(x, y, z);
 	}

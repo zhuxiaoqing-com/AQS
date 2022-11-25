@@ -331,8 +331,10 @@ public class JedisTest1 {
 	public void test1() {
 		//hset("key1","field1", "value1", 100);
 		//System.out.println(	msetnx("b","b", 0));
-		System.out.println(setnx2("aa", "c", 111111));
-		System.out.println(setnx2("aa", "c", 11111));
+		System.out.println(hsetnx2("aa", "c", ""));
+		//System.out.println(hsetnx2("aa", "c", "aaa"));
+
+
 	}
 
 	public void hset(String key, String field, String value, int second) {
@@ -398,6 +400,24 @@ public class JedisTest1 {
 		Jedis jedis = this.jedis;
 		try {
 			return jedis.set(key, value, "nx", "ex", second);
+		} finally {
+			jedis.close();
+		}
+	}
+
+	public Object hsetnx(String key, String field, String value) {
+		Jedis jedis = this.jedis;
+		try {
+			return jedis.hsetnx(key, field, value);
+		} finally {
+			jedis.close();
+		}
+	}
+
+	public Object hsetnx2(String key, String field, String value) {
+		Jedis jedis = this.jedis;
+		try {
+			return jedis.set(key, field, value);
 		} finally {
 			jedis.close();
 		}

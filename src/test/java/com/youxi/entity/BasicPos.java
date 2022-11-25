@@ -18,6 +18,7 @@ public abstract class BasicPos {
 	public static final int DIR_LEFTUP = 8; // 左上
 	public static final int DIR_NUM = 8; // 全部方向的数目
 
+
 	private int x;
 	private int y;
 	private int z;
