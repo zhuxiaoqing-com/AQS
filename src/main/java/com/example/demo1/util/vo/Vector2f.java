@@ -36,11 +36,24 @@ public class Vector2f {
     }
 
     public Vector2f add(Vector2f vector2f) {
-        return new Vector2f(x+ vector2f.x, y+ vector2f.y);
+        return new Vector2f(x + vector2f.x, y + vector2f.y);
+    }
+
+    public Vector2f sub(Vector2f vector2f) {
+        return new Vector2f(x - vector2f.x, y - vector2f.y);
     }
 
     public Vector2f multiply(float v) {
         return new Vector2f(x * v, y * v);
+    }
+
+
+    public static float cross(Vector2f a, Vector2f b) {
+        return a.x * b.y - b.x * a.y;
+    }
+
+    public static float dot(Vector2f a, Vector2f b) {
+        return a.x * b.x + b.y * a.y;
     }
 
     @Override

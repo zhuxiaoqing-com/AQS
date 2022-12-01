@@ -1,8 +1,7 @@
 package com.youxi.math;
 
-import com.example.代码优化.design_mode.TowerAOI.Vector2f;
+import com.example.demo1.util.vo.Vector2f;
 import com.youxi.entity.Position;
-import com.youxi.sssh.fsm.Vector3f;
 import org.junit.Test;
 
 import java.util.List;
