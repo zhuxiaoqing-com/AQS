@@ -512,12 +512,11 @@ public class Test16 {
 
 	@Test
 	public void test26() {
-		BuffTest buffTest = new BuffTest(1, 2, 3);
-		Gson gson = new Gson();
-		String s = gson.toJson(buffTest);
-		System.out.println(s);
-		BuffTest buffTest1 = gson.fromJson(s, BuffTest.class);
-		System.out.println(buffTest1);
+		System.out.println(0%3);
+		System.out.println(1%3);
+		System.out.println(2%3);
+		System.out.println(3%3);
+		System.out.println(4%3);
 	}
 }
 

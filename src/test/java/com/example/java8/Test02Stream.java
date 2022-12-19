@@ -2,6 +2,7 @@ package com.example.java8;
 
 import com.example.java8.entity.Employee;
 import com.google.common.collect.Lists;
+import io.swagger.models.auth.In;
 import org.junit.Test;
 
 import java.lang.reflect.Array;
@@ -435,6 +436,16 @@ public class Test02Stream {
 
 		System.out.println(count);
 		System.out.println(count2);
+	}
+
+	@Test
+	public void test19() {
+		ArrayList<Integer> objects = new ArrayList<>();
+		System.out.println(objects.stream().map(a->a.toString()).collect(Collectors.joining(";")));
+		objects.add(1);
+		System.out.println(objects.stream().map(a->a.toString()).collect(Collectors.joining(";")));
+		objects.add(2);
+		System.out.println(objects.stream().map(a->a.toString()).collect(Collectors.joining(";")));
 	}
 }
 

@@ -59,7 +59,8 @@ public class LineSegmentIntersection {
         float t = Vector2f.cross(ps2.sub(ps1), s) / Vector2f.cross(r, s);
         float u = Vector2f.cross(ps1.sub(ps2), r) / Vector2f.cross(s, r);
 
-        if (t >= 0 && t <= 1 && u >= 0 && u <= 1) {
+        // 这里如果t == 1 || t == 0 | u == 1 || u == 0 说明没有相交 而是刚好碰上
+        if (t > 0 && t < 1 && u > 0 && u < 1) {
             //ps1+tr
             return ps1.add(r.multiply(t));
         }

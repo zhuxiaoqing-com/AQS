@@ -1,8 +1,8 @@
 package com.example.demo4;
 
+import com.example.demo1.util.vo.Vector2f;
 import com.example.demo4.testObj1.AClass;
 import com.example.demo4.testObj1.CeShiObj1;
-import com.example.代码优化.design_mode.TowerAOI.Vector2f;
 import com.google.common.collect.Lists;
 import io.swagger.models.auth.In;
 import org.junit.Test;

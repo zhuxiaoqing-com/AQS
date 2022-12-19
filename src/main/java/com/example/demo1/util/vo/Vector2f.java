@@ -48,8 +48,8 @@ public class Vector2f {
     }
 
 
-    public static float cross(Vector2f a, Vector2f b) {
-        return a.x * b.y - b.x * a.y;
+    public static float cross(Vector2f vectorX, Vector2f vectorY) {
+        return vectorX.x * vectorY.y - vectorY.x * vectorX.y;
     }
 
     public static float dot(Vector2f a, Vector2f b) {
