@@ -21,12 +21,16 @@ import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.sql.*;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -518,6 +522,64 @@ public class Test16 {
 		System.out.println(3%3);
 		System.out.println(4%3);
 	}
+
+	@Test
+	public void test27() {
+		HashMap<Integer, List<Integer>> hashMap = new HashMap<>();
+		hashMap.put(1,Arrays.asList(1,2,3));
+		while (hashMap.entrySet().iterator().hasNext()) {
+			Map.Entry<Integer, List<Integer>> next = hashMap.entrySet().iterator().next();
+			System.out.println();
+		}
+	}
+
+	@Test
+	public void test28() {
+		ArrayList<Integer> objects = new ArrayList<>();
+		int index=  10;
+		for (int i = 0; i < index; i++) {
+			objects.add(i);
+		}
+
+		for (int i = 0; i < index; i++) {
+			System.out.println(objects.stream().findAny().get());
+		}
+	}
+
+	@Test
+	public void test29() {
+		LocalDate of = LocalDate.of(2123, 12, 4);
+		LocalDate of1 = LocalDate.now();
+		Duration between = Duration.between(of1.atStartOfDay(), of.atStartOfDay());
+		System.out.println(between.getSeconds()*1000);
+	}
+
+	@Test
+	public void test30() throws InterruptedException {
+		 ScheduledThreadPoolExecutor scheduled = new ScheduledThreadPoolExecutor(1);
+		 scheduled.schedule((Runnable) () -> System.out.println("1111111111111111111"), 0, TimeUnit.MILLISECONDS);
+
+		 while (true) {
+			 Thread.sleep(1000L);
+		 }
+	}
+	public static final String HH_MM_SS = "HH:mm:ss";
+	public static DateTimeFormatter HH_MM_SS_TimeFromatter = DateTimeFormatter.ofPattern(HH_MM_SS);
+	@Test
+	public void test31() {
+		System.out.println(HH_MM_SS_TimeFromatter.format(LocalDateTime.now()));
+		System.out.println(HH_MM_SS_TimeFromatter.format(LocalTime.now()));
+	}
+
+	@Test
+	public void test32() {
+		for (int i = 0; i < 4; ++i)
+		{
+		int dir = (i+3)&3;
+			System.out.println(dir);
+		}
+	}
+
 }
 
 /**
