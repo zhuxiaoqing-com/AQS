@@ -14,6 +14,8 @@ public class Cone {
      * 点是逆时针传过来的
      * 多边形的边是逆时针方向的
      *
+     * checkP 这个点是否在 p1,p2,p3形成的锥形内
+     *
      * @return 连接的线段 true: 在多边形里面 false： 在多边形外面
      */
     public boolean cone(Vector2f p1, Vector2f p2, Vector2f p3, Vector2f checkP) {

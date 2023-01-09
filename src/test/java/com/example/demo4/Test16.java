@@ -31,6 +31,8 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -578,6 +580,19 @@ public class Test16 {
 		int dir = (i+3)&3;
 			System.out.println(dir);
 		}
+	}
+
+	@Test
+	public void test33() {
+		int i = LocalTime.of(2, 0).toSecondOfDay();
+		System.out.println(i);
+		int i1 = 2 * 60 * 60;
+		System.out.println(i1);
+
+		System.out.println(0x80);
+		Pattern PATTERN_COUNTER= Pattern.compile("^[^\\\\]*\\.[^\\\\]*$");
+		Matcher matcher = PATTERN_COUNTER.matcher("main-SERVER_ID.log");
+		System.out.println(matcher.matches());
 	}
 
 }
