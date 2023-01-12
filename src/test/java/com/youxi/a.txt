@@ -1,0 +1,31 @@
+INSERT INTO `agents` (`agentName`, `password`, `superior`, `level`, `invitationCode`, `internal`)
+string;
+INSERT INTO `nowgame` (`username`,`jitaihao`,`tinghao`,`credit`,`daili`)
+string;
+INSERT INTO `users` (`username`,`password`,`superior`, `invitationCode`)
+string;string;string;int
+INSERT INTO `bibeirecord` (`jitaihao`,`dailihao`,`yazhu`,`daxiao`,`kaipai`,`ining`)
+int;string;int;int;int;int
+INSERT INTO `gamejirecord` (`poker1`,`poker2`,`poker3`,`poker4`,`poker5`,`poker6`,`poker7`,`poker8`,`poker9`,`poker10`,`jitaihao`,`dailihao`,`credit`,`bet`,`win`,`baopai1`,`baopai2`,`baopai3`,`baopai4`,`baopai5`)
+int;int;int;int;int;int;int;int;int;int;int;string;double;double;double;int;int;int;int;int
+INSERT INTO `paijiIning` (`roomName`,`jitaihao`)
+string;int
+INSERT INTO `paixingrecord` (`paixing1`,`paixing2`,`paixing3`,`paixing4`,`paixing5`,`paixing6`,`paixing7`,`jitaihao`,`dailihao`)
+int;int;int;int;int;int;int;int;string
+INSERT INTO `liujirecord` (`strattime`,`dailihao`,`jitaihao`,`endtime`,`username`,`stringStart`,`stringEnd`,`tinghao`,`credit`)
+string;string;int;string;string;string;string;string;int
+INSERT INTO `jilu1` (`daili`,`tinghao`,`jitaihao`,`NOTEAin`,`NOTEAout`,`NOTEAbalance`,`NOTEBin`,`NOTEBout`,`NOTEBbalance`,`_5k80`,`rs80`,`sf80`,`_4k80`)
+string;int;int;int;int;int;int;int;int;int;int;int;
+INSERT INTO `jilu2` (`daili`,`tinghao`,`jitaihao`,`ZhuWanFen`,`ZhuWinFen`,`ZhuWanCi`,`ZhuWinCi`,`BibeiWanFen`,`BibeiWinFen`,`BibeiWinCi`,`BibeiShuCi`,`KaifenZon`,`XifenZon`,`ToubiZon`,`TuibiZon`,`CaijinFen`,`CaijinCi`)
+string;int;int;int;int;int;int;int;int;int;int;int;int;int;int;int;int;
+INSERT INTO `jilu3` (`daili`,`tinghao`,`jitaihao`,`P5K`,`rs`,`sf`,`P4k`,`fh`,`fl`,`st`,`P3k`,`P2p`,`P1p`,`no`,`zong`)
+string;int;int;int;int;int;int;int;int;int;int;int;int;int;int;int;int;
+INSERT INTO `jitaiset` (`agentID`,`platformhao`,`difficulty`,`guiPercent`,`guiIning`,`startining`)
+string;int;int;int;int;int;
+INSERT INTO `zuobiset` (`agentID`,`platformhao`,`paixing`,`inning`,`curIning`)
+string;int;int;int;int;
+INSERT INTO `agent` (`agentID`,`platformCount`)
+string
+
+
+UPDATE `users`

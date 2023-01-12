@@ -15,15 +15,17 @@ public class Test {
     long end;
     long start;
 
-   /* String driverName = "com.mysql.jdbc.Driver";
+    String driverName = "com.mysql.jdbc.Driver";
     String url = "jdbc:mysql://localhost:3306/test1?rewriteBatchedStatements=true";
     String user = "root";
-    String password = "123";*/
+    String password = "123456";
 
+/*
 	 String driverName = "com.mysql.jdbc.Driver";
     String url = "jdbc:mysql://10.0.0.101:3306/SECONDWAR_401?useUnicode=true&amp;characterEncoding=utf-8&amp;useSSL=false&amp;rewriteBatchedStatements=true&amp;user=root&amp;password=123456";
     String user = "root";
     String password = "123456";
+*/
 
 
 	{

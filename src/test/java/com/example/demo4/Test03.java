@@ -265,18 +265,6 @@ public class Test03 {
     }
 
 
-    @Test
-    public void test11() {
-        String json = "";
-        Type mtype = new TypeToken<Map<String, List<GameServer>>>() {
-        }.getType();
-
-        Gson gson = new GsonBuilder().enableComplexMapKeySerialization().create();
-        Map<String, List<GameServer>> map = gson.fromJson(json, mtype);
-        map.forEach((key, value) -> {
-
-        });
-    }
 
     @Test
     public void test12() {
