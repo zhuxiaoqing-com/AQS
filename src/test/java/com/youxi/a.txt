@@ -2,7 +2,7 @@ INSERT INTO `agents` (`agentName`, `password`, `superior`, `level`, `invitationC
 string;
 INSERT INTO `nowgame` (`username`,`jitaihao`,`tinghao`,`credit`,`daili`)
 string;
-INSERT INTO `users` (`username`,`password`,`superior`, `invitationCode`)
+INSERT INTO `users` (`username`,`password`,`superior`, `invitationCode`, `locked`)
 string;string;string;int
 INSERT INTO `bibeirecord` (`jitaihao`,`dailihao`,`yazhu`,`daxiao`,`kaipai`,`ining`)
 int;string;int;int;int;int
@@ -26,8 +26,12 @@ INSERT INTO `zuobiset` (`agentID`,`platformhao`,`paixing`,`inning`,`curIning`)
 string;int;int;int;int;
 INSERT INTO `agent` (`agentID`,`platformCount`)
 string;int
-INSERT INTO `agent` (`lobbyId`,`lobbyName`,`numMachine`,`score`,`minUpScore`,`minDownScore`,`maxBet`,`defaultBet`)
+INSERT INTO `lobbys` (`lobbyId`,`lobbyName`,`numMachine`,`score`,`minUpScore`,`minDownScore`,`maxBet`,`defaultBet`)
 int;string;int;int;int;int;int;int;int;
+INSERT INTO  `machine` (`lobbyId`,`_5K`,`RS`,`SF`,`_4K` , `numMachine`)
+int;int;int;int;int;int;int;int;int;int;
 
 
 UPDATE `users`
+
+age: logInSetting..... logInSetting..... admin  pssss: af67ebf0884a38ebcb8900d9fa297985
