@@ -26,6 +26,8 @@ INSERT INTO `zuobiset` (`agentID`,`platformhao`,`paixing`,`inning`,`curIning`)
 string;int;int;int;int;
 INSERT INTO `agent` (`agentID`,`platformCount`)
 string;int
+INSERT INTO `agent` (`lobbyId`,`lobbyName`,`numMachine`,`score`,`minUpScore`,`minDownScore`,`maxBet`,`defaultBet`)
+int;string;int;int;int;int;int;int;int;
 
 
 UPDATE `users`

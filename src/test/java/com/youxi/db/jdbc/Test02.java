@@ -21,7 +21,8 @@ public class Test02 {
 
 	static String driverName = "com.mysql.jdbc.Driver";
 	//	static String url = "jdbc:mysql://localhost:3306/test1?rewriteBatchedStatements=true";
-	static String url = "jdbc:mysql://localhost:3306/test01?useSSL=false";
+	//static String url = "jdbc:mysql://localhost:3306/test01?useSSL=false";
+	static String url = "jdbc:mysql://139.9.107.144:3306/test01?useSSL=false";
 
 	static String user = "root";
 	static String password = "123456";
