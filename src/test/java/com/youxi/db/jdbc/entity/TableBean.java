@@ -44,8 +44,8 @@ public class TableBean {
 		String a= "CREATE TABLE IF NOT EXISTS " + this.tableName + "(%s) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_bin ROW_FORMAT = Dynamic;";
 
 		StringBuilder fieldStr = new StringBuilder();
-		for (Field field : fieldList) {
-			fieldStr.append(field.createFieldSql()).append(",");
+		for (int i = 0; i < fieldList.size(); i++) {
+			fieldStr.append(fieldList.get(i).createFieldSql(i == 0)).append(",");
 		}
 		String s = fieldStr.deleteCharAt(fieldStr.length() - 1).toString();
 		String format = String.format(a, s);

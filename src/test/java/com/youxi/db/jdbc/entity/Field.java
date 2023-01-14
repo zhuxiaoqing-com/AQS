@@ -37,14 +37,16 @@ public class Field {
 				'}';
 	}
 
-	public String createFieldSql() {
+	public String createFieldSql(boolean primary) {
+
+		String join = primary ? " primary key not null " :" NULL DEFAULT NULL";
 		switch (type) {
 			case "int":
-				return name+" int(11) NULL DEFAULT NULL";
+				return name+" int(11) "+join;
 			case "double":
-				return name+" double(255, 0) NULL DEFAULT NULL";
+				return name+" double(255, 0) " + join;
 			case "string":
-				return name+" varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL";
+				return name+" varchar(255)  CHARACTER SET utf8 COLLATE utf8_bin "+join;
 		}
 		System.out.println("error!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 		System.out.println("error!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
