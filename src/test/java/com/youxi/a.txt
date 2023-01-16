@@ -25,7 +25,7 @@ string;int;int;int;int;int;
 INSERT INTO `zuobiset` (`agentID`,`platformhao`,`paixing`,`inning`,`curIning`)
 string;int;int;int;int;
 INSERT INTO `agent` (`agentID`,`platformCount`)
-string
+string;int
 
 
 UPDATE `users`

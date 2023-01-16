@@ -20,7 +20,8 @@ public class Test02 {
 
 	static String driverName = "com.mysql.jdbc.Driver";
 	//	static String url = "jdbc:mysql://localhost:3306/test1?rewriteBatchedStatements=true";
-	static String url = "jdbc:mysql://localhost:3306/test01?useSSL=false";
+	//static String url = "jdbc:mysql://localhost:3306/test01?useSSL=false";
+	static String url = "jdbc:mysql://43.137.11.78:3306/test01?useSSL=false";
 
 	static String user = "root";
 	static String password = "123456";
@@ -56,6 +57,7 @@ public class Test02 {
 		for (TableBean tableBean : tableBeans) {
 			PreparedStatement preparedStatement = conn.prepareStatement(tableBean.creatTableSQL());
 			try {
+				System.out.println(tableBean.creatTableSQL());
 			preparedStatement.execute();
 
 			}catch (Exception e) {

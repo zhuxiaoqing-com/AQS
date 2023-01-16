@@ -38,11 +38,12 @@ public class Field {
 	}
 
 	public String createFieldSql() {
+		// todo 先默认都用varchar
 		switch (type) {
 			case "int":
-				return name+" int(11) NULL DEFAULT NULL";
+		//		return name+" int(11) NULL DEFAULT NULL";
 			case "double":
-				return name+" double(255, 0) NULL DEFAULT NULL";
+		//		return name+" double(255, 0) NULL DEFAULT NULL";
 			case "string":
 				return name+" varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL";
 		}
