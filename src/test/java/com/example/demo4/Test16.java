@@ -595,6 +595,12 @@ public class Test16 {
 		System.out.println(matcher.matches());
 	}
 
+	@Test
+	public void test34() {
+		System.out.println(1-0.1);
+		System.out.println(1+0.999999999999999999999999999);
+	}
+
 }
 
 /**

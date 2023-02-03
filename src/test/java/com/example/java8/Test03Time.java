@@ -163,6 +163,7 @@ public class Test03Time {
         LocalDateTime end = LocalDateTime.of(2022, 5, 8, 1, 1);
 
         System.out.println("相差的天数: " + Duration.between(start, end).toDays() + "天");
+        System.out.println("相差的天数: " + Duration.between(end, start).toDays() + "天");
 
         Period between2 = Period.between(start.toLocalDate(), end.toLocalDate());
         System.out.println("相差的天数: " +  + between2.getYears() + " 年 " + between2.getMonths() + " 月 " + between2.getDays()+" 天 ");
