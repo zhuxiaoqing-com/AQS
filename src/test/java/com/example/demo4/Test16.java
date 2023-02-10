@@ -19,6 +19,7 @@ import org.junit.Test;
 import java.io.File;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 import java.sql.*;
@@ -597,10 +598,27 @@ public class Test16 {
 
 	@Test
 	public void test34() {
-		System.out.println(1-0.1);
-		System.out.println(1+0.999999999999999999999999999);
+		a(5);
+		a(4);
+		a(20);
 	}
 
+	private void a(int aa) {
+		System.out.println( (aa >> 4) & 0x3);
+		System.out.println( (aa >> 0) & 0x3);
+		System.out.println( (aa >> 2) & 0x3);
+		System.out.println("---------------------");
+	}
+
+
+	@Test
+	public void test35() throws IllegalAccessException {
+		Class<GainType> gainTypeClass = GainType.class;
+		for (Field field : gainTypeClass.getFields()) {
+			Object o = field.get(gainTypeClass);
+			System.out.println(field.getInt(gainTypeClass));
+		}
+	}
 }
 
 /**

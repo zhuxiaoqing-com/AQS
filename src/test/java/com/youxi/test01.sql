@@ -11,7 +11,7 @@
  Target Server Version : 50740
  File Encoding         : 65001
 
- Date: 29/01/2023 15:59:05
+ Date: 06/02/2023 09:47:57
 */
 
 SET NAMES utf8mb4;
@@ -69,7 +69,7 @@ CREATE TABLE `bibeirecord`  (
   `kaipai` int(11) NULL DEFAULT NULL,
   `ining` int(11) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 40 CHARACTER SET = utf8 COLLATE = utf8_bin ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 63 CHARACTER SET = utf8 COLLATE = utf8_bin ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of bibeirecord
@@ -113,6 +113,29 @@ INSERT INTO `bibeirecord` VALUES (36, 1, '365xy', 0, 0, 0, 56);
 INSERT INTO `bibeirecord` VALUES (37, 1, '365xy', 0, 0, 0, 57);
 INSERT INTO `bibeirecord` VALUES (38, 1, '365xy', 0, 0, 0, 58);
 INSERT INTO `bibeirecord` VALUES (39, 1, '365xy', 0, 0, 0, 59);
+INSERT INTO `bibeirecord` VALUES (40, 1, '365xy', 0, 0, 0, 59);
+INSERT INTO `bibeirecord` VALUES (41, 1, '365xy', 0, 0, 0, 60);
+INSERT INTO `bibeirecord` VALUES (42, 1, '365xy', 0, 0, 0, 62);
+INSERT INTO `bibeirecord` VALUES (43, 1, '365xy', 0, 0, 0, 62);
+INSERT INTO `bibeirecord` VALUES (44, 1, '365xy', 0, 0, 0, 62);
+INSERT INTO `bibeirecord` VALUES (45, 1, '365xy', 0, 0, 0, 63);
+INSERT INTO `bibeirecord` VALUES (46, 1, '365xy', 0, 0, 0, 64);
+INSERT INTO `bibeirecord` VALUES (47, 1, '365xy', 0, 0, 0, 65);
+INSERT INTO `bibeirecord` VALUES (48, 1, '365xy', 0, 0, 0, 66);
+INSERT INTO `bibeirecord` VALUES (49, 1, '365xy', 0, 0, 0, 66);
+INSERT INTO `bibeirecord` VALUES (50, 1, '365xy', 0, 0, 0, 66);
+INSERT INTO `bibeirecord` VALUES (51, 1, '365xy', 0, 0, 0, 67);
+INSERT INTO `bibeirecord` VALUES (52, 1, '365xy', 0, 0, 0, 67);
+INSERT INTO `bibeirecord` VALUES (53, 1, '365xy', 0, 0, 0, 67);
+INSERT INTO `bibeirecord` VALUES (54, 1, '365xy', 0, 0, 0, 68);
+INSERT INTO `bibeirecord` VALUES (55, 1, '365xy', 0, 0, 0, 68);
+INSERT INTO `bibeirecord` VALUES (56, 1, '365xy', 0, 0, 0, 68);
+INSERT INTO `bibeirecord` VALUES (57, 1, '365xy', 0, 0, 0, 68);
+INSERT INTO `bibeirecord` VALUES (58, 1, '365xy', 0, 0, 0, 68);
+INSERT INTO `bibeirecord` VALUES (59, 1, '365xy', 0, 0, 0, 68);
+INSERT INTO `bibeirecord` VALUES (60, 1, '365xy', 0, 0, 0, 69);
+INSERT INTO `bibeirecord` VALUES (61, 1, '365xy', 0, 0, 0, 69);
+INSERT INTO `bibeirecord` VALUES (62, 1, '365xy', 0, 0, 0, 69);
 
 -- ----------------------------
 -- Table structure for gamedetail
@@ -156,7 +179,7 @@ CREATE TABLE `gamejirecord`  (
   `baopai4` int(11) NULL DEFAULT NULL,
   `baopai5` int(11) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 63 CHARACTER SET = utf8 COLLATE = utf8_bin ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 86 CHARACTER SET = utf8 COLLATE = utf8_bin ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of gamejirecord
@@ -223,6 +246,29 @@ INSERT INTO `gamejirecord` VALUES (59, 18, 47, 40, 5, 34, 18, 47, 38, 5, 34, 1, 
 INSERT INTO `gamejirecord` VALUES (60, 3, 12, 11, 13, 8, 3, 12, 11, 13, 8, 1, '365xy', 200, 200, 1200, 1, 1, 1, 1, 1);
 INSERT INTO `gamejirecord` VALUES (61, 43, 33, 25, 30, 12, 43, 4, 25, 30, 12, 1, '365xy', 400, 100, 800, 1, 0, 1, 1, 1);
 INSERT INTO `gamejirecord` VALUES (62, 32, 13, 37, 30, 52, 6, 13, 25, 51, 52, 1, '365xy', 1500, 100, 200, 0, 1, 0, 0, 1);
+INSERT INTO `gamejirecord` VALUES (63, 16, 25, 33, 39, 36, 4, 22, 2, 18, 47, 1, '365xy', 0, 100, 0, 0, 0, 0, 0, 0);
+INSERT INTO `gamejirecord` VALUES (64, 28, 7, 48, 37, 10, 14, 7, 48, 37, 10, 1, '365xy', 39, 111, 0, 0, 1, 1, 1, 1);
+INSERT INTO `gamejirecord` VALUES (65, 19, 41, 15, 28, 5, 36, 41, 15, 28, 33, 1, '365xy', 108, 111, 333, 0, 1, 1, 1, 0);
+INSERT INTO `gamejirecord` VALUES (66, 19, 39, 13, 26, 33, 36, 39, 13, 26, 22, 1, '365xy', 330, 111, 333, 0, 1, 1, 1, 0);
+INSERT INTO `gamejirecord` VALUES (67, 25, 22, 16, 47, 36, 25, 22, 33, 47, 36, 1, '365xy', 140, 200, 0, 1, 1, 0, 1, 1);
+INSERT INTO `gamejirecord` VALUES (68, 47, 41, 20, 15, 28, 49, 41, 44, 15, 28, 1, '365xy', 280, 200, 600, 0, 1, 0, 1, 1);
+INSERT INTO `gamejirecord` VALUES (69, 26, 13, 33, 39, 32, 26, 13, 22, 39, 47, 1, '365xy', 680, 200, 600, 1, 1, 0, 1, 0);
+INSERT INTO `gamejirecord` VALUES (70, 49, 44, 30, 25, 11, 49, 37, 51, 25, 11, 1, '365xy', 1080, 200, 400, 1, 0, 0, 1, 1);
+INSERT INTO `gamejirecord` VALUES (71, 3, 50, 16, 14, 37, 3, 50, 16, 26, 37, 1, '365xy', 1280, 200, 400, 1, 1, 1, 0, 1);
+INSERT INTO `gamejirecord` VALUES (72, 27, 48, 17, 4, 35, 33, 48, 17, 4, 35, 1, '365xy', 1480, 200, 400, 0, 1, 1, 1, 1);
+INSERT INTO `gamejirecord` VALUES (73, 51, 30, 25, 37, 52, 51, 36, 25, 6, 49, 1, '365xy', 1680, 200, 400, 1, 0, 1, 0, 0);
+INSERT INTO `gamejirecord` VALUES (74, 23, 15, 16, 20, 18, 23, 15, 16, 20, 18, 1, '365xy', 1880, 200, 1200, 1, 1, 1, 1, 1);
+INSERT INTO `gamejirecord` VALUES (75, 47, 41, 22, 15, 28, 49, 41, 20, 15, 28, 1, '365xy', 2880, 200, 600, 0, 1, 0, 1, 1);
+INSERT INTO `gamejirecord` VALUES (76, 37, 43, 14, 19, 51, 10, 28, 48, 7, 5, 1, '365xy', 6800, 200, 0, 0, 0, 0, 0, 0);
+INSERT INTO `gamejirecord` VALUES (77, 4, 49, 17, 14, 36, 4, 49, 17, 26, 36, 1, '365xy', 6600, 200, 400, 1, 1, 1, 0, 1);
+INSERT INTO `gamejirecord` VALUES (78, 26, 13, 33, 39, 47, 26, 13, 22, 39, 49, 1, '365xy', 6800, 200, 600, 1, 1, 0, 1, 0);
+INSERT INTO `gamejirecord` VALUES (79, 19, 48, 40, 6, 35, 19, 48, 38, 6, 35, 1, '365xy', 7200, 200, 400, 1, 1, 0, 1, 1);
+INSERT INTO `gamejirecord` VALUES (80, 3, 48, 16, 14, 35, 3, 48, 16, 26, 35, 1, '365xy', 7400, 200, 400, 1, 1, 1, 0, 1);
+INSERT INTO `gamejirecord` VALUES (81, 34, 1, 16, 47, 3, 34, 46, 16, 47, 3, 1, '365xy', 7600, 200, 400, 1, 0, 1, 1, 1);
+INSERT INTO `gamejirecord` VALUES (82, 13, 6, 37, 51, 32, 44, 6, 25, 11, 32, 1, '365xy', 7800, 200, 0, 0, 1, 0, 0, 1);
+INSERT INTO `gamejirecord` VALUES (83, 4, 22, 13, 8, 7, 4, 11, 13, 8, 7, 1, '365xy', 7600, 200, 1200, 1, 0, 1, 1, 1);
+INSERT INTO `gamejirecord` VALUES (84, 6, 47, 19, 14, 34, 6, 47, 19, 26, 34, 1, '365xy', 11877, 123, 246, 1, 1, 1, 0, 1);
+INSERT INTO `gamejirecord` VALUES (85, 18, 50, 37, 5, 28, 18, 50, 37, 5, 52, 1, '365xy', 12000, 123, 246, 1, 1, 1, 1, 0);
 
 -- ----------------------------
 -- Table structure for jilu1
@@ -248,7 +294,7 @@ CREATE TABLE `jilu1`  (
 -- ----------------------------
 -- Records of jilu1
 -- ----------------------------
-INSERT INTO `jilu1` VALUES ('365xy', 1, 1, 31576, 44067, -12491, 0, 0, 0, 0, 0, 0, 0);
+INSERT INTO `jilu1` VALUES ('365xy', 1, 1, 65656, 81867, -16211, 0, 0, 0, 0, 0, 0, 0);
 
 -- ----------------------------
 -- Table structure for jilu2
@@ -278,7 +324,7 @@ CREATE TABLE `jilu2`  (
 -- ----------------------------
 -- Records of jilu2
 -- ----------------------------
-INSERT INTO `jilu2` VALUES ('365xy', 1, 1, 2747, 37195, 15, 63, 571, 0, 0, 0, 37195, 2747, 735, 490, 0, 0);
+INSERT INTO `jilu2` VALUES ('365xy', 1, 1, 5992, 46353, 33, 81, 571, 0, 0, 0, 46353, 5992, 994, 679, 0, 0);
 
 -- ----------------------------
 -- Table structure for jilu3
@@ -306,7 +352,7 @@ CREATE TABLE `jilu3`  (
 -- ----------------------------
 -- Records of jilu3
 -- ----------------------------
-INSERT INTO `jilu3` VALUES ('365xy', 1, 1, 0, 0, 0, 0, 8, 7, 0, 0, 0, 0, 14, 29);
+INSERT INTO `jilu3` VALUES ('365xy', 1, 1, 0, 0, 0, 0, 8, 9, 0, 0, 0, 0, 19, 36);
 
 -- ----------------------------
 -- Table structure for jitaiset
@@ -340,6 +386,11 @@ CREATE TABLE `liujirecord`  (
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_bin ROW_FORMAT = Dynamic;
 
 -- ----------------------------
+-- Records of liujirecord
+-- ----------------------------
+INSERT INTO `liujirecord` VALUES ('2023-01-31 17:21:02', '365xy', 2, '2023-01-31 18:21:02', 'aaaa', '2023-01-31 17:21:02', '2023-01-31 18:21:02', '1', '0');
+
+-- ----------------------------
 -- Table structure for lobbys
 -- ----------------------------
 DROP TABLE IF EXISTS `lobbys`;
@@ -358,7 +409,7 @@ CREATE TABLE `lobbys`  (
 -- ----------------------------
 -- Records of lobbys
 -- ----------------------------
-INSERT INTO `lobbys` VALUES (1, '2分', 20, 200, 10, 100, 200, 80);
+INSERT INTO `lobbys` VALUES (1, '2分', 3, 200, 1000, 100, 200, 80);
 
 -- ----------------------------
 -- Table structure for machine
@@ -377,7 +428,7 @@ CREATE TABLE `machine`  (
 -- ----------------------------
 -- Records of machine
 -- ----------------------------
-INSERT INTO `machine` VALUES (1, 1131, 1131, 1131, 131, 1);
+INSERT INTO `machine` VALUES (1, 5000, 2000, 500, 200, 1);
 
 -- ----------------------------
 -- Table structure for morennandu
@@ -422,7 +473,7 @@ CREATE TABLE `paijiining`  (
 -- ----------------------------
 -- Records of paijiining
 -- ----------------------------
-INSERT INTO `paijiining` VALUES ('365xy', 1, 59);
+INSERT INTO `paijiining` VALUES ('365xy', 1, 69);
 
 -- ----------------------------
 -- Table structure for paixingrecord
@@ -444,7 +495,7 @@ CREATE TABLE `paixingrecord`  (
 -- ----------------------------
 -- Records of paixingrecord
 -- ----------------------------
-INSERT INTO `paixingrecord` VALUES (0, 0, 0, 0, 8, 7, 0, 1, '365xy');
+INSERT INTO `paixingrecord` VALUES (0, 0, 0, 0, 8, 9, 0, 1, '365xy');
 
 -- ----------------------------
 -- Table structure for users
@@ -463,7 +514,7 @@ CREATE TABLE `users`  (
 -- ----------------------------
 -- Records of users
 -- ----------------------------
-INSERT INTO `users` VALUES ('aaaa', 'aaaa', '365xy', 1, '是', 10533);
+INSERT INTO `users` VALUES ('aaaa', 'aaaa', '365xy', 1, '是', 10386);
 
 -- ----------------------------
 -- Table structure for zuobiset
