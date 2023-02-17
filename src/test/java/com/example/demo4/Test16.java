@@ -380,7 +380,8 @@ public class Test16 {
 
 	@Test
 	public void test17() throws InterruptedException {
-		// \u000d System.out.println("coder Hydra");
+		//
+		System.out.println("coder Hydra");
 	}
 
 	@Test
@@ -508,7 +509,7 @@ public class Test16 {
 		int a = 111;
 		System.out.println(Integer.toBinaryString(a));
 
-		System.out.println(Integer.toBinaryString(a(a,2)));
+		System.out.println(Integer.toBinaryString(a(a, 2)));
 	}
 
 
@@ -519,17 +520,17 @@ public class Test16 {
 
 	@Test
 	public void test26() {
-		System.out.println(0%3);
-		System.out.println(1%3);
-		System.out.println(2%3);
-		System.out.println(3%3);
-		System.out.println(4%3);
+		System.out.println(0 % 3);
+		System.out.println(1 % 3);
+		System.out.println(2 % 3);
+		System.out.println(3 % 3);
+		System.out.println(4 % 3);
 	}
 
 	@Test
 	public void test27() {
 		HashMap<Integer, List<Integer>> hashMap = new HashMap<>();
-		hashMap.put(1,Arrays.asList(1,2,3));
+		hashMap.put(1, Arrays.asList(1, 2, 3));
 		while (hashMap.entrySet().iterator().hasNext()) {
 			Map.Entry<Integer, List<Integer>> next = hashMap.entrySet().iterator().next();
 			System.out.println();
@@ -539,7 +540,7 @@ public class Test16 {
 	@Test
 	public void test28() {
 		ArrayList<Integer> objects = new ArrayList<>();
-		int index=  10;
+		int index = 10;
 		for (int i = 0; i < index; i++) {
 			objects.add(i);
 		}
@@ -554,20 +555,22 @@ public class Test16 {
 		LocalDate of = LocalDate.of(2123, 12, 4);
 		LocalDate of1 = LocalDate.now();
 		Duration between = Duration.between(of1.atStartOfDay(), of.atStartOfDay());
-		System.out.println(between.getSeconds()*1000);
+		System.out.println(between.getSeconds() * 1000);
 	}
 
 	@Test
 	public void test30() throws InterruptedException {
-		 ScheduledThreadPoolExecutor scheduled = new ScheduledThreadPoolExecutor(1);
-		 scheduled.schedule((Runnable) () -> System.out.println("1111111111111111111"), 0, TimeUnit.MILLISECONDS);
+		ScheduledThreadPoolExecutor scheduled = new ScheduledThreadPoolExecutor(1);
+		scheduled.schedule((Runnable) () -> System.out.println("1111111111111111111"), 0, TimeUnit.MILLISECONDS);
 
-		 while (true) {
-			 Thread.sleep(1000L);
-		 }
+		while (true) {
+			Thread.sleep(1000L);
+		}
 	}
+
 	public static final String HH_MM_SS = "HH:mm:ss";
 	public static DateTimeFormatter HH_MM_SS_TimeFromatter = DateTimeFormatter.ofPattern(HH_MM_SS);
+
 	@Test
 	public void test31() {
 		System.out.println(HH_MM_SS_TimeFromatter.format(LocalDateTime.now()));
@@ -576,9 +579,8 @@ public class Test16 {
 
 	@Test
 	public void test32() {
-		for (int i = 0; i < 4; ++i)
-		{
-		int dir = (i+3)&3;
+		for (int i = 0; i < 4; ++i) {
+			int dir = (i + 3) & 3;
 			System.out.println(dir);
 		}
 	}
@@ -591,7 +593,7 @@ public class Test16 {
 		System.out.println(i1);
 
 		System.out.println(0x80);
-		Pattern PATTERN_COUNTER= Pattern.compile("^[^\\\\]*\\.[^\\\\]*$");
+		Pattern PATTERN_COUNTER = Pattern.compile("^[^\\\\]*\\.[^\\\\]*$");
 		Matcher matcher = PATTERN_COUNTER.matcher("main-SERVER_ID.log");
 		System.out.println(matcher.matches());
 	}
@@ -604,20 +606,39 @@ public class Test16 {
 	}
 
 	private void a(int aa) {
-		System.out.println( (aa >> 4) & 0x3);
-		System.out.println( (aa >> 0) & 0x3);
-		System.out.println( (aa >> 2) & 0x3);
+		System.out.println((aa >> 4) & 0x3);
+		System.out.println((aa >> 0) & 0x3);
+		System.out.println((aa >> 2) & 0x3);
 		System.out.println("---------------------");
 	}
 
 
 	@Test
 	public void test35() throws IllegalAccessException {
-		Class<GainType> gainTypeClass = GainType.class;
-		for (Field field : gainTypeClass.getFields()) {
-			Object o = field.get(gainTypeClass);
-			System.out.println(field.getInt(gainTypeClass));
+
+		System.out.println(1<<15);
+		// 1 00000 00000 00000
+		System.out.println(Integer.toBinaryString(1<<15));
+
+		System.out.println(1<<16);
+		System.out.println(Integer.toBinaryString(1<<16));
+
+		System.out.println(Short.MAX_VALUE);
+	}
+
+	@Test
+	public void test36() {
+		HashSet<Long> set = new HashSet<>();
+		int index = 50000;
+
+		for (int i = 0; i < index; i++) {
+			long itemId = IdFactory.createItemId();
+			boolean add = set.add(itemId);
+			if (!add) {
+				System.out.println("error index :" + i);
+			}
 		}
+
 	}
 }
 

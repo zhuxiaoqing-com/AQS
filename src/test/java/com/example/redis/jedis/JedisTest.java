@@ -1,18 +1,33 @@
 package com.example.redis.jedis;
 
+import com.alibaba.fastjson.JSON;
+import com.example.demo4.testObj1.ReportLog;
 import org.junit.Test;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import redis.clients.jedis.*;
 
 import java.io.IOException;
 import java.time.Instant;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Set;
+import java.util.*;
 
 public class JedisTest {
+    static JedisPool jedisPool;
+    static  {
 
+        JedisPoolConfig config = new JedisPoolConfig();
+        config.setMaxTotal(20);
+        config.setMaxIdle(20);
+        config.setMinIdle(20);
+        config.setMaxWaitMillis(3000);
+        config.setTestOnBorrow(true);
+        config.setTestOnReturn(true);
+        config.setTestWhileIdle(true);
+        // 连接池耗尽的时候，是否阻塞，false会抛出异常，true阻塞直到超时，会抛出超时异常，默认为true
+        config.setBlockWhenExhausted(true);
+
+        // 这里连接超时时间默认走2s
+        jedisPool = new JedisPool(config, "127.0.0.1", 6379, 3000, "123456");
+    }
     @Test
     public void TestJedisPool(){
         JedisPool jedisPool = new JedisPool();
@@ -81,13 +96,52 @@ public class JedisTest {
     @Test
 	public void TestJedisPool4(){
 		String key = "haha";
-		JedisPool jedisPool = new JedisPool();
-		Jedis jedis = jedisPool.getResource();
-		Set<String> strings = jedis.zrangeByScore(key, 0, 20);
-		System.out.println(strings);
+        int index = 20;
+        ArrayList<Jedis> objects = new ArrayList<>();
+        for (int i = 0; i < index; i++) {
+            Jedis jedis = jedisPool.getResource();
+            jedis.select(1);
+            jedis.set(key, "1212");
+            System.out.println(jedis.get(key));
+            objects.add(jedis);
+        }
+        for (Jedis object : objects) {
+            object.close();
+        }
+
+        for (int i = 0; i < index; i++) {
+            Jedis jedis = jedisPool.getResource();
+            System.out.println(jedis.get(key));
+        }
 	/*	jedis.zadd(, , );
 		jedis.zrank(, );
 		jedis.zrange(, , );*/
 	}
 
+    @Test
+    public void TestJedisPool5(){
+        Jedis resource = jedisPool.getResource();
+       // resource.lpush("aaa", testReport(1));
+        //resource.lpush("aaa", testReport(2));
+        //String aaa = resource.rpop("aaa");
+        System.out.println(resource.brpop(2, "aaa"));
+        System.out.println(resource.brpop(2, "aaa"));
+        System.out.println(resource.brpop(2, "aaa"));
+    }
+
+    String testReport(int i){
+        ReportLog reportLog = new ReportLog();
+        reportLog.setReportTime(System.currentTimeMillis());
+        reportLog.setLobbyId(101);
+        reportLog.setDungeonId(999);
+        reportLog.setReportUserId("local$mzj" + i);
+        reportLog.setReportPlayer(i);
+        reportLog.setReportPlayerName("mzddj" + i);
+        reportLog.setBeReportedUserId("bili$hnn" + i);
+        reportLog.setBeReportedPlayerId(i);
+        reportLog.setBeReportedPlayerName("hnddn" + i);
+        reportLog.setReason(1);
+        reportLog.setDetail("你为什么挂机呢？" + i);
+        return JSON.toJSONString(reportLog);
+    }
 }

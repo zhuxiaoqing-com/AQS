@@ -5,13 +5,13 @@
  Source Server Type    : MySQL
  Source Server Version : 50740
  Source Host           : 139.9.107.144:3306
- Source Schema         : test01
+ Source Schema         : att
 
  Target Server Type    : MySQL
  Target Server Version : 50740
  File Encoding         : 65001
 
- Date: 06/02/2023 09:47:57
+ Date: 10/02/2023 16:35:23
 */
 
 SET NAMES utf8mb4;
@@ -31,7 +31,7 @@ CREATE TABLE `agent`  (
 -- ----------------------------
 -- Records of agent
 -- ----------------------------
-INSERT INTO `agent` VALUES ('365xy', 1, 1);
+INSERT INTO `agent` VALUES ('admin', 10, 1);
 
 -- ----------------------------
 -- Table structure for agents
@@ -275,6 +275,7 @@ INSERT INTO `gamejirecord` VALUES (85, 18, 50, 37, 5, 28, 18, 50, 37, 5, 52, 1, 
 -- ----------------------------
 DROP TABLE IF EXISTS `jilu1`;
 CREATE TABLE `jilu1`  (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `daili` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
   `tinghao` int(11) NULL DEFAULT NULL,
   `jitaihao` int(11) NULL DEFAULT NULL,
@@ -288,19 +289,29 @@ CREATE TABLE `jilu1`  (
   `rs80` int(11) NULL DEFAULT NULL,
   `sf80` int(11) NULL DEFAULT NULL,
   `_4k80` int(11) NULL DEFAULT NULL,
-  PRIMARY KEY (`daili`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_bin ROW_FORMAT = Dynamic;
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 18 CHARACTER SET = utf8 COLLATE = utf8_bin ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of jilu1
 -- ----------------------------
-INSERT INTO `jilu1` VALUES ('365xy', 1, 1, 65656, 81867, -16211, 0, 0, 0, 0, 0, 0, 0);
+INSERT INTO `jilu1` VALUES (1, 'admin', 1, 1, 65656, 81867, -16211, 0, 0, 0, 23, 2, 32, 2);
+INSERT INTO `jilu1` VALUES (2, 'admin', 1, 2, 65656, 81867, -16211, 0, 0, 0, 23, 2, 32, 2);
+INSERT INTO `jilu1` VALUES (3, 'admin', 1, 3, 65656, 81867, -16211, 0, 0, 0, 23, 2, 32, 2);
+INSERT INTO `jilu1` VALUES (11, 'admin', 1, 4, 65656, 81867, -16211, 0, 0, 0, 23, 2, 32, 2);
+INSERT INTO `jilu1` VALUES (12, 'admin', 1, 5, 65656, 81867, -16211, 0, 0, 0, 23, 2, 32, 2);
+INSERT INTO `jilu1` VALUES (13, 'admin', 1, 6, 65656, 81867, -16211, 0, 0, 0, 23, 2, 32, 2);
+INSERT INTO `jilu1` VALUES (14, 'admin', 1, 7, 65656, 81867, -16211, 0, 0, 0, 23, 2, 32, 2);
+INSERT INTO `jilu1` VALUES (15, 'admin', 1, 8, 65656, 81867, -16211, 0, 0, 0, 23, 2, 32, 2);
+INSERT INTO `jilu1` VALUES (16, 'admin', 1, 9, 65656, 81867, -16211, 0, 0, 0, 23, 2, 32, 2);
+INSERT INTO `jilu1` VALUES (17, 'admin', 1, 10, 65656, 81867, -16211, 0, 0, 0, 23, 2, 32, 2);
 
 -- ----------------------------
 -- Table structure for jilu2
 -- ----------------------------
 DROP TABLE IF EXISTS `jilu2`;
 CREATE TABLE `jilu2`  (
+  `id` int(10) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT,
   `daili` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
   `tinghao` int(11) NULL DEFAULT NULL,
   `jitaihao` int(11) NULL DEFAULT NULL,
@@ -318,19 +329,29 @@ CREATE TABLE `jilu2`  (
   `TuibiZon` int(11) NULL DEFAULT NULL,
   `CaijinFen` int(11) NULL DEFAULT NULL,
   `CaijinCi` int(11) NULL DEFAULT NULL,
-  PRIMARY KEY (`daili`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_bin ROW_FORMAT = Dynamic;
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 20 CHARACTER SET = utf8 COLLATE = utf8_bin ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of jilu2
 -- ----------------------------
-INSERT INTO `jilu2` VALUES ('365xy', 1, 1, 5992, 46353, 33, 81, 571, 0, 0, 0, 46353, 5992, 994, 679, 0, 0);
+INSERT INTO `jilu2` VALUES (0000000001, 'admin', 1, 1, 5992, 46353, 33, 81, 571, 22, 3, 4, 46353, 5992, 994, 679, 3, 2);
+INSERT INTO `jilu2` VALUES (0000000011, 'admin', 1, 2, 5992, 46353, 33, 81, 571, 22, 3, 4, 46353, 5992, 994, 679, 3, 2);
+INSERT INTO `jilu2` VALUES (0000000012, 'admin', 1, 3, 5992, 46353, 33, 81, 571, 22, 3, 4, 46353, 5992, 994, 679, 3, 2);
+INSERT INTO `jilu2` VALUES (0000000013, 'admin', 1, 4, 5992, 46353, 33, 81, 571, 22, 3, 4, 46353, 5992, 994, 679, 3, 2);
+INSERT INTO `jilu2` VALUES (0000000014, 'admin', 1, 5, 5992, 46353, 33, 81, 571, 22, 3, 4, 46353, 5992, 994, 679, 3, 2);
+INSERT INTO `jilu2` VALUES (0000000015, 'admin', 1, 6, 5992, 46353, 33, 81, 571, 22, 3, 4, 46353, 5992, 994, 679, 3, 2);
+INSERT INTO `jilu2` VALUES (0000000016, 'admin', 1, 7, 5992, 46353, 33, 81, 571, 22, 3, 4, 46353, 5992, 994, 679, 3, 2);
+INSERT INTO `jilu2` VALUES (0000000017, 'admin', 1, 8, 5992, 46353, 33, 81, 571, 22, 3, 4, 46353, 5992, 994, 679, 3, 2);
+INSERT INTO `jilu2` VALUES (0000000018, 'admin', 1, 9, 5992, 46353, 33, 81, 571, 22, 3, 4, 46353, 5992, 994, 679, 3, 2);
+INSERT INTO `jilu2` VALUES (0000000019, 'admin', 1, 10, 5992, 46353, 33, 81, 571, 22, 3, 4, 46353, 5992, 994, 679, 3, 2);
 
 -- ----------------------------
 -- Table structure for jilu3
 -- ----------------------------
 DROP TABLE IF EXISTS `jilu3`;
 CREATE TABLE `jilu3`  (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `daili` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
   `tinghao` int(11) NULL DEFAULT NULL,
   `jitaihao` int(11) NULL DEFAULT NULL,
@@ -346,13 +367,22 @@ CREATE TABLE `jilu3`  (
   `P1p` int(11) NULL DEFAULT NULL,
   `no` int(11) NULL DEFAULT NULL,
   `zong` int(11) NULL DEFAULT NULL,
-  PRIMARY KEY (`daili`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_bin ROW_FORMAT = Dynamic;
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 20 CHARACTER SET = utf8 COLLATE = utf8_bin ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of jilu3
 -- ----------------------------
-INSERT INTO `jilu3` VALUES ('365xy', 1, 1, 0, 0, 0, 0, 8, 9, 0, 0, 0, 0, 19, 36);
+INSERT INTO `jilu3` VALUES (1, 'admin', 1, 1, 0, 32, 3, 0, 832, 93, 3, 0, 0, 0, 19, 982);
+INSERT INTO `jilu3` VALUES (11, 'admin', 1, 2, 0, 32, 3, 0, 832, 93, 3, 0, 0, 0, 19, 982);
+INSERT INTO `jilu3` VALUES (12, 'admin', 1, 3, 0, 32, 3, 0, 832, 93, 3, 0, 0, 0, 19, 982);
+INSERT INTO `jilu3` VALUES (13, 'admin', 1, 4, 0, 32, 3, 0, 832, 93, 3, 0, 0, 0, 19, 982);
+INSERT INTO `jilu3` VALUES (14, 'admin', 1, 5, 0, 32, 3, 0, 832, 93, 3, 0, 0, 0, 19, 982);
+INSERT INTO `jilu3` VALUES (15, 'admin', 1, 6, 0, 32, 3, 0, 832, 93, 3, 0, 0, 0, 19, 982);
+INSERT INTO `jilu3` VALUES (16, 'admin', 1, 7, 0, 32, 3, 0, 832, 93, 3, 0, 0, 0, 19, 982);
+INSERT INTO `jilu3` VALUES (17, 'admin', 1, 8, 0, 32, 3, 0, 832, 93, 3, 0, 0, 0, 19, 982);
+INSERT INTO `jilu3` VALUES (18, 'admin', 1, 9, 0, 32, 3, 0, 832, 93, 3, 0, 0, 0, 19, 982);
+INSERT INTO `jilu3` VALUES (19, 'admin', 1, 10, 0, 32, 3, 0, 832, 93, 3, 0, 0, 0, 19, 982);
 
 -- ----------------------------
 -- Table structure for jitaiset
@@ -386,11 +416,6 @@ CREATE TABLE `liujirecord`  (
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_bin ROW_FORMAT = Dynamic;
 
 -- ----------------------------
--- Records of liujirecord
--- ----------------------------
-INSERT INTO `liujirecord` VALUES ('2023-01-31 17:21:02', '365xy', 2, '2023-01-31 18:21:02', 'aaaa', '2023-01-31 17:21:02', '2023-01-31 18:21:02', '1', '0');
-
--- ----------------------------
 -- Table structure for lobbys
 -- ----------------------------
 DROP TABLE IF EXISTS `lobbys`;
@@ -409,7 +434,7 @@ CREATE TABLE `lobbys`  (
 -- ----------------------------
 -- Records of lobbys
 -- ----------------------------
-INSERT INTO `lobbys` VALUES (1, '2分', 3, 200, 1000, 100, 200, 80);
+INSERT INTO `lobbys` VALUES (1, '1分', 10, 200, 1000, 100, 300, 60);
 
 -- ----------------------------
 -- Table structure for machine
@@ -421,14 +446,32 @@ CREATE TABLE `machine`  (
   `RS` int(11) NULL DEFAULT NULL,
   `SF` int(11) NULL DEFAULT NULL,
   `_4K` int(11) NULL DEFAULT NULL,
-  `numMachine` int(11) NULL DEFAULT NULL,
-  PRIMARY KEY (`lobbyId`) USING BTREE
+  `numMachine` int(11) NOT NULL,
+  `score` int(11) NULL DEFAULT NULL,
+  `minUpScore` int(11) NULL DEFAULT NULL,
+  `maxBet` int(11) NULL DEFAULT NULL,
+  `defaultBet` int(11) NULL DEFAULT NULL,
+  `minDownScore` int(11) NULL DEFAULT NULL,
+  `scoreValue` int(11) NULL DEFAULT NULL,
+  `balance` int(11) NULL DEFAULT NULL,
+  `sumUpScore` int(11) NULL DEFAULT NULL,
+  `sumDownScore` int(11) NULL DEFAULT NULL,
+  PRIMARY KEY (`numMachine`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_bin ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of machine
 -- ----------------------------
-INSERT INTO `machine` VALUES (1, 5000, 2000, 500, 200, 1);
+INSERT INTO `machine` VALUES (1, 5000, 2000, 500, 200, 1, 11, 11, 11, 11, 11, 12, 23, 42, 24);
+INSERT INTO `machine` VALUES (1, 5000, 2000, 500, 200, 2, 11, 11, 11, 11, 11, 12, 23, 42, 24);
+INSERT INTO `machine` VALUES (1, 5000, 2000, 500, 200, 3, 11, 11, 11, 11, 11, 12, 23, 42, 24);
+INSERT INTO `machine` VALUES (1, 5000, 2000, 500, 200, 4, 11, 11, 11, 11, 11, 12, 23, 42, 24);
+INSERT INTO `machine` VALUES (1, 5000, 2000, 500, 200, 5, 11, 11, 11, 11, 11, 12, 23, 42, 24);
+INSERT INTO `machine` VALUES (1, 5000, 2000, 500, 200, 6, 11, 11, 11, 11, 11, 12, 23, 42, 24);
+INSERT INTO `machine` VALUES (1, 5000, 2000, 500, 200, 7, 11, 11, 11, 11, 11, 12, 23, 42, 24);
+INSERT INTO `machine` VALUES (1, 5000, 2000, 500, 200, 8, 11, 11, 11, 11, 11, 12, 23, 42, 24);
+INSERT INTO `machine` VALUES (1, 5000, 2000, 500, 200, 9, 11, 11, 11, 11, 11, 12, 23, 42, 24);
+INSERT INTO `machine` VALUES (1, 5000, 2000, 500, 200, 10, 11, 11, 11, 11, 11, 12, 23, 42, 24);
 
 -- ----------------------------
 -- Table structure for morennandu
@@ -474,12 +517,14 @@ CREATE TABLE `paijiining`  (
 -- Records of paijiining
 -- ----------------------------
 INSERT INTO `paijiining` VALUES ('365xy', 1, 69);
+INSERT INTO `paijiining` VALUES ('admin', 1, 12);
 
 -- ----------------------------
 -- Table structure for paixingrecord
 -- ----------------------------
 DROP TABLE IF EXISTS `paixingrecord`;
 CREATE TABLE `paixingrecord`  (
+  `id` int(11) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT,
   `paixing1` int(11) NOT NULL,
   `paixing2` int(11) NULL DEFAULT NULL,
   `paixing3` int(11) NULL DEFAULT NULL,
@@ -489,13 +534,14 @@ CREATE TABLE `paixingrecord`  (
   `paixing7` int(11) NULL DEFAULT NULL,
   `jitaihao` int(11) NULL DEFAULT NULL,
   `dailihao` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
-  PRIMARY KEY (`paixing1`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_bin ROW_FORMAT = Dynamic;
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8 COLLATE = utf8_bin ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of paixingrecord
 -- ----------------------------
-INSERT INTO `paixingrecord` VALUES (0, 0, 0, 0, 8, 9, 0, 1, '365xy');
+INSERT INTO `paixingrecord` VALUES (00000000001, 0, 0, 0, 0, 8, 9, 0, 1, '365xy');
+INSERT INTO `paixingrecord` VALUES (00000000002, 0, 0, 0, 0, 0, 0, 0, 1, 'admin');
 
 -- ----------------------------
 -- Table structure for users
@@ -508,13 +554,21 @@ CREATE TABLE `users`  (
   `invitationCode` int(11) NULL DEFAULT NULL,
   `locked` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
   `balance` int(11) NULL DEFAULT NULL,
+  `numCharge` int(11) NULL DEFAULT NULL,
+  `sumCharge` int(11) NULL DEFAULT NULL,
+  `loginDateTime` int(20) NULL DEFAULT NULL,
+  `sumUpScore` int(11) NULL DEFAULT NULL,
+  `sumDownScore` int(11) NULL DEFAULT NULL,
+  `winScore` int(11) NULL DEFAULT NULL,
+  `signUpDateTime` int(20) NULL DEFAULT NULL,
+  `playerTimes` int(11) NULL DEFAULT NULL,
   PRIMARY KEY (`username`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_bin ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of users
 -- ----------------------------
-INSERT INTO `users` VALUES ('aaaa', 'aaaa', '365xy', 1, '是', 10386);
+INSERT INTO `users` VALUES ('aaaa', 'aaaa', 'admin', 1, '是', 10386, 11, 11, 111111, 111, 111, 111, 233323232, 23);
 
 -- ----------------------------
 -- Table structure for zuobiset
