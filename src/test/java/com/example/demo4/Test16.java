@@ -640,6 +640,23 @@ public class Test16 {
 		}
 
 	}
+
+	@Test
+	public void test37() {
+		List<Integer> integers = Arrays.asList(4, 2, 0, 6);
+
+		for (Integer integer : integers) {
+			System.out.println((integer+4) & 0x7);
+		}
+	}
+
+	@Test
+	public void test38() {
+		for (int i = 0; i < 4; ++i) {
+         int dir = (i + 3) & 3;
+			System.out.println(dir);
+		}
+	}
 }
 
 /**
