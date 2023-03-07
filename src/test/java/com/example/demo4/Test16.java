@@ -657,6 +657,20 @@ public class Test16 {
 			System.out.println(dir);
 		}
 	}
+
+	@Test
+	public void test39() {
+		ArrayList<Integer> objects = new ArrayList<>();
+		int index = 10;
+		for (int i = 0; i < index; i++) {
+			objects.add(i);
+		}
+
+		long count = objects.stream().mapToInt(a -> a).count();
+		System.out.println(count);
+	}
+
+
 }
 
 /**

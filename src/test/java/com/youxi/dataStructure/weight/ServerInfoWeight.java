@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * 加权平均算法
+ *
  * @author zhuxiaoqing
  * @Date: 2022/10/26 17:22
  */

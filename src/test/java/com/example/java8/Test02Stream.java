@@ -321,6 +321,9 @@ public class Test02Stream {
 		System.out.println(collect2);
 
 
+		List<A> collect3 = objects.stream().sorted(Comparator.comparing(A::getId, Comparator.reverseOrder()).thenComparing(A::getCount).thenComparing(A::getCoun2, Comparator.reverseOrder()))
+				.collect(Collectors.toList());
+		System.out.println(collect3);
 
 
 		Optional<A> max = objects.stream().max(Comparator.comparing(A::getId).thenComparing(A::getCount));
