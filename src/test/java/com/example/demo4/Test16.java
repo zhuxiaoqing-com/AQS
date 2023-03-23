@@ -1,28 +1,12 @@
 package com.example.demo4;
 
 import com.alibaba.fastjson.JSON;
-import com.example.demo4.testObj1.BuffTest;
 import com.example.demo4.testObj1.Temp;
-import com.google.gson.Gson;
-import com.youxi.buff.Buff;
-import com.youxi.building.Misc;
-import com.youxi.entity.CMath;
-import com.youxi.entity.Position;
-import freemarker.template.Configuration;
-import freemarker.template.Template;
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.PooledByteBufAllocator;
-import io.swagger.models.auth.In;
 import org.junit.Test;
 
-import java.io.File;
-import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.nio.charset.StandardCharsets;
-import java.sql.*;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -65,55 +49,6 @@ public class Test16 {
 		}
 	}
 
-	class ChildObj extends Obj {
-		private int childObj1;
-		private int childObj2;
-
-		public int getChildObj1() {
-			return childObj1;
-		}
-
-		public void setChildObj1(int childObj1) {
-			this.childObj1 = childObj1;
-		}
-
-		public int getChildObj2() {
-			return childObj2;
-		}
-
-		public void setChildObj2(int childObj2) {
-			this.childObj2 = childObj2;
-		}
-	}
-
-	class ObjList<T extends Obj> {
-		private T a;
-
-		public T getA() {
-			return a;
-		}
-
-		public void setA(T a) {
-			this.a = a;
-		}
-	}
-
-
-	@Test
-	public void test01() throws InterruptedException {
-		ChildObj childObj = new ChildObj();
-		childObj.setObj1(1);
-		childObj.setObj2(2);
-		childObj.setChildObj1(11);
-		childObj.setChildObj2(22);
-
-		ObjList objObjList = new ObjList<>();
-		objObjList.setA(childObj);
-
-
-		String o = JSON.toJSONString(childObj);
-		System.out.println(o);
-	}
 
 	//  -XX:AutoBoxCacheMax=100000
 	@Test
@@ -668,6 +603,14 @@ public class Test16 {
 
 		long count = objects.stream().mapToInt(a -> a).count();
 		System.out.println(count);
+	}
+
+	@Test
+	public void test40() {
+		System.out.println(LocalDateTime.now());
+		long minute30 = TimeUtil.minuteMills * 30;
+		long l = TimeUtil.getTime() / minute30 * minute30;
+		System.out.println(new Date(l));
 	}
 
 

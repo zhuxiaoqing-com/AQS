@@ -87,11 +87,14 @@ public class YouxiMath {
 	 *
 	 * @return
 	 */
-	private double cross(Vector2f v1, Vector2f v2) {
+	public static double cross(Vector2f v1, Vector2f v2) {
 		return v1.getX() * v2.getY() - v1.getY() * v2.getX();
 	}
 
-	private double cross(Position v1, Position v2) {
+	public static double cross(Vector2f point, Vector2f v1, Vector2f v2) {
+		return cross(v1.sub(point), v2.sub(point));
+	}
+	public static double cross(Position v1, Position v2) {
 		return v1.getX() * v2.getZ() - v1.getZ() * v2.getX();
 	}
 
