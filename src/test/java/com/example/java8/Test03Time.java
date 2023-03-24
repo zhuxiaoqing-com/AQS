@@ -132,12 +132,18 @@ public class Test03Time {
         int i = LocalDate.now().get(ChronoField.DAY_OF_WEEK);
         System.out.println(i);
         // 1：是星期1    7：是星期天
-        LocalDate of = LocalDate.of(2021, 3, 8);
-        System.out.println(of.get(ChronoField.DAY_OF_WEEK));
+        LocalDateTime of1 = LocalDate.of(2023, 3, 24).atTime(LocalTime.of(3,4,5));
+        LocalDateTime of2 = LocalDate.of(2023, 3, 27).atTime(LocalTime.of(3,4,5));
+        System.out.println(of1.get(ChronoField.DAY_OF_WEEK));
+        System.out.println(of2.get(ChronoField.DAY_OF_WEEK));
 
         // 获取调整后的最近的一个星期 如果已经符合对象就直接返回
-        LocalDateTime with = LocalDateTime.now().with(TemporalAdjusters.nextOrSame(DayOfWeek.of(3)));
-        System.out.println(with);
+        LocalDateTime with1 = of1.with(TemporalAdjusters.nextOrSame(DayOfWeek.of(3)));
+        System.out.println(with1);
+        LocalDateTime with2 = of2.with(TemporalAdjusters.nextOrSame(DayOfWeek.of(3)));
+        System.out.println(with2);
+        //LocalDateTime with = LocalDateTime.now().with(TemporalAdjusters.previous(DayOfWeek.of(3)));
+
     }
 
     @Test
