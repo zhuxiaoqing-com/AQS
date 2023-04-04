@@ -611,6 +611,33 @@ public class Test16 {
 		long minute30 = TimeUtil.minuteMills * 30;
 		long l = TimeUtil.getTime() / minute30 * minute30;
 		System.out.println(new Date(l));
+
+		System.out.println((int)1.9);
+		System.out.println((int)1.1);
+	}
+
+	@Test
+	public void test41() {
+		LocalDateTime localDateTime = LocalDate.of(2023, 1, 1).atStartOfDay();
+		long l = TimeUtil.toEpochMilli(localDateTime);
+		LocalDateTime localDateTime1 = LocalDate.of(2030, 1, 1).atStartOfDay();
+		long l2 = TimeUtil.toEpochMilli(localDateTime1);
+		long l1 = (l2 - l)/1000;
+		System.out.println(l1);
+
+		String s = Long.toBinaryString(l1);
+		System.out.println(s.length());
+
+
+		long aaaa = TimeUtil.toEpochMilli( LocalDate.of(2050, 1, 1).atStartOfDay());
+		System.out.println(aaaa/1000);
+		System.out.println(Integer.MAX_VALUE);
+	}
+
+	@Test
+	public void test42() {
+		System.out.println((1L<<25) -1);
+		System.out.println((1L<<15) -1);
 	}
 
 
