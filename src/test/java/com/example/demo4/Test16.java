@@ -1,7 +1,9 @@
 package com.example.demo4;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.example.demo4.testObj1.Temp;
+import com.google.gson.JsonObject;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.PooledByteBufAllocator;
 import org.junit.Test;
@@ -637,11 +639,30 @@ public class Test16 {
 
 	@Test
 	public void test42() {
-		System.out.println(25+25);
-		System.out.println(Math.sqrt(25+25));
-		System.out.println(Math.sqrt(25+25)/5);
+		String a= "amount=0.01&appId=11114&channelCode=122323&dealAmount=0.01&extrasParams={\"playerId\":\"15762875192016896\",\"payForId\":1,\"serverId\":112}&orderGoodsId=1&orderNo=0120230410191015754287&orderSubject=首充礼包&payTime=1681125084&payType=1&productOrderNo=15762881241546752&sign=0eca7be4fa285545cb6957c3274b0a22&uid=2092548";
+		Map<String, Object> urlRequest = getURLRequest(a);
+		JSONObject jsonObject = new JSONObject(urlRequest);
+		TenHeroCallbackData tenHeroCallbackData = jsonObject.toJavaObject(TenHeroCallbackData.class);
+		System.out.println(tenHeroCallbackData);
 	}
 
+	public static Map<String, Object> getURLRequest(String URL) {
+		Map<String, Object> mapRequest = new HashMap<>();
+		if (URL == null || URL.equals("")) {
+			return mapRequest;
+		}
+		StringTokenizer params;
+		// 构造一个用来解析URL的StringTokenizer对象，并指定'&'分隔符。
+		StringTokenizer entrys = new StringTokenizer(URL, "&");
+		// hasMoreTokens()判断是否还有下一个分隔符号存在
+		while (entrys.hasMoreTokens()) {
+			// 再构造一个StringTokenizer对象，并指定'='分隔符。
+			params = new StringTokenizer(entrys.nextToken(), "=");
+			// items.nextToken()返回从当前位置到下一个分隔符的字符串 例：a=1，返回a
+			mapRequest.put(params.nextToken(), params.hasMoreTokens() ? params.nextToken() : "");
+		}
+		return mapRequest;
+	}
 
 }
 
