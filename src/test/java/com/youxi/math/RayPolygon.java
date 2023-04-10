@@ -1,8 +1,10 @@
 package com.youxi.math;
 
+import com.example.demo1.util.vo.Vector2f;
 import com.youxi.entity.CMath;
 import com.youxi.entity.Dir;
 import com.youxi.entity.Position;
+import org.junit.Test;
 
 import java.util.List;
 
@@ -111,6 +113,13 @@ public class RayPolygon {
 		}
 
 		return true;
+	}
+
+	@Test
+	public void test01() {
+		Vector2f v1 = new Vector2f(0, -1);
+		Vector2f v2 = new Vector2f(1, 1);
+		System.out.println(v1.cross(v2));
 	}
 
 }

@@ -15,6 +15,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -551,12 +552,12 @@ public class Test16 {
 	@Test
 	public void test35() throws IllegalAccessException {
 
-		System.out.println(1<<15);
+		System.out.println(1 << 15);
 		// 1 00000 00000 00000
-		System.out.println(Integer.toBinaryString(1<<15));
+		System.out.println(Integer.toBinaryString(1 << 15));
 
-		System.out.println(1<<16);
-		System.out.println(Integer.toBinaryString(1<<16));
+		System.out.println(1 << 16);
+		System.out.println(Integer.toBinaryString(1 << 16));
 
 		System.out.println(Short.MAX_VALUE);
 	}
@@ -581,14 +582,14 @@ public class Test16 {
 		List<Integer> integers = Arrays.asList(4, 2, 0, 6);
 
 		for (Integer integer : integers) {
-			System.out.println((integer+4) & 0x7);
+			System.out.println((integer + 4) & 0x7);
 		}
 	}
 
 	@Test
 	public void test38() {
 		for (int i = 0; i < 4; ++i) {
-         int dir = (i + 3) & 3;
+			int dir = (i + 3) & 3;
 			System.out.println(dir);
 		}
 	}
@@ -612,8 +613,8 @@ public class Test16 {
 		long l = TimeUtil.getTime() / minute30 * minute30;
 		System.out.println(new Date(l));
 
-		System.out.println((int)1.9);
-		System.out.println((int)1.1);
+		System.out.println((int) 1.9);
+		System.out.println((int) 1.1);
 	}
 
 	@Test
@@ -622,22 +623,23 @@ public class Test16 {
 		long l = TimeUtil.toEpochMilli(localDateTime);
 		LocalDateTime localDateTime1 = LocalDate.of(2030, 1, 1).atStartOfDay();
 		long l2 = TimeUtil.toEpochMilli(localDateTime1);
-		long l1 = (l2 - l)/1000;
+		long l1 = (l2 - l) / 1000;
 		System.out.println(l1);
 
 		String s = Long.toBinaryString(l1);
 		System.out.println(s.length());
 
 
-		long aaaa = TimeUtil.toEpochMilli( LocalDate.of(2050, 1, 1).atStartOfDay());
-		System.out.println(aaaa/1000);
+		long aaaa = TimeUtil.toEpochMilli(LocalDate.of(2050, 1, 1).atStartOfDay());
+		System.out.println(aaaa / 1000);
 		System.out.println(Integer.MAX_VALUE);
 	}
 
 	@Test
 	public void test42() {
-		System.out.println((1L<<25) -1);
-		System.out.println((1L<<15) -1);
+		System.out.println(25+25);
+		System.out.println(Math.sqrt(25+25));
+		System.out.println(Math.sqrt(25+25)/5);
 	}
 
 
