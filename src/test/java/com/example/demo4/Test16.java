@@ -664,6 +664,46 @@ public class Test16 {
 		return mapRequest;
 	}
 
+	@Test
+	public void test43() {
+		ArrayList<Integer> cont = new ArrayList<>();
+		cont.add(1);
+		cont.add(3);
+		cont.add(4);
+		cont.add(2);
+		cont.add(1);
+		cont.add(3);
+		cont.add(4);
+		for (int j = 0; j < cont.size(); )
+		{
+			int nj = (j+1) % cont.size();
+			if (cont.get(j) == cont.get(nj))
+			{
+				// 重复的话就把j删除;整个数组数据向前移动一格
+				for (int k = j; k < cont.size()-1; ++k)
+					cont.set(k, cont.get(k+1));
+				cont.remove(cont.size()-1);
+			}
+			else
+				++j;
+		}
+		System.out.println(cont);
+	}
+
+	@Test
+	public void test44() {
+		System.out.println(1f/0);
+		System.out.println(0/1f);
+		System.out.println(Float.MAX_VALUE * 2);
+		float x = Float.MAX_VALUE * 2;
+		System.out.println(x*x*x);
+		System.out.println(x/Float.MAX_VALUE);
+		System.out.println((int)x);
+
+		System.out.println(Float.NaN);
+		System.out.println(0.0f/0.0f);
+		System.out.println(0/100f);
+	}
 }
 
 /**
