@@ -704,6 +704,11 @@ public class Test16 {
 		System.out.println(0.0f/0.0f);
 		System.out.println(0/100f);
 	}
+
+	@Test
+	public void test45() {
+		System.out.println(1<<12);
+	}
 }
 
 /**
