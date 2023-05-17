@@ -710,6 +710,12 @@ public class Test16 {
 		int c= 0;
 		System.out.println(c);
 		System.out.println(c);
+
+		double fx = (-9.52f/2.72f) - (-19.72/1.36f);
+		System.out.println(fx);
+
+		System.out.println(-9.52f/2.72f);
+		System.out.println(-19.72/1.36f);
 	}
 }
 

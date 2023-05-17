@@ -51,6 +51,10 @@ public class Vector2f {
     public float cross(Vector2f vectorY) {
      return cross(this, vectorY);
     }
+
+    public float dot(Vector2f vectorY) {
+        return dot(this, vectorY);
+    }
     public static float cross(Vector2f vectorX, Vector2f vectorY) {
         return vectorX.x * vectorY.y - vectorY.x * vectorX.y;
     }
