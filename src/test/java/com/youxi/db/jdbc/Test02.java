@@ -1,11 +1,12 @@
 package com.youxi.db.jdbc;
 
-import com.example.demo1.util.FileUtil;
 import com.youxi.db.jdbc.entity.Field;
 import com.youxi.db.jdbc.entity.TableBean;
 import org.junit.Test;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.sql.*;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -21,12 +22,12 @@ public class Test02 {
 	static String driverName = "com.mysql.jdbc.Driver";
 	//	static String url = "jdbc:mysql://localhost:3306/test1?rewriteBatchedStatements=true";
 	//static String url = "jdbc:mysql://localhost:3306/test01?useSSL=false";
-	static String url = "jdbc:mysql://43.137.11.78:3306/test01?useSSL=false";
+	static String url = "jdbc:mysql://139.9.107.144:3306/test01?useSSL=false";
 
 	static String user = "root";
 	static String password = "123456";
 
-	static String filePath = "G:\\mh\\game_server-develop\\AQS\\src\\test\\java\\com\\youxi\\a.txt";
+	static String filePath = "F:\\mygoods\\01.gitIdea\\AQS\\src\\test\\java\\com\\youxi\\a.txt";
 
 /*	static String driverName = "com.mysql.jdbc.Driver";
 	static String url = "jdbc:mysql://10.0.0.101:3306/SECONDWAR_401?useUnicode=true&amp;characterEncoding=utf-8&amp;useSSL=false&amp;rewriteBatchedStatements=true&amp;user=root&amp;password=123456";
@@ -57,9 +58,8 @@ public class Test02 {
 		for (TableBean tableBean : tableBeans) {
 			PreparedStatement preparedStatement = conn.prepareStatement(tableBean.creatTableSQL());
 			try {
-				System.out.println(tableBean.creatTableSQL());
 			preparedStatement.execute();
-
+				System.out.println(tableBean.creatTableSQL());
 			}catch (Exception e) {
 				System.out.println(tableBean.creatTableSQL());
 				throw e;

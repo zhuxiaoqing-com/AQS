@@ -56,3 +56,6 @@ Heap after GC invocations=3830 (full 0):
  Metaspace       used 110935K, capacity 164778K, committed 242944K, reserved 1208320K
   class space    used 14923K, capacity 40656K, committed 83200K, reserved 1048576K
  [Times: user=1.13 sys=0.00, real=0.16 secs]
+
+
+ CREATE TABLE IF NOT EXISTS agents(agentName varchar(255)  primary key not null  CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,password varchar(255)   CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,superior varchar(255)   CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,level varchar(255)   CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,invitationCode varchar(255)   CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,internal varchar(255)   CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_bin ROW_FORMAT = Dynamic;
