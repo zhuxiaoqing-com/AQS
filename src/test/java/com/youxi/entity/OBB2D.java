@@ -1,5 +1,7 @@
 package com.youxi.entity;
 
+import com.youxi.building.Misc;
+
 public class OBB2D {
 	private Position center;
 	private Dir sizeDir;
@@ -67,5 +69,23 @@ public class OBB2D {
 
 	public void setCenter(Position center) {
 		this.center = center;
+	}
+
+	/**
+	 * 矩形内随机一个点
+	 */
+	public Position randomPosition() {
+		Position left = new Position(center.getX() - sizeDir.x, 0, center.getZ() - sizeDir.z);
+		Position right = new Position(center.getX() + sizeDir.x, 0, center.getZ() + sizeDir.z);
+		Position position = new Position(Misc.getRandomBetween(left.getX(), right.getX()), Misc.getRandomBetween(right.getZ(), left.getZ()));
+		Position rotateDir = position.sub(center).getRotateDir(dir);
+		Position add = rotateDir.add(center);
+		return add;
+	}
+
+	public Position  randomPosition2() {
+		Position position = new Position(Misc.getRandomBetween(-sizeDir.getX(), sizeDir.getX()), Misc.getRandomBetween(-sizeDir.getZ(), sizeDir.getZ()));
+		Position rotateDir = position.getRotateDir(dir).add(center);
+		return rotateDir;
 	}
 }

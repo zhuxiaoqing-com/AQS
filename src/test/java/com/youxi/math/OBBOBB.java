@@ -1,9 +1,13 @@
 package com.youxi.math;
 
+import com.youxi.building.Misc;
 import com.youxi.entity.CMath;
 import com.youxi.entity.Dir;
 import com.youxi.entity.OBB2D;
 import com.youxi.entity.Position;
+import org.junit.Test;
+
+import java.util.Random;
 
 public class OBBOBB {
 
@@ -79,35 +83,31 @@ public class OBBOBB {
 
 
 	public static boolean in(OBB2D aaa, Position position) {
-		Position rotateDir = position.sub(aaa.getCenter()).getRotateDir(aaa.getDir());
+		Position rotateDir = position.sub(aaa.getCenter()).getRotateDir(-aaa.getDir());
 
 		int x = aaa.getSizeDir().getX();
 		int z = aaa.getSizeDir().getZ();
 
-		return rotateDir.getX() > -x  && rotateDir.getX() < x  && rotateDir.getZ() > -z && rotateDir.getZ() < z;
+		return rotateDir.getX() > -x && rotateDir.getX() < x && rotateDir.getZ() > -z && rotateDir.getZ() < z;
 	}
 
-	public static boolean in2(OBB2D aaa, Position position) {
-		Position rotateDir = position.sub(aaa.getCenter()).getRotateDir(aaa.getDir());
-
-		int x = aaa.getSizeDir().getX();
-		int z = aaa.getSizeDir().getZ();
-
-		Position center = aaa.getCenter();
-		return rotateDir.getX() > center.getX()-x  && rotateDir.getX() < center.getX()+ x
-				&& rotateDir.getZ() > center.getZ()-z  && rotateDir.getZ() < center.getZ()+z ;
-	}
-
-	public static void main(String[] args) {
+	@Test
+	public void test01() {
 		OBB2D obb2D = new OBB2D();
 		obb2D.setDir(0);
-		obb2D.setSizeDir(new Dir(1,1));
-		obb2D.setCenter(new Position(2,2));
+		obb2D.setSizeDir(new Dir(1000, 1000));
+		obb2D.setCenter(new Position(2000, 2000));
 
+		int index = 12322;
 
-		Position point = new Position(2,2);
-		System.out.println(in(obb2D, point));
-		System.out.println(in2(obb2D, point));
+		for (int i = 0; i < index; i++) {
+			int dir = Misc.getRandomBetween(0, 360);
+			obb2D.setDir(dir);
+			Position position = obb2D.randomPosition2();
+			if (!in(obb2D, position)) {
+				System.out.println("position:  " + position + "  dir :" + dir + "   in ： " + in(obb2D, position));
+			}
+		}
 	}
 
 
