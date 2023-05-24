@@ -39,9 +39,9 @@ public class Test09 {
 	}
 
 	private static void test03Print(TreeMap<Integer, String> map, int paramInt) {
-		System.out.println(paramInt + "--" + map.ceilingEntry(paramInt));
-		System.out.println(paramInt + "--" + map.floorEntry(paramInt));
-		System.out.println(paramInt + "--" + map.lowerEntry(paramInt));
+		System.out.println(paramInt + "--ceilingEntry--" + map.ceilingEntry(paramInt));
+		System.out.println(paramInt + "--floorEntry--" + map.floorEntry(paramInt));
+		System.out.println(paramInt + "--lowerEntry--" + map.lowerEntry(paramInt));
 		System.out.println();
 	}
 

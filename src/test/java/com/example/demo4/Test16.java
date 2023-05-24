@@ -2,6 +2,7 @@ package com.example.demo4;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.example.demo4.testObj1.StringArrayObj;
 import com.example.demo4.testObj1.Temp;
 import com.google.gson.JsonObject;
 import io.netty.buffer.ByteBuf;
@@ -707,15 +708,28 @@ public class Test16 {
 
 	@Test
 	public void test45() {
-		int c= 0;
-		System.out.println(c);
-		System.out.println(c);
+		StringArrayObj stringArrayObj = new StringArrayObj();
+		System.out.println(JSON.toJSONString(stringArrayObj));
+		String[] strings = new String[3];
+		strings[0]= "a";
+		strings[1]= "aa";
+		strings[2]= "aaa";
+		stringArrayObj.setString(strings);
+		System.out.println(JSON.toJSONString(stringArrayObj));
+	}
 
-		double fx = (-9.52f/2.72f) - (-19.72/1.36f);
-		System.out.println(fx);
+	@Test
+	public void test46() {
+		String[] strings = new String[3];
+		strings[0]= "a";
+		strings[1]= "aa";
+		strings[2]= "aaa";
+		_test46(strings);
+	}
 
-		System.out.println(-9.52f/2.72f);
-		System.out.println(-19.72/1.36f);
+
+	public void _test46(Object... a){
+		System.out.println(a.length);
 	}
 }
 
