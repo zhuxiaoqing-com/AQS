@@ -1,0 +1,162 @@
+jcmd  [pid]  VM.unlock_commercial_features
+jcmd [pid] JFR.start duration=1m settings=profile compress=true filename=bt-2023-05-24.jfr
+
+解锁
+jcmd  [pid]   VM.unlock_commercial_features
+
+开启
+jcmd [pid] JFR.start name=endless setting=profile delay=3s duration=0 compress=true
+基本上后面参数不用动，不影响分析，delay是延迟多少秒执行，自己注意。还有返回结果中的recording编号要记住。
+
+查看是否正在运行
+jcmd [pid] JFR.check
+
+ 手动转存dump文件(后缀为jfr格式)
+jcmd [pid] JFR.dump recording=8 filename="./xxxserver.jfr" compress=true
+
+结束记录
+jcmd  [pid] JFR.stop recording=8        注意：8是和开始时分配的编号来定的
+
+
+
+Jvm 性能分析工具-JMC+JFR 小记
+开启 JFR 收集:  由于JFR是商用的，所以需要解锁Java程序的商业feature:
+
+-XX:+UnlockCommercialFeatures -XX:+FlightRecorder   --JDK 1.8u40之前版本，需再jvm启动前添加参数
+
+# JDK 1.8u40之后版本，不需要在启动的时候通过flag来解锁了，可以动态的解锁
+
+jcmd 17206 VM.check_commercial_features
+
+# 动态解锁 后可以运行许JFR采集任务
+
+jcmd 17206 VM.unlock_commercial_features
+
+
+
+
+
+检查 & 解锁 开启JFR 收集
+# JFR采集有两种方式：
+
+  固定时长的采集
+
+  持续不断的采集
+
+# JFR采集策略 默认存储： /usr/local/jdk1.8.0_161/jre/lib/jfr
+
+default.jfc 默认配置-开销很低，适用于一直运行，不会影响Java程序的性能。性能开销低于1%
+
+profile.jfc 采集的事件力度更细(性能开销低于2%)
+
+# JFR 采集实操:  假定 jvm pid是  17206
+
+# 1.采集固定时长JFR任务
+
+--查看当前执行的 JFR 任务
+
+jcmd 17206 JFR.check
+
+-- 采集 5min的 JFR任务(采集固定时长JFR任务)
+
+jcmd 17206 JFR.start name=zhibi_jfr_online_test1 settings=profile delay=5s duration=5m filename="/home/work/apache-tomcat-7.0.85/zhibi_jfr_online_test1.jfr" compress=true
+
+jcmd 17206 JFR.check
+
+# 2.持续不断的采集JFR任务
+
+- 持续采集 JFR 任务
+
+jcmd 17206 JFR.start name=zhibi_jfr_test2 settings=profile delay=5s duration=0 compress=true
+
+-手动转存 jfr 文件
+
+jcmd  17206 JFR.dump name=zhibi_jfr_test2 filename="/home/work/apache-tomcat-7.0.85/zhibi_jfr_test2.jfr" compress=true
+
+-停止持续采集 JFR 任务
+
+jcmd 17206 JFR.stop name=zhibi_jfr_test2
+
+
+
+
+
+
+
+
+
+rem 获取进程号为5361的JVM关于JFR.start命令的帮助
+jcmd 5361 help JFR.start
+
+rem 检查进程的JFR运行状态
+jcmd 7648 JFR.check
+rem 输出如下。注意recording=0表示正在运行的记录的标识符，后续操作需要用到这个标识符
+rem 7648:
+rem Recording: recording=0 name="HotSpot default" maxage=1h (running)
+
+rem 启动一个15分钟的黑匣子记录，延迟5分钟启动，使用JDK自带的默认设置（default.jfc），保存Dump文件到D盘
+jcmd 7648 JFR.start name=SampleRcd delay=300 duration=900s filename=D:\temp\SampleRcd.jfr
+     \ settings=D:\JavaEE\jdk\x64\jre\lib\jfr\default.jfc
+
+rem 相对路径取决于目标JVM
+jcmd 1234 JFR.start delay=0s duration=${jfr_du}s name=$name filename=$PWD/$name.jfr settings=profile
+
+rem 下面的脚本，可以用于定期进行记录，按记录时间保存为不同的文件
+setlocal
+set DUMP_DIR=D:\temp
+set SERVICE_NAME=Tomcat7
+set JAVA_HOME=D:\JavaEE\jdk\x64\1.7
+pushd %JAVA_HOME%\bin
+for /f "tokens=1-3 delims=/ " %%a in ('date /t') do (set md=%%a-%%b-%%c)
+for /f "tokens=1-3 delims=/:." %%a in ("%TIME%") do (set mt=%%a%%b%%c)
+set CUR_TIME=%md%-%mt%
+for /F "tokens=1,3" %%a in ('sc queryex %SERVICE_NAME%') do (
+    if "%%a" == "PID" set "JPID=%%b"
+)
+
+rem 启动飞行记录，如果目标JVM是以SYSTEM身份启动的NT Service，可以使用PSTools发起jcmd命令，否则会报错：insufficient memory or insufficient privileges to attach
+rem psexec -s jcmd %JPID% JFR.start ...
+jcmd %JPID% JFR.start name=rcd-%CUR_TIME% duration=900s compress=true filename=%DUMP_DIR%\rcd-%CUR_TIME%.jfr settings=%JAVA_HOME%\jre\lib\jfr\profile.jfc
+popd
+endlocal
+
+rem 导出JFR的Dump文件
+rem 如果目标JVM正在在运行持续不断的黑匣子记录，使用该命令，再结合定时任务机制，可以定期保存黑匣子记录的Dump文件
+jcmd 7648 JFR.dump recording=0 filename=F:\temp\dump.jfr
+
+
+ 命令	说明
+JFR.start
+启动一个JFR（黑匣子记录）实例，参数：
+
+name 本次记录的名称
+settings 服务器上的设置模板
+defaultrecording 是否启动默认录制
+delay 录制延迟时间，默认0s
+duration 录制持续时间，默认0s，表示无限
+filename 录制文件的名称
+compress 是否使用GZip压缩结果，默认否
+maxage 数据最大生命周期，默认0s，表示无限制
+maxsize 数据最大字节数，默认0，表示无限制
+
+JFR.check
+显示运行中的JFR的状态，参数：
+
+name 记录名称
+recording 记录标识符
+verbose 打印冗余信息，默认否
+
+JFR.stop
+停止运行中的JFR，参数：
+
+name 记录名称
+recording 记录标识符
+discard 是否丢弃录制数据
+filename 拷贝录制数据到文件
+
+JFR.dump
+将录制中的JFR保存到文件，参数：
+
+name 记录名称
+recording 记录标识符
+filename 拷贝录制数据到文件
