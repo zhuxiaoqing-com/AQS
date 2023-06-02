@@ -17,7 +17,7 @@ jcmd [pid] JFR.dump recording=8 filename="./xxxserver.jfr" compress=true
 结束记录
 jcmd  [pid] JFR.stop recording=8        注意：8是和开始时分配的编号来定的
 
-
+cost : 1.72892
 
 Jvm 性能分析工具-JMC+JFR 小记
 开启 JFR 收集:  由于JFR是商用的，所以需要解锁Java程序的商业feature:

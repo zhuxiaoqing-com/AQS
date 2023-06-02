@@ -7,6 +7,8 @@ import com.example.demo4.testObj1.Temp;
 import com.google.gson.JsonObject;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.PooledByteBufAllocator;
+import io.swagger.models.auth.In;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.Test;
 
 import java.io.UnsupportedEncodingException;
@@ -16,10 +18,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -731,6 +730,77 @@ public class Test16 {
 	public void _test46(Object... a){
 		System.out.println(a.length);
 	}
+
+	@Test
+	public void test47() throws InterruptedException {
+		Map<Integer, Integer> map = new ConcurrentHashMap<>();
+		int index = 10000;
+		for (int i = 0; i < index; i++) {
+			map.put(index, index);
+		}
+
+		ExecutorService executorService = Executors.newFixedThreadPool(10);
+		executorService.submit(()->{
+			while (true) {
+				map.remove(ThreadLocalRandom.current().nextInt(10000));
+				Thread.yield();
+			}
+		});
+		executorService.submit(()->{
+			while (true) {
+				map.remove(ThreadLocalRandom.current().nextInt(10000));
+				Thread.yield();
+			}
+		});
+		executorService.submit(()->{
+			while (true) {
+				int key = ThreadLocalRandom.current().nextInt(10000);
+				map.put(key, key);
+				Thread.yield();
+			}
+		});
+
+		executorService.submit(()->{
+			while (true) {
+				int key = ThreadLocalRandom.current().nextInt(10000);
+				map.put(key, key);
+				Thread.yield();
+			}
+		});
+
+		Thread.sleep(5000);
+
+		System.out.println("start-------------------------");
+
+		int maxNum = 100000;
+		TestUtil.testTime(() -> {
+			for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
+				int a = 1;
+			}
+		}, maxNum, "aaa");
+
+
+		TestUtil.testTime(() -> {
+			map.forEach((a, b) -> {
+				int aa = 1;
+			});
+		}, maxNum, "aaa");
+
+		/*TestUtil.testTime(() -> {
+			HashMap<Integer, Integer> integerIntegerHashMap = new HashMap<>(map);
+			integerIntegerHashMap.forEach((a, b) -> {
+				int aa = 1;
+			});
+		}, maxNum, "aaa");*/
+
+
+		TestUtil.testTime(() -> {
+			map.entrySet().stream().skip(ThreadLocalRandom.current().nextInt(10000)).limit(ThreadLocalRandom.current().nextInt(10000)).forEach((b) -> {
+				int aa = 1;
+			});
+		}, maxNum, "aaa");
+	}
+
 }
 
 /**

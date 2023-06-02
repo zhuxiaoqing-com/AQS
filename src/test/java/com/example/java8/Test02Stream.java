@@ -450,6 +450,22 @@ public class Test02Stream {
 		objects.add(2);
 		System.out.println(objects.stream().map(a->a.toString()).collect(Collectors.joining(";")));
 	}
+
+	@Test
+	public void test20() {
+		HashMap<Integer, Integer> map = new HashMap<>();
+		int index = 1000;
+		for (int i = 0; i < index; i++) {
+			map.put(i,i);
+		}
+		Object[] objects = map.keySet().toArray();
+
+		List<Integer> collect = map.keySet().stream().unordered().limit(10).collect(Collectors.toList());
+		System.out.println(collect);
+
+		System.out.println((char)97);
+
+	}
 }
 
 
