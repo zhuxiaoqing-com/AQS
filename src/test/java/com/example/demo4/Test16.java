@@ -2,9 +2,12 @@ package com.example.demo4;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.example.demo1.util.vo.Vector2f;
+import com.example.demo4.testObj1.AClass;
 import com.example.demo4.testObj1.StringArrayObj;
 import com.example.demo4.testObj1.Temp;
 import com.google.gson.JsonObject;
+import com.youxi.entity.Position;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.swagger.models.auth.In;
@@ -12,6 +15,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.Test;
 
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Method;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -801,6 +805,93 @@ public class Test16 {
 		}, maxNum, "aaa");
 	}
 
+	@Test
+	public void test48() throws InterruptedException {
+		int x = 16 * 100_000_0;
+		System.out.println(x/1000/1000); //mb
+		Vector2f vector2f = new Vector2f(0.001f, 0.001f);
+		float dot = vector2f.dot(vector2f);
+		System.out.println(dot);
+	}
+
+	@Test
+	public void test49() throws InterruptedException {
+		/*System.out.println(TimeUtil.convertLocalDateTime( 1686318219560L));
+		System.out.println(TimeUtil.convertLocalDateTime( 1686321820560L));*/
+		ArrayList<Integer> objects = new ArrayList<>();
+		int index = 10;
+		for (int i = 0; i < index; i++) {
+			objects.add(i);
+		}
+		List<Integer> integers = objects.subList(0, 0);
+		System.out.println(integers);
+	}
+
+	@Test
+	public void test50() throws InterruptedException {
+		int index = 200;
+		Map<Integer, Integer> hashMap = new HashMap<>();
+		Map<Integer, Integer> cMap = new ConcurrentHashMap<>();
+		int[] array = new int[index];
+
+		for (int i = 0; i < index; i++) {
+			hashMap.put(i, i);
+			cMap.put(i, i);
+			array[i] = i;
+		}
+		int findInt =10;
+		int maxNum =1000000;
+
+		TestUtil.testTime(()->cMap.get(findInt),maxNum,"cmap");
+		TestUtil.testTime(()->hashMap.get(findInt),maxNum,"hashMap");
+		TestUtil.testTime(()->{
+			for (int i : array) {
+				if(findInt== i) {
+					return;
+				}
+			}
+		},maxNum,"array");
+
+		TestUtil.testTime(()->hashMap.get(findInt),maxNum, "hashMap");
+		TestUtil.testTime(()->{
+			for (int i : array) {
+				if(findInt== i) {
+					return;
+				}
+			}
+		},maxNum, "array");
+		TestUtil.testTime(()->cMap.get(findInt),maxNum, "cmap");
+
+		TestUtil.testTime(()->{
+			for (int i : array) {
+				if(findInt== i) {
+					return;
+				}
+			}
+		},maxNum, "array");
+		TestUtil.testTime(()->cMap.get(findInt),maxNum,"cmap");
+		TestUtil.testTime(()->hashMap.get(findInt),maxNum,"hashMap");
+	}
+
+	@Test
+	public void test51() throws InterruptedException {
+		LinkedHashMap<Integer, Integer> map = new LinkedHashMap<>();
+		int index = 10;
+		for (int i = 0; i < index; i++) {
+			map.put(i,i);
+		}
+		map.entrySet().removeIf(a->a.getKey() == 1);
+		System.out.println(map);
+		for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
+			System.out.println(entry);
+		}
+	}
+
+	@Test
+	public void test52() throws Exception {
+		LocalDateTime localDateTime = TimeUtil.convertLocalDateTime(1688109390000L);
+		System.out.println(localDateTime);
+	}
 }
 
 /**

@@ -15,4 +15,9 @@ public class AClass implements AInterface{
 	public String a() {
 		return "AClass";
 	}
+
+	public void test() {
+		int a = 1/0;
+		int aq = 0/1;
+	}
 }
