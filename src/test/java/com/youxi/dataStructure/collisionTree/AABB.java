@@ -1,5 +1,7 @@
 package com.youxi.dataStructure.collisionTree;
 
+import com.youxi.entity.Dir;
+
 /**
  * @Auther: zhuxiaoqing
  * @Date: 2022/6/10 16:05
@@ -36,6 +38,27 @@ public class AABB extends Entity {
 
 		this.minY = this.y;
 		this.midY = this.minY + this.height / 2;
+		this.maxY = this.minY + this.height;
+
+		this.isValid = true;
+
+		super.rect = new Rect(x, y, width, height);
+	}
+
+	public AABB(int midX, int midY, Dir size) {
+
+		this.width = size.getX()*2;
+		this.height = size.getZ() * 2;
+
+		this.x = midX - size.getX();
+		this.y = midY - size.getZ();
+
+		this.minX = this.x;
+		this.midX =midX;
+		this.maxX = this.minX + this.width;
+
+		this.minY = this.y;
+		this.midY = midY;
 		this.maxY = this.minY + this.height;
 
 		this.isValid = true;

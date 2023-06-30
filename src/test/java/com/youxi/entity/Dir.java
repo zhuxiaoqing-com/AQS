@@ -37,6 +37,10 @@ public class Dir {
 		this.y = y;
 	}
 
+	public Dir(double x, double z) {
+		this((float) x,(float)z);
+	}
+
 	public int getZ() {
 		return z;
 	}

@@ -19,12 +19,16 @@ public final class Position extends BasicPos {
 		super(x, y);
 	}
 
+	public Position(double x, double y) {
+		super((float) x, (float)y);
+	}
+
+
 	public Position(int x, int y) {
 		super(x, 0, y);
 	}
 
 	/**
-	 * @param   this 起点
 	 * @param o 终点
 	 * @return 中间点
 	 */
@@ -96,16 +100,20 @@ public final class Position extends BasicPos {
 	}
 
 	public Position normalize() {
-		double oaLength = Math.sqrt(getX() * getX() + getZ() * getZ());
+		double oaLength = Math.sqrt((long) getX() * getX() + (long) getZ() * getZ());
 		float oaNormalizeX = (float) (getX() / oaLength);
 		float oaNormalizeZ = (float) (getZ() / oaLength);
 		return new Position(oaNormalizeX, 0, oaNormalizeZ);
 	}
 	public Position getRotateDir(float radians) {
+		radians = (float) Math.toRadians(radians);
 		double cos = Math.cos(radians);
 		double sin = Math.sin(radians);
 		return new Position((int) (getX() * cos - getZ() * sin),
 				(int) ((getZ() * cos + getX() * sin)));
 	}
 
+	public long dot(Position p) {
+		return CMath.Dot2D(this,p);
+	}
 }
