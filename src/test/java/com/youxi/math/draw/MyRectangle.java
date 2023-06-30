@@ -14,7 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class MyRectangle extends Rectangle implements Crash, KeyListener{
+public class MyRectangle extends Rectangle implements Crash, KeyListener {
 	private double xOffset = 0;
 	private double yOffset = 0;
 	public int oldCount = 1;
@@ -25,23 +25,22 @@ public class MyRectangle extends Rectangle implements Crash, KeyListener{
 
 	public boolean shift = false;
 
+	private boolean diagonal;
 
 
 	/**
 	 * Creates an empty instance of Circle.
 	 */
-	public MyRectangle(int rotate, DraggableCircle root) {
+	public MyRectangle(double x, double y, double width, double height, int rotate, DraggableCircle root, boolean diagonal) {
+		super(x, y, width, height);
 		this.root = root;
 		this.rotate = rotate;
+		this.diagonal = diagonal;
 		init();
 		root.addNode(this);
 	}
 
 	public void init() {
-		setX(300);
-		setY(300);
-		setWidth(300);
-		setHeight(100);
 		setRotate(rotate);
 		setStroke(Color.BLACK);
 		setFill(Color.WHITE);
@@ -65,16 +64,21 @@ public class MyRectangle extends Rectangle implements Crash, KeyListener{
 		 */
 		setOnMousePressed(e -> {
 			if (shift) {
-				xOffset = e.getSceneX();
-				yOffset = e.getSceneY();
+				xOffset = e.getX();
+				yOffset = e.getY();
 				return;
 			}
-			xOffset = e.getSceneX() - getX() ;
-			yOffset = e.getSceneY() - getY() ;
+			//xOffset = e.getX() - getX();
+			//yOffset = e.getY() - getY();
+			setX(e.getX());
+			setX(e.getY());
+			System.out.println("getY "+ e.getY());
+			System.out.println("getSceneY "+ e.getSceneY());
+			System.out.println("getScreenY "+ e.getScreenY());
 			//line.setStroke(Color.RED);
 		});
 		setOnMouseDragged(e -> {
-			if(shift) {
+			if (shift) {
 			/*	Line line = new Line(getX() + getWidth() / 2, getY() + getHeight() / 2, e.getSceneX(), e.getSceneY());
 				root.addNode(line);
 				Position center = new Position((float) (getX() + getWidth() / 2), (float) (getY() + getHeight() / 2));
@@ -88,11 +92,22 @@ public class MyRectangle extends Rectangle implements Crash, KeyListener{
 				System.out.println("==========" +degree);*/
 				return;
 			}
-			setX(e.getSceneX()-xOffset);
-			setY(e.getSceneY() - yOffset);
+			setX(e.getX() - xOffset);
+			setY(e.getY() - yOffset);
 
 		});
 
+
+		if (diagonal) {
+			Position center = getCenter();
+			List<Position> points = getPoints();
+			for (Position point : points) {
+				Position add = point.add(point.sub(center).normalize().multiply(300));
+				Line line = new Line(center.getX() / 1000f, center.getZ() / 1000f, add.getX() / 1000f, add.getZ() / 1000f);
+				root.addNode(line);
+			}
+
+		}
 
 	}
 
@@ -102,7 +117,7 @@ public class MyRectangle extends Rectangle implements Crash, KeyListener{
 		if (keyEvent.getCode() != KeyCode.SHIFT) {
 			return;
 		}
-		shift =true;
+		shift = true;
 	}
 
 	@Override
@@ -110,7 +125,7 @@ public class MyRectangle extends Rectangle implements Crash, KeyListener{
 		if (keyEvent.getCode() != KeyCode.SHIFT) {
 			return;
 		}
-		shift =false;
+		shift = false;
 	}
 
 	public Position getCenter() {
@@ -120,7 +135,7 @@ public class MyRectangle extends Rectangle implements Crash, KeyListener{
 	public List<Position> getPoints() {
 		Position center = getCenter();
 		Dir dir = new Dir(getWidth() / 2, getHeight() / 2);
-		Dir[]	localSizeDirArray = new Dir[4];
+		Dir[] localSizeDirArray = new Dir[4];
 		localSizeDirArray[0] = new Dir(-dir.getX(), -dir.getZ());// -x -z
 		localSizeDirArray[1] = new Dir(-dir.getX(), dir.getZ());// -x +z
 		localSizeDirArray[2] = new Dir(dir.getX(), dir.getZ());// +x +z

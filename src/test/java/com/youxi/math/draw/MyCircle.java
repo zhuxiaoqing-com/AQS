@@ -10,10 +10,14 @@ public class MyCircle extends Circle  implements Crash {
 	public int oldCount = 1;
 	public int count = 1;
 
+	DraggableCircle root;
 
-	public MyCircle(double centerX, double centerY, double radius) {
+
+	public MyCircle(double centerX, double centerY, double radius, DraggableCircle root) {
 		super(centerX, centerY, radius);
+		this.root = root;
 		init();
+		root.addNode(this);
 	}
 
 
