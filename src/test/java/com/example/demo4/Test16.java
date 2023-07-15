@@ -16,6 +16,7 @@ import org.junit.Test;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Method;
+import java.sql.Time;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -889,8 +890,25 @@ public class Test16 {
 
 	@Test
 	public void test52() throws Exception {
-		LocalDateTime localDateTime = TimeUtil.convertLocalDateTime(1688109390000L);
-		System.out.println(localDateTime);
+		ArrayList<Integer> objects = new ArrayList<>();
+		objects.add(1);
+		objects.add(2);
+		//objects.add(4);
+		//objects.add(3);
+		//objects.add(5);
+		//objects.add(6);
+		//objects.add(7);
+
+		/*int index = 100;
+		for (int i = 0; i < index; i++) {
+			objects.add(7);
+		}*/
+
+		int a= 0;
+		for (Integer object : objects) {
+			a |= object;
+		}
+		System.out.println(a);
 	}
 }
 

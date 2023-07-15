@@ -70,7 +70,7 @@ public class Test14 {
 	@Test
 	public void test03() {
 		String a = "\uD835\uDD46";
-		System.out.println("\uD835\uDD46");
+		System.out.println("\uD835\uDD47");
 		char[] chars = "\uD835\uDD46".toCharArray();
 	}
 

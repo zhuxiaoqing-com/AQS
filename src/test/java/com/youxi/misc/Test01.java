@@ -24,13 +24,13 @@ public class Test01 {
 		ExecutorService executorService = Executors.newFixedThreadPool(2);
 		executorService.submit(()->map.put(1,2));
 		executorService.submit(()->map.put(2,2));
+	}
 
-	/*	Thread.sleep(1111);
-		map.put(3,3);
-		map.put(3,3);
-		map.put(3,3);
-		map.put(3,3);
-		map.put(3,3);
-		map.put(3,3);*/
+	private static final int SERVER_POS = 47;// 64-47 = 17 还有17位可以用 如果要保证正数那就只有16位可以用
+
+	private static final int ADD_POS = 15; // 47-15 = 32 32位可以用;32位可以用作秒数;
+	@Test
+	public void text02() {
+
 	}
 }

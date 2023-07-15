@@ -1,5 +1,6 @@
 package com.example.java8;
 
+import com.example.demo4.TimeUtil;
 import org.junit.Test;
 
 import java.time.*;
@@ -180,6 +181,11 @@ public class Test03Time {
 
         System.out.println("相差的天数: " + ChronoUnit.DAYS.between(end.toLocalDate(), start.toLocalDate()) + "天");
 
+    }
+
+    @Test
+    public void test11() {
+        System.out.println(TimeUtil.dayMills/1000);
     }
 }
 
