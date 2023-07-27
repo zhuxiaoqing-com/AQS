@@ -893,16 +893,6 @@ public class Test16 {
 		ArrayList<Integer> objects = new ArrayList<>();
 		objects.add(1);
 		objects.add(2);
-		//objects.add(4);
-		//objects.add(3);
-		//objects.add(5);
-		//objects.add(6);
-		//objects.add(7);
-
-		/*int index = 100;
-		for (int i = 0; i < index; i++) {
-			objects.add(7);
-		}*/
 
 		int a= 0;
 		for (Integer object : objects) {
@@ -910,6 +900,84 @@ public class Test16 {
 		}
 		System.out.println(a);
 	}
+
+
+	@Test
+	public void test53() throws Exception {
+		// 角度 * π/180 *0.5  角度 * π/180 *2
+		Position position = new Position(0, 1000);
+		int angdeg = 90;
+		float radians = (float) Math.toRadians(angdeg);
+
+		System.out.println("----------计算*0.5是否是角度的一半--------------");
+		System.out.println(Math.toDegrees(Math.acos(Math.cos(radians))));
+		System.out.println(Math.toDegrees(Math.asin(Math.sin(radians))));
+
+		System.out.println(Math.toDegrees(-0.5 * radians));
+		System.out.println(Math.toDegrees(0.5 * radians));
+
+		System.out.println("----------计算和绕原点旋转的关系--------------");
+
+		float coshalf= (float) Math.cos(0.5f*radians);
+		float sinhalf = (float) Math.sin(-0.5f*radians);
+
+		System.out.println(coshalf*sinhalf);
+		System.out.println(coshalf*coshalf - 0.5f);
+		System.out.println(coshalf*coshalf);
+
+
+		radians = (float) Math.toRadians(radians);
+		double cos = Math.cos(radians);
+		double sin = Math.sin(radians);
+		System.out.println(cos);
+		System.out.println(sin);
+/*		return new Position((int) (getX() * cos - getZ() * sin),
+				(int) ((getZ() * cos + getX() * sin)));*/
+
+		float[] rotAux = new float[2];
+		rotAux[0] = coshalf*sinhalf;
+		rotAux[1] = coshalf*coshalf - 0.5f;
+
+		float x2 = 1000;
+		float z2 = 1000;
+		float xrot = rotAux[1] * x2 + rotAux[0] * z2;
+		float zrot = rotAux[1] * z2 - rotAux[0] * x2;
+		System.out.println(xrot + " ------ " +zrot);
+
+		Position position1 = new Position(1000, 1000);
+		Position rotateDir = position1.getRotateDir(angdeg);
+		System.out.println(rotateDir);
+
+
+		System.out.println("----------计算和绕原点旋转的关系222 --------------");
+		System.out.println(rotAux[0]);
+		System.out.println(rotAux[1]);
+
+		// (getX() * cos - getZ() * sin
+		 cos = Math.cos(radians);
+		 sin = Math.sin(radians);
+		System.out.println(cos);
+		System.out.println(sin);
+	}
+
+	@Test
+	public void test54() throws Exception {
+		/*long index = 1_000_000;
+		TestUtil.testTime(()->Math.cos(0),index, "0度");
+		TestUtil.testTime(()->Math.cos(90),index, "90度");
+
+		TestUtil.testTime(()->Math.cos(270),index, "270度");
+		TestUtil.testTime(()->Math.cos(0),index, "0度");
+		TestUtil.testTime(()->Math.cos(1),index, "1度");
+		*/
+		Position a = new Position(187f, 16f);
+		Position b = new Position(125f, 16f);
+		Position p = new Position(176f, 126f);
+		System.out.println(a.sub(p));
+		System.out.println(b.sub(p));
+
+	}
+
 }
 
 /**
