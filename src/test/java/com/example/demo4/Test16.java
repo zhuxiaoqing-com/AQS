@@ -970,17 +970,18 @@ public class Test16 {
 		TestUtil.testTime(()->Math.cos(0),index, "0度");
 		TestUtil.testTime(()->Math.cos(1),index, "1度");
 		*/
-		Position a = new Position(187f, 16f);
-		Position b = new Position(125f, 16f);
-		Position p = new Position(176f, 126f);
-		System.out.println(a.sub(p));
-		System.out.println(b.sub(p));
 
+		System.out.println(130_000*1.2);
+
+		ArrayList<Object> objects = new ArrayList<>();
+		objects.add(1);
+		Object next = objects.iterator().next();
+		System.out.println(next);
 	}
 
 }
 
-/**
+/*
  * abcdefghijklmnopqrst
  */
 

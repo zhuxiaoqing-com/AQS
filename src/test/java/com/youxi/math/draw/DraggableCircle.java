@@ -1,5 +1,6 @@
 package com.youxi.math.draw;
 
+import com.example.demo1.util.vo.Vector2f;
 import com.youxi.entity.Dir;
 import com.youxi.entity.Position;
 import com.youxi.math.OBBCircle;
@@ -96,14 +97,20 @@ public class DraggableCircle extends Application  {
         Rectangle rectangle = new Rectangle(200,300,2, 3);
 
         rectangle.setRotate(40);*/
-        MyRectangle rectangle = new MyRectangle(0,0,300,300,300, this, true);
+        Vector2f rectangleCenter = new Vector2f(137.9f,558.7f);
+        Vector2f rectangleDir = new Vector2f(1.65f,0.25f);
+        Vector2f sub = rectangleCenter.sub(rectangleDir);
+
+        Vector2f hitV = new Vector2f(137.719f,45.741f);
+        double rotate = 351.265;
+        MyRectangle rectangle = new MyRectangle(sub.x, sub.y, rectangleDir.x * 2, rectangleDir.y * 2, (int) rotate, this, true);
 
 
 
        /* Circle circle = new Circle(100, 100, 2);
         circle.setStroke(Color.BLACK);
         circle.setFill(Color.WHITE);*/
-        MyCircle circle = new MyCircle(300,300,2, this);
+        MyCircle circle = new MyCircle(hitV.x,hitV.y,2, this);
         circle.setOnMousePressed(e -> {
             xOffset = e.getX() - circle.getCenterX();
             yOffset = e.getY() - circle.getCenterY();
