@@ -263,6 +263,20 @@ public class IdFactory {
 		return (int) (id >> SERVER_POS);
 	}
 
+
+	/**
+	 * 没有自增id的原理懂了 是因为 一边是不变的000 一边是频繁的秒数 所以其实就是吧000移除掉 用秒数来计算桶
+	 * 如果是>>>32 左边的基本是不会变得 所以再没自增id的时候会都在一个桶上
+	 *
+	 * 有自增id的呢? 一边是自增频繁的id 一边是秒数  与起来 变化就更多了 所以就更分布均匀了
+	 *
+	 * @param value
+	 * @return
+	 */
+	public static int hash(long value) {
+		return (int) (value ^ (value >>> ADD_POS));
+	}
+
 	/** 生成tokenId 每秒生成65536个id **/
 	public synchronized static long createTokenId() {
 		int second = currentTimeSecond();
@@ -393,4 +407,7 @@ public class IdFactory {
 
 		}
 	}
+
+
+
 }

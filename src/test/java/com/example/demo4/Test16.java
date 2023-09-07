@@ -962,21 +962,43 @@ public class Test16 {
 
 	@Test
 	public void test54() throws Exception {
-		/*long index = 1_000_000;
-		TestUtil.testTime(()->Math.cos(0),index, "0度");
-		TestUtil.testTime(()->Math.cos(90),index, "90度");
+		int year = LocalDate.now().getYear();
+		LocalDateTime currentReceiveTime = LocalDateTime.parse(year+"0202124534", DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
+		LocalTime closeStart = LocalTime.parse("112333", DateTimeFormatter.ofPattern("HHmmss"));
+		System.out.println(currentReceiveTime);
+		System.out.println(closeStart);
+	}
 
-		TestUtil.testTime(()->Math.cos(270),index, "270度");
-		TestUtil.testTime(()->Math.cos(0),index, "0度");
-		TestUtil.testTime(()->Math.cos(1),index, "1度");
-		*/
+	@Test
+	public void test55() throws Exception {
+		HashMap<Integer, Integer> hashMap = new HashMap<>();
+		int index = 10000;
+		for (int i = 0; i < index; i++) {
+			hashMap.put(ThreadLocalRandom.current().nextInt(Integer.MAX_VALUE), i);
+		}
 
-		System.out.println(130_000*1.2);
 
-		ArrayList<Object> objects = new ArrayList<>();
-		objects.add(1);
-		Object next = objects.iterator().next();
-		System.out.println(next);
+		int maxNum = 1000;
+		TestUtil.testTime(() -> hashMap.keySet().stream().sorted(Comparator.comparingInt(b -> b)).collect(Collectors.toList()), maxNum, "11");
+		TestUtil.testTime(() -> hashMap.keySet().stream().sorted(Comparator.comparingInt(b -> b)).limit(200).collect(Collectors.toList()), maxNum, "22");
+
+		for (int i = 0; i < index; i++) {
+			int a = 1;
+		}
+		TestUtil.testTime(() -> hashMap.keySet().stream().sorted(Comparator.comparingInt(b -> b)).collect(Collectors.toList()), maxNum, "11");
+		TestUtil.testTime(() -> hashMap.keySet().stream().sorted(Comparator.comparingInt(b -> b)).limit(200).collect(Collectors.toList()), maxNum, "22");
+	}
+	/**
+	 * HH:mm
+	 */
+	public static final String HH_MM = "HH:mm";
+	public static DateTimeFormatter HH_MM_TimeFromatter = DateTimeFormatter.ofPattern(HH_MM);
+	@Test
+	public void test56() throws Exception {
+		long i = TimeUtil.hourMills;
+		String format = HH_MM_TimeFromatter.format(LocalTime.ofNanoOfDay(i * TimeUtil.millsNano));
+		System.out.println(format);
+		System.out.println(TimeUtil.convertLocalDateTime(1694067198502L));
 	}
 
 }
