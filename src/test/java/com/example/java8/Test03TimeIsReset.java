@@ -45,10 +45,12 @@ public class Test03TimeIsReset {
     public static void main(String[] args) throws IOException {
         ServerSocket serverSocket = new ServerSocket(90);
         Socket accept = serverSocket.accept();
-        Scanner scan = new Scanner(System.in);
-        String next = scan.next();
-        System.out.println(next);
-        accept.close();
+        int index = 1000;
+        while (true){
+
+            System.out.println(accept.getInputStream().read());
+        }
+        //accept.close();
     }
 
     @Test

@@ -991,14 +991,21 @@ public class Test16 {
 	/**
 	 * HH:mm
 	 */
-	public static final String HH_MM = "HH:mm";
+	public static final String HH_MM = "mm:ss";
 	public static DateTimeFormatter HH_MM_TimeFromatter = DateTimeFormatter.ofPattern(HH_MM);
 	@Test
 	public void test56() throws Exception {
-		long i = TimeUtil.hourMills;
+		long i = TimeUtil.hourMills*3;
 		String format = HH_MM_TimeFromatter.format(LocalTime.ofNanoOfDay(i * TimeUtil.millsNano));
 		System.out.println(format);
-		System.out.println(TimeUtil.convertLocalDateTime(1694067198502L));
+	}
+
+	@Test
+	public void test57() throws Exception {
+	 	int index = 100;
+		for (int i = 0; i < index; i++) {
+			System.out.println(i%1);
+		}
 	}
 
 }

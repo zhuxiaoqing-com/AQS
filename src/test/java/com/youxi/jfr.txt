@@ -1,5 +1,5 @@
 jcmd  [pid]  VM.unlock_commercial_features
-jcmd [pid] JFR.start duration=1m settings=profile compress=true filename=bt-2023-05-24.jfr
+jcmd [pid] JFR.start duration=60m settings=profile compress=true filename=/data/log/bt-2023-09-27.jfr
 
 解锁
 jcmd  [pid]   VM.unlock_commercial_features

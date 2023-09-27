@@ -144,4 +144,19 @@ public class JedisTest {
         reportLog.setDetail("你为什么挂机呢？" + i);
         return JSON.toJSONString(reportLog);
     }
+
+    @Test
+    public void TestJedisPool6(){
+        Jedis resource = jedisPool.getResource();
+        resource.select(1);
+        resource.set("aa", "aad");
+        System.out.println(resource.get("aa"));
+        resource.close();
+
+        int index = 1000;
+        for (int i = 0; i < index; i++) {
+            Jedis resource1 = jedisPool.getResource();
+            System.out.println(resource1.get("aa"));
+        }
+    }
 }
