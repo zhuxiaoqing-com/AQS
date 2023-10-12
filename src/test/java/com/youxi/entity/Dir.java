@@ -100,7 +100,7 @@ public class Dir {
 	}
 
 	public Dir normalize() {
-		double oaLength = Math.sqrt(getX() * getX() + getZ() * getZ());
+		double oaLength = Math.sqrt((long) getX() * getX() + (long) getZ() * getZ());
 		float oaNormalizeX = (float) (getX() / oaLength);
 		float oaNormalizeZ = (float) (getZ() / oaLength);
 		return new Dir(oaNormalizeX, 0, oaNormalizeZ);

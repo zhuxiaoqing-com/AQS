@@ -1,15 +1,12 @@
 package com.youxi.math;
 
 import com.youxi.building.Misc;
-import com.youxi.entity.CMath;
-import com.youxi.entity.Dir;
-import com.youxi.entity.OBB2D;
-import com.youxi.entity.Position;
+import com.youxi.entity.*;
 import org.junit.Test;
 
 import java.util.Random;
 
-public class OBBOBB {
+public class OBBOBB{
 
 	/**
 	 * https://www.cnblogs.com/hont/p/9501169.html
@@ -22,10 +19,10 @@ public class OBBOBB {
 	 * @return
 	 */
 	public boolean intersects(OBB2D aaa, OBB2D bbb) {
-		Position axis1 = aaa.getP3().sub(aaa.getP0()).normalize();
+		Position axis1 = aaa.getP1().sub(aaa.getP0()).normalize();
 		Position axis2 = aaa.getP3().sub(aaa.getP0()).normalize();
 
-		Position axis3 = bbb.getP3().sub(aaa.getP0()).normalize();
+		Position axis3 = bbb.getP1().sub(aaa.getP0()).normalize();
 		Position axis4 = bbb.getP3().sub(aaa.getP0()).normalize();
 
 
@@ -93,10 +90,7 @@ public class OBBOBB {
 
 	@Test
 	public void test01() {
-		OBB2D obb2D = new OBB2D();
-		obb2D.setDir(0);
-		obb2D.setSizeDir(new Dir(1000, 1000));
-		obb2D.setCenter(new Position(2000, 2000));
+		OBB2D obb2D = new OBB2D(new Position(2000, 2000), new Dir(1000, 1000), 0);
 
 		int index = 12322;
 

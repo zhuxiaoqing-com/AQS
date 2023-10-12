@@ -2,8 +2,11 @@ package com.youxi.entity;
 
 import com.youxi.building.Misc;
 
-public class OBB2D {
-	private Position center;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
+public class OBB2D extends Shape {
 	private Dir sizeDir;
 	private float dir;
 
@@ -12,6 +15,17 @@ public class OBB2D {
 	private Position p2;
 	private Position p3;
 
+	public OBB2D(Position center) {
+		super(center);
+	}
+
+	public OBB2D(Position center, Dir sizeDir, float dir) {
+		super(center);
+		this.sizeDir = sizeDir;
+		this.dir = dir;
+
+
+	}
 
 	public Position getP0() {
 		return p0;
@@ -67,8 +81,25 @@ public class OBB2D {
 		this.dir = dir;
 	}
 
-	public void setCenter(Position center) {
-		this.center = center;
+	public List<Position> getPoints() {
+		Position center = getCenter();
+		Dir[] localSizeDirArray = new Dir[4];
+		localSizeDirArray[0] = new Dir(-sizeDir.getX(), -sizeDir.getZ());// -x -z
+		localSizeDirArray[1] = new Dir(-sizeDir.getX(), sizeDir.getZ());// -x +z
+		localSizeDirArray[2] = new Dir(sizeDir.getX(), sizeDir.getZ());// +x +z
+		localSizeDirArray[3] = new Dir(sizeDir.getX(), -sizeDir.getZ());// +x -z
+
+		Position[] points = new Position[4];
+
+		Dir dir0 = CMath.getUnityDirByRotateYFromX(localSizeDirArray[0], dir);
+		Dir dir1 = CMath.getUnityDirByRotateYFromX(localSizeDirArray[1], dir);
+		Dir dir2 = CMath.getUnityDirByRotateYFromX(localSizeDirArray[2], dir);
+		Dir dir3 = CMath.getUnityDirByRotateYFromX(localSizeDirArray[3], dir);
+		points[0] = center.add(dir0);
+		points[1] = center.add(dir1);
+		points[2] = center.add(dir2);
+		points[3] = center.add(dir3);
+		return Arrays.stream(points).collect(Collectors.toList());
 	}
 
 	/**

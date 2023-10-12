@@ -1,5 +1,7 @@
 package com.youxi.util;
 
+import java.util.Arrays;
+
 /**
  * Math函数的一些扩展方法
  * 
@@ -37,6 +39,13 @@ public class MathExt {
 		return value;
 	}
 
+	public static int max(int... num) {
+		return Arrays.stream(num).max().orElse(0);
+	}
+
+	public static long max(long... num) {
+		return Arrays.stream(num).max().orElse(0L);
+	}
 	public static void main(String[] args) {
 		System.err.println(clamp(5, 1, 3));
 	}

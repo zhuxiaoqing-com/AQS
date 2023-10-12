@@ -1,5 +1,7 @@
 package com.example.demo4;
 
+import io.swagger.models.auth.In;
+import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,6 +15,12 @@ import java.util.Map;
  * 最大可以用34年 每秒最大生成id数量32768个 区数量最大支持8192个
  * 
  * 区ID最大上限 65000 区id+时间+（id++） 最高位正负数不算 16位+32位+15位
+ *
+ * private static final int SERVER_POS = 47;// 64-47 = 17 还有17位可以用 如果要保证正数那就只有16位可以用
+ *
+ * 	private static final int ADD_POS = 15; // 47-15 = 32 32位可以用;32位可以用作秒数;
+ *
+ * 	15 = 32767
  * 
  */
 public class IdFactory {
@@ -408,6 +416,21 @@ public class IdFactory {
 		}
 	}
 
+	@Test
+	public void test01() {
+		long a = 14215278684340227L;
+		a = 14215273031270400L;
+		a = 14215267485483008L;
+		a = 14215276104613896L;
+
+		long serverId = a >> SERVER_POS;
+		System.out.println(serverId);
+
+		long auto = a & 32767;
+		System.out.println(auto);
+
+		System.out.println(1 << 12);
+	}
 
 
 }
