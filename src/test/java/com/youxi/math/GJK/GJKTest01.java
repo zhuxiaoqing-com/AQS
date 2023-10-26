@@ -6,6 +6,14 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 如果两个多边形不相交的情况下  可以求两个多边形的最近点;
+ * 因为其算法已经将离原点最近的所有可能都求出来了;只要进行对比就好了;
+ *
+ * 如果碰撞了的话 就不能求最近点了; 因为遍历完成的时候并没有将多边形画全;
+ *
+ *
+ */
 public class GJKTest01 {
 
 	@Test
@@ -60,7 +68,10 @@ public class GJKTest01 {
 				}
 			}
 		} finally {
-			System.out.println("count :" + count);
+			if (count > 100) {
+				System.out.println("count :" + count);
+			}
+
 		}
 
 	}

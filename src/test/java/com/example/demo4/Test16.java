@@ -1010,7 +1010,20 @@ public class Test16 {
 
 	@Test
 	public void test58() throws Exception {
+		int index  =10000;
 
+		int mu = 100;
+		for (int i = 1; i < mu; i++) {
+
+			for (int i1 = 1; i1 < index; i1++) {
+				int i2 = i1 % i;
+				int i3 = i2 % i;
+				if(i2!=i3){
+					System.out.println(" i "+i);
+					System.out.println(" i1 "+i1);
+				}
+			}
+		}
 	}
 
 }

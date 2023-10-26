@@ -54,7 +54,6 @@ public class MyCircle extends Circle  implements Crash {
 			setCenterX(e.getX() - xOffset);
 			setCenterY(e.getY() - yOffset);
 
-			System.out.println("setOnMouseDragged");
 /*
 
 			Dir dir = new Dir((float) (rectangle.getWidth() / 2), (float) rectangle.getHeight() / 2);

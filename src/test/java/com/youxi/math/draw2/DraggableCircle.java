@@ -1,6 +1,7 @@
 package com.youxi.math.draw2;
 
 import com.youxi.entity.Circle;
+import com.youxi.entity.Dir;
 import com.youxi.entity.OBB2D;
 import com.youxi.entity.Position;
 import com.youxi.math.GJK.GJKTest01;
@@ -89,35 +90,23 @@ public class DraggableCircle extends Application  {
         rectangle.setRotate(40);*/
 
         Position rectangleCenter = new Position(137.9f,45.87f);
-        Position rectangleDir = new Position(1.65f,0.25f);
+        Position rectangleDir = new Position(10f,10f);
         Position sub = rectangleCenter.sub(rectangleDir);
 
         Position hitV = new Position(117.719f,25.741f);
         double rotate = 351.265;
 
 
-
-
-       /* Circle circle = new Circle(100, 100, 2);
-        circle.setStroke(Color.BLACK);
-        circle.setFill(Color.WHITE);*/
-        MyCircle circle = new MyCircle(hitV.getX()/1000f,hitV.getZ()/1000f,0.0001, this);
-        circle.setOnMousePressed(e -> {
-            xOffset = e.getX() - circle.getCenterX();
-            yOffset = e.getY() - circle.getCenterY();
-        });
+        MyCircle circle = new MyCircle(hitV.getX()/1000f,hitV.getZ()/1000f,10, this);
 
         MyRectangle rectangle = new MyRectangle(sub.getX()/1000f,sub.getZ()/1000f,rectangleDir.getX()/1000f * 2, rectangleDir.getZ()/1000f * 2,
                 (int) rotate, this, false);
 
 
         circle.setOnMouseDragged(e -> {
-            circle.setCenterX(e.getSceneX() - xOffset);
+            circle.setCenterX(e.getX() - xOffset);
             circle.setCenterY(e.getY() - yOffset);
 
-          /*  Dir dir = new Dir((float) (rectangle.getWidth() / 2), (float) rectangle.getHeight() / 2);
-            Position circlePos = new Position((float) circle.getCenterX(), (float) circle.getCenterY());
-            int circleRadius = (int) (circle.getRadius() * 1000);*/
 
             Position circlePos = new Position((float) circle.getCenterX(), (float) circle.getCenterY());
             int circleRadius = (int) (circle.getRadius() * 1000);
@@ -127,13 +116,6 @@ public class DraggableCircle extends Application  {
             }else {
                 circle.setFill(Color.WHITE);
             }
-
-
-           /* if(obbCircle.pointAABBNearestSegment(circlePos, colliderBox)) {
-                circle.setFill(Color.BLUE);
-            }else {
-                circle.setFill(Color.WHITE);
-            }*/
 
         });
 

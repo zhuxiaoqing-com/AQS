@@ -39,8 +39,8 @@ public class JedisTest1 {
 	 */
 	@Test
 	public void fun3() {
-		Double zscore = jedis.zscore("zset1", "a");
-		System.out.println(zscore);
+		Set<Tuple> zset1 = jedis.zrangeWithScores("zset1", 1, -1);
+		System.out.println(zset1);
 	}
 
 	/**
