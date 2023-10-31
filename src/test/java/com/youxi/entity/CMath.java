@@ -38,6 +38,14 @@ public class CMath {
 		return (long) (x1 * z2 * PRECISION_FACTOR) - (long) (z1 * x2 * PRECISION_FACTOR);
 	}
 
+	public static Position Cross3D(Position a, Position b)
+	{
+		return new Position(
+				((long) a.getY() * b.getZ() - (long) a.getZ() * b.getY()) * PRECISION_FACTOR,
+				((long) a.getZ() * b.getX() - (long) a.getX() * b.getZ()) * PRECISION_FACTOR,
+				((long) a.getX() * b.getY() - (long) a.getY() * b.getX())* PRECISION_FACTOR
+		);
+	}
 
 	public static long fixedDiv(long a, long b) {
 		return a * PRECISION / b;

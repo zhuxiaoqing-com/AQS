@@ -119,4 +119,13 @@ public class OBB2D extends Shape {
 		Position rotateDir = position.getRotateDir(dir).add(center);
 		return rotateDir;
 	}
+
+	@Override
+	public String toString() {
+		return "OBB2D{" +
+				", center=" + center +
+				"sizeDir=" + sizeDir +
+				", dir=" + dir +
+				'}';
+	}
 }

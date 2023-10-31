@@ -5,6 +5,7 @@ import com.youxi.entity.Dir;
 import com.youxi.entity.OBB2D;
 import com.youxi.entity.Position;
 import com.youxi.math.GJK.GJKTest01;
+import com.youxi.math.GJK.GJKTest02;
 import javafx.application.Application;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -95,26 +96,28 @@ public class DraggableCircle extends Application  {
 
         Position hitV = new Position(117.719f,25.741f);
         double rotate = 351.265;
+        Position sub1 = sub.sub(new Position(3000, 3000));
+        MyRectangle rectangle1 = new MyRectangle(sub1.getX()/1000f,sub1.getZ()/1000f,rectangleDir.getX()/1000f * 2, rectangleDir.getZ()/1000f * 2,
+                (int) rotate, this, false);
 
-
-        MyCircle circle = new MyCircle(hitV.getX()/1000f,hitV.getZ()/1000f,10, this);
-
-        MyRectangle rectangle = new MyRectangle(sub.getX()/1000f,sub.getZ()/1000f,rectangleDir.getX()/1000f * 2, rectangleDir.getZ()/1000f * 2,
+        MyRectangle rectangle2 = new MyRectangle(sub.getX()/1000f,sub.getZ()/1000f,rectangleDir.getX()/1000f * 2, rectangleDir.getZ()/1000f * 2,
                 (int) rotate, this, false);
 
 
-        circle.setOnMouseDragged(e -> {
-            circle.setCenterX(e.getX() - xOffset);
-            circle.setCenterY(e.getY() - yOffset);
+
+        rectangle1.setOnMouseDragged(e -> {
+            rectangle1.setX(e.getX() - xOffset);
+            rectangle1.setY(e.getY() - yOffset);
 
 
-            Position circlePos = new Position((float) circle.getCenterX(), (float) circle.getCenterY());
-            int circleRadius = (int) (circle.getRadius() * 1000);
+            OBB2D obb2D = new OBB2D(rectangle1.getCenter(), rectangle1.getSize(), rectangle1.getRotate1());
             GJKTest01 gjkTest01 = new GJKTest01();
-            if(gjkTest01.GJK(new Circle(circlePos, circleRadius), new OBB2D(rectangle.getCenter(), rectangle.getSize(),rectangle.getRotate1()))) {
-                circle.setFill(Color.BLUE);
+            OBB2D shape2 = new OBB2D(rectangle2.getCenter(), rectangle2.getSize(), rectangle2.getRotate1());
+            System.out.println(obb2D + "    " + shape2);
+            if(gjkTest01.GJK(obb2D, shape2)) {
+                rectangle1.setFill(Color.BLUE);
             }else {
-                circle.setFill(Color.WHITE);
+                rectangle1.setFill(Color.WHITE);
             }
 
         });

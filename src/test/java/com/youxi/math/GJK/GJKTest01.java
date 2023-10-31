@@ -1,5 +1,6 @@
 package com.youxi.math.GJK;
 
+import com.youxi.dataStructure.collisionTree.AABB;
 import com.youxi.entity.*;
 import org.junit.Test;
 
@@ -19,9 +20,16 @@ public class GJKTest01 {
 	@Test
 	public void test01() {
 		//Circle circle = new Circle(new Position(0, 0), 1000);
-		OBB2D obb2D1 = new OBB2D(new Position(900, 1000), new Dir(1000, 1000), 0);
-		OBB2D obb2D = new OBB2D(new Position(3000, 3000), new Dir(1000, 1000), 0);
+		OBB2D obb2D1 = new OBB2D(new Position(152428,0,63156), new Dir(10000,0,10000), -351);
+		OBB2D obb2D = new OBB2D(new Position(127915,0,70742), new Dir(10000,0,10000), -351);
+		 //obb2D1 = new OBB2D(new Position(-600,0,-600), new Dir(1000,0,1000), 0);
+		 //obb2D = new OBB2D(new Position(1500,0,1500), new Dir(1000,0,1000), 0);
+		 obb2D1 = new OBB2D(new Position(15300,0,6800), new Dir(1000,0,1000), 0);
+		 obb2D = new OBB2D(new Position(13100,0,7300), new Dir(1000,0,1000), 0);
 
+		AABB aabb = new AABB(obb2D1.getCenter().getX(), obb2D1.getCenter().getZ(), obb2D1.getSizeDir());
+		AABB aabb2 = new AABB(obb2D.getCenter().getX(), obb2D.getCenter().getZ(), obb2D.getSizeDir());
+		System.out.println(aabb2.intersect(aabb));
 
 		System.out.println(GJK(obb2D1, obb2D));
 	}
@@ -30,9 +38,14 @@ public class GJKTest01 {
 	/**
 	 * <a href="https://www.bilibili.com/video/BV16P4y1q7GZ/?vd_source=45efa9402ce6ca32c998c7a15ba39467">...</a>
 	 *
-	 * @param shape1
-	 * @param shape2
-	 * @return
+	 * support ——> 图形a往dir方向找最远的点 图形b往neg(dir)方向找最远的点 相减 得到了一个support
+	 * 获取dir1 两个图形中心点 相减 support1
+	 * 获取dir2 原点-dir1  获取 support2
+	 * 检测support2是否是一个有效的支撑点;检测support2和support1中间是否越过原点;
+	 * 	使用support-origin dot dir2  >0 说明跨过原点
+	 * support1和support2组成一条线段;获取相对于原点的投影向量;  获取support3
+	 * 然后用 沃罗诺伊地区(voronoi Regions)来分析 确定下一个dir
+	 *
 	 */
 	public boolean GJK(Shape shape1, Shape shape2) {
 		ModifyDir returnDir = new ModifyDir();
@@ -62,6 +75,8 @@ public class GJKTest01 {
 				}
 				// 如果满足那就将该点放入集合
 				simplexList.add(A);
+				if(simplexList.size() == 3)
+					System.out.println("simplexList ----    " + simplexList);
 
 				if (handlerSimplex(simplexList, returnDir)) {
 					return true;
@@ -90,7 +105,9 @@ public class GJKTest01 {
 	private boolean lineCase(List<Position> simplexList, ModifyDir d) {
 		Position b = simplexList.get(0);
 		Position a = simplexList.get(1);
-		d.d = findVerticalVector(a, b, Position.ZERO).normalize();
+		Position ab = b.sub(a);
+		Position ao = Position.ZERO.sub(a);
+		d.d = tripleProd(ab, ao, ab).toDir().normalize();
 		return false;
 	}
 
@@ -101,10 +118,13 @@ public class GJKTest01 {
 		Position c = simplexList.get(0);
 		Position b = simplexList.get(1);
 		Position a = simplexList.get(2);
-		Dir ABperp = findVerticalVector(a, b, c).negDir().normalize();
-		Dir ACperp = findVerticalVector(a, c, b).negDir().normalize();
+		Position ab = b.sub(a);
+		Position ac = c.sub(a);
+		Position ao = Position.ZERO.sub(a);
+		Dir ABperp = tripleProd(ac, ab, ab).toDir();
+		Dir ACperp = tripleProd(ab, ac, ac).toDir();
 
-		if (ABperp.toPosition().dot(Position.ZERO.sub(a)) > 0) {
+		if (ABperp.toPosition().dot(ao) > 0) {
 			// 在AB区域
 			// 删除c点 使用新的方向
 			simplexList.remove(0);
@@ -113,11 +133,11 @@ public class GJKTest01 {
 		}
 
 
-		if (ACperp.toPosition().dot(Position.ZERO.sub(a)) > 0) {
+		if (ACperp.toPosition().dot(ao) > 0) {
 			// 在AB区域
 			// 在AB区域
 			// 删除c点 使用新的方向
-			simplexList.remove(0);
+			simplexList.remove(1);
 			d.d = ACperp;
 			return false;
 		}
@@ -134,7 +154,9 @@ public class GJKTest01 {
 	public Position support(Shape s1, Shape s2, Dir dir) {
 		Position position = supportWrapper(s1, dir);
 		Position subPos = supportWrapper(s2, dir.negDir());
-		return position.sub(subPos);
+		Position support = position.sub(subPos);
+		System.out.printf("dir %s  position1 %s position2 %s support %s%n", dir, position, subPos, support);
+		return support;
 	}
 
 	public Position supportWrapper(Shape s1, Dir dir) {
@@ -198,7 +220,7 @@ public class GJKTest01 {
 	 * <p>
 	 * 垂直向量 = a+ ab*t
 	 */
-	public Dir findVerticalVector(Position a, Position b, Position o) {
+/*	public Dir findVerticalVector(Position a, Position b, Position o) {
 		Position ao = o.sub(a);
 		Position ab = b.sub(a);
 		long dot = ao.dot(ab);
@@ -209,6 +231,27 @@ public class GJKTest01 {
 
 		Position add = a.add(ab.multiply((float) t));
 		return o.sub(add).toDir();
+	}*/
+
+
+	// 计算原点到直线ab的垂足
+	public Dir findVerticalVector(Position a, Position b) {
+		Position origin = Position.ZERO;
+		Position ao = origin.sub(a);
+		Position ab = b.sub(a);
+		long dot = ao.dot(ab);
+		long dot1 = ab.dot(ab);
+		long abLenSqr = a.getDirectDistanceSquareIgnoreY(b);
+
+		double t = dot * 1.0d / abLenSqr;
+
+		Position add1 = a.add(ab);
+		Position add = a.add(ab.multiply((float) t));
+		return add.toDir().normalize();
+	}
+
+	public Position tripleProd(Position a, Position b, Position c) {
+		return CMath.Cross3D(CMath.Cross3D(a, b).normalize(), c).normalize();
 	}
 }
 

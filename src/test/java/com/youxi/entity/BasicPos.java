@@ -54,7 +54,11 @@ public abstract class BasicPos {
 	}
 
 	public int length() {
-		return (int) Math.sqrt((double) ((long) x * x + (long) z * z));
+		return (int) Math.sqrt(lengthSqr());
+	}
+
+	public long lengthSqr() {
+		return (long) getX() * getX() + (long)getZ() * getZ();
 	}
 	/**
 	 * @param   this 起点

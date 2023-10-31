@@ -51,7 +51,7 @@ public final class Position extends BasicPos {
 
 		int decx = this.getX() - to.getX();
 		int decz = this.getZ() - to.getZ();
-		return (long) decx * decx + (long) decz * decz;
+		return (long) (((long) decx * decx + (long) decz * decz)*CMath.PRECISION_FACTOR);
 	}
 
 	/**
@@ -100,10 +100,11 @@ public final class Position extends BasicPos {
 	}
 
 	public Position normalize() {
-		double oaLength = Math.sqrt((long) getX() * getX() + (long) getZ() * getZ());
+		double oaLength = Math.sqrt((long) getX() * getX() +(long) getY() * getY()+ (long) getZ() * getZ());
 		float oaNormalizeX = (float) (getX() / oaLength);
+		float oaNormalizeY = (float) (getY() / oaLength);
 		float oaNormalizeZ = (float) (getZ() / oaLength);
-		return new Position(oaNormalizeX, 0, oaNormalizeZ);
+		return new Position(oaNormalizeX, oaNormalizeY, oaNormalizeZ);
 	}
 	public Position getRotateDir(float radians) {
 		radians = (float) Math.toRadians(radians);
@@ -115,5 +116,9 @@ public final class Position extends BasicPos {
 
 	public long dot(Position p) {
 		return CMath.Dot2D(this,p);
+	}
+
+	public long cross(Position p) {
+		return CMath.Cross2D(this, p);
 	}
 }

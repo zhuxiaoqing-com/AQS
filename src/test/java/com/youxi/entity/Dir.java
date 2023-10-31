@@ -6,6 +6,7 @@ package com.youxi.entity;
  * @author Eric.Ma
  */
 public class Dir {
+	public static final Dir ZERO = new Dir(0, 0, 0);
 	public int x; // x
 	public int z; // z
 
@@ -112,4 +113,50 @@ public class Dir {
 		return new Dir((int) (getX() * cos - getZ() * sin),
 				(int) ((getZ() * cos + getX() * sin)));
 	}
+
+	public int length() {
+		return (int) Math.sqrt(lengthSqr());
+	}
+
+	public long lengthSqr() {
+		return (long) getX() * getX() + (long)getZ() * getZ();
+	}
+
+	/**
+	 * sub
+	 *
+	 * @param subPos
+	 * @return
+	 */
+	public Dir sub(Position subPos) {
+		return new Dir(getX() - subPos.getX(), 0, getZ() - subPos.getZ());
+	}
+
+	/**
+	 * sub
+	 *
+	 */
+	public Dir sub(Dir subDir) {
+		return new Dir(getX() - subDir.getX(), 0, getZ() - subDir.getZ());
+	}
+
+
+	/**
+	 *
+	 *
+	 * @param v
+	 * @return
+	 */
+	public Dir multiply(float v) {
+		return new Dir((int) (getX() * v), (int) (0 * v), (int) (getZ() * v));
+	}
+
+	public Dir add(Dir addDir) {
+		return new Dir(getX() + addDir.x, getY() + addDir.y, getZ() + addDir.z);
+	}
+
+	public Dir add(Position position) {
+		return new Dir(getX() + position.getX(), getY() + position.getY(), getZ() + position.getZ());
+	}
+
 }
