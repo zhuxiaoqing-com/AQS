@@ -1,5 +1,7 @@
 package com.youxi.entity;
 
+import java.util.Objects;
+
 /**
  * 朝向
  *
@@ -115,11 +117,11 @@ public class Dir {
 	}
 
 	public int length() {
-		return (int) Math.sqrt(lengthSqr());
+		return (int) Math.sqrt((long) getX() * getX() + (long)getZ() * getZ());
 	}
 
 	public long lengthSqr() {
-		return (long) getX() * getX() + (long)getZ() * getZ();
+		return( (long) getX() * getX() + (long)getZ() * getZ())/1000;
 	}
 
 	/**
@@ -159,4 +161,16 @@ public class Dir {
 		return new Dir(getX() + position.getX(), getY() + position.getY(), getZ() + position.getZ());
 	}
 
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof Dir)) return false;
+		Dir dir = (Dir) o;
+		return x == dir.x && z == dir.z && y == dir.y;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(x, z, y);
+	}
 }

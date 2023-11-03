@@ -1025,6 +1025,11 @@ public class Test16 {
 			}
 		}
 	}
+	@Test
+	public void test59() throws Exception {
+		double pow = Math.pow(10, 0.7);
+		System.out.println(pow);
+	}
 
 }
 

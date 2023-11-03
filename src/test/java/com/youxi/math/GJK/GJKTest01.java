@@ -14,6 +14,15 @@ import java.util.List;
  * 如果碰撞了的话 就不能求最近点了; 因为遍历完成的时候并没有将多边形画全;
  *
  *
+ * 维基百科: https://en.wikipedia.org/wiki/Gilbert%E2%80%93Johnson%E2%80%93Keerthi_distance_algorithm
+ * GJK算法论文: https://ieeexplore.ieee.org/document/2083?arnumber=2083
+ * dyn4j很详细的GJK算法教程(英文): http://www.dyn4j.org/2010/04/gjk-gilbert-johnson-keerthi/#gjk-iteration
+ * AndrewFan，对dyn4j教程的中文翻译: https://blog.csdn.net/AndrewFan/article/details/101694644
+ * Wyman，原始GJK详解: https://www.qiujiawei.com/collision-detection-2
+ * ————————————————
+ * 版权声明：本文为CSDN博主「游蓝海」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。
+ * 原文链接：https://blog.csdn.net/you_lan_hai/article/details/108293780
+ *
  */
 public class GJKTest01 {
 
@@ -22,10 +31,12 @@ public class GJKTest01 {
 		//Circle circle = new Circle(new Position(0, 0), 1000);
 		OBB2D obb2D1 = new OBB2D(new Position(152428,0,63156), new Dir(10000,0,10000), -351);
 		OBB2D obb2D = new OBB2D(new Position(127915,0,70742), new Dir(10000,0,10000), -351);
-		 //obb2D1 = new OBB2D(new Position(-600,0,-600), new Dir(1000,0,1000), 0);
-		 //obb2D = new OBB2D(new Position(1500,0,1500), new Dir(1000,0,1000), 0);
-		 obb2D1 = new OBB2D(new Position(15300,0,6800), new Dir(1000,0,1000), 0);
-		 obb2D = new OBB2D(new Position(13100,0,7300), new Dir(1000,0,1000), 0);
+		obb2D1 = new OBB2D(new Position(-600,0,-600), new Dir(1000,0,1000), 0);
+		obb2D = new OBB2D(new Position(1500,0,1500), new Dir(1000,0,1000), 0);
+		obb2D1 = new OBB2D(new Position(3000,0,3000), new Dir(3000,0,3000), 0);
+		obb2D = new OBB2D(new Position(9000,0,9000), new Dir(3000,0,3000), 0);
+		// obb2D1 = new OBB2D(new Position(15300,0,6800), new Dir(1000,0,1000), 0);
+		 //obb2D = new OBB2D(new Position(13100,0,7300), new Dir(1000,0,1000), 0);
 
 		AABB aabb = new AABB(obb2D1.getCenter().getX(), obb2D1.getCenter().getZ(), obb2D1.getSizeDir());
 		AABB aabb2 = new AABB(obb2D.getCenter().getX(), obb2D.getCenter().getZ(), obb2D.getSizeDir());
@@ -52,9 +63,12 @@ public class GJKTest01 {
 
 		List<Position> simplexList = new ArrayList<>();
 		// 起始向量是两个形状的中心点向量相减
-		returnDir.d = shape1.getCenter().sub(shape2.getCenter()).toDir().normalize();
+		returnDir.d = findFirstDir(shape1, shape2);
 		// 取第一个方向上的最远的点 减去 相反方向的最远的点
 		Position simplex = support(shape1, shape2, returnDir.d);
+		if (simplex.equals(Position.ZERO)) {
+			return true;
+		}
 		simplexList.add(simplex);
 
 		// 获取第二个点 是原点 减去 simplex
@@ -252,6 +266,14 @@ public class GJKTest01 {
 
 	public Position tripleProd(Position a, Position b, Position c) {
 		return CMath.Cross3D(CMath.Cross3D(a, b).normalize(), c).normalize();
+	}
+
+	private static Dir findFirstDir(Shape shape1, Shape shape2) {
+		Dir normalize = shape2.getCenter().sub(shape1.getCenter()).toDir().normalize();
+		if (normalize.length() <= 0) {
+			return new Dir(-951, -690);
+		}
+		return normalize;
 	}
 }
 

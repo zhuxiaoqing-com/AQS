@@ -1,0 +1,46 @@
+// 这个循环会一直执行，直到检测到两个凸多边形没有交集，或者达到某些特定的终止条件
+while(BAllEqTTTT(bNotTerminated))
+{
+    // 初始化最小距离为之前计算的距离，将之前的最接近点保存为预接近点
+    minDist = sDist;
+    preClos = clos;
+
+    // 计算法向量并取反，因为Gilbert-Johnson-Keerthi算法使用的是点在面外面，所以法向量需要取反
+    const Vec3V vNorm = V3Normalize(v);
+    const Vec3V nvNorm = V3Neg(vNorm);
+
+    // 计算凸多边形A的支持点（即凸多边形A与原点的最短距离的点）
+    supportA=a.ConvexA::support(vNorm);
+    // 计算凸多边形B的支持点（即凸多边形B与原点的最短距离的点），并将原点平移到这个支持点上，这样做的目的是为了将问题转化为两个凸多边形的相对位置问题
+    supportB=V3Add(x, b.ConvexB::support(nvNorm));
+
+    // 计算支持点（即两个凸多边形的最短距离的点）和支持线的向量（这个向量其实就是两个凸多边形的法向量之差）
+    //calculate the support point
+    support = V3Sub(supportA, supportB);
+    const Vec3V w = V3Neg(support);  // 因为支持线的向量指向凸多边形的外面，所以需要取反
+    const FloatV vw = FSub(V3Dot(vNorm, w), inflationPlusEps);  // 计算vw的值，这个值是两个凸多边形的最小距离与膨胀系数的差值
+
+    // 如果vw大于0，说明两个凸多边形没有交集，直接返回false，结束循环
+    if(FAllGrtr(vw, zero))
+    {
+        const FloatV vr = V3Dot(vNorm, r);  // 计算vr的值，这个值是两个凸多边形的最小距离与膨胀系数的差值的向量长度
+        // 如果vr大于等于0，说明两个凸多边形没有交集，直接返回false，结束循环
+        if(FAllGrtrOrEq(vr, zero))
+        {
+            return false;
+        }
+        else  // 如果vr小于0，说明两个凸多边形有交集，继续下面的计算
+        {
+            const FloatV _oldLambda = _lambda;  // 保存旧的lambda值（即上一个时间步的最小距离与膨胀系数的差值的向量长度）
+            _lambda = FSub(_lambda, FDiv(vw, vr));  // 更新lambda值（这个值其实就是两个凸多边形的相对位置），vw除以vr是为了将问题转化为两个凸多边形的相对位置问题
+            if(FAllGrtr(_lambda, _oldLambda))  // 如果新的lambda值大于旧的lambda值，说明两个凸多边形的相对位置在减小，继续下面的计算
+            {
+                if(FAllGrtr(_lambda, one))  // 如果新的lambda值大于1，说明两个凸多边形的相对位置已经超过一个单位的距离，直接返回false，结束循环
+                {
+                    return false;
+                }
+                const Vec3V bPreCenter = x;  // 保存上一个时间步的原点到凸多边形B的支持线的垂足的向量（这个向量其实就是上一个时间步的最短距离的点）
+                x = V3ScaleAdd(r, _lambda, s);  // 更新原点到凸多边形B的支持线的垂足的向量（这个向量其实就是当前时间步的最短距离的点），_lambda乘以r是为了将问题转化为两个凸多边形的相对位置问题，s是为了保证x在凸多边形的范围内（即保证x在凸多边形的边界上）
+                const Vec3V offSet =V3Sub(x, bPreCenter);  // 计算偏移量（即当前时间步的最短距离的点与上一个时间步的最短距离的点的向量）
+                const Vec3V b0 = V3Add(B[0], offSet);  // 更新凸多边形B的支持点（这个支持点其实就是当前时间步的最短距离的点）
+                const Vec3

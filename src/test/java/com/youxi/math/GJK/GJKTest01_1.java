@@ -16,7 +16,11 @@ import java.util.List;
  *
  * 如果碰撞了的话 就不能求最近点了; 因为遍历完成的时候并没有将多边形画全;
  *
- *
+ *GJK算法论文: https://ieeexplore.ieee.org/document/2083?arnumber=2083
+ * GJK – Distance & Closest Points: http://www.dyn4j.org/2010/04/gjk-distance-closest-points
+ * ————————————————
+ * 版权声明：本文为CSDN博主「游蓝海」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。
+ * 原文链接：https://blog.csdn.net/you_lan_hai/article/details/108298767
  */
 public class GJKTest01_1 {
 
@@ -72,6 +76,10 @@ public class GJKTest01_1 {
 		// 获取的第三个支撑点的朝向
 		lineCase(simplexList, returnDir);
 
+		/*
+		不发生碰撞的结束条件不同。上一章迭代算法最终结束时，可能是一个不包含原点的三角形，为了得到差集最近边，我们可以舍弃掉距离原点较远的那个边。
+		这里我们让算法多迭代一次，恰好可以舍弃掉那个点，同时会额外会产生一个重复的support点。因此只要发现support点位置重叠了，就表明迭代算法可以结束了。
+		 */
 
 		int count = 0;
 		try {
@@ -130,10 +138,16 @@ public class GJKTest01_1 {
 		 * Qa a凸多边形的最近点
 		 * Qb b凸多边形的最近点
 		 *
-		 * (A * r1 + B * r2)
-		 * (A.a-A.b) * r1 + (B.a-B.b) * r2
-		 * A.a*r1 - A.b*r1 + (B.a*r2 - B.b*r2)
-		 *A.a*r1 - A.b*r1 - B.a*r2 + B.b*r2
+		 * Q 可以通过 A*r1 + B*r2 求得
+		 * 其实Q也可以通过 Q = Qa-Qb 求得
+		 *
+		 * Q = A*r1 + B*r2
+		 * Q = (AF1-AF2)*r1 + (BF1-BF2)*r2
+		 * Qa-Qb = (AF1-AF2)*r1 + (BF1-BF2)*r2
+		 * Qa-Qb = AF1*r1-AF2*r1 + BF1*r2-BF2*r2
+		 * Qa-Qb = (AF1*r1+ BF1*r2) -(AF2*r1 +BF2*r2)
+		 * Qa = AF1*r1+ BF1*r2
+		 * Qb = AF2*r1 +BF2*r2
 		 */
 
 		Position closestOnA;
@@ -142,6 +156,15 @@ public class GJKTest01_1 {
 		SupportList.SupportBean B = simplexList.getList().get(1);
 		Position L = B.getSupport().sub(A.getSupport());
 		long lengthSqrL = L.lengthSqr();
+		/**
+		 * 首先，如果闵可夫斯基不同点\(\vec{a}\)和\(\vec{b}\)是同一点，那么\(\vec{l}\)将是零向量。这意味着稍后当我们除以\(\vec{l}\)的大小时，我们将除以0:不好。
+		 * 这意味着离原点最近的点不在闵可夫斯基差的边缘上，而是一个点。
+		 * 因此，制造\(\vec{a}\)和\(\vec{b}\)的支撑点是相同的，因此您可以只返回\(\vec{a}\)或\(\vec{b}\)的支撑点:
+		 *
+		 * 支撑点一样说明离原点最近的点是一个点;
+		 * 一个点的话 那其实就是那个support点;
+		 * 那两个 shape的最最近点其实就是 fromA fromB
+		 */
 		if (lengthSqrL < 0.00001f) {
 			closestOnA = A.getFromA();
 			closestOnB = A.getFromB();
