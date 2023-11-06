@@ -13,6 +13,7 @@ import io.netty.buffer.PooledByteBufAllocator;
 import io.swagger.models.auth.In;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.Test;
+import sun.java2d.pipe.SpanIterator;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Method;
@@ -1029,6 +1030,19 @@ public class Test16 {
 	public void test59() throws Exception {
 		double pow = Math.pow(10, 0.7);
 		System.out.println(pow);
+		Position b= new Position(1000,3000);
+		Position c = new Position(3000,4000);
+		Position p = new Position(7000,2000);
+
+		//cb.pb>=0
+		Position cb = b.sub(c);
+		Position pb = b.sub(p);
+
+		// bc.bp<=0
+		Position bc = c.sub(b);
+		Position bp = p.sub(b);
+		System.out.println(cb.dot(pb));
+		System.out.println(bc.dot(bp));
 	}
 
 }
