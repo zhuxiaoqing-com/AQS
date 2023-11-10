@@ -113,4 +113,18 @@ public class ConvexPolygon extends Shape {
 	public List<Position> getVertexs() {
 		return vertexs;
 	}
+
+	@Override
+	public Position support(Dir dir) {
+		long maxPosDot = Integer.MIN_VALUE;
+		Position maxPos = null;
+		for (Position position : getVertexs()) {
+			long dot = position.dot(dir.toPosition());
+			if (dot > maxPosDot) {
+				maxPosDot = dot;
+				maxPos = position;
+			}
+		}
+		return maxPos;
+	}
 }

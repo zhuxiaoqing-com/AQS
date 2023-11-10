@@ -1,6 +1,7 @@
 package com.youxi.entity;
 
 import com.youxi.building.Misc;
+import org.apache.regexp.RE;
 
 import java.util.Arrays;
 import java.util.List;
@@ -118,6 +119,15 @@ public class OBB2D extends Shape {
 		Position position = new Position(Misc.getRandomBetween(-sizeDir.getX(), sizeDir.getX()), Misc.getRandomBetween(-sizeDir.getZ(), sizeDir.getZ()));
 		Position rotateDir = position.getRotateDir(dir).add(center);
 		return rotateDir;
+	}
+
+	@Override
+	public Position support(Dir supportDir) {
+		int x = supportDir.getX() > 0 ? sizeDir.getX() : -sizeDir.getX();
+		int z = supportDir.getZ() > 0 ? sizeDir.getZ() : -sizeDir.getZ();
+		Position position = new Position(x, z);
+		Position rotateDir = position.getRotateDir(dir);
+		return center.add(rotateDir);
 	}
 
 	@Override

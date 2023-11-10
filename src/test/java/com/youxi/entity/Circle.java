@@ -12,6 +12,7 @@ public class Circle extends Shape {
 		super(centerPos);
 		this.regionRadius = radius;
 		this.regionRadiusSquare = (long) radius * radius;
+		this.margin = radius;
 	}
 
 	public boolean inRegion(Position pos) {

@@ -106,10 +106,10 @@ public final class Position extends BasicPos {
 		float oaNormalizeZ = (float) (getZ() / oaLength);
 		return new Position(oaNormalizeX, oaNormalizeY, oaNormalizeZ);
 	}
-	public Position getRotateDir(float radians) {
-		radians = (float) Math.toRadians(radians);
-		double cos = Math.cos(radians);
-		double sin = Math.sin(radians);
+	public Position getRotateDir(float angle) {
+		angle = (float) Math.toRadians(angle);
+		double cos = Math.cos(angle);
+		double sin = Math.sin(angle);
 		return new Position((int) (getX() * cos - getZ() * sin),
 				(int) ((getZ() * cos + getX() * sin)));
 	}
