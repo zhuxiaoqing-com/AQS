@@ -466,6 +466,16 @@ public class Test02Stream {
 		System.out.println((char)97);
 
 	}
+
+	@Test
+	public void test21() {
+		ArrayList<Integer> list = new ArrayList<>();
+
+		System.out.println(list.stream().allMatch(a->a>0));
+		System.out.println(list.stream().noneMatch(a->a>0));
+		System.out.println(list.stream().anyMatch(a->a>0));
+
+	}
 }
 
 
