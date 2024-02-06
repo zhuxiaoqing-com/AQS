@@ -1047,13 +1047,17 @@ public class Test16 {
 
 	@Test
 	public void test60() throws Exception {
-		int index = 1000000;
-		ArrayList<Integer> list = new ArrayList<>();
-		for (int i = 0; i < index; i++) {
-			list.add(i);
+		a:
+		{
+			System.out.println(1);
+			if (true) {
+				break a;
+			}
+			System.out.println(2);
 		}
 
-		TestUtil.testTime(()->Collections.shuffle(list),1);
+		System.out.println(3);
+
 	}
 }
 

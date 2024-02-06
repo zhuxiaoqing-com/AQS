@@ -476,6 +476,24 @@ public class Test02Stream {
 		System.out.println(list.stream().anyMatch(a->a>0));
 
 	}
+
+	@Test
+	public void test22() {
+		ArrayList<Boolean> list = new ArrayList<>();
+		list.add(true);
+		list.add(true);
+		list.add(true);
+		list.add(false);
+		list.add(false);
+		list.add(false);
+		list.add(false);
+
+		List<Boolean> collect = list.stream().sorted(Comparator.comparing(a -> a)).collect(Collectors.toList());
+		System.out.println(collect);
+		List<Boolean> collect2 = list.stream().sorted(Comparator.comparing(a -> a,Comparator.reverseOrder())).collect(Collectors.toList());
+		System.out.println(collect2);
+
+	}
 }
 
 
