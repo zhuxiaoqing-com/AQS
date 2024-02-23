@@ -1057,7 +1057,29 @@ public class Test16 {
 		}
 
 		System.out.println(3);
+	}
 
+	@Test
+	public void test61() {
+		CountDownLatch countDownLatch = new CountDownLatch(1);
+		new Thread(()->{
+			try {
+				Thread.sleep(20000);
+			} catch (InterruptedException e) {
+				throw new RuntimeException(e);
+			}
+			countDownLatch.countDown();
+		}).start();
+		try {
+			boolean await = countDownLatch.await(5000, TimeUnit.MILLISECONDS);
+			System.out.println("------------------------- : " + await);
+		} catch (Exception e){
+			System.out.println(e);
+		}
+	}
+	@Test
+	public void test62() {
+		System.out.println(6*TimeUtil.minuteMills);
 	}
 }
 
