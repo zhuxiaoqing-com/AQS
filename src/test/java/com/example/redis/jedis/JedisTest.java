@@ -159,4 +159,19 @@ public class JedisTest {
             System.out.println(resource1.get("aa"));
         }
     }
+
+    @Test
+    public void TestJedisPool7(){
+        Jedis resource = jedisPool.getResource();
+        Set<String> strings = resource.zrangeByScore("112:bt:wild:rank:1107", 0, 10, 0, 1);
+        System.out.println(strings);
+
+        strings = resource.zrangeByScore("112:bt:wild:rank:1107", 0, 10, 100, 10);
+        System.out.println(strings);
+
+        System.out.println(resource.zlexcount("112:bt:wild:rank:1107", "[15763792716005376","[1112"));
+        System.out.println(resource.zlexcount("112:bt:wild:rank:1107", "[2","[1"));
+        System.out.println(resource.zcount("112:bt:wild:rank:1107", 0 ,1));
+        System.out.println(resource.zcard("112:bt:wild:rank:1107"));
+    }
 }

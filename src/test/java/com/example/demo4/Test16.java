@@ -6,6 +6,9 @@ import com.example.demo1.util.vo.Vector2f;
 import com.example.demo4.testObj1.AClass;
 import com.example.demo4.testObj1.StringArrayObj;
 import com.example.demo4.testObj1.Temp;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.collect.Lists;
 import com.google.gson.JsonObject;
 import com.youxi.entity.Position;
 import io.netty.buffer.ByteBuf;
@@ -1079,7 +1082,8 @@ public class Test16 {
 	}
 	@Test
 	public void test62() {
-		System.out.println(6*TimeUtil.minuteMills);
+		System.out.println(Math.sqrt(0.68*0.68 + 72*72));
+		Cache<Object, Object> build = CacheBuilder.newBuilder().build();
 	}
 }
 
