@@ -3,7 +3,7 @@ package com.youxi.dataStructure.behaviourTree.impl;
 import com.youxi.dataStructure.behaviourTree.Node;
 import com.youxi.entity.Position;
 
-public class TaskGoToTarget extends Node {
+public class TaskGoToTarget extends Node {//fun1
 	private Position position;
 
 	public TaskGoToTarget(Position position) {
