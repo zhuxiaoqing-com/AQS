@@ -1085,6 +1085,66 @@ public class Test16 {
 		System.out.println(Math.sqrt(0.68*0.68 + 72*72));
 		Cache<Object, Object> build = CacheBuilder.newBuilder().build();
 	}
+
+	@Test
+	public void test63() {
+		// 100m
+		int index =500_000_000;
+		byte[] ints = new byte[index];
+		Arrays.fill(ints, (byte) 1);
+
+		long start = System.currentTimeMillis();
+		long sum= 0;
+		for (int i = 0; i < index; i++) {
+			sum += ints[0];
+		}
+		long end = System.currentTimeMillis();
+		System.out.println(end -start);
+		System.out.println(sum);
+
+		int i1 = ThreadLocalRandom.current().nextInt(10);
+
+		start = System.currentTimeMillis();
+		for (int i = 0; i < index; i++) {
+			sum += ints[index];
+		}
+		 end = System.currentTimeMillis();
+		System.out.println(end -start);
+
+		System.out.println(sum);
+	}
+	static final int LINE_NUM = 10240;
+	static final int COLUM_NUM = 10240;
+	@Test
+	public void test64() {
+		//定义一个10240*10240的二维数组
+		long[][] array = new long[LINE_NUM][COLUM_NUM];
+		testQuick(array);
+		testSlow(array);
+	}
+
+	public static void testQuick(long[][] array) {
+		long startTime = System.currentTimeMillis();
+		for (int i = 0; i < LINE_NUM; i++) {
+			for (int j = 0; j < COLUM_NUM; j++) {
+				//array[i][j] = 1;
+				long l = array[i][j];
+			}
+		}
+		System.out.println("testQuick = " + (System.currentTimeMillis() - startTime));
+	}
+
+	public static void testSlow(long[][] array) {
+		long startTime = System.currentTimeMillis();
+		for (int i = 0; i < LINE_NUM; i++) {
+			for (int j = 0; j < COLUM_NUM; j++) {
+				//array[j][i] = 1;
+				long l = array[j][i];
+			}
+		}
+		System.out.println("testSlow = " + (System.currentTimeMillis() - startTime));
+	}
+
 }
 
 /*

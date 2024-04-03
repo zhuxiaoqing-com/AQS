@@ -494,6 +494,18 @@ public class Test02Stream {
 		System.out.println(collect2);
 
 	}
+
+	@Test
+	public void test23() {
+		HashMap<Integer, List<Integer>> hashMap = new HashMap<>();
+		hashMap.put(1,Arrays.asList(1,1));
+		hashMap.put(2,Arrays.asList(1,2));
+		hashMap.put(3,Arrays.asList(1,3));
+
+		Map<Integer, Integer> collect = hashMap.entrySet().stream()
+				.collect(Collectors.toMap(Map.Entry::getKey, b -> b.getValue().stream().mapToInt(c -> c).sum()));
+		System.out.println(collect);
+	}
 }
 
 
