@@ -506,6 +506,21 @@ public class Test02Stream {
 				.collect(Collectors.toMap(Map.Entry::getKey, b -> b.getValue().stream().mapToInt(c -> c).sum()));
 		System.out.println(collect);
 	}
+
+	@Test
+	public void test24() {
+		HashMap<Integer, Integer> map = new HashMap<>();
+		int a = 10;
+		for (int i = 0; i < a; i++) {
+			map.put(0, i);
+		}
+
+		Optional<Map.Entry<Integer, Integer>> max = map.entrySet().stream()
+				.max(Comparator.<Map.Entry<Integer, Integer>>comparingInt(Map.Entry::getKey)
+						.thenComparingLong(Map.Entry::getValue));
+		System.out.println(max);
+	}
+
 }
 
 

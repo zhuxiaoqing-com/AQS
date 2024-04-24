@@ -57,10 +57,12 @@ public class Test17 {
 	//  -XX:AutoBoxCacheMax=100000
 	@Test
 	public void test02() {
-		long x = 1712048929508L - TimeUtil.minuteMills * 10;
-		long a = 1712048328921L;
-		System.out.println(x);
-		System.out.println(x-a);
+
+		int kill = 3+2*3+1*4 + 3*2+2*3+1*3;
+		int death = 3*1+2*4+1*4 + 2*4+1*6;
+		System.out.println(kill);
+		System.out.println(death);
+
 	}
 
 

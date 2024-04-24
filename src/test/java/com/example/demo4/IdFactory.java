@@ -391,6 +391,43 @@ public class IdFactory {
 		return (sid*1L<<SERVER_POS) + (second*1L<<ADD_POS)+chatIdAuto;
 	}
 
+	// 防止回调方法1 et7 这里溢出了也没事 会一直借用下一秒
+	public synchronized static long __createChatId()
+	{
+		int second = currentTimeSecond();
+		if (second > lastChatLogCreateTime)
+		{
+			lastChatLogCreateTime = second;
+			chatIdAuto = 0;
+		} else {
+			chatIdAuto++;
+			long seedMax = (1 << ADD_POS);// 每秒支持32768个id的生成
+			if (chatIdAuto > seedMax) {
+				chatIdAuto = 0;
+				//借用下一秒
+				lastChatLogCreateTime++;
+				// 打印报错日志 id count per sec overflow
+			}
+		}
+
+		return (sid*1L<<SERVER_POS) + (second*1L<<ADD_POS)+chatIdAuto;
+	}
+
+	// 防止回调方法2 et8
+	// 这里回调了也没事 因为chatIdAuto没有重置成0; 除非chatIdAuto溢出了 才会重复
+	public synchronized static long ___createChatId()
+	{
+		int second = currentTimeSecond();
+		chatIdAuto++;
+		long seedMax = (1 << ADD_POS);// 每秒支持32768个id的生成
+		if (chatIdAuto > seedMax) {
+			chatIdAuto = 0;
+		}
+
+
+		return (sid*1L<<SERVER_POS) + (second*1L<<ADD_POS)+chatIdAuto;
+	}
+
 	public static void main(String[] args) {
 		Map<Long, Long> ss = new HashMap<Long, Long>();
 		for (int i = 0; i < 40000; i++) {
