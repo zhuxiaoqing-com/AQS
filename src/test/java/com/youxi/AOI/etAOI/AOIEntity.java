@@ -11,19 +11,19 @@ public class AOIEntity {
 	public int Type;
 	public long Id;
 	public int ViewDistance;
-	public Cell Cell;
+	public Cell Cell; // 所在的cell
 
 
-	// 观察进入视野的Cell
+	// 观察进入视野的Cell 用来记住进入观察视野的cell
 	public HashSet<Long> SubEnterCells = new HashSet<Long>();
 
-	// 观察离开视野的Cell
+	// 观察离开视野的Cell 用来记住退出观察视野的cell
 	public HashSet<Long> SubLeaveCells = new HashSet<Long>();
 
-	// 观察进入视野的Cell
+	// 观察进入视野的Cell move时临时使用
 	public HashSet<Long> enterHashSet = new HashSet<Long>();
 
-	// 观察离开视野的Cell
+	// 观察离开视野的Cell move时临时使用
 	public HashSet<Long> leaveHashSet = new HashSet<Long>();
 
 	// 我看的见的Unit

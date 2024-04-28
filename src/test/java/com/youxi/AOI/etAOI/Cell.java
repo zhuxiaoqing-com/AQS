@@ -7,9 +7,9 @@ public class Cell {
 	public Long Id;
 	// 处在这个 cell 的单位
 	public Map<Long, AOIEntity> AOIUnits = new HashMap<>();
-	// 订阅了这个cell的进入事件 进入视野遍历他
+	// 订阅了这个cell的进入事件 有人进入视野 遍历该列表
 	public Map<Long, AOIEntity> SubsEnterEntities  = new HashMap<>();
-	// 订阅了这个cell的退出事件  离开视野遍历他
+	// 订阅了这个cell的退出事件  有人离开视野 遍历该列表
 	public Map<Long, AOIEntity> SubsLeaveEntities  = new HashMap<>();
 
 	public Cell(Long id) {

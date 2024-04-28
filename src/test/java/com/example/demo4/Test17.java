@@ -13,6 +13,8 @@ import io.netty.buffer.PooledByteBufAllocator;
 import org.junit.Test;
 
 import java.io.UnsupportedEncodingException;
+import java.lang.management.ManagementFactory;
+import java.lang.management.MemoryUsage;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -55,14 +57,22 @@ public class Test17 {
 
 
 	//  -XX:AutoBoxCacheMax=100000
+
+
 	@Test
-	public void test02() {
+	public void test03() {
+		ArrayList<Integer> objects = new ArrayList<>();
+		int index = 10;
+		for (int i = 0; i < index; i++) {
+			objects.add(i);
+		}
 
-		int kill = 3+2*3+1*4 + 3*2+2*3+1*3;
-		int death = 3*1+2*4+1*4 + 2*4+1*6;
-		System.out.println(kill);
-		System.out.println(death);
+		Stream<Integer> sorted = objects.stream().sorted(Comparator.comparingInt(a -> a));
+		Stream<ArrayList<Integer>> objects1 = Stream.of(objects, objects);
+		objects.clear();
+		objects1.forEach(a-> System.out.println(a));
 
+		sorted.forEach(System.out::println);
 	}
 
 
