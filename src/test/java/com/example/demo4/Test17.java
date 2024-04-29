@@ -70,7 +70,7 @@ public class Test17 {
 		Stream<Integer> sorted = objects.stream().sorted(Comparator.comparingInt(a -> a));
 		Stream<ArrayList<Integer>> objects1 = Stream.of(objects, objects);
 		objects.clear();
-		objects1.forEach(a-> System.out.println(a));
+		objects1.forEach(System.out::println);
 
 		sorted.forEach(System.out::println);
 	}
