@@ -10,6 +10,7 @@ import com.google.common.cache.CacheBuilder;
 import com.youxi.entity.Position;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.PooledByteBufAllocator;
+import io.swagger.models.auth.In;
 import org.junit.Test;
 
 import java.io.UnsupportedEncodingException;
@@ -81,6 +82,87 @@ public class Test17 {
 		System.out.println(TimeUtil.convertLocalDateTime(1715852077042L));
 	}
 
+	@Test
+	public void test05() {
+		ConcurrentHashMap<Integer, Integer> map = new ConcurrentHashMap<>();
+		int index = 10;
+		for (int i = 0; i < index; i++) {
+			map.put(i, i);
+		}
+
+		int a = 0;
+		for (Integer value : map.values()) {
+			if(a == 3){
+				map.remove(4);
+			}
+			System.out.println(value);
+			a++;
+		}
+	}
+
+	@Test
+	public void test06() {
+		long a  = 100;
+		System.out.println( (a | 7) & 7);
+		System.out.println( (a | 8) & 8);
+	}
+
+	@Test
+	public void test07() {
+		String  a= "0,,,0,0";
+		String[] split = a.split(",");
+		System.out.println(Arrays.toString(split));
+
+		for (String s : split) {
+			System.out.println(s.length());
+		}
+
+		ArrayList<byte[]> objects = new ArrayList<>();
+		byte[][] bytes = objects.toArray(new byte[][]{});
+		a(bytes);
+	}
+
+	public void a(byte[]... aa) {
+		String  a= "0,,,0,0";
+		String[] split = a.split(",");
+		System.out.println(Arrays.toString(split));
+
+		for (String s : split) {
+			System.out.println(s.length());
+		}
+	}
+
+	@Test
+	public void test08() {
+		Map<Integer, Integer> treeMap = new TreeMap<>();
+		Map<Integer, Integer> hashMap = new HashMap<>();
+
+		int index = 10000;
+		for (int i = 0; i < index; i++) {
+			treeMap.put(i, i);
+			hashMap.put(i, i);
+		}
+
+		ArrayList<Integer> objects = new ArrayList<>();
+		for (int i = 0; i < index; i++) {
+			objects.add(ThreadLocalRandom.current().nextInt(index));
+		}
+
+		int maxNum = 1000;
+		TestUtil.testTime(()->{
+			for (Integer object : objects) {
+				treeMap.get(object);
+			}
+		}, maxNum,"treeMap");
+
+
+		TestUtil.testTime(()->{
+			for (Integer object : objects) {
+				hashMap.get(object);
+			}
+		}, maxNum,"hashMap");
+
+	}
 
 }
 
