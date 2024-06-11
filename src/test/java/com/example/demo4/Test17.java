@@ -164,6 +164,14 @@ public class Test17 {
 
 	}
 
+
+	@Test
+	public void test09() {
+		String a = "faffsfafasf";
+		String s = JSON.parseObject(a, String.class);
+		System.out.println(s);
+	}
+
 }
 
 /*
