@@ -18,7 +18,17 @@ public class Test02Stream {
 		List<Employee> employees = new ArrayList<>();
 		Map<Integer, Employee> collect = employees.stream().collect(Collectors.toMap(Employee::getId, x -> x));
 		Map<Integer, Map<Integer, Employee>> a = new HashMap<>();
-		Map<Integer, Map<Integer, Employee>> b = employees.stream().collect(Collectors.groupingBy(Employee::getAge, LinkedHashMap::new, Collectors.toMap(Employee::getId, Function.identity())));
+		Map<Integer, Map<Integer, Employee>> b = employees.stream()
+				.collect(Collectors.groupingBy(Employee::getAge, LinkedHashMap::new, Collectors.toMap(Employee::getId, Function.identity())));
+
+
+		Map<Integer, List<Map.Entry<Integer, Employee>>> collect1 = collect.entrySet().stream()
+				.collect(Collectors.groupingBy(Map.Entry::getKey, Collectors.toList()));
+
+
+
+		Map<Integer, List<Map.Entry<Integer, Employee>>> collect2 = collect.entrySet().stream()
+				.collect(Collectors.groupingBy(Map.Entry::getKey, Collectors.toList()));
 
 	}
 
@@ -32,6 +42,7 @@ public class Test02Stream {
 		resources.add(new A(2, 3, 1));
 		Map<Integer, Integer> collect = resources.stream()
 				.collect(Collectors.groupingBy(A::getId, Collectors.summingInt(A::getCount)));
+
 		System.out.println(collect);
 
 		int sum = resources.stream().mapToInt(r -> r.getId() + r.getCount()).sum();
