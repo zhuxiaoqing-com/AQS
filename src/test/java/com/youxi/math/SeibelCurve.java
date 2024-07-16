@@ -7,6 +7,9 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * <a href="https://jdreamheart.com/wiki/knowledge/math/bezier_curve/">...</a>
+ */
 public class SeibelCurve {
     public Position seibelCurve(float timeRatio, Position a, Position b, Position c) {
         Position m1 = b.sub(a).multiply(timeRatio).add(a);
@@ -28,6 +31,7 @@ public class SeibelCurve {
         ArrayList<Position> newPList = new ArrayList<>();
 
         for (int i = 0; i < pList.size() - 1; i++) {
+            //B(t)=P0+(P1−P0)t=(1−t)P0+tP1
             Position p = pList.get(i).multiply(1f - t).add(pList.get(i + 1).multiply(t));
             newPList.add(p);
         }

@@ -167,9 +167,21 @@ public class Test17 {
 
 	@Test
 	public void test09() {
-		String a = "faffsfafasf";
-		String s = JSON.parseObject(a, String.class);
-		System.out.println(s);
+		System.out.println(5000/0.7);
+	}
+
+	@Test
+	public void test10() {
+		/*System.out.println(20000/12.5);
+		String collect = Arrays.stream(Thread.currentThread().getStackTrace()).map(StackTraceElement::toString)
+				.collect(Collectors.joining(System.lineSeparator()));
+		System.out.println(collect);*/
+		//0.5RMB 1G
+
+		TestUtil.testTime(()->{Thread.currentThread();
+		}, 10000_000_00,"111");
+		TestUtil.testTime(()->{int a= 0;
+		}, 10000_000_00,"111");
 	}
 
 }

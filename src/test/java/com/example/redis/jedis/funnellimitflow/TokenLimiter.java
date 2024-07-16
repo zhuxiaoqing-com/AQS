@@ -25,7 +25,8 @@ public class TokenLimiter {
 		long now = System.currentTimeMillis();
 		double intoToken = (now - lastTime) / 1000.0 * capacity;
 		lastTime = now;
-		curTokenNum = (int) Math.min(intoToken, capacity);
+		curTokenNum += intoToken;
+		curTokenNum = (int) Math.min(curTokenNum, capacity);
 		// 没有令牌
 		if (curTokenNum < 1) {
 			return false;

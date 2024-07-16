@@ -174,4 +174,13 @@ public class JedisTest {
         System.out.println(resource.zcount("112:bt:wild:rank:1107", 0 ,1));
         System.out.println(resource.zcard("112:bt:wild:rank:1107"));
     }
+
+    @Test
+    public void TestJedisPool8(){
+        Jedis resource = jedisPool.getResource();
+        Set<String> strings = resource.zrangeByScore("112:bt:wild:rank:1107", 0, 10, 0, 1);
+        System.out.println(strings);
+        Double zscore = resource.zscore("112:bt:wild:rank:1107", "11");
+        System.out.println(zscore);
+    }
 }
