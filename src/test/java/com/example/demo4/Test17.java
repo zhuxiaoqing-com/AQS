@@ -16,6 +16,7 @@ import org.junit.Test;
 import java.io.UnsupportedEncodingException;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryUsage;
+import java.sql.Time;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -196,6 +197,8 @@ public class Test17 {
 		Position bp = new Position(240.8f, 566.8f);
 
 		System.out.println(ap.sub(bp).length());
+
+
 	}
 
 }
