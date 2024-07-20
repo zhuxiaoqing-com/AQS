@@ -61,7 +61,7 @@ public abstract class BasicPos {
 		return( (long) getX() * getX() + (long)getZ() * getZ())/1000;
 	}
 	/**
-	 * @param   this 起点
+	 * @param   起点
 	 * @param o 终点
 	 * @return 两点间距离
 	 */

@@ -184,6 +184,20 @@ public class Test17 {
 		}, 10000_000_00,"111");
 	}
 
+	@Test
+	public void test11() {
+		// (295.8, 2.7, 537.3) => (240.8, 0.0, 566.8)
+		Vector2f a = new Vector2f(295.8f, 537.3f);
+		Vector2f b = new Vector2f(240.8f, 566.8f);
+		Vector2f sub = a.sub(b);
+		System.out.println(sub.length());
+
+		Position ap = new Position(295.8f, 537.3f);
+		Position bp = new Position(240.8f, 566.8f);
+
+		System.out.println(ap.sub(bp).length());
+	}
+
 }
 
 /*

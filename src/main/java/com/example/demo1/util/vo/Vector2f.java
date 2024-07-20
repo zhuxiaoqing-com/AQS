@@ -63,6 +63,11 @@ public class Vector2f {
         return a.x * b.x + b.y * a.y;
     }
 
+    public  float length() {
+        return (float) Math.sqrt(x*x +y*y);
+    }
+
+
 
     @Override
     public String toString() {
