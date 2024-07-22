@@ -1,4 +1,4 @@
-package com.example.CSAPP.socket;
+package com.example.custom_annotation.CSAPP.socket;
 
 public class SocketUtil {
     public static final int SOCK_STREAM =1;

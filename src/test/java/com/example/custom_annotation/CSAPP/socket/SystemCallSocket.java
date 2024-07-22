@@ -1,6 +1,6 @@
-package com.example.CSAPP.socket;
+package com.example.custom_annotation.CSAPP.socket;
 
-import com.example.CSAPP.rio.SystemCallFile;
+import com.example.custom_annotation.CSAPP.rio.SystemCallFile;
 
 public class SystemCallSocket {
 

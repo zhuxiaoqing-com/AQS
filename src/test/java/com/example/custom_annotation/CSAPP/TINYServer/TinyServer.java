@@ -1,4 +1,4 @@
-package com.example.CSAPP.TINYServer;
+package com.example.custom_annotation.CSAPP.TINYServer;
 
 /**
  * tiny.c a simple,iterative HTTP/1.0 web server that uses the GET method to serve static and dynamic content

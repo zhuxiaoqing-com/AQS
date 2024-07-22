@@ -1,4 +1,4 @@
-package com.example.CSAPP.rio;
+package com.example.custom_annotation.CSAPP.rio;
 
 import java.util.List;
 

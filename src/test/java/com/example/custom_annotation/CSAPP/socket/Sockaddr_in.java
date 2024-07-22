@@ -1,4 +1,4 @@
-package com.example.CSAPP.socket;
+package com.example.custom_annotation.CSAPP.socket;
 
 public class Sockaddr_in {
     short sin_family; // protocol family (always AF_INET)

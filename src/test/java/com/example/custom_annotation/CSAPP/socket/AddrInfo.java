@@ -1,4 +1,4 @@
-package com.example.CSAPP.socket;
+package com.example.custom_annotation.CSAPP.socket;
 
 public class AddrInfo {
     int ai_flags; // hits arguments flags

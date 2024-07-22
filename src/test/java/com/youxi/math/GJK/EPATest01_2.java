@@ -1,13 +1,11 @@
 package com.youxi.math.GJK;
 
-import com.example.CSAPP.socket.SocketUtil;
 import com.youxi.dataStructure.collisionTree.AABB;
 import com.youxi.entity.*;
 import com.youxi.math.entity.Edge;
 import com.youxi.math.entity.SupportList;
 import com.youxi.util.MathExt;
 import org.junit.Test;
-import sun.misc.PostVMInitHook;
 
 import java.util.ArrayList;
 import java.util.Arrays;
