@@ -12,6 +12,7 @@ import java.util.List;
 public class ConvexPolygon extends Shape {
 
 	private List<Position> vertexs = new ArrayList<Position>();
+	float b2_polygonRadius = 0.005f * 1.0f * 2.0f;
 
 	public ConvexPolygon(List<Position> vertexs) {
 		super(vertexs.get(0));

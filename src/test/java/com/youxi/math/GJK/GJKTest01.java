@@ -5,6 +5,7 @@ import com.youxi.entity.*;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -40,9 +41,16 @@ public class GJKTest01 {
 
 		AABB aabb = new AABB(obb2D1.getCenter().getX(), obb2D1.getCenter().getZ(), obb2D1.getSizeDir());
 		AABB aabb2 = new AABB(obb2D.getCenter().getX(), obb2D.getCenter().getZ(), obb2D.getSizeDir());
-		System.out.println(aabb2.intersect(aabb));
+		/*System.out.println(aabb2.intersect(aabb));
 
-		System.out.println(GJK(obb2D1, obb2D));
+		System.out.println(GJK(obb2D1, obb2D));*/
+
+		List<Position> asList = Arrays.asList(new Position(-6.5f, -3f), new Position(-6.5f, -0.5f), new Position(-5f, 1.5f),
+				new Position(-1.5f, 0.5f), new Position(0.5f, -1.5f), new Position(0f, -3f));
+		ConvexPolygon a = new ConvexPolygon(Arrays.asList(new Position(0f, 0.5f), new Position(1.5f, 2.5f), new Position(3.5f, 0.5f)));
+		ConvexPolygon b = new ConvexPolygon(Arrays.asList(new Position(3f, 2f), new Position(3.5f, 3.5f),
+				new Position(6.5f, 3.5f), new Position(6.5f, 1f)));
+		System.out.println(GJK(a, b));
 	}
 
 

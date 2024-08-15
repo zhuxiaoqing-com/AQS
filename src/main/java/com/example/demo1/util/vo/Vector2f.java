@@ -76,4 +76,14 @@ public class Vector2f {
                 ", y=" + y +
                 '}';
     }
+
+
+    public void Set(float x, float y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    public void SetZero() {
+
+    }
 }

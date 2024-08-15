@@ -1,0 +1,48 @@
+#!/bin/sh
+cd `dirname $0`
+#检测日志关键字 $1传递日志目录 $2传递关键字
+check_wait_log () {
+tail -f -n0 $1 | while read line;
+do
+        echo $line
+        #关键字出现后退出日志打印
+        echo "$line" | egrep "$2" >/dev/null 2>&1
+        if [ $? = 0 ];then
+                break
+        fi
+
+        #退出tail命令
+        ps -aux | grep "tail -n" | grep -v "grep" | awk '{print $2}' | while read line;
+        do
+                kill -9 $line
+        done
+done
+}
+
+echo update server begin.............
+
+PID=`ps ux -u \`whoami\` |grep java |grep GameServer| awk '{print $2}'`
+cd ~/ServerBin/GameServer
+sh stop.sh
+while [ -n "$PID" ]
+do
+   sleep 3
+   PID=`ps ux -u \`whoami\` |grep java |grep GameServer| awk '{print $2}'`
+done
+
+sleep 5
+DD=`date "+%Y-%m-%d"`
+cd ~/ServerBin/
+svn up
+sh gen_conf.sh ~/conf.m4
+cd ~/ServerBin/GameServer
+export JAVA_HOME=/usr/local/java/jdk1.8.0_202
+sh start.sh
+echo waiting for start up ......
+#sleep 30
+#cat ~/ServerBin/GameServer/logs/main*.log
+
+#cat ~/ServerBin/GameServer/logs/main/main*$DD |tail -n 100 |grep "_server started"
+#tail -f ~/ServerBin/GameServer/logs/game/main/main-SERVER_ID.log | sed '/&&&&&&&&&&&&&|shutdownhook/q'
+check_wait_log ~/ServerBin/GameServer/logs/game/main/main-SERVER_ID.log "&&&&&&&&|6666666"
+echo update server end ..............

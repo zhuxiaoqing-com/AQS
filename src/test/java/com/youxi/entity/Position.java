@@ -1,5 +1,7 @@
 package com.youxi.entity;
 
+import com.example.demo1.util.vo.Vector2f;
+
 /**
  * 逻辑坐标 (当前角色坐标就是逻辑坐标) 服务器与客户端通信的坐标均是该类型
  * 
@@ -120,5 +122,9 @@ public final class Position extends BasicPos {
 
 	public long cross(Position p) {
 		return CMath.Cross2D(this, p);
+	}
+
+	public Vector2f toVector2f() {
+		return new Vector2f(getX()/1000f,getZ()/1000f);
 	}
 }

@@ -179,8 +179,7 @@ public class Test17 {
 		System.out.println(collect);*/
 		//0.5RMB 1G
 
-		TestUtil.testTime(()->{Thread.currentThread();
-		}, 10000_000_00,"111");
+		TestUtil.testTime(Thread::currentThread, 10000_000_00,"111");
 		TestUtil.testTime(()->{int a= 0;
 		}, 10000_000_00,"111");
 	}
@@ -201,6 +200,17 @@ public class Test17 {
 
 	}
 
+	@Test
+	public void test12() {
+		/**
+		 * x*z = x*z*x*z
+		 */
+		double v = 0.3;
+		System.out.println((10* v)*(10* v));
+		System.out.println(10*10* v);
+		System.out.println(10*10* v *v);
+
+	}
 }
 
 /*
