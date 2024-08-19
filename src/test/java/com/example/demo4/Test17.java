@@ -202,14 +202,34 @@ public class Test17 {
 
 	@Test
 	public void test12() {
-		/**
-		 * x*z = x*z*x*z
-		 */
-		double v = 0.3;
-		System.out.println((10* v)*(10* v));
-		System.out.println(10*10* v);
-		System.out.println(10*10* v *v);
+		String ip = "10.1.0.0";
+		int ipToInt = ipToInt(ip);
+		int mask = Integer.parseInt("1111111111111111000000000000000", 2);
+		System.out.println(mask);
+		System.out.println(ipToInt);
+		System.out.println(ipToInt&(~mask));
+		System.out.println(ipToInt&(mask));
 
+
+
+	}
+	public static int ipToInt(String ip) {
+		String[] ipParts = ip.split("\\.");
+		if (ipParts.length != 4) {
+			throw new IllegalArgumentException("Invalid IP address format");
+		}
+
+		int result = 0;
+		for (int i = 0; i < ipParts.length; i++) {
+			int power = 3 - i;
+			int part = Integer.parseInt(ipParts[i]);
+			// 左移power * 8位，然后加上当前部分的值
+			result |= part << (power * 8);
+		}
+
+		// 注意：这里的结果可能是一个负数，因为Java的int是有符号的
+		// 如果你需要无符号的整数表示，你可能需要使用long或者BigInteger
+		return result;
 	}
 }
 
