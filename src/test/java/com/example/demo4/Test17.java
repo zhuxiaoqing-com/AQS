@@ -202,15 +202,26 @@ public class Test17 {
 
 	@Test
 	public void test12() {
-		String ip = "10.1.0.0";
+		/*String ip = "10.1.0.0";
 		int ipToInt = ipToInt(ip);
 		int mask = Integer.parseInt("1111111111111111000000000000000", 2);
 		System.out.println(mask);
 		System.out.println(ipToInt);
 		System.out.println(ipToInt&(~mask));
 		System.out.println(ipToInt&(mask));
+		*/
 
+		int index = 0;
 
+		for (int i = 0; i < index; i++) {
+			System.out.println(i);
+		}
+
+		index = -1;
+
+		for (int i = 0; i < index; i++) {
+			System.out.println(i);
+		}
 
 	}
 	public static int ipToInt(String ip) {
@@ -230,6 +241,20 @@ public class Test17 {
 		// 注意：这里的结果可能是一个负数，因为Java的int是有符号的
 		// 如果你需要无符号的整数表示，你可能需要使用long或者BigInteger
 		return result;
+	}
+
+	@Test
+	public void test13() {
+		ArrayList<Integer> objects = new ArrayList<>();
+
+		int index = 10;
+		for (int i = 0; i < index; i++) {
+			objects.add(i);
+		}
+
+		objects.subList(3,5).clear();
+		System.out.println(objects);
+
 	}
 }
 
