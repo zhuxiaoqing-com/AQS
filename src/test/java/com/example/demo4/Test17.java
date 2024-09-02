@@ -255,6 +255,9 @@ public class Test17 {
 		objects.subList(3,5).clear();
 		System.out.println(objects);
 
+		String s = String.join(";", 1+"", 1 + "", 2+"");
+		int[] ints = Arrays.stream(s.split(";")).mapToInt(Integer::valueOf).toArray();
+		System.out.println(ints);
 	}
 }
 
