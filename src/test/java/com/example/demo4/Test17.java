@@ -258,6 +258,11 @@ public class Test17 {
 		String s = String.join(";", 1+"", 1 + "", 2+"");
 		int[] ints = Arrays.stream(s.split(";")).mapToInt(Integer::valueOf).toArray();
 		System.out.println(ints);
+
+		int i =1000;
+		double a  =1.3;
+		System.out.println((int)(i*a));
+
 	}
 }
 
