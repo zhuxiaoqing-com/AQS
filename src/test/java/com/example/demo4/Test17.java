@@ -7,6 +7,7 @@ import com.example.demo4.testObj1.StringArrayObj;
 import com.example.demo4.testObj1.Temp;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.youxi.building.Misc;
 import com.youxi.entity.Position;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.PooledByteBufAllocator;
@@ -263,6 +264,21 @@ public class Test17 {
 		double a  =1.3;
 		System.out.println((int)(i*a));
 
+	}
+
+	@Test
+	public void test14() throws InterruptedException {
+		String a = "1;3;4;";
+		System.out.println(Arrays.toString(a.split(";")));
+		System.out.println(Arrays.toString(a.split(";",-1)));
+
+
+		Map<Integer, List<Integer>> map = new ConcurrentHashMap<>();
+		//map.computeIfAbsent(1,b->new CopyOnWriteArrayList<>()).add(1);
+
+
+		new CopyOnWriteArrayList<>().subList(1,1).clear();
+		new CopyOnWriteArrayList<>().removeAll();
 	}
 }
 
