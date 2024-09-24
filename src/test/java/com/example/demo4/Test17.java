@@ -278,7 +278,10 @@ public class Test17 {
 
 
 		new CopyOnWriteArrayList<>().subList(1,1).clear();
-		new CopyOnWriteArrayList<>().removeAll();
+
+		for(int i = -1;i>=0;i--) {
+			System.out.println("------------------------------");
+		}
 	}
 }
 
