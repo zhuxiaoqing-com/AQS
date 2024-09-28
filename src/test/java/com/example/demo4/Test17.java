@@ -268,20 +268,8 @@ public class Test17 {
 
 	@Test
 	public void test14() throws InterruptedException {
-		String a = "1;3;4;";
-		System.out.println(Arrays.toString(a.split(";")));
-		System.out.println(Arrays.toString(a.split(";",-1)));
-
-
-		Map<Integer, List<Integer>> map = new ConcurrentHashMap<>();
-		//map.computeIfAbsent(1,b->new CopyOnWriteArrayList<>()).add(1);
-
-
-		new CopyOnWriteArrayList<>().subList(1,1).clear();
-
-		for(int i = -1;i>=0;i--) {
-			System.out.println("------------------------------");
-		}
+		ArrayList<Object> objects = new ArrayList<>();
+		objects.remove(new Object());
 	}
 }
 
