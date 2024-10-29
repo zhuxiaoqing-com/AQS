@@ -63,6 +63,7 @@ public class AOIManagerComponentSystem {
 			aoiEntity.UnSubEnter(cell);
 		}
 
+		// 通知我看不见别人了
 		for (Long cellId : aoiEntity.SubLeaveCells) {
 			Cell cell = GetCell(cellId);
 			aoiEntity.UnSubLeave(cell);
@@ -90,6 +91,7 @@ public class AOIManagerComponentSystem {
 
 		// 通知订阅该newCell Enter的Unit
 		for (AOIEntity e : newCell.SubsEnterEntities.values()) {
+			// 之前就订阅了这个cell的进入事件
 			if (e.SubEnterCells.contains(preCell.Id))
 			{
 				continue;
