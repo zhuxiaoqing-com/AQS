@@ -35,8 +35,9 @@ public class AStar2 {
 		System.err.println("cost : " + cost);
 		if (res != null) {
 			for (Integer i : res) {
-				//	System.err.println(String.format(String.format("x:%s, y:%s", Misc.getIntHigh(i), Misc.getIntLow(i))));
+					System.err.print(String.format(String.format("x:%s, y:%s", Misc.getIntHigh(i), Misc.getIntLow(i))));
 			}
+			System.out.println();
 		}
 		System.out.println("iiiiiiiiiiiiiiiiii  " + i);
 		System.out.println("open.size " + openList.size());
@@ -329,7 +330,7 @@ public class AStar2 {
 				{0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 				{0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 		};
-		maps = RandomGenMap.randomGenMap(10000, 10000);
+		maps = RandomGenMap.randomGenMap(50, 50);
 		MapInfo info = new MapInfo(maps, maps[0].length, maps.length, new Node(1, 1), new Node(maps[0].length - 1, maps.length - 1));
 		new AStar2().test(info);
 	}

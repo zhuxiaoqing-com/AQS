@@ -24,6 +24,10 @@ public class AStar {
 		while (!queue.isEmpty()) {
 			i++;
 			Node poll = queue.poll();
+			int xy = tranXY(poll.x, poll.y);
+			if(map.containsKey(xy)) {
+				continue;
+			}
 			// 获取边上的可遍历的节点 将其加入优先级队列
 			Node node = addQueue(poll, poll.x + 1, poll.y);
 			if (node != null && node.x == info.end.x && node.y == info.end.y) {
@@ -60,7 +64,7 @@ public class AStar {
 		Node node = endNode;
 		while (node != null) {
 			objects.add(tranXY(node.x, node.y));
-		//	System.out.println(node.x + "......" + node.y);
+			System.out.println(node.x + "......" + node.y);
 			node = node.lastNode;
 		}
 		return objects;
@@ -92,9 +96,6 @@ public class AStar {
 		int xy = tranXY(x, y);
 
 		Node oldNode = map.get(xy);
-		if(oldNode != null) {
-			return null;
-		}
 		int oldDist = oldNode == null ? Integer.MAX_VALUE : oldNode.dist;
 		// 判断距离是不是更短了
 		if (poll.dist + 1 < oldDist) {
@@ -103,7 +104,7 @@ public class AStar {
 				oldNode.dist = poll.dist + 1;
 				oldNode.lastNode = poll;
 				oldNode.f = hManhattan(oldNode, info.end);
-				//queue.remove();
+				queue.remove(oldNode);
 				queue.add(oldNode);
 				return oldNode;
 			} else {
@@ -227,7 +228,7 @@ public class AStar {
 				{0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 				{0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 		};
-		maps = RandomGenMap.randomGenMap(3000, 3000);
+		maps = RandomGenMap.randomGenMap(300, 300);
 		MapInfo info = new MapInfo(maps, maps[0].length, maps.length, new Node(1, 1, null, 1), new Node(maps[0].length+1,  maps.length+1, null, 1));
 		new AStar().search(info);
 		new AStar2().test2(maps);
