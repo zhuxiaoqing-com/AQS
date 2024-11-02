@@ -33,12 +33,21 @@ public class AStar2 {
 		List<Integer> res = search(mapInfo);
 		double cost = (System.nanoTime() - begin) * 0.000001;
 		System.err.println("cost : " + cost);
-		if (res != null) {
+		if (res!= null && !res.isEmpty()) {
+			System.out.println("Path found:");
+			for (Integer node : res) {
+				System.out.print("(" + Misc.getIntHigh(node) + ", " + Misc.getIntLow(node) + ")");
+			}
+		} else {
+			System.out.println("No path found.");
+		}
+
+		/*if (res != null) {
 			for (Integer i : res) {
 					System.err.print(String.format(String.format("x:%s, y:%s", Misc.getIntHigh(i), Misc.getIntLow(i))));
 			}
 			System.out.println();
-		}
+		}*/
 		System.out.println("iiiiiiiiiiiiiiiiii  " + i);
 		System.out.println("open.size " + openList.size());
 		if (showDebug)
@@ -122,14 +131,14 @@ public class AStar2 {
 		addNeighborNodeInOpen(mapInfo, current, x + 1, y, DIRECT_VALUE);
 		// 下
 		addNeighborNodeInOpen(mapInfo, current, x, y + 1, DIRECT_VALUE);
-		// 左上
+		/*// 左上
 		addNeighborNodeInOpen(mapInfo, current, x - 1, y - 1, OBLIQUE_VALUE);
 		// 右上
 		addNeighborNodeInOpen(mapInfo, current, x + 1, y - 1, OBLIQUE_VALUE);
 		// 右下
 		addNeighborNodeInOpen(mapInfo, current, x + 1, y + 1, OBLIQUE_VALUE);
 		// 左下
-		addNeighborNodeInOpen(mapInfo, current, x - 1, y + 1, OBLIQUE_VALUE);
+		addNeighborNodeInOpen(mapInfo, current, x - 1, y + 1, OBLIQUE_VALUE);*/
 	}
 
 	/**

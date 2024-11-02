@@ -1,5 +1,7 @@
 package com.example.datastruture.a_49_Astar_search;
 
+import com.example.datastruture.a_49_Astar_search.AStartGraph.AStarGraph;
+
 import java.util.*;
 
 /**
@@ -176,6 +178,14 @@ public class AStar {
 				return -1;
 			return 0;
 		}
+
+		@Override
+		public String toString() {
+			return "Node{" +
+					"y=" + y +
+					", x=" + x +
+					'}';
+		}
 	}
 
 	public static class MapInfo {
@@ -228,13 +238,26 @@ public class AStar {
 				{0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 				{0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 		};
-		maps = RandomGenMap.randomGenMap(300, 300);
-		MapInfo info = new MapInfo(maps, maps[0].length, maps.length, new Node(1, 1, null, 1), new Node(maps[0].length+1,  maps.length+1, null, 1));
-		new AStar().search(info);
-		new AStar2().test2(maps);
+		maps = RandomGenMap.randomGenMap(100, 100);
+		printMap(maps);
+		MapInfo info = new MapInfo(maps, maps[0].length, maps.length, new Node(0, 0, null, 1), new Node(maps[0].length-1,  maps.length-1, null, 1));
+		System.out.println("start: " + info.start + "   end：" + info.end);
+		//new AStar().search(info);
+		//new AStar2().test2(maps);
+		new AStar3().test(info);
+		new AStarGraph().test(info);
+
 
 	}
 
+	public static void printMap(int[][] maps) {
+		for (int i = 0; i < maps.length; i++) {
+			for (int j = 0; j < maps[i].length; j++) {
+				System.out.print(maps[i][j] + " ");
+			}
+			System.out.println();
+		}
+	}
 
 }
 

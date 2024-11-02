@@ -15,6 +15,7 @@ public class RandomGenMap {
 			for (int i1 = 0; i1 < maxY; i1++) {
 				int i2 = random.nextInt(10);
 				ints[i][i1] = i2 >7? 1:0;
+				//ints[i][i1] = 0;
 			}
 		}
 		return ints;
