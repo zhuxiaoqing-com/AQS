@@ -69,7 +69,7 @@ public class AStarGraph {
                 GraphPoint p2 = graphEdge.p2;
                 Node neighbor = new Node(p2);
 
-                neighbor.gCost = currentNode.gCost + 1;
+                neighbor.gCost = currentNode.gCost + graphEdge.weight;
                 neighbor.hCost = heuristic(neighbor, end);
                 Node closeNode = closedList.get(neighbor);
                 if(closeNode != null && neighbor.fCost() >= closeNode.fCost()) {

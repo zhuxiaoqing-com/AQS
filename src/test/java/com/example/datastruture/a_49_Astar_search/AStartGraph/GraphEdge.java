@@ -4,9 +4,9 @@ import java.util.Objects;
 
 public class GraphEdge {
     GraphPoint p1, p2;
-    long weight;
+    int weight;
 
-    public GraphEdge(GraphPoint p1, GraphPoint p2, long weight) {
+    public GraphEdge(GraphPoint p1, GraphPoint p2, int weight) {
         this.p1 = p1;
         this.p2 = p2;
         this.weight = weight;

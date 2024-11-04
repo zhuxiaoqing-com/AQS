@@ -27,9 +27,9 @@ public class GraphPoint {
     }
 
     // 可以添加一个方法来计算两个点之间的距离（例如欧几里得距离）
-    public long distanceTo(GraphPoint other) {
+    public int distanceTo(GraphPoint other) {
         int dx = this.x - other.x;
         int dy = this.y - other.y;
-        return (long) dx * dx + (long) dy * dy;
+        return (int) Math.sqrt((long) dx * dx + (long) dy * dy);
     }
 }

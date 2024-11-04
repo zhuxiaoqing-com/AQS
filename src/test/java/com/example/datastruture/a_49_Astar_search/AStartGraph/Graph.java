@@ -17,7 +17,7 @@ public class Graph {
     }
 
     public void addGraphEdge(GraphPoint p1, GraphPoint p2) {
-        long distance = p2.distanceTo(p1);
+        int distance = p2.distanceTo(p1);
         GraphEdge GraphEdge1 = new GraphEdge(p1, p2, distance);
         GraphEdge GraphEdge2 = new GraphEdge(p2, p1, distance);
 
