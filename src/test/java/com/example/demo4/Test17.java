@@ -271,6 +271,20 @@ public class Test17 {
 		ArrayList<Object> objects = new ArrayList<>();
 		objects.remove(new Object());
 	}
+
+	@Test
+	public void test15() throws InterruptedException {
+		ArrayList<Integer> objects = new ArrayList<>();
+
+		int index = 10;
+		for (int i = 0; i < index; i++) {
+			objects.add(i);
+		}
+
+		Stream<Integer> integerStream = objects.stream().filter(a -> a % 2 == 0);
+		System.out.println(integerStream.count());
+		System.out.println(integerStream.skip(2).collect(Collectors.toList()));
+	}
 }
 
 /*
