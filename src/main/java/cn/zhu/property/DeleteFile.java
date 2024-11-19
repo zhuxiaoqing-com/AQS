@@ -18,7 +18,7 @@ public class DeleteFile {
 	String name = "_remote.repositories";
 
 	public static void main(String[] args) {
-		getInstance().delete("F:\\repository\\com\\sh\\engine");
+		getInstance().delete("H:\\repository\\com\\sh\\engine");
 	}
 
 	public void delete(String path) {
