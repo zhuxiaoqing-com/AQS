@@ -285,6 +285,14 @@ public class Test17 {
 		System.out.println(integerStream.count());
 		System.out.println(integerStream.skip(2).collect(Collectors.toList()));
 	}
+
+	@Test
+	public void test16() throws InterruptedException {
+		String a = "a,,a,b";
+		String[] split = a.split(",",-1);
+		System.out.println(Arrays.toString(split));
+
+	}
 }
 
 /*
