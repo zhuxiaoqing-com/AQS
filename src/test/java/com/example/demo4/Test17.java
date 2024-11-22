@@ -7,6 +7,7 @@ import com.example.demo4.testObj1.StringArrayObj;
 import com.example.demo4.testObj1.Temp;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.google.common.eventbus.EventBus;
 import com.youxi.building.Misc;
 import com.youxi.entity.Position;
 import io.netty.buffer.ByteBuf;
@@ -291,6 +292,7 @@ public class Test17 {
 		String a = "a,,a,b";
 		String[] split = a.split(",",-1);
 		System.out.println(Arrays.toString(split));
+		EventBus eventBus = new EventBus();
 
 	}
 }
