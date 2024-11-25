@@ -138,4 +138,34 @@ public class OBB2D extends Shape {
 				", dir=" + dir +
 				'}';
 	}
+
+	/**
+	 * 假设 我们的obb是旋转的
+	 *
+	 * 要将p变换成obb的局部坐标轴;
+	 * 其实就相当于 obb反向旋转degree度,
+	 * 由于OBB在全局坐标系中是旋转的，我们需要通过旋转的逆变换（即旋转角度的反向应用）来将全局坐标系中的点转换到OBB的局部坐标系中。
+	 * 这样做的原因是，旋转的逆变换可以将OBB的旋转“撤销”，使得转换后的点在局部坐标系中与OBB的方向对齐。
+	 *
+	 * 所以p旋转-degree是为了将其转换为obb的局部坐标系
+	 *
+	 * 为什么是逆变换,因为obb的当前中心点是世界坐标系进行旋转degree角度以后的坐标,
+	 * 将其变换回局部坐标系的话,需要将整个当前坐标系里面的坐标全部反向应用degree，这样就变换成obb的局部坐标系了
+	 *
+	 * 为什么p要旋转-degree呢;
+	 * 因为p这里是在obb有旋转的情况下的值,如果obb是局部坐标 那就相当于忽略了旋转;
+	 * p也得是忽略旋转才行;需要反向旋转用来忽略旋转;
+	 *
+	 *
+	 * 或者说obb是旋转的  那就将整个坐标系反向旋转来将其obb变换为没有旋转的情况：
+	 * 那点p也是反向旋转.
+	 * 其实要将其变为obb的局部坐标 也等于 将整个坐标系反向旋转这个角度
+	 */
+	public static boolean IsPointInPolygon(Position p,Position center, Dir sizeDir, float degree) {
+		// 为什么这里是 -degree 而不是degree  因为下面已经默认Obb变换过-degree了 这里将点也同样应用,那他们就在一个坐标系内了
+		Position rotateDir = CMath.getUnityDirByRotateYFromX(p.sub(center), -degree);
+		int x = sizeDir.getX();
+		int z = sizeDir.getZ();
+		return rotateDir.getX() > -x && rotateDir.getX() < x && rotateDir.getZ() > -z && rotateDir.getZ() < z;
+	}
 }
