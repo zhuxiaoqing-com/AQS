@@ -183,4 +183,11 @@ public class JedisTest {
         Double zscore = resource.zscore("112:bt:wild:rank:1107", "11");
         System.out.println(zscore);
     }
+
+    @Test
+    public void TestJedisPool9(){
+        Jedis resource = jedisPool.getResource();
+        List<String> strings = resource.hmget("112:bt:wild:rank:1107", "1","2","3");
+        System.out.println(strings);
+    }
 }
