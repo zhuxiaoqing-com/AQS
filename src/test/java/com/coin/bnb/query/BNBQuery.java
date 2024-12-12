@@ -1,4 +1,4 @@
-package com.coin.bnb;
+package com.coin.bnb.query;
 
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameter;

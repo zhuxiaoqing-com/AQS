@@ -1,5 +1,6 @@
 package com.coin.bnb;
 
+import com.coin.bnb.query.BNBQuery;
 import com.coin.bnb.random.BNBWalletGenerator;
 import org.junit.Test;
 

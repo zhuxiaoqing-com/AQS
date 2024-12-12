@@ -66,4 +66,5 @@ public class BNBWalletGenerator {
         stringMap.put("mnemonic", str.toString());
         return stringMap;
     }
+
 }

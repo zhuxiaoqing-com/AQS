@@ -4,12 +4,12 @@
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
         </encoder>
     </appender>-->
-    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+   <!-- <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %highlight(%-5level) [%thread] %logger{50}  -  %highlight(%m) %n</pattern>
         </encoder>
-    </appender>
-    <root level="INFO">
+    </appender>-->
+    <root level="ERROR">
         <appender-ref ref="STDOUT"/>
     </root>
 
