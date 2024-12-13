@@ -8,6 +8,7 @@ import org.web3j.crypto.Keys;
 import sun.security.provider.SecureRandom;
 
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,8 +30,18 @@ public class BNBWalletGenerator {
      * 创建地址(离线)
      */
 
-    public static Map<String, String> createBscAddress() throws Exception {
-        SecureRandom secureRandom = new SecureRandom();
+    static SecureRandom secureRandom = new SecureRandom();
+    public static Map<String, String> createBscAddress()  {
+        Map<String, String> stringStringMap = Collections.emptyMap();
+        try {
+             stringStringMap = _createBscAddress();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return stringStringMap;
+    }
+
+    public static Map<String, String> _createBscAddress() throws Exception {
         byte[] entropy = new byte[DeterministicSeed.DEFAULT_SEED_ENTROPY_BITS / 8];
         secureRandom.engineNextBytes(entropy);
         //生成12位助记词
