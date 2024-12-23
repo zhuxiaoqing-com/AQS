@@ -280,8 +280,22 @@ public class IdFactory {
 	 * @param value
 	 * @return
 	 */
-	public static int hash(long value) {
+	public static int hash0(long value) {
 		return (int) (value ^ (value >>> ADD_POS));
+	}
+
+	/**
+	 * h ^(h>>>16) 是hashmap的hash函数
+	 * 本质应该就是让每一位进行都参与计算；
+	 * 测试过 比较均匀
+	 */
+	public static int hash(long value) {
+		//	return (int) (value ^ (value >>> ADD_POS) );
+		int h = Long.hashCode(value);
+		/*long l = value >> SERVER_POS << SERVER_POS;
+		long hL = (value ^ (value >>> ADD_POS));
+		int h = Long.hashCode(hL);*/
+		return h ^(h>>>16);
 	}
 
 	/** 生成tokenId 每秒生成65536个id **/

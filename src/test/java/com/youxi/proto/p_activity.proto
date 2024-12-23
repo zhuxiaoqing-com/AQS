@@ -1,0 +1,434 @@
+package Game.ServerCore.logic.pb;
+import 'p_common.proto';
+import 'p_quest.proto';
+
+option java_multiple_files = true;
+// 请求所有活动状态
+message C2SAllActivityStatus {
+}
+
+message S2CAllActivityStatus {
+    repeated PBActivityInfo info = 1; // 目前只给客户端发送已经开启的活动
+}
+
+
+message S2CUpdateActivityStatus {
+    optional PBActivityInfo activityInfo = 1;
+    required int32 status = 2; // 0:关闭 1:开启
+}
+
+
+// 进入活动
+message C2SActivityEnter{
+    required int32 activityId = 1; // 进入的活动id
+}
+
+
+
+
+message PBActivityInfo {
+    required int32 activityId = 1;
+    optional int64 startTime = 2;
+    optional int64 endTime = 3;
+}
+
+
+
+
+message C2SPvpMatch {
+	required int32 actType = 1;
+	repeated int32 duty = 2;
+	repeated int32 dungeonId = 3;
+}
+
+message S2CPvpMatch {
+	required int32 actType = 1;
+}
+
+message C2SPvpCancelMatch {
+	
+}
+message S2CPvpCancelMatch {
+	
+}
+
+
+// 请求匹配数据
+message C2SPvpMatchInfo {
+    optional int32 actType = 1;
+    optional int32 dungeonId = 2;
+}
+
+message S2CPvpMatchInfo {
+    optional int32 actType = 1;
+    optional int32 dungeonId = 2;
+    optional int32 roleNUm = 3; // 匹配池人数
+}
+
+
+
+
+// 七日登陆数据
+message C2SSevenDaysLoginInfo {
+}
+message S2CSevenDaysLoginInfo {
+    required int32 currDay = 1; // 当前是第几天
+    repeated int32 receivedId = 2; // 已经领取到的七日奖励Id
+}
+
+// 领取七日登陆奖励
+message C2SSevenDaysLoginReceive {
+    required int32 id = 1; // 领取id
+}
+
+message S2CSevenDaysLoginReceive {
+    required int32 id = 1; // 领取id
+}
+
+// 新手目标数据
+message C2SNewHandTargetInfo {
+}
+message S2CNewHandTargetInfo {
+    required int32 currDay = 1; // 当前是第几天
+    repeated PbNewHandTarget target = 2; // 新手目标(不包含没接取的)
+}
+
+// 新手目标更新
+message S2CNewHandTargetUpdate {
+    required PbNewHandTarget target = 1;
+}
+
+// 新手目标奖励领取
+message C2SNewHandTargetSubmit {
+     required int32 targetId = 1;
+}
+
+message PbNewHandTarget{
+   //目标id
+   required int32 id = 1;
+   // PBNewHandTargetState 定义的任务状态
+   required int32 state = 2;
+   // 任务进度(x/x)
+   required int32 conditionTarget = 3;
+}
+
+
+
+// 请求排行榜列表
+message C2SRankList {
+    required int32 rankType = 1;
+}
+
+// 请求排行榜列表
+message S2CRankList {
+    repeated PBRankInfo rankInfo = 1;   //玩家排名信息
+    optional PBRankInfo selfInfo = 2;
+    repeated PBGensRankInfo gensRankInfo = 3;   //军团相关排名信息
+    optional PBGensRankInfo selfGensInfo = 4;
+}
+
+
+// 活动排行榜奖励领取信息
+message C2SActRankRewardInfo {
+}
+
+message S2CActRankRewardInfo {
+    repeated int32 received = 1; // 领取过达标奖励的排行榜
+    repeated PairL rankTarget = 2; // 排行榜目标值; key:排行榜类型 value:排行榜目标值
+}
+
+// 更新活动排行榜目标值
+message S2CActRankTargetUpdate {
+    repeated PairL rankTarget = 1; // 排行榜目标值; key:排行榜类型 value:排行榜目标值
+}
+
+// 活动排行榜领取奖励
+message C2SActRankReceiveReward {
+    required int32 rankType = 1;
+}
+message S2CActRankReceiveReward {
+    required int32 rankType = 1;
+}
+
+
+// 目标状态
+enum PBNewHandTargetState {
+    TARGET_ACCEPTED = 1; // 已接收
+    TARGET_ACHIEVE = 2; // 可提交
+    TARGET_SUBMITTED = 3; // 已提交
+}
+
+enum PBNewHangTargetCondition {
+    NHT_NEH_HANG_FINISH = 1001; // 完成新手目标数量
+}
+
+
+
+
+////////////////////////战令////////////////////////
+////////////////////////战令////////////////////////
+////////////////////////战令////////////////////////
+
+// 战令数据请求
+message C2SWarMakesInfo {
+
+}
+// 战令数据
+message S2CWarMakesInfo {
+    optional int32 exp = 1; // 总经验
+    optional int32 type = 2; // 当前战令类型
+    optional int32 dailyExp = 3; // 今天获得的经验
+    optional bool weeklyGift = 4; // 每周奖励是否已经领取
+    repeated int32 freeList = 5; // 已经领取过的免费奖励
+    repeated int32 advancedList = 6; // 已经领取过的进阶奖励
+}
+
+//购买新战令
+message C2SWarMakesBuy{
+    // 战令id
+    optional int32 warMakesId = 1;
+}
+message S2CWarMakesBuy{
+    // 战令id
+    optional int32 warMakesId = 1;
+}
+
+
+// 战令经验变化
+message SC2WarMakesAddExp {
+    optional int32 exp = 1; // 总经验
+    optional int32 weeklyExp = 2; // 本周获取的总经验
+}
+
+
+// 战令领取等级奖励
+message C2SWarMakesReceiveLevel {
+    optional int32 level = 1;
+    optional bool advanced = 2; // 是否是领取进阶奖励
+}
+message S2CWarMakesReceiveLevel {
+    optional int32 level = 1;
+    optional bool advanced = 2; // 是否是领取进阶奖励
+}
+
+// 战令领取每周奖励
+message C2SWarMakesReceiveWeekly {
+
+}
+message S2CWarMakesReceiveWeekly {
+
+}
+
+// 战令商店购买物品
+message C2SWarMakesShop {
+    optional int32 shopId = 1;
+}
+message S2CWarMakesShop {
+    optional int32 shopId = 1;
+}
+
+//购买战令等级
+message C2SWarMakesBuyLevel{
+    optional int32 level = 1;
+}
+message S2CWarMakesBuyLevel{
+    optional int32 level = 1;
+}
+
+// 战令一建领取所有奖励
+message C2SWarMakesReceiveAll {
+}
+message S2CWarMakesReceiveAll {
+    repeated int32 freeList = 1; // 已经领取过的免费奖励
+    repeated int32 advancedList = 2; // 已经领取过的进阶奖励
+}
+
+
+//请求选中心愿UP道具
+message C2SUpItemsRequest {
+  optional PbUpItem item = 1;
+}
+
+message S2CUpItemsResponse{
+  //替换或选中的心愿道具id
+  optional PbUpItem item = 1;
+}
+
+message PbUpItem{
+    optional int32 posId = 1;  //槽位从1开始
+    optional int32 itemId = 2;
+}
+
+//心愿UP信息请求
+message C2SUpAwardInfoRequest{
+}
+
+//心愿UP信息响应
+message S2CUpAwardInfoResponse{
+  optional int32 upAwardNum = 1;  //抽奖次数
+  repeated PbUpItem items = 2;  //选中的心愿UP道具
+  repeated int32 receivedList= 3; //抽奖次数奖励领取情况 已领取的奖励id
+  repeated int32 bannedItems = 4; //当天不能再抽取的道具
+}
+
+
+message C2SUpAwardCollection{
+    optional int32 receivedId = 1; //第几次抽奖后的奖励
+}
+
+message S2CUpAwardCollection{
+    optional int32 receivedId = 1; //第几次抽奖后的奖励
+}
+
+
+// 战令进度条数据
+message C2SWarMakesBarInfo{
+}
+message S2CWarMakesBarInfo{
+    optional int32 exp = 1; //当天获得的经验
+    repeated Pair receive = 2; // k:奖励id v:领取次数
+}
+
+
+// 战令进度条经验更新
+message S2CWarMakesBarExpUpdate{
+    optional int32 exp = 1; //当天获得的经验
+}
+
+// 战令进度条奖励领取
+message C2SWarMakesBarRevive{
+    optional int32 receiveId = 1; //奖励Id
+}
+message S2CWarMakesBarRevive{
+    optional int32 receiveId = 1; //奖励Id
+}
+
+/////野外boss
+message S2CActivitySummary {
+    optional int32 actId = 1;
+    optional PBPVPBattleAward award = 2; // 结算奖励
+    repeated PBRoleDamageInfo ranks = 3; // 排行榜
+}
+
+message C2SActivityAwardCount {
+    optional int32 actId = 1;   //活动id
+}
+
+message S2CActivityAwardCount {
+    optional int32 actId = 1;   //活动id
+    optional int32 takeAwardCount = 2;
+}
+
+// 请求查看该区域报名数据
+message C2SCityFightEnrollInfo {
+    optional int32 areaId = 1;
+}
+
+message S2CCityFightEnrollInfo {
+    optional int32 areaId = 1;
+    repeated PBGensBaseInfo baseInfo = 2; // 报名的公会数据
+}
+
+// 城市战斗报名
+message C2SCityFightEnroll {
+    optional int32 areaId = 1;
+}
+// 报名成功返回
+message S2CCityFightEnroll {
+    optional int32 areaId = 1;
+}
+
+// 进入城市争夺
+message C2SEnterCityFight {
+    optional int32 areaId = 1;
+    optional int32 index = 2;
+}
+
+
+//使用兑换码
+message C2SUseGiftCode{
+    optional string code = 1;
+}
+
+//使用兑换码返回
+message S2CUseGiftCode{
+    repeated Pair items = 1;
+}
+
+message LB2GSGetUseGiftCode{
+    optional string userId = 1;
+    optional string code = 2;
+}
+
+message GS2LBGetUseGiftCode{
+    optional bool result = 1;//是否成功
+    repeated Pair items = 2;//奖励信息
+    optional int32 errorCode = 3;//不成功时的错误提示码
+}
+
+//军团招募
+message C2SGensRecruitReward {
+    optional int32 id = 1;  //目标id
+    optional int32 type = 2;    //1-军团长;2-成员
+}
+
+message S2CGensRecruitReward {
+    optional bool success = 1;
+}
+
+message C2SGensRecruitRewardCount{
+
+}
+
+// 军团招募奖励领取信息
+message S2CGensRecruitRewardCount{
+    repeated int32 memberRewardList = 1;// 成员奖励领取信息
+    repeated int32 createrRewardList = 2;// 军团长奖励领取信息
+}
+
+
+// 军团资源采集玩法记录请求
+message C2SGensPlayResRecord{
+    optional int64 playResRecordId = 1;// 资源玩法记录Id
+}
+message S2CGensPlayResRecord{
+    optional int64 playResRecordId = 1;// 资源玩法记录Id
+    optional PBPlayRes playResInfo = 2; // 资源玩法记录数据
+}
+
+//请求战场活动信息
+message C2SPvpBattleActInfo {
+    
+}
+
+message S2CPvpBattleActInfo {
+    optional int32 currScore = 1; //当前积分
+    repeated int32 receivedId = 2; //已领取的奖励id
+}
+
+//请求领取战场完成次数奖励
+message C2SReceivePvpBattleReward {
+    optional int32 id = 1;  //奖励id
+}
+
+message S2CReceivePvpBattleReward {
+    optional int32 id = 1;  //奖励id
+}
+
+//请求跨服战排行榜
+message C2SCrossGensWarRank {
+
+}
+
+message S2CCrossGensWarRank {
+    repeated  PBGensRankInfo rank1 = 1;
+    repeated  PBGensRankInfo rank2 = 2;
+    optional int32 serverId1 = 3;
+    optional int32 serverId2 = 4;
+    optional bool mapEnd = 5; // 地图已经关闭(已经提前打完了)
+    optional int64 winGensId = 6; // 胜利的公会Id
+}
+
+// 进入跨服战
+message C2SCrossGensWarEnterMap{
+}
