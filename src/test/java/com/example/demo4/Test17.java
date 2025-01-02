@@ -294,6 +294,8 @@ public class Test17 {
 		System.out.println(Arrays.toString(split));
 		EventBus eventBus = new EventBus();
 
+		System.out.println(1%10);
+		System.out.println(0%10);
 	}
 }
 
