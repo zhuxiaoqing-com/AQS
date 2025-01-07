@@ -12,12 +12,12 @@ public class RankerTest {
 	//Ranker ranker = new MongodbRanker();
 	Ranker ranker = new RedisRanker();
 	String key = "rank";
-	int count = 1_000_000;
+	int count = 1_0000;
 
 	@Test
 	public void insertTestData() {
 		ranker.del(key);
-		for (int i = 0; i < 1_000_000; i++) {
+		for (int i = 0; i < count; i++) {
 			ranker.zadd(key, i, i + "member");
 		}
 	}
