@@ -297,6 +297,12 @@ public class Test17 {
 		System.out.println(1%10);
 		System.out.println(0%10);
 	}
+
+	@Test
+	public void test17() throws InterruptedException {
+		String a= "2";
+		System.out.println(Double.parseDouble(a));
+	}
 }
 
 /*
