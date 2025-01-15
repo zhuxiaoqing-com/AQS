@@ -300,8 +300,13 @@ public class Test17 {
 
 	@Test
 	public void test17() throws InterruptedException {
-		String a= "2";
-		System.out.println(Double.parseDouble(a));
+		Vector2f vector2f = new Vector2f(3, 1);
+		System.out.println(Math.toDegrees(Math.atan2(vector2f.y, vector2f.x)));
+		System.out.println(Math.toDegrees(Math.atan2(vector2f.x, vector2f.y)));
+		System.out.println(30);
+
+		System.out.println(Math.sin(Math.toRadians(30)));
+		System.out.println(Math.cos(Math.toRadians(30)));
 	}
 }
 
