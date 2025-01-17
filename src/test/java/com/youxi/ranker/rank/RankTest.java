@@ -42,6 +42,9 @@ public class RankTest {
 
     @Test
     public void getData() {
+        /**
+         * svn checkout https://144.48.222.251/svn/策划文档/A ./A
+         */
         List<RankObjRedis<Object>> rankInfosByRanking = redisRank.findRankInfosByRanking(1000, -1);
         System.out.println(rankInfosByRanking.size());
     }
