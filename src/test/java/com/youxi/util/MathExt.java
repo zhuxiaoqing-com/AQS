@@ -49,4 +49,32 @@ public class MathExt {
 	public static void main(String[] args) {
 		System.err.println(clamp(5, 1, 3));
 	}
+
+
+
+	/**
+	 * 不会溢出int 溢出了就返回Integer.MAX_VALUE
+	 */
+	public static int addSafe(int x, int y) {
+		// Math.addExact(); 用的这个里面的代码
+		int r = x + y;
+		if (((x ^ r) & (y ^ r)) < 0) {
+			return Integer.MAX_VALUE;
+		}
+		return r;
+	}
+
+	/**
+	 * 不会溢出int 溢出了就返回Integer.MAX_VALUE
+	 */
+	public static int addSafe(int x, long y) {
+		if (y >= Integer.MAX_VALUE) {
+			return Integer.MAX_VALUE;
+		}
+		int r = (int) (x + y);
+		if (((x ^ r) & (y ^ r)) < 0) {
+			return Integer.MAX_VALUE;
+		}
+		return r;
+	}
 }
