@@ -22,42 +22,47 @@ import java.util.stream.Stream;
  */
 public class Test18 {
 
-	public static class Obj {
-		private Map<Integer,Integer> obj1;
-		private int obj2;
+    public static class Obj {
+        private Map<Integer, Integer> obj1;
+        private int obj2;
 
-		public Map<Integer, Integer> getObj1() {
-			return obj1;
-		}
+        public Map<Integer, Integer> getObj1() {
+            return obj1;
+        }
 
-		public void setObj1(Map<Integer, Integer> obj1) {
-			this.obj1 = obj1;
-		}
+        public void setObj1(Map<Integer, Integer> obj1) {
+            this.obj1 = obj1;
+        }
 
-		public int getObj2() {
-			return obj2;
-		}
+        public int getObj2() {
+            return obj2;
+        }
 
-		public void setObj2(int obj2) {
-			this.obj2 = obj2;
-		}
-	}
+        public void setObj2(int obj2) {
+            this.obj2 = obj2;
+        }
+    }
 
-	@Test
-	public void test01() throws InstantiationException, IllegalAccessException, InvocationTargetException {
-		Obj obj = Obj.class.newInstance();
+    @Test
+    public void test01() throws InstantiationException, IllegalAccessException, InvocationTargetException {
+        Obj obj = Obj.class.newInstance();
 
-		Method method = Arrays.stream(Obj.class.getMethods())
-				.filter(a -> a.getName().equals("setObj1"))
-				.findAny().orElse(null);
+        Method method = Arrays.stream(Obj.class.getMethods())
+                .filter(a -> a.getName().equals("setObj1"))
+                .findAny().orElse(null);
 
-		Map<Integer, Integer> objectObjectHashMap = new HashMap<>();
-		Object objectObjectHashMap1 = new HashMap<>();
-		method.invoke(obj, objectObjectHashMap1);
-		System.out.println(obj);
-	}
+        Map<Integer, Integer> objectObjectHashMap = new HashMap<>();
+        Object objectObjectHashMap1 = new HashMap<>();
+        method.invoke(obj, objectObjectHashMap1);
+        System.out.println(obj);
+    }
 
-	}
+    @Test
+    public void test02(){
+        System.out.println(Math.toRadians(0));
+    }
+
+}
 
 /**
  * 1.威力（技能属性-基础伤害倍率）-%
