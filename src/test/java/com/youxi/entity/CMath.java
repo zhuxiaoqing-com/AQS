@@ -95,6 +95,17 @@ public class CMath {
 	public static double getDegree(Position dir1, Position dir2) {
 		return getDegree(dir1.getX(), dir1.getZ(), dir2.getX(), dir2.getZ());
 	}
+
+	/**
+	 * a向量转Unity欧拉角
+	 *
+	 * @param dir
+	 * @return
+	 */
+	public static float getUnityRotateYDegree(Dir dir) {
+		// 从(0,1)到dir的角度就是unity的欧拉角,1000为定点数
+		return (float) getDegree(0, 1000, dir.getX(), dir.getZ());
+	}
 	public static Dir getUnityDirByRotateYFromX(Dir dir, float degree) {
 		float radians = (float) Math.toRadians(-degree);
 		// 因为unity中朝向是从相对z顺时针转动，所以上面1，0，下面逆时针算法做一次取负
@@ -107,6 +118,18 @@ public class CMath {
 		return getRotateDir(position, radians);
 	}
 
+	/**
+	 * Unity角度转向量 a根据绕y轴角度偏移算出来向量，其实坐标上就体现为x和z （用于策划配置比如怪物的初始朝向）
+	 *
+	 * @return
+	 */
+	public static Dir getUnityDirByRotateYFromX(float degree) {
+		// 定点数
+		Dir dirXZ = new Dir(0, 1000);
+		float radians = (float) Math.toRadians(-degree);
+		// 因为unity中朝向是从相对z顺时针转动，所以上面1，0，下面逆时针算法做一次取负
+		return getRotateDir(dirXZ, radians);
+	}
 	/**
 	 * (x*cosθ- y * sinθ, y*cosθ + x * sinθ)， 这只是点绕原点的计算公式，计算向量时要先把起点假设为原点。逆时针时θ为正数，
 	 * 顺时针是θ为负数

@@ -2,6 +2,9 @@ package com.example.demo4;
 
 import com.example.demo1.util.vo.Vector2f;
 import com.google.common.eventbus.EventBus;
+import com.youxi.dataStructure.quadTree.Collision2D;
+import com.youxi.entity.CMath;
+import com.youxi.entity.Dir;
 import com.youxi.entity.Position;
 import io.swagger.models.auth.In;
 import org.junit.Test;
@@ -59,7 +62,101 @@ public class Test18 {
 
     @Test
     public void test02(){
-        System.out.println(Math.toRadians(0));
+        Dir dir0 = new Dir(1000, 0);
+        dir0 = dir0.multiply(1);
+        Dir dir1 = new Dir(000, 1000);
+        Dir sub = dir0.sub(dir1);
+        System.out.println(sub);
+
+        System.out.println(CMath.getUnityRotateYDegree(sub));
+
+         dir0 = new Dir(1000, 0);
+        dir0 = dir0.multiply(2);
+         dir1 = new Dir(000, 1000);
+         sub = dir0.sub(dir1);
+        System.out.println(sub);
+
+        System.out.println(CMath.getUnityRotateYDegree(sub));
+    }
+
+
+    @Test
+    public void test03(){
+        Dir dir0 = CMath.getUnityDirByRotateYFromX(20);
+        float length = 1000;
+        dir0 = dir0.multiply(length);
+        Dir dir1 = CMath.getUnityDirByRotateYFromX(100).normalize();
+
+        dir0 = new Dir(3000,3000);
+        length = 3f;
+        dir1 = new Dir(1000,-1000);
+
+        System.out.println(CMath.getUnityRotateYDegree(dir0));
+        System.out.println(CMath.getUnityRotateYDegree(dir1));
+
+        Vector2f v0 = new Vector2f(dir0.getX() / 1000F, dir0.getZ() / 1000F);
+        Vector2f v1 = new Vector2f(dir1.getX() / 1000F, dir1.getZ() / 1000F);
+
+        /**
+         * 	dir[0] = dir0[0] - dir1[0]*len0*0.5f; // x方向上的平滑转向分量
+         * 	dir[1] = 0;// y方向分量保持为0
+         * 	dir[2] = dir0[2] - dir1[2]*len0*0.5f;// z方向上的平滑转向分量
+         */
+        float x = v0.x - v1.x * length * 0.5f;
+        float z = v0.y - v1.y * length * 0.5f;
+
+        Dir dir = new Dir(x, z).normalize();
+        System.out.println(CMath.getUnityRotateYDegree(dir));
+
+        System.out.println(CMath.getUnityRotateYDegree(dir0.normalize().sub(dir1.normalize())));
+    }
+
+    @Test
+    public void test04(){
+        int degree0 = 90;
+        int degree1 = 0;
+
+        a(1, degree0, degree1);
+        a(1000, degree0, degree1);
+
+        int index = 10;
+        for (int i = 1; i < index; i++) {
+            a(i/10f, degree0, degree1);
+        }
+
+        int length = 100;
+        for (int i = 0; i < length; i++) {
+            a(i, degree0, degree1);
+        }
+        a(1000, degree0, degree1);
+        a(10000, degree0, degree1);
+    }
+
+    public void a(float length, int degree0, int degree1) {
+        Dir dir0 = CMath.getUnityDirByRotateYFromX(degree0);
+        dir0 = dir0.multiply(length);
+        Dir dir1 = CMath.getUnityDirByRotateYFromX(degree1).normalize();
+
+
+
+
+
+        Vector2f v0 = new Vector2f(dir0.getX() / 1000F, dir0.getZ() / 1000F);
+        Vector2f v1 = new Vector2f(dir1.getX() / 1000F, dir1.getZ() / 1000F);
+
+        /**
+         * 	dir[0] = dir0[0] - dir1[0]*len0*0.5f; // x方向上的平滑转向分量
+         * 	dir[1] = 0;// y方向分量保持为0
+         * 	dir[2] = dir0[2] - dir1[2]*len0*0.5f;// z方向上的平滑转向分量
+         */
+       /* float x = v0.x - v1.x  * 0.5f*length;
+        float z = v0.y - v1.y  * 0.5f*length;*/
+        float x = v0.x - v1.x ;
+        float z = v0.y - v1.y ;
+
+        Dir dir = new Dir(x, z);
+       // System.out.println(CMath.getUnityRotateYDegree(dir));
+        System.out.println(CMath.getUnityRotateYDegree(dir));
     }
 
 }
