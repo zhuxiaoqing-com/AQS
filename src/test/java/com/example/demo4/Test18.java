@@ -1,6 +1,7 @@
 package com.example.demo4;
 
 import com.example.demo1.util.vo.Vector2f;
+import com.example.代码优化.重构.第一个案例.简介;
 import com.google.common.eventbus.EventBus;
 import com.youxi.dataStructure.quadTree.Collision2D;
 import com.youxi.entity.CMath;
@@ -157,6 +158,23 @@ public class Test18 {
         Dir dir = new Dir(x, z);
        // System.out.println(CMath.getUnityRotateYDegree(dir));
         System.out.println(CMath.getUnityRotateYDegree(dir));
+    }
+
+
+    @Test
+    public void test05(){
+        int h = 8;
+        int w = 7;
+
+        int i = 0;
+        for (int z = 0; z < h; z++) {
+            for (int x = 0; x < w; x++) {
+                int index = z * w + x;
+                System.out.println(i +"   "+ index);
+                i++;
+            }
+        }
+
     }
 
 }
