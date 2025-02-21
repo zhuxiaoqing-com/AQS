@@ -1,6 +1,7 @@
 package com.example.datastruture.a_49_Astar_search;
 
 import com.example.datastruture.a_49_Astar_search.AStartGraph.AStarGraph;
+import com.example.datastruture.a_49_Astar_search.AStartGraph3.AStartGraph.AStarGraph3;
 
 import java.util.*;
 
@@ -236,11 +237,12 @@ public class AStar {
 				{0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 				{0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 				{0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-				{0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+				{0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 		};
-		maps = RandomGenMap.randomGenMap(100, 100);
+
+		maps = RandomGenMap.randomGenMap(10, 10);
 		printMap(maps);
-		MapInfo info = new MapInfo(maps, maps[0].length, maps.length, new Node(0, 0, null, 1), new Node(maps[0].length-1,  maps.length-1, null, 1));
+		MapInfo info = new MapInfo(maps, maps[0].length, maps.length, new Node(1, 1, null, 1), new Node(maps[0].length - 2, maps.length - 2, null, 1));
 		System.out.println("start: " + info.start + "   end：" + info.end);
 		//new AStar().search(info);
 		//new AStar2().test2(maps);
@@ -248,7 +250,41 @@ public class AStar {
 		new AStarGraph().test(info);
 
 
+/*
+		int index = 100;
+		for (int i = 0; i < index; i++) {
+			System.out.println("          ");
+			System.out.println("          ");
+			System.out.println("          ");
+			maps = RandomGenMap.randomGenMap(10, 10);
+			//printMap(maps);
+			MapInfo info = new MapInfo(maps, maps[0].length, maps.length, new Node(1, 1, null, 1), new Node(maps[0].length - 2, maps.length - 2, null, 1));
+			System.out.println("start: " + info.start + "   end：" + info.end);
+			//new AStar().search(info);
+			//new AStar2().test2(maps);
+			boolean test1 = new AStar3().test(info);
+			//boolean test2 = new AStarGraph().test(info);
+			boolean test3 = new AStarGraph3().test(info);
+			if (test1 != test3) {
+				new AStarGraph().test(info);
+			}
+		}*/
+
+		//threadTest();
 	}
+
+
+	public static void threadTest() {
+		int[][] maps = RandomGenMap.randomGenMap(10, 10);
+		//printMap(maps);
+		MapInfo info = new MapInfo(maps, maps[0].length, maps.length, new Node(1, 1, null, 1), new Node(maps[0].length - 2, maps.length - 2, null, 1));
+		System.out.println("start: " + info.start + "   end：" + info.end);
+		//new AStar().search(info);
+		//new AStar2().test2(maps);
+
+		new AStarGraph3().testThread(info);
+	}
+
 
 	public static void printMap(int[][] maps) {
 		for (int i = 0; i < maps.length; i++) {

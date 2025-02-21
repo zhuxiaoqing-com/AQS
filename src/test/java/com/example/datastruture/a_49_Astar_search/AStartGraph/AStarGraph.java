@@ -128,7 +128,7 @@ public class AStarGraph {
 
     private static final int[][] DIRECTIONS = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
 
-    public void test(AStar.MapInfo mapInfo) {
+    public boolean test(AStar.MapInfo mapInfo) {
         Graph graph = new Graph();
         for (int y = 0; y < mapInfo.maps.length; y++) {
             for (int x = 0; x < mapInfo.maps[y].length; x++) {
@@ -170,8 +170,10 @@ public class AStarGraph {
             for (Node node : path) {
                 System.out.print("(" + node.point.x + ", " + node.point.y + ")");
             }
+            return true;
         } else {
             System.out.println("No path found.");
+            return false;
         }
     }
 

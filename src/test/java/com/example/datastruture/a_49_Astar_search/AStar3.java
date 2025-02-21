@@ -134,7 +134,7 @@ public class AStar3 {
         }
     }
 
-    public void test(AStar.MapInfo mapInfo) {
+    public boolean test(AStar.MapInfo mapInfo) {
         Set<Node> obstacles = new HashSet<>();
         for (int y = 0; y < mapInfo.maps.length; y++) {
             for (int x = 0; x < mapInfo.maps[y].length; x++) {
@@ -160,8 +160,10 @@ public class AStar3 {
                 System.out.print("(" + node.x + ", " + node.y + ")");
             }
             System.out.println();
+            return true;
         } else {
             System.out.println("No path found.");
+            return false;
         }
     }
 
