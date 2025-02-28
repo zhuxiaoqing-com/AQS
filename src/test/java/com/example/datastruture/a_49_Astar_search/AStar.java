@@ -1,7 +1,7 @@
 package com.example.datastruture.a_49_Astar_search;
 
 import com.example.datastruture.a_49_Astar_search.AStartGraph.AStarGraph;
-import com.example.datastruture.a_49_Astar_search.AStartGraph3.AStartGraph.AStarGraph3;
+import com.example.datastruture.a_49_Astar_search.AStartGraph3.AStarGraph3;
 
 import java.util.*;
 

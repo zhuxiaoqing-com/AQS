@@ -1,4 +1,4 @@
-package com.example.datastruture.a_49_Astar_search.AStartGraph3.AStartGraph;
+package com.example.datastruture.a_49_Astar_search.AStartGraph3;
 
 /**
  * @Auther: zhuxiaoqing

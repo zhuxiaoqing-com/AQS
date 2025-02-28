@@ -1,5 +1,7 @@
 package com.youxi.math.hexagon.beans;
 
+import java.util.Objects;
+
 /**
  * 偏移坐标
  */
@@ -18,6 +20,19 @@ public class OffsetCoordinates {
 
     public int getRow() {
         return row;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof OffsetCoordinates)) return false;
+        OffsetCoordinates that = (OffsetCoordinates) o;
+        return col == that.col && row == that.row;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(col, row);
     }
 
 

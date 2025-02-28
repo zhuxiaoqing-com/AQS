@@ -1,15 +1,34 @@
 package com.youxi.math.hexagon.aStar;
 
+
+import com.youxi.math.hexagon.HexagonManager;
+import com.youxi.math.hexagon.beans.Cell;
+
 import java.util.*;
 
 /**
  * 有向有权图的邻接表表示
  */
 public class Graph {
+    HexagonManager hexagonManager;
     private Map<GraphPoint, List<GraphEdge>> adjacencyList;
 
-    public Graph() {
+    public Graph(HexagonManager hexagonManager) {
+        this.hexagonManager = hexagonManager;
         adjacencyList = new HashMap<>();
+    }
+
+    public Graph buildGraph() {
+        Cell[] cells = hexagonManager.getCells();
+
+        Graph graph = new Graph(hexagonManager);
+        for (Cell cell : cells) {
+            GraphPoint cellP = new GraphPoint(cell.getIndex());
+            for (Integer neighbor : cell.getNeighbors()) {
+                graph.addGraphEdge(cellP, new GraphPoint(neighbor));
+            }
+        }
+        return graph;
     }
 
     public void addVertex(GraphPoint GraphPoint) {
@@ -17,7 +36,7 @@ public class Graph {
     }
 
     public void addGraphEdge(GraphPoint p1, GraphPoint p2) {
-        int distance = p2.distanceTo(p1);
+        int distance = hexagonManager.distance(p1.getIndex(), p2.getIndex());
         GraphEdge GraphEdge1 = new GraphEdge(p1, p2, distance);
         GraphEdge GraphEdge2 = new GraphEdge(p2, p1, distance);
 
@@ -45,4 +64,7 @@ public class Graph {
         return adjacencyList.keySet();
     }
 
+    public HexagonManager getHexagonManager() {
+        return hexagonManager;
+    }
 }

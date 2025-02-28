@@ -1,4 +1,4 @@
-package com.example.datastruture.a_49_Astar_search.AStartGraph3.AStartGraph;
+package com.example.datastruture.a_49_Astar_search.AStartGraph3;
 
 import java.util.*;
 
@@ -107,14 +107,14 @@ public class Graph {
         // 注意：我们不需要添加p3到p1的边，因为图是无向的
 
         System.out.println("Vertices: " + graph.getVertices());
-        for (com.example.datastruture.a_49_Astar_search.AStartGraph3.AStartGraph.GraphPoint GraphPoint : graph.getVertices()) {
+        for (com.example.datastruture.a_49_Astar_search.AStartGraph3.GraphPoint GraphPoint : graph.getVertices()) {
             System.out.println("GraphEdges of " + GraphPoint + ": " + graph.getGraphEdges(GraphPoint));
         }
     }
 
     public void print() {
         System.out.println("Vertices: " + getVertices());
-        for (com.example.datastruture.a_49_Astar_search.AStartGraph3.AStartGraph.GraphPoint GraphPoint : getVertices()) {
+        for (com.example.datastruture.a_49_Astar_search.AStartGraph3.GraphPoint GraphPoint : getVertices()) {
             System.out.println("GraphEdges of " + GraphPoint + ": " + getGraphEdges(GraphPoint));
         }
     }

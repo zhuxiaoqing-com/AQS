@@ -1,34 +1,37 @@
 package com.youxi.math.hexagon;
 
+
 import com.youxi.math.hexagon.beans.AxialCoordinates;
-import com.youxi.math.hexagon.beans.Cell;
 import com.youxi.math.hexagon.beans.Coordinates;
 import com.youxi.math.hexagon.beans.OffsetCoordinates;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class HexagonConst {
     public static final float outerRadius = 1.0f;
     public static final float innerRadius = outerRadius * 0.866025404f;
     public static final float sqrt3 = 0.866025404f * 2;
 
-    public static final int height = 6;
-    public static final int width = 6;
+    public static final int height = 8;
+    public static final int width = 7;
     public static OffsetCoordinates offsetReflection00 = new OffsetCoordinates(width - 1, height - 1);
     public static AxialCoordinates axialReflection00 = offsetToAxial(offsetReflection00);
     public static AxialCoordinates axial00 = offsetToAxial(new OffsetCoordinates(0, 0));
 
-    public static final int hexSize = height * width;
-    public static final int hexSelfSize = hexSize / 2;
+    public static final int HEX_SIZE = height * width;
+    public static final int HEX_SELF_SIZE = HEX_SIZE / 2;
 
-    public static final int invalidIndex = -1;
+    public static final int INVALID_INDEX = -1;
 
     //手里的牌最多可以有几张
-    public static final int handSize = 8;
+    public static final int HAND_SIZE = 8;
 
     /**
      * 是否是合法的手里坐标
      */
     public static boolean isValidHandIndex(int handIndex) {
-        return handIndex >= 0 && handIndex < handSize;
+        return handIndex >= 0 && handIndex < HAND_SIZE;
     }
 
     /**
@@ -48,8 +51,7 @@ public class HexagonConst {
      * 是否是合法的六边形格子
      */
     public static boolean isValidHex(int index) {
-        Cell cell = HexagonManager.getInstance().getCell(index);
-        return cell != null;
+        return index >= 0 && index < HEX_SIZE;
     }
 
 
@@ -140,11 +142,30 @@ public class HexagonConst {
         return axialReflection00.subtract(subtract);
     }
 
+
+    /**
+     * 获取周围的坐标，包含自己
+     */
+    public static List<AxialCoordinates> coordinateRange(AxialCoordinates hex, int N) {
+        ArrayList<AxialCoordinates> resultList = new ArrayList<>();
+        for (int q = -N; q <= N; q++) {
+            int rMin = Math.max(-N, -q - N);
+            int rMax = Math.min(N, -q + N);
+            for (int r = rMin; r <= rMax; r++) {
+                AxialCoordinates offset = new AxialCoordinates(q, r);
+                resultList.add(hex.add(offset));
+            }
+        }
+        return resultList;
+    }
+
+
+
     public static void main(String[] args) {
         AxialCoordinates axialCoordinates = new AxialCoordinates(3, 4);
         System.out.println(reflection(axialCoordinates));
 
-         axialCoordinates = new AxialCoordinates(0, 0);
+        axialCoordinates = new AxialCoordinates(0, 0);
         System.out.println(reflection(axialCoordinates));
 
         axialCoordinates = new AxialCoordinates(3, 5);
@@ -154,5 +175,6 @@ public class HexagonConst {
         axialCoordinates = new AxialCoordinates(-2, 5);
         System.out.println(reflection(axialCoordinates));
     }
+
 
 }
