@@ -1,0 +1,1936 @@
+code: 0 roomInfo {
+	chessBoard {
+		chessboardId: 1 belongToPlayer: 1 monster {
+			data {
+				monsterkey: 32 monsterid: 601 hexagonPos {
+					srl: 32 hexIndex: 51 handIndex: -1
+				}
+				belongToPlayer: 5
+			}
+			inChessBoard: 1 attrs {
+				type: 400 value: 80.0
+			}
+			attrs {
+				type: 1600 value: 5.0
+			}
+			attrs {
+				type: 1200 value: 0.0
+			}
+			attrs {
+				type: 500 value: 200.0
+			}
+			attrs {
+				type: 1300 value: 100.0
+			}
+			attrs {
+				type: 100 value: 500.0
+			}
+			attrs {
+				type: 200 value: 500.0
+			}
+			attrs {
+				type: 1400 value: 1.0
+			}
+			attrs {
+				type: 300 value: 2.0
+			}
+			attrs {
+				type: 1500 value: 1.0
+			}
+			dir {
+				x: 0.0 z: -1.0 y: 0.0
+			}
+			pos {
+				x: 4.3300004 y: 0.0 z: 10.500001
+			}
+			summonOwner: 0 deleteTime: 0
+		}
+		monster {
+			data {
+				monsterkey: 8 monsterid: 301 hexagonPos {
+					srl: 8 hexIndex: 0 handIndex: -1
+				}
+				belongToPlayer: 1
+			}
+			inChessBoard: 1 attrs {
+				type: 400 value: 80.0
+			}
+			attrs {
+				type: 1600 value: 5.0
+			}
+			attrs {
+				type: 1200 value: 0.0
+			}
+			attrs {
+				type: 500 value: 200.0
+			}
+			attrs {
+				type: 1300 value: 100.0
+			}
+			attrs {
+				type: 100 value: 500.0
+			}
+			attrs {
+				type: 200 value: 500.0
+			}
+			attrs {
+				type: 1400 value: 1.0
+			}
+			attrs {
+				type: 300 value: 2.0
+			}
+			attrs {
+				type: 1500 value: 1.0
+			}
+			dir {
+				x: 0.0 z: 1.0 y: 0.0
+			}
+			pos {
+				x: 0.0 y: 0.0 z: 0.0
+			}
+			summonOwner: 0 deleteTime: 0
+		}
+		monster {
+			data {
+				monsterkey: 9 monsterid: 101 hexagonPos {
+					srl: 9 hexIndex: 1 handIndex: -1
+				}
+				belongToPlayer: 1
+			}
+			inChessBoard: 1 attrs {
+				type: 400 value: 80.0
+			}
+			attrs {
+				type: 1600 value: 5.0
+			}
+			attrs {
+				type: 1200 value: 0.0
+			}
+			attrs {
+				type: 500 value: 200.0
+			}
+			attrs {
+				type: 1300 value: 100.0
+			}
+			attrs {
+				type: 100 value: 500.0
+			}
+			attrs {
+				type: 200 value: 500.0
+			}
+			attrs {
+				type: 1400 value: 1.0
+			}
+			attrs {
+				type: 300 value: 2.0
+			}
+			attrs {
+				type: 1500 value: 1.0
+			}
+			dir {
+				x: 0.0 z: 1.0 y: 0.0
+			}
+			pos {
+				x: 1.7320001 y: 0.0 z: 0.0
+			}
+			summonOwner: 0 deleteTime: 0
+		}
+		monster {
+			data {
+				monsterkey: 10 monsterid: 601 hexagonPos {
+					srl: 10 hexIndex: 2 handIndex: -1
+				}
+				belongToPlayer: 1
+			}
+			inChessBoard: 1 attrs {
+				type: 400 value: 80.0
+			}
+			attrs {
+				type: 1600 value: 5.0
+			}
+			attrs {
+				type: 1200 value: 0.0
+			}
+			attrs {
+				type: 500 value: 200.0
+			}
+			attrs {
+				type: 1300 value: 100.0
+			}
+			attrs {
+				type: 100 value: 500.0
+			}
+			attrs {
+				type: 200 value: 500.0
+			}
+			attrs {
+				type: 1400 value: 1.0
+			}
+			attrs {
+				type: 300 value: 2.0
+			}
+			attrs {
+				type: 1500 value: 1.0
+			}
+			dir {
+				x: 0.0 z: 1.0 y: 0.0
+			}
+			pos {
+				x: 3.4640002 y: 0.0 z: 0.0
+			}
+			summonOwner: 0 deleteTime: 0
+		}
+		monster {
+			data {
+				monsterkey: 11 monsterid: 101 hexagonPos {
+					srl: 11 hexIndex: 3 handIndex: -1
+				}
+				belongToPlayer: 1
+			}
+			inChessBoard: 1 attrs {
+				type: 400 value: 80.0
+			}
+			attrs {
+				type: 1600 value: 5.0
+			}
+			attrs {
+				type: 1200 value: 0.0
+			}
+			attrs {
+				type: 500 value: 200.0
+			}
+			attrs {
+				type: 1300 value: 100.0
+			}
+			attrs {
+				type: 100 value: 500.0
+			}
+			attrs {
+				type: 200 value: 500.0
+			}
+			attrs {
+				type: 1400 value: 1.0
+			}
+			attrs {
+				type: 300 value: 2.0
+			}
+			attrs {
+				type: 1500 value: 1.0
+			}
+			dir {
+				x: 0.0 z: 1.0 y: 0.0
+			}
+			pos {
+				x: 5.196 y: 0.0 z: 0.0
+			}
+			summonOwner: 0 deleteTime: 0
+		}
+		monster {
+			data {
+				monsterkey: 12 monsterid: 201 hexagonPos {
+					srl: 12 hexIndex: 4 handIndex: -1
+				}
+				belongToPlayer: 1
+			}
+			inChessBoard: 1 attrs {
+				type: 400 value: 80.0
+			}
+			attrs {
+				type: 1600 value: 5.0
+			}
+			attrs {
+				type: 1200 value: 0.0
+			}
+			attrs {
+				type: 500 value: 200.0
+			}
+			attrs {
+				type: 1300 value: 100.0
+			}
+			attrs {
+				type: 100 value: 500.0
+			}
+			attrs {
+				type: 200 value: 500.0
+			}
+			attrs {
+				type: 1400 value: 1.0
+			}
+			attrs {
+				type: 300 value: 2.0
+			}
+			attrs {
+				type: 1500 value: 1.0
+			}
+			dir {
+				x: 0.0 z: 1.0 y: 0.0
+			}
+			pos {
+				x: 6.9280005 y: 0.0 z: 0.0
+			}
+			summonOwner: 0 deleteTime: 0
+		}
+		monster {
+			data {
+				monsterkey: 28 monsterid: 401 hexagonPos {
+					srl: 28 hexIndex: 55 handIndex: -1
+				}
+				belongToPlayer: 5
+			}
+			inChessBoard: 1 attrs {
+				type: 400 value: 80.0
+			}
+			attrs {
+				type: 1600 value: 5.0
+			}
+			attrs {
+				type: 1200 value: 0.0
+			}
+			attrs {
+				type: 500 value: 200.0
+			}
+			attrs {
+				type: 1300 value: 100.0
+			}
+			attrs {
+				type: 100 value: 500.0
+			}
+			attrs {
+				type: 200 value: 500.0
+			}
+			attrs {
+				type: 1400 value: 1.0
+			}
+			attrs {
+				type: 300 value: 2.0
+			}
+			attrs {
+				type: 1500 value: 1.0
+			}
+			dir {
+				x: 0.0 z: -1.0 y: 0.0
+			}
+			pos {
+				x: 11.258 y: 0.0 z: 10.500001
+			}
+			summonOwner: 0 deleteTime: 0
+		}
+		monster {
+			data {
+				monsterkey: 29 monsterid: 101 hexagonPos {
+					srl: 29 hexIndex: 54 handIndex: -1
+				}
+				belongToPlayer: 5
+			}
+			inChessBoard: 1 attrs {
+				type: 400 value: 80.0
+			}
+			attrs {
+				type: 1600 value: 5.0
+			}
+			attrs {
+				type: 1200 value: 0.0
+			}
+			attrs {
+				type: 500 value: 200.0
+			}
+			attrs {
+				type: 1300 value: 100.0
+			}
+			attrs {
+				type: 100 value: 500.0
+			}
+			attrs {
+				type: 200 value: 500.0
+			}
+			attrs {
+				type: 1400 value: 1.0
+			}
+			attrs {
+				type: 300 value: 2.0
+			}
+			attrs {
+				type: 1500 value: 1.0
+			}
+			dir {
+				x: 0.0 z: -1.0 y: 0.0
+			}
+			pos {
+				x: 9.526 y: 0.0 z: 10.500001
+			}
+			summonOwner: 0 deleteTime: 0
+		}
+		monster {
+			data {
+				monsterkey: 30 monsterid: 501 hexagonPos {
+					srl: 30 hexIndex: 53 handIndex: -1
+				}
+				belongToPlayer: 5
+			}
+			inChessBoard: 1 attrs {
+				type: 400 value: 80.0
+			}
+			attrs {
+				type: 1600 value: 5.0
+			}
+			attrs {
+				type: 1200 value: 0.0
+			}
+			attrs {
+				type: 500 value: 200.0
+			}
+			attrs {
+				type: 1300 value: 100.0
+			}
+			attrs {
+				type: 100 value: 500.0
+			}
+			attrs {
+				type: 200 value: 500.0
+			}
+			attrs {
+				type: 1400 value: 1.0
+			}
+			attrs {
+				type: 300 value: 2.0
+			}
+			attrs {
+				type: 1500 value: 1.0
+			}
+			dir {
+				x: 0.0 z: -1.0 y: 0.0
+			}
+			pos {
+				x: 7.794 y: 0.0 z: 10.500001
+			}
+			summonOwner: 0 deleteTime: 0
+		}
+		monster {
+			data {
+				monsterkey: 31 monsterid: 201 hexagonPos {
+					srl: 31 hexIndex: 52 handIndex: -1
+				}
+				belongToPlayer: 5
+			}
+			inChessBoard: 1 attrs {
+				type: 400 value: 80.0
+			}
+			attrs {
+				type: 1600 value: 5.0
+			}
+			attrs {
+				type: 1200 value: 0.0
+			}
+			attrs {
+				type: 500 value: 200.0
+			}
+			attrs {
+				type: 1300 value: 100.0
+			}
+			attrs {
+				type: 100 value: 500.0
+			}
+			attrs {
+				type: 200 value: 500.0
+			}
+			attrs {
+				type: 1400 value: 1.0
+			}
+			attrs {
+				type: 300 value: 2.0
+			}
+			attrs {
+				type: 1500 value: 1.0
+			}
+			dir {
+				x: 0.0 z: -1.0 y: 0.0
+			}
+			pos {
+				x: 6.0620003 y: 0.0 z: 10.500001
+			}
+			summonOwner: 0 deleteTime: 0
+		}
+	}
+	chessBoard {
+		chessboardId: 2 belongToPlayer: 2
+	}
+	chessBoard {
+		chessboardId: 3 belongToPlayer: 3
+	}
+	chessBoard {
+		chessboardId: 4 belongToPlayer: 4
+	}
+	chessBoard {
+		chessboardId: 5 belongToPlayer: 5
+	}
+	chessBoard {
+		chessboardId: 6 belongToPlayer: 6
+	}
+	chessBoard {
+		chessboardId: 7 belongToPlayer: 7 monster {
+			data {
+				monsterkey: 38 monsterid: 101 hexagonPos {
+					srl: 38 hexIndex: 0 handIndex: -1
+				}
+				belongToPlayer: 7
+			}
+			inChessBoard: 7 attrs {
+				type: 400 value: 80.0
+			}
+			attrs {
+				type: 1600 value: 5.0
+			}
+			attrs {
+				type: 1200 value: 0.0
+			}
+			attrs {
+				type: 500 value: 200.0
+			}
+			attrs {
+				type: 1300 value: 100.0
+			}
+			attrs {
+				type: 100 value: 500.0
+			}
+			attrs {
+				type: 200 value: 500.0
+			}
+			attrs {
+				type: 1400 value: 1.0
+			}
+			attrs {
+				type: 300 value: 2.0
+			}
+			attrs {
+				type: 1500 value: 1.0
+			}
+			dir {
+				x: 0.0 z: 1.0 y: 0.0
+			}
+			pos {
+				x: 0.0 y: 0.0 z: 0.0
+			}
+			summonOwner: 0 deleteTime: 0
+		}
+		monster {
+			data {
+				monsterkey: 39 monsterid: 501 hexagonPos {
+					srl: 39 hexIndex: 1 handIndex: -1
+				}
+				belongToPlayer: 7
+			}
+			inChessBoard: 7 attrs {
+				type: 400 value: 80.0
+			}
+			attrs {
+				type: 1600 value: 5.0
+			}
+			attrs {
+				type: 1200 value: 0.0
+			}
+			attrs {
+				type: 500 value: 200.0
+			}
+			attrs {
+				type: 1300 value: 100.0
+			}
+			attrs {
+				type: 100 value: 500.0
+			}
+			attrs {
+				type: 200 value: 500.0
+			}
+			attrs {
+				type: 1400 value: 1.0
+			}
+			attrs {
+				type: 300 value: 2.0
+			}
+			attrs {
+				type: 1500 value: 1.0
+			}
+			dir {
+				x: 0.0 z: 1.0 y: 0.0
+			}
+			pos {
+				x: 1.7320001 y: 0.0 z: 0.0
+			}
+			summonOwner: 0 deleteTime: 0
+		}
+		monster {
+			data {
+				monsterkey: 40 monsterid: 201 hexagonPos {
+					srl: 40 hexIndex: 2 handIndex: -1
+				}
+				belongToPlayer: 7
+			}
+			inChessBoard: 7 attrs {
+				type: 400 value: 80.0
+			}
+			attrs {
+				type: 1600 value: 5.0
+			}
+			attrs {
+				type: 1200 value: 0.0
+			}
+			attrs {
+				type: 500 value: 200.0
+			}
+			attrs {
+				type: 1300 value: 100.0
+			}
+			attrs {
+				type: 100 value: 500.0
+			}
+			attrs {
+				type: 200 value: 500.0
+			}
+			attrs {
+				type: 1400 value: 1.0
+			}
+			attrs {
+				type: 300 value: 2.0
+			}
+			attrs {
+				type: 1500 value: 1.0
+			}
+			dir {
+				x: 0.0 z: 1.0 y: 0.0
+			}
+			pos {
+				x: 3.4640002 y: 0.0 z: 0.0
+			}
+			summonOwner: 0 deleteTime: 0
+		}
+		monster {
+			data {
+				monsterkey: 8 monsterid: 301 hexagonPos {
+					srl: 8 hexIndex: 55 handIndex: -1
+				}
+				belongToPlayer: 1
+			}
+			inChessBoard: 7 attrs {
+				type: 400 value: 80.0
+			}
+			attrs {
+				type: 1600 value: 5.0
+			}
+			attrs {
+				type: 1200 value: 0.0
+			}
+			attrs {
+				type: 500 value: 200.0
+			}
+			attrs {
+				type: 1300 value: 100.0
+			}
+			attrs {
+				type: 100 value: 500.0
+			}
+			attrs {
+				type: 200 value: 500.0
+			}
+			attrs {
+				type: 1400 value: 1.0
+			}
+			attrs {
+				type: 300 value: 2.0
+			}
+			attrs {
+				type: 1500 value: 1.0
+			}
+			dir {
+				x: 0.0 z: -1.0 y: 0.0
+			}
+			pos {
+				x: 11.258 y: 0.0 z: 10.500001
+			}
+			summonOwner: 0 deleteTime: 0
+		}
+		monster {
+			data {
+				monsterkey: 41 monsterid: 101 hexagonPos {
+					srl: 41 hexIndex: 3 handIndex: -1
+				}
+				belongToPlayer: 7
+			}
+			inChessBoard: 7 attrs {
+				type: 400 value: 80.0
+			}
+			attrs {
+				type: 1600 value: 5.0
+			}
+			attrs {
+				type: 1200 value: 0.0
+			}
+			attrs {
+				type: 500 value: 200.0
+			}
+			attrs {
+				type: 1300 value: 100.0
+			}
+			attrs {
+				type: 100 value: 500.0
+			}
+			attrs {
+				type: 200 value: 500.0
+			}
+			attrs {
+				type: 1400 value: 1.0
+			}
+			attrs {
+				type: 300 value: 2.0
+			}
+			attrs {
+				type: 1500 value: 1.0
+			}
+			dir {
+				x: 0.0 z: 1.0 y: 0.0
+			}
+			pos {
+				x: 5.196 y: 0.0 z: 0.0
+			}
+			summonOwner: 0 deleteTime: 0
+		}
+		monster {
+			data {
+				monsterkey: 9 monsterid: 101 hexagonPos {
+					srl: 9 hexIndex: 54 handIndex: -1
+				}
+				belongToPlayer: 1
+			}
+			inChessBoard: 7 attrs {
+				type: 400 value: 80.0
+			}
+			attrs {
+				type: 1600 value: 5.0
+			}
+			attrs {
+				type: 1200 value: 0.0
+			}
+			attrs {
+				type: 500 value: 200.0
+			}
+			attrs {
+				type: 1300 value: 100.0
+			}
+			attrs {
+				type: 100 value: 500.0
+			}
+			attrs {
+				type: 200 value: 500.0
+			}
+			attrs {
+				type: 1400 value: 1.0
+			}
+			attrs {
+				type: 300 value: 2.0
+			}
+			attrs {
+				type: 1500 value: 1.0
+			}
+			dir {
+				x: 0.0 z: -1.0 y: 0.0
+			}
+			pos {
+				x: 9.526 y: 0.0 z: 10.500001
+			}
+			summonOwner: 0 deleteTime: 0
+		}
+		monster {
+			data {
+				monsterkey: 42 monsterid: 301 hexagonPos {
+					srl: 42 hexIndex: 4 handIndex: -1
+				}
+				belongToPlayer: 7
+			}
+			inChessBoard: 7 attrs {
+				type: 400 value: 80.0
+			}
+			attrs {
+				type: 1600 value: 5.0
+			}
+			attrs {
+				type: 1200 value: 0.0
+			}
+			attrs {
+				type: 500 value: 200.0
+			}
+			attrs {
+				type: 1300 value: 100.0
+			}
+			attrs {
+				type: 100 value: 500.0
+			}
+			attrs {
+				type: 200 value: 500.0
+			}
+			attrs {
+				type: 1400 value: 1.0
+			}
+			attrs {
+				type: 300 value: 2.0
+			}
+			attrs {
+				type: 1500 value: 1.0
+			}
+			dir {
+				x: 0.0 z: 1.0 y: 0.0
+			}
+			pos {
+				x: 6.9280005 y: 0.0 z: 0.0
+			}
+			summonOwner: 0 deleteTime: 0
+		}
+		monster {
+			data {
+				monsterkey: 10 monsterid: 601 hexagonPos {
+					srl: 10 hexIndex: 53 handIndex: -1
+				}
+				belongToPlayer: 1
+			}
+			inChessBoard: 7 attrs {
+				type: 400 value: 80.0
+			}
+			attrs {
+				type: 1600 value: 5.0
+			}
+			attrs {
+				type: 1200 value: 0.0
+			}
+			attrs {
+				type: 500 value: 200.0
+			}
+			attrs {
+				type: 1300 value: 100.0
+			}
+			attrs {
+				type: 100 value: 500.0
+			}
+			attrs {
+				type: 200 value: 500.0
+			}
+			attrs {
+				type: 1400 value: 1.0
+			}
+			attrs {
+				type: 300 value: 2.0
+			}
+			attrs {
+				type: 1500 value: 1.0
+			}
+			dir {
+				x: 0.0 z: -1.0 y: 0.0
+			}
+			pos {
+				x: 7.794 y: 0.0 z: 10.500001
+			}
+			summonOwner: 0 deleteTime: 0
+		}
+		monster {
+			data {
+				monsterkey: 11 monsterid: 101 hexagonPos {
+					srl: 11 hexIndex: 52 handIndex: -1
+				}
+				belongToPlayer: 1
+			}
+			inChessBoard: 7 attrs {
+				type: 400 value: 80.0
+			}
+			attrs {
+				type: 1600 value: 5.0
+			}
+			attrs {
+				type: 1200 value: 0.0
+			}
+			attrs {
+				type: 500 value: 200.0
+			}
+			attrs {
+				type: 1300 value: 100.0
+			}
+			attrs {
+				type: 100 value: 500.0
+			}
+			attrs {
+				type: 200 value: 500.0
+			}
+			attrs {
+				type: 1400 value: 1.0
+			}
+			attrs {
+				type: 300 value: 2.0
+			}
+			attrs {
+				type: 1500 value: 1.0
+			}
+			dir {
+				x: 0.0 z: -1.0 y: 0.0
+			}
+			pos {
+				x: 6.0620003 y: 0.0 z: 10.500001
+			}
+			summonOwner: 0 deleteTime: 0
+		}
+		monster {
+			data {
+				monsterkey: 12 monsterid: 201 hexagonPos {
+					srl: 12 hexIndex: 51 handIndex: -1
+				}
+				belongToPlayer: 1
+			}
+			inChessBoard: 7 attrs {
+				type: 400 value: 80.0
+			}
+			attrs {
+				type: 1600 value: 5.0
+			}
+			attrs {
+				type: 1200 value: 0.0
+			}
+			attrs {
+				type: 500 value: 200.0
+			}
+			attrs {
+				type: 1300 value: 100.0
+			}
+			attrs {
+				type: 100 value: 500.0
+			}
+			attrs {
+				type: 200 value: 500.0
+			}
+			attrs {
+				type: 1400 value: 1.0
+			}
+			attrs {
+				type: 300 value: 2.0
+			}
+			attrs {
+				type: 1500 value: 1.0
+			}
+			dir {
+				x: 0.0 z: -1.0 y: 0.0
+			}
+			pos {
+				x: 4.3300004 y: 0.0 z: 10.500001
+			}
+			summonOwner: 0 deleteTime: 0
+		}
+	}
+	chessBoard {
+		chessboardId: 15764831995265024 belongToPlayer: 15764831995265024
+	}
+	roleInfo {
+		playerInfo {
+			baseInfo {
+				playerId: 1 playerName: "\345\221\206\345\215\241\344\270\275"
+				headId: 0 headFrame: 0
+			}
+			score: 0 petId: 0 cardTableId: 0 attackEffectId: 0
+		}
+		exp {
+			exp: 20 lv: 6 expCost: 4 maxBattleChessNum: 6
+		}
+		gold {
+			gold: 507 maxInterest: 5
+		}
+		winLoseInfo {
+			winNUm: 0 loseNum: 1
+		}
+		pcCombatHistory {
+			roundLv: 1 pvpPlayerId: 2 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 2 pvpPlayerId: 2 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 3 pvpPlayerId: 2 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 4 pvpPlayerId: 2 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 5 pvpPlayerId: 2 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 6 pvpPlayerId: 2 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 7 pvpPlayerId: 2 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 8 pvpPlayerId: 2 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 9 pvpPlayerId: 2 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 10 pvpPlayerId: 2 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 11 pvpPlayerId: 2 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 12 pvpPlayerId: 2 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 13 pvpPlayerId: 2 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 14 pvpPlayerId: 2 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 15 pvpPlayerId: 2 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 16 pvpPlayerId: 2 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 17 pvpPlayerId: 2 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 18 pvpPlayerId: 2 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 19 pvpPlayerId: 2 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 20 pvpPlayerId: 2 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 21 pvpPlayerId: 2 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 22 pvpPlayerId: 2 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 23 pvpPlayerId: 2 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 24 pvpPlayerId: 2 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 25 pvpPlayerId: 3 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 26 pvpPlayerId: 3 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 27 pvpPlayerId: 3 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 28 pvpPlayerId: 4 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 29 pvpPlayerId: 4 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 30 pvpPlayerId: 4 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 31 pvpPlayerId: 4 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 32 pvpPlayerId: 4 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 33 pvpPlayerId: 4 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 34 pvpPlayerId: 4 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 35 pvpPlayerId: 4 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 36 pvpPlayerId: 4 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 37 pvpPlayerId: 4 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 38 pvpPlayerId: 4 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 39 pvpPlayerId: 4 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 40 pvpPlayerId: 4 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 41 pvpPlayerId: 5 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 42 pvpPlayerId: 5 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 43 pvpPlayerId: 5 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 44 pvpPlayerId: 5 pvpIsMirror: false win: false
+		}
+		chessboardSrl: 1 inChessboardSrl: 1
+	}
+	roleInfo {
+		playerInfo {
+			baseInfo {
+				playerId: 2 playerName: "\346\213\211\345\233\233\346\234\210"
+				headId: 0 headFrame: 0
+			}
+			score: 0 petId: 0 cardTableId: 0 attackEffectId: 0
+		}
+		exp {
+			exp: 20 lv: 6 expCost: 4 maxBattleChessNum: 6
+		}
+		gold {
+			gold: 494 maxInterest: 5
+		}
+		winLoseInfo {
+			winNUm: 0 loseNum: 3
+		}
+		pcCombatHistory {
+			roundLv: 1 pvpPlayerId: 1 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 2 pvpPlayerId: 1 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 3 pvpPlayerId: 1 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 4 pvpPlayerId: 1 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 5 pvpPlayerId: 1 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 6 pvpPlayerId: 1 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 7 pvpPlayerId: 1 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 8 pvpPlayerId: 1 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 9 pvpPlayerId: 1 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 10 pvpPlayerId: 1 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 11 pvpPlayerId: 1 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 12 pvpPlayerId: 1 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 13 pvpPlayerId: 1 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 14 pvpPlayerId: 1 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 15 pvpPlayerId: 1 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 16 pvpPlayerId: 1 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 17 pvpPlayerId: 1 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 18 pvpPlayerId: 1 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 19 pvpPlayerId: 1 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 20 pvpPlayerId: 1 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 21 pvpPlayerId: 1 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 22 pvpPlayerId: 1 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 23 pvpPlayerId: 1 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 24 pvpPlayerId: 1 pvpIsMirror: false win: false
+		}
+		chessboardSrl: 2 inChessboardSrl: 2
+	}
+	roleInfo {
+		playerInfo {
+			baseInfo {
+				playerId: 3 playerName: "\350\216\211\346\240\274\344\271\220\344\271\220"
+				headId: 0 headFrame: 0
+			}
+			score: 0 petId: 0 cardTableId: 0 attackEffectId: 0
+		}
+		exp {
+			exp: 20 lv: 6 expCost: 4 maxBattleChessNum: 6
+		}
+		gold {
+			gold: 465 maxInterest: 5
+		}
+		winLoseInfo {
+			winNUm: 0 loseNum: 5
+		}
+		pcCombatHistory {
+			roundLv: 1 pvpPlayerId: 4 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 2 pvpPlayerId: 4 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 3 pvpPlayerId: 4 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 4 pvpPlayerId: 4 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 5 pvpPlayerId: 4 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 6 pvpPlayerId: 4 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 7 pvpPlayerId: 4 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 8 pvpPlayerId: 4 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 9 pvpPlayerId: 4 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 10 pvpPlayerId: 4 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 11 pvpPlayerId: 4 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 12 pvpPlayerId: 4 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 13 pvpPlayerId: 4 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 14 pvpPlayerId: 4 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 15 pvpPlayerId: 4 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 16 pvpPlayerId: 4 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 17 pvpPlayerId: 4 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 18 pvpPlayerId: 4 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 19 pvpPlayerId: 4 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 20 pvpPlayerId: 4 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 21 pvpPlayerId: 4 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 22 pvpPlayerId: 4 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 23 pvpPlayerId: 4 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 24 pvpPlayerId: 4 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 25 pvpPlayerId: 1 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 26 pvpPlayerId: 1 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 27 pvpPlayerId: 1 pvpIsMirror: false win: false
+		}
+		chessboardSrl: 3 inChessboardSrl: 3
+	}
+	roleInfo {
+		playerInfo {
+			baseInfo {
+				playerId: 4 playerName: "\351\234\215\345\212\263\346\226\257"
+				headId: 0 headFrame: 0
+			}
+			score: 0 petId: 0 cardTableId: 0 attackEffectId: 0
+		}
+		exp {
+			exp: 20 lv: 6 expCost: 4 maxBattleChessNum: 6
+		}
+		gold {
+			gold: 452 maxInterest: 5
+		}
+		winLoseInfo {
+			winNUm: 0 loseNum: 2
+		}
+		pcCombatHistory {
+			roundLv: 1 pvpPlayerId: 3 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 2 pvpPlayerId: 3 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 3 pvpPlayerId: 3 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 4 pvpPlayerId: 3 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 5 pvpPlayerId: 3 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 6 pvpPlayerId: 3 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 7 pvpPlayerId: 3 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 8 pvpPlayerId: 3 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 9 pvpPlayerId: 3 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 10 pvpPlayerId: 3 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 11 pvpPlayerId: 3 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 12 pvpPlayerId: 3 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 13 pvpPlayerId: 3 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 14 pvpPlayerId: 3 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 15 pvpPlayerId: 3 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 16 pvpPlayerId: 3 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 17 pvpPlayerId: 3 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 18 pvpPlayerId: 3 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 19 pvpPlayerId: 3 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 20 pvpPlayerId: 3 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 21 pvpPlayerId: 3 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 22 pvpPlayerId: 3 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 23 pvpPlayerId: 3 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 24 pvpPlayerId: 3 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 25 pvpPlayerId: 5 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 26 pvpPlayerId: 5 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 27 pvpPlayerId: 5 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 28 pvpPlayerId: 1 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 29 pvpPlayerId: 1 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 30 pvpPlayerId: 1 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 31 pvpPlayerId: 1 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 32 pvpPlayerId: 1 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 33 pvpPlayerId: 1 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 34 pvpPlayerId: 1 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 35 pvpPlayerId: 1 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 36 pvpPlayerId: 1 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 37 pvpPlayerId: 1 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 38 pvpPlayerId: 1 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 39 pvpPlayerId: 1 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 40 pvpPlayerId: 1 pvpIsMirror: false win: false
+		}
+		chessboardSrl: 4 inChessboardSrl: 4
+	}
+	roleInfo {
+		playerInfo {
+			baseInfo {
+				playerId: 5 playerName: "\350\276\233\344\271\224\344\271\224"
+				headId: 0 headFrame: 0
+			}
+			score: 0 petId: 0 cardTableId: 0 attackEffectId: 0
+		}
+		exp {
+			exp: 20 lv: 6 expCost: 4 maxBattleChessNum: 6
+		}
+		gold {
+			gold: 453 maxInterest: 5
+		}
+		winLoseInfo {
+			winNUm: 1 loseNum: 0
+		}
+		pcCombatHistory {
+			roundLv: 1 pvpPlayerId: 6 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 2 pvpPlayerId: 6 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 3 pvpPlayerId: 6 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 4 pvpPlayerId: 6 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 5 pvpPlayerId: 6 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 6 pvpPlayerId: 6 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 7 pvpPlayerId: 6 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 8 pvpPlayerId: 6 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 9 pvpPlayerId: 6 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 10 pvpPlayerId: 6 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 11 pvpPlayerId: 6 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 12 pvpPlayerId: 6 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 13 pvpPlayerId: 6 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 14 pvpPlayerId: 6 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 15 pvpPlayerId: 6 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 16 pvpPlayerId: 6 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 17 pvpPlayerId: 6 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 18 pvpPlayerId: 6 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 19 pvpPlayerId: 6 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 20 pvpPlayerId: 6 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 21 pvpPlayerId: 6 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 22 pvpPlayerId: 6 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 23 pvpPlayerId: 6 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 24 pvpPlayerId: 6 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 25 pvpPlayerId: 4 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 26 pvpPlayerId: 4 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 27 pvpPlayerId: 4 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 28 pvpPlayerId: 6 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 29 pvpPlayerId: 6 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 30 pvpPlayerId: 7 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 31 pvpPlayerId: 7 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 32 pvpPlayerId: 7 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 33 pvpPlayerId: 7 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 34 pvpPlayerId: 7 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 35 pvpPlayerId: 7 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 36 pvpPlayerId: 7 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 37 pvpPlayerId: 7 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 38 pvpPlayerId: 7 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 39 pvpPlayerId: 7 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 40 pvpPlayerId: 7 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 41 pvpPlayerId: 1 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 42 pvpPlayerId: 1 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 43 pvpPlayerId: 1 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 44 pvpPlayerId: 1 pvpIsMirror: false win: true
+		}
+		chessboardSrl: 5 inChessboardSrl: 1
+	}
+	roleInfo {
+		playerInfo {
+			baseInfo {
+				playerId: 6 playerName: "\346\235\276\351\273\216\346\230\216"
+				headId: 0 headFrame: 0
+			}
+			score: 0 petId: 0 cardTableId: 0 attackEffectId: 0
+		}
+		exp {
+			exp: 20 lv: 6 expCost: 4 maxBattleChessNum: 6
+		}
+		gold {
+			gold: 460 maxInterest: 5
+		}
+		winLoseInfo {
+			winNUm: 0 loseNum: 3
+		}
+		pcCombatHistory {
+			roundLv: 1 pvpPlayerId: 5 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 2 pvpPlayerId: 5 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 3 pvpPlayerId: 5 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 4 pvpPlayerId: 5 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 5 pvpPlayerId: 5 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 6 pvpPlayerId: 5 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 7 pvpPlayerId: 5 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 8 pvpPlayerId: 5 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 9 pvpPlayerId: 5 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 10 pvpPlayerId: 5 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 11 pvpPlayerId: 5 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 12 pvpPlayerId: 5 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 13 pvpPlayerId: 5 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 14 pvpPlayerId: 5 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 15 pvpPlayerId: 5 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 16 pvpPlayerId: 5 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 17 pvpPlayerId: 5 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 18 pvpPlayerId: 5 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 19 pvpPlayerId: 5 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 20 pvpPlayerId: 5 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 21 pvpPlayerId: 5 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 22 pvpPlayerId: 5 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 23 pvpPlayerId: 5 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 24 pvpPlayerId: 5 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 25 pvpPlayerId: 7 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 26 pvpPlayerId: 7 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 27 pvpPlayerId: 7 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 28 pvpPlayerId: 5 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 29 pvpPlayerId: 5 pvpIsMirror: false win: false
+		}
+		chessboardSrl: 6 inChessboardSrl: 6
+	}
+	roleInfo {
+		playerInfo {
+			baseInfo {
+				playerId: 7 playerName: "\346\264\233\351\253\230\346\211\213"
+				headId: 0 headFrame: 0
+			}
+			score: 0 petId: 0 cardTableId: 0 attackEffectId: 0
+		}
+		exp {
+			exp: 20 lv: 6 expCost: 4 maxBattleChessNum: 6
+		}
+		gold {
+			gold: 466 maxInterest: 5
+		}
+		winLoseInfo {
+			winNUm: 5 loseNum: 0
+		}
+		pcCombatHistory {
+			roundLv: 1 pvpPlayerId: 15764831995265024 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 2 pvpPlayerId: 15764831995265024 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 3 pvpPlayerId: 15764831995265024 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 4 pvpPlayerId: 15764831995265024 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 5 pvpPlayerId: 15764831995265024 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 6 pvpPlayerId: 15764831995265024 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 7 pvpPlayerId: 15764831995265024 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 8 pvpPlayerId: 15764831995265024 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 9 pvpPlayerId: 15764831995265024 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 10 pvpPlayerId: 15764831995265024 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 11 pvpPlayerId: 15764831995265024 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 12 pvpPlayerId: 15764831995265024 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 13 pvpPlayerId: 15764831995265024 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 14 pvpPlayerId: 15764831995265024 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 15 pvpPlayerId: 15764831995265024 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 16 pvpPlayerId: 15764831995265024 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 17 pvpPlayerId: 15764831995265024 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 18 pvpPlayerId: 15764831995265024 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 19 pvpPlayerId: 15764831995265024 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 20 pvpPlayerId: 15764831995265024 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 21 pvpPlayerId: 15764831995265024 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 22 pvpPlayerId: 15764831995265024 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 23 pvpPlayerId: 15764831995265024 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 24 pvpPlayerId: 15764831995265024 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 25 pvpPlayerId: 6 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 26 pvpPlayerId: 6 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 27 pvpPlayerId: 6 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 28 pvpPlayerId: 15764831995265024 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 29 pvpPlayerId: 15764831995265024 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 30 pvpPlayerId: 5 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 31 pvpPlayerId: 5 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 32 pvpPlayerId: 5 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 33 pvpPlayerId: 5 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 34 pvpPlayerId: 5 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 35 pvpPlayerId: 5 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 36 pvpPlayerId: 5 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 37 pvpPlayerId: 5 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 38 pvpPlayerId: 5 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 39 pvpPlayerId: 5 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 40 pvpPlayerId: 5 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 41 pvpPlayerId: 7 pvpIsMirror: true win: true
+		}
+		pcCombatHistory {
+			roundLv: 42 pvpPlayerId: 1 pvpIsMirror: true win: true
+		}
+		pcCombatHistory {
+			roundLv: 43 pvpPlayerId: 7 pvpIsMirror: true win: true
+		}
+		pcCombatHistory {
+			roundLv: 44 pvpPlayerId: 7 pvpIsMirror: true win: true
+		}
+		chessboardSrl: 7 inChessboardSrl: 7
+	}
+	roleInfo {
+		playerInfo {
+			baseInfo {
+				playerId: 15764831995265024 playerName: "\345\274\227\346\234\227\344\271\214\344\272\221"
+				headId: 2 headFrame: 3
+			}
+			osType: 0 score: 0 historyScore: 0 petId: 1 cardTableId: 1 attackEffectId: 3 heroLocNum: 2 cardSkinTotalLevel: 0 province: 20 continueBattleWin4: 0 totalRankPlayNum: 0 totalRankPlayWin1: 0
+		}
+		exp {
+			exp: 20 lv: 6 expCost: 4 maxBattleChessNum: 6
+		}
+		gold {
+			gold: 471 maxInterest: 5
+		}
+		winLoseInfo {
+			winNUm: 0 loseNum: 3
+		}
+		pcCombatHistory {
+			roundLv: 1 pvpPlayerId: 7 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 2 pvpPlayerId: 7 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 3 pvpPlayerId: 7 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 4 pvpPlayerId: 7 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 5 pvpPlayerId: 7 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 6 pvpPlayerId: 7 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 7 pvpPlayerId: 7 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 8 pvpPlayerId: 7 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 9 pvpPlayerId: 7 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 10 pvpPlayerId: 7 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 11 pvpPlayerId: 7 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 12 pvpPlayerId: 7 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 13 pvpPlayerId: 7 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 14 pvpPlayerId: 7 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 15 pvpPlayerId: 7 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 16 pvpPlayerId: 7 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 17 pvpPlayerId: 7 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 18 pvpPlayerId: 7 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 19 pvpPlayerId: 7 pvpIsMirror: false win: true
+		}
+		pcCombatHistory {
+			roundLv: 20 pvpPlayerId: 7 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 21 pvpPlayerId: 7 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 22 pvpPlayerId: 7 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 23 pvpPlayerId: 7 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 24 pvpPlayerId: 7 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 25 pvpPlayerId: 5 pvpIsMirror: true win: false
+		}
+		pcCombatHistory {
+			roundLv: 26 pvpPlayerId: 3 pvpIsMirror: true win: true
+		}
+		pcCombatHistory {
+			roundLv: 27 pvpPlayerId: 5 pvpIsMirror: true win: false
+		}
+		pcCombatHistory {
+			roundLv: 28 pvpPlayerId: 7 pvpIsMirror: false win: false
+		}
+		pcCombatHistory {
+			roundLv: 29 pvpPlayerId: 7 pvpIsMirror: false win: false
+		}
+		chessboardSrl: 15764831995265024 inChessboardSrl: 15764831995265024
+	}
+	roomState {
+		state: 2 startTime: 1740819311751
+	}
+	round {
+		roundLv: 45 phase: 2 phaseEndTime: 1740841962946 pvpInfo {
+			group {
+				redPlayerId: 5 redIsMirror: false chessboardSrl: 1 state: 1 winnerId: 0
+			}
+			group {
+				redPlayerId: 1 redIsMirror: true chessboardSrl: 7 state: 1 winnerId: 0
+			}
+		}
+	}
+	rank {
+		roleRank: 1 roleRank: 7 roleRank: 5
+	}
+	gameStartTime: 1740819311751
+}

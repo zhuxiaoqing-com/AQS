@@ -1,5 +1,6 @@
 package com.example.demo4;
 
+import cn.hutool.core.lang.func.VoidFunc0;
 import com.example.demo1.util.vo.Vector2f;
 import com.example.代码优化.重构.第一个案例.简介;
 import com.google.common.eventbus.EventBus;
@@ -14,8 +15,7 @@ import org.web3j.abi.datatypes.Int;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -62,7 +62,7 @@ public class Test18 {
     }
 
     @Test
-    public void test02(){
+    public void test02() {
         Dir dir0 = new Dir(1000, 0);
         dir0 = dir0.multiply(1);
         Dir dir1 = new Dir(000, 1000);
@@ -71,10 +71,10 @@ public class Test18 {
 
         System.out.println(CMath.getUnityRotateYDegree(sub));
 
-         dir0 = new Dir(1000, 0);
+        dir0 = new Dir(1000, 0);
         dir0 = dir0.multiply(2);
-         dir1 = new Dir(000, 1000);
-         sub = dir0.sub(dir1);
+        dir1 = new Dir(000, 1000);
+        sub = dir0.sub(dir1);
         System.out.println(sub);
 
         System.out.println(CMath.getUnityRotateYDegree(sub));
@@ -82,15 +82,15 @@ public class Test18 {
 
 
     @Test
-    public void test03(){
+    public void test03() {
         Dir dir0 = CMath.getUnityDirByRotateYFromX(20);
         float length = 1000;
         dir0 = dir0.multiply(length);
         Dir dir1 = CMath.getUnityDirByRotateYFromX(100).normalize();
 
-        dir0 = new Dir(3000,3000);
+        dir0 = new Dir(3000, 3000);
         length = 3f;
-        dir1 = new Dir(1000,-1000);
+        dir1 = new Dir(1000, -1000);
 
         System.out.println(CMath.getUnityRotateYDegree(dir0));
         System.out.println(CMath.getUnityRotateYDegree(dir1));
@@ -113,7 +113,7 @@ public class Test18 {
     }
 
     @Test
-    public void test04(){
+    public void test04() {
         int degree0 = 90;
         int degree1 = 0;
 
@@ -122,7 +122,7 @@ public class Test18 {
 
         int index = 10;
         for (int i = 1; i < index; i++) {
-            a(i/10f, degree0, degree1);
+            a(i / 10f, degree0, degree1);
         }
 
         int length = 100;
@@ -139,9 +139,6 @@ public class Test18 {
         Dir dir1 = CMath.getUnityDirByRotateYFromX(degree1).normalize();
 
 
-
-
-
         Vector2f v0 = new Vector2f(dir0.getX() / 1000F, dir0.getZ() / 1000F);
         Vector2f v1 = new Vector2f(dir1.getX() / 1000F, dir1.getZ() / 1000F);
 
@@ -152,17 +149,17 @@ public class Test18 {
          */
        /* float x = v0.x - v1.x  * 0.5f*length;
         float z = v0.y - v1.y  * 0.5f*length;*/
-        float x = v0.x - v1.x ;
-        float z = v0.y - v1.y ;
+        float x = v0.x - v1.x;
+        float z = v0.y - v1.y;
 
         Dir dir = new Dir(x, z);
-       // System.out.println(CMath.getUnityRotateYDegree(dir));
+        // System.out.println(CMath.getUnityRotateYDegree(dir));
         System.out.println(CMath.getUnityRotateYDegree(dir));
     }
 
 
     @Test
-    public void test05(){
+    public void test05() {
         int h = 8;
         int w = 7;
 
@@ -170,16 +167,70 @@ public class Test18 {
         for (int z = 0; z < h; z++) {
             for (int x = 0; x < w; x++) {
                 int index = z * w + x;
-                System.out.println(i +"   "+ index);
+                System.out.println(i + "   " + index);
                 i++;
             }
         }
 
     }
 
+    long lastTime;
+    long interval;
+
+
+    long nanoLastTime;
+    long nanoInterval;
+    long nanoInterval111;
+
+    int count;
+    long allSum;
+    long allSumNano;
+
+    @Test
+    public void test08() throws InterruptedException {
+        ScheduledThreadPoolExecutor scheduled = new ScheduledThreadPoolExecutor(2);
+
+        Runnable runnable = () -> {
+            if (nanoLastTime <= 0) {
+                nanoLastTime = System.nanoTime();
+                lastTime = System.currentTimeMillis();
+                return;
+            }
+            count++;
+            long currNano = System.nanoTime();
+            nanoInterval = currNano - nanoLastTime;
+            nanoLastTime = currNano;
+            allSumNano = allSumNano + nanoInterval;
+
+            long time = TimeUtil.getTime();
+            interval = time - lastTime;
+            lastTime = time;
+            allSum = allSum + interval;
+        };
+
+        ScheduledFuture<?> future = scheduled.scheduleAtFixedRate(runnable, 100,
+                100, TimeUnit.MILLISECONDS);
+
+        int index = 0;
+        while (true) {
+            Thread.sleep(1);
+            if (nanoInterval111 != nanoInterval) {
+                if (index++ > 50) {
+                    break;
+                }
+                System.out.println(nanoInterval / 1000_000 + "    " + interval);
+                nanoInterval111 = nanoInterval;
+            }
+        }
+
+        System.out.println("count " + count + "count *100  " + (count * 100));
+        System.out.println("allsum " + allSum);
+        System.out.println("allSumNano " + allSumNano);
+
+    }
+
+
 }
-
-
 
 
 /**
