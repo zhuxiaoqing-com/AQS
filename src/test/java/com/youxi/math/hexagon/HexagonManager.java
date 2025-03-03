@@ -9,6 +9,7 @@ import com.youxi.math.hexagon.beans.Cell;
 import com.youxi.math.hexagon.beans.OffsetCoordinates;
 
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class HexagonManager {
@@ -79,6 +80,32 @@ public class HexagonManager {
             {{+1, 0}, {+1, -1}, {0, -1},
                     {-1, 0}, {-1, +1}, {0, +1}};
 
+
+    /**
+     * 遍历cell的邻居,不包含自己
+     * @param maxRange 最多遍历几层
+     * @param action return true 就停止遍历,并且返回
+     */
+    private Cell foreachNeighbors(Cell cell, int maxRange, Predicate<Cell> action) {
+        for (int i = 1; i <= maxRange; i++) {
+            for (int[] n : axial_direction_vectors) {
+                int q = cell.getAxialCoordinates().getQ() + n[0] * i;
+                int r = cell.getAxialCoordinates().getR() + n[1] * i;
+                AxialCoordinates axialCoordinates = new AxialCoordinates(q, r);
+                int index = HexagonConst.getIndex(HexagonConst.axialToOffset(axialCoordinates));
+                Cell neighbors = getCell(index);
+                if (neighbors != null) {
+                    boolean test = action.test(neighbors);
+                    // 测试成功就return
+                    if (test) {
+                        return neighbors;
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
 
     /**
      * 获取邻居

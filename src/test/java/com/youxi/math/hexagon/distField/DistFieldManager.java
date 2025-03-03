@@ -116,6 +116,46 @@ public class DistFieldManager {
         return DistFieldBFS.findPathByDistField(distFieldObj, endIndex, hexagonManager);
     }
 
+    /**
+     * 查找路径 根据目标
+     */
+  /*  public List<Integer> findPathByTarget(Long uniqueId) {
+        DistFieldObj distFieldObj = getAndCheckDistFieldObj();
+
+
+        int minRange =Integer.MAX_VALUE;
+        int minIndex = -1;
+        // 从距离场里面找最近的
+        ArrayList<Long>[] enemyCanAttack = distFieldObj.getEnemyCanAttack();
+        int[] distField = distFieldObj.getDistField();
+        for (int i = 0; i < enemyCanAttack.length; i++) {
+            if(distField[i] < 0){
+                continue;
+            }
+            ArrayList<Long> longs = enemyCanAttack[i];
+            if(longs == null || longs.isEmpty()) {
+                continue;
+            }
+            if(!longs.contains(uniqueId)) {
+                continue;
+            }
+            if (distField[i] < minRange) {
+                minRange = distField[i];
+                minIndex = i;
+            }
+        }
+
+        if (minIndex == -1) {
+            return Collections.emptyList();
+        }
+
+        HexagonManager hexagonManager = sceneFighter.getBattle().getGameRoom().getHexagonManager();
+        List<Integer> path = DistFieldBFS.findPath(distFieldObj, minIndex, hexagonManager);
+        return path;
+    }*/
+
+
+
     public static void main(String[] args) {
         HexagonManager instance = HexagonManager.getInstance();
         IObstacleCheck iObstacleCheck = new IObstacleCheck() {

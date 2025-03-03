@@ -131,6 +131,14 @@ public class HexagonConst {
 
 
     public static int getIndex(OffsetCoordinates offsetCoordinates) {
+        // index 不支持 <0的转换 不然会出错
+        if (offsetCoordinates.getRow() < 0 || offsetCoordinates.getCol() < 0) {
+            return INVALID_INDEX;
+        }
+
+        if (offsetCoordinates.getRow() >= HexagonConst.height || offsetCoordinates.getCol() >= HexagonConst.width) {
+            return INVALID_INDEX;
+        }
         return offsetCoordinates.getCol() + offsetCoordinates.getRow() * HexagonConst.width;
     }
 
