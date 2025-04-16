@@ -1,7 +1,9 @@
 package com.example.demo4;
 
 import cn.hutool.core.lang.func.VoidFunc0;
+import com.alibaba.fastjson.JSON;
 import com.example.demo1.util.vo.Vector2f;
+import com.example.demo4.testObj1.GlobalInfo;
 import com.example.代码优化.重构.第一个案例.简介;
 import com.google.common.eventbus.EventBus;
 import com.youxi.dataStructure.quadTree.Collision2D;
@@ -229,6 +231,16 @@ public class Test18 {
 
     }
 
+
+    @Test
+    public void test09() throws InterruptedException {
+        ArrayList<GlobalInfo> objects = new ArrayList<>();
+        objects.add(GlobalInfo.create());
+        objects.add(GlobalInfo.create());
+
+        Object json = JSON.toJSON(objects);
+        System.out.println(json);
+    }
 
 }
 
