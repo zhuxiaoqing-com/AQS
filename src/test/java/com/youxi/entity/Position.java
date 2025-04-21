@@ -6,7 +6,7 @@ import com.example.demo1.util.vo.Vector2f;
  * 逻辑坐标 (当前角色坐标就是逻辑坐标) 服务器与客户端通信的坐标均是该类型
  * 
  */
-public final class Position extends BasicPos {
+public class Position extends BasicPos {
 
 	public static final Position ZERO = new Position(0, 0, 0);
 	public Position(float x, float y, float z) {
@@ -65,7 +65,15 @@ public final class Position extends BasicPos {
 	public Position sub(Position subPos) {
 		return new Position(getX() - subPos.getX(), 0, getZ() - subPos.getZ());
 	}
-
+	public ModifyPosition sub(Position subPos, ModifyPosition returnPos) {
+		int x = getX() - subPos.getX();
+		int y = getY();
+		int z = getZ() - subPos.getZ();
+		returnPos.setX(x);
+		returnPos.setY(y);
+		returnPos.setZ(z);
+		return returnPos;
+	}
 	/**
 	 *
 	 *
@@ -74,6 +82,16 @@ public final class Position extends BasicPos {
 	 */
 	public Position multiply(float v) {
 		return new Position((int) (getX() * v), (int) (0 * v), (int) (getZ() * v));
+	}
+
+	public Position multiply(float v, ModifyPosition returnPosition) {
+		int x1 = (int) (getX() * v);
+		int y1 = (int) (0 * v);
+		int z1 = (int) (getZ() * v);
+		returnPosition.setX(x1);
+		returnPosition.setY(y1);
+		returnPosition.setZ(z1);
+		return returnPosition;
 	}
 
 	public Position add(Dir addDir) {
@@ -108,6 +126,16 @@ public final class Position extends BasicPos {
 		float oaNormalizeZ = (float) (getZ() / oaLength);
 		return new Position(oaNormalizeX, oaNormalizeY, oaNormalizeZ);
 	}
+
+	public Position normalize(ModifyPosition returnPosition) {
+		double oaLength = Math.sqrt((long) getX() * getX() + (long) getZ() * getZ());
+		float oaNormalizeX = (float) (getX() / oaLength);
+		float oaNormalizeZ = (float) (getZ() / oaLength);
+		returnPosition.setX(oaNormalizeX);
+		returnPosition.setZ(oaNormalizeZ);
+		return returnPosition;
+	}
+
 	public Position getRotateDir(float angle) {
 		angle = (float) Math.toRadians(angle);
 		double cos = Math.cos(angle);

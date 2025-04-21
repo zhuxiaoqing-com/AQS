@@ -161,6 +161,28 @@ public class CMath {
 	}
 
 
+	public static Dir getRotateDir(Dir dir, float radians, ModifyDir returnDir) {
+		double cos = Math.cos(radians);
+		double sin = Math.sin(radians);
+		double x = dir.getX() * cos - dir.getZ() * sin;
+		double z = dir.getZ() * cos + dir.getX() * sin;
+		returnDir.setX((int) x);
+		returnDir.setZ((int) z);
+		return returnDir;
+	}
+
+
+	public static Dir Rotate(Dir dir, float deg) {
+		// 不需要按照unity坐标系进行修改
+		return getRotateDir(dir, (float) Math.toRadians(deg));
+	}
+
+	public static Dir Rotate(Dir dir, float deg, ModifyDir returnDir) {
+		// 不需要按照unity坐标系进行修改
+		return getRotateDir(dir, (float) Math.toRadians(deg), returnDir);
+	}
+
+
 
 	public static long min(long... value) {
 		long min = Long.MAX_VALUE;
@@ -187,5 +209,13 @@ public class CMath {
 
 		long d = Dot2D(1876, 1384, 1876, 1384);
 		System.err.println(d);
+	}
+
+
+	public static class Direction {
+		public static final int UP = 1; // 上
+		public static final int DOWN = 2; // 下
+		public static final int LEFT = 3; // 左
+		public static final int RIGHT = 4; // 右
 	}
 }

@@ -19,9 +19,9 @@ public abstract class BasicPos {
 	public static final int DIR_NUM = 8; // 全部方向的数目
 
 
-	private int x;
-	private int y;
-	private int z;
+	public int x;
+	public int y;
+	public int z;
 
 	public BasicPos(float x0, float y0, float z0) {
 		x = (int) (x0 * 1000);

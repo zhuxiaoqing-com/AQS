@@ -88,6 +88,15 @@ public class Dir {
 		return new Dir(-getX(), -getZ());
 	}
 
+	public Dir negDir(ModifyDir returnDir) {
+		int x = -getX();
+		int z = -getZ();
+		returnDir.setX(x);
+		returnDir.setZ(z);
+		return returnDir;
+	}
+
+
 	public Dir addDir(Dir add) {
 		return new Dir(this.getX() + add.getX(), this.getY() + add.getY(), this.getZ() + add.getZ());
 	}
@@ -159,6 +168,13 @@ public class Dir {
 
 	public Dir add(Position position) {
 		return new Dir(getX() + position.getX(), getY() + position.getY(), getZ() + position.getZ());
+	}
+
+	public ModifyPosition toPosition(ModifyPosition returnPos) {
+		returnPos.setX(x);
+		returnPos.setY(y);
+		returnPos.setZ(z);
+		return returnPos;
 	}
 
 	@Override
