@@ -1,7 +1,7 @@
 package com.youxi.dataStructure.aabbTree;
 
 public class B2TreeNode {
-    public final static int b2_nullNode = 0;
+    public final static int b2_nullNode = -1;
 
     /// Enlarged AABB
     //增大aabb变量

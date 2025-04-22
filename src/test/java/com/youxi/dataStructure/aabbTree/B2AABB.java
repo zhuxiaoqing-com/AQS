@@ -41,7 +41,7 @@ public class B2AABB {
         upperBound = B2Math.b2Max(upperBound, aabb.upperBound);
     }
 
-    /// Combine two AABBs into this one.
+    /// Combine two AABBs into this one. 把两个aabb组合成一个。
    public void Combine(B2AABB aabb1, B2AABB aabb2)
     {
         lowerBound = B2Math.b2Min(aabb1.lowerBound, aabb2.lowerBound);
