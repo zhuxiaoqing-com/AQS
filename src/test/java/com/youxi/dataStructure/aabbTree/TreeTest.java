@@ -37,7 +37,7 @@ public class TreeTest {
         public String toString() {
             return
                     "{" + id +
-                    '}';
+                            '}';
         }
     }
 
@@ -106,9 +106,9 @@ public class TreeTest {
         int index = 10;
         map.put(index++, new UserData(index, new B2AABB(new B2Vec2(9, 1), new B2Vec2(10, 2))));
         map.put(index++, new UserData(index, new B2AABB(new B2Vec2(1, 9), new B2Vec2(2, 10))));
-        map.put(index++, new UserData(index, new B2AABB(new B2Vec2(2, 1), new B2Vec2(3, 2))));
+        map.put(index++, new UserData(index, new B2AABB(new B2Vec2(1, -1), new B2Vec2(2f, 0))));
         // 2x 都打能中 不要
-         index = 20;
+        index = 20;
         // 3x 射线能打中
         index = 30;
         map.put(index++, new UserData(index, new B2AABB(new B2Vec2(1, 0.5f), new B2Vec2(2, 2.5f))));
@@ -163,7 +163,7 @@ public class TreeTest {
 
     public String treeTest(IB2DynamicTree b2DynamicTree) {
         for (UserData value : map.values()) {
-            value.moveAAbb = new B2AABB(value.aabb.upperBound, value.aabb.lowerBound);
+            value.moveAAbb = new B2AABB(value.aabb.lowerBound, value.aabb.upperBound);
         }
         TestUtil.testTime(() -> {
             for (UserData value : map.values()) {
@@ -204,7 +204,7 @@ public class TreeTest {
                 Dir max = new Dir(userData.moveAAbb.upperBound.x, userData.moveAAbb.upperBound.y);
                 OutValue outValue = new OutValue();
                 boolean b = Collision2D.TestRayAABB(o, dir, min, max, outValue);
-                if(b) {
+                if (b) {
                     System.out.println(String.format("RayCastCallback id %s aabb %s  hit %s", userData.id, userData.moveAAbb, b));
                 }
                 return 1;
@@ -251,7 +251,8 @@ public class TreeTest {
         B2AABB b2AABB1 = new B2AABB(new B2Vec2(5, 2), new B2Vec2(9, 5));
         boolean b = B2Collision.b2TestOverlap(b2AABB, b2AABB1);
         boolean b1 = B2Collision.b2TestOverlap(b2AABB1, b2AABB);
-        B2DynamicTree b2DynamicTree = new B2DynamicTree();
+        //IB2DynamicTree b2DynamicTree = new B2DynamicTreeZeroGC();
+        IB2DynamicTree b2DynamicTree = new B2DynamicTree();
         customData();
         treeTest(b2DynamicTree);
     }
