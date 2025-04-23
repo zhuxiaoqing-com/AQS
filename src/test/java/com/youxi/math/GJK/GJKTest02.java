@@ -22,7 +22,7 @@ public class GJKTest02 {
 	 * @return
 	 */
 	public boolean GJK(Shape shape1, Shape shape2) {
-		ModifyDir returnDir = new ModifyDir();
+		MDir returnDir = new MDir();
 		List<Position> simplexList = new ArrayList<>();
 
 		//得到初始的方向

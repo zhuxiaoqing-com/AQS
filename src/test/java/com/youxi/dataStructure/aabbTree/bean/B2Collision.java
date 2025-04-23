@@ -1,6 +1,5 @@
 package com.youxi.dataStructure.aabbTree.bean;
 
-import com.youxi.dataStructure.aabbTree.B2AABB;
 import com.youxi.math.box2dGJK.shape.B2Vec2;
 
 public class B2Collision {

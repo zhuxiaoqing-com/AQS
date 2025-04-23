@@ -1,11 +1,14 @@
-package com.youxi.dataStructure.aabbTree;
+package com.youxi.dataStructure.aabbTree.zeroGC;
+
+
+import com.youxi.dataStructure.aabbTree.bean.B2AABB;
 
 public class B2TreeNode {
     public final static int b2_nullNode = -1;
 
     /// Enlarged AABB
     //增大aabb变量
-    B2AABB aabb;
+    B2AABB aabb = new B2AABB();
     //用户数据
     Object userData;
     //父节点指针(索引)或孩子节点指针(索引)

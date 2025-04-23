@@ -1,25 +1,21 @@
-package com.youxi.dataStructure.aabbTree;
+package com.youxi.dataStructure.aabbTree.zeroGC;
 
-import com.youxi.dataStructure.aabbTree.bean.B2Collision;
-import com.youxi.dataStructure.aabbTree.bean.B2RayCastInput;
-import com.youxi.dataStructure.aabbTree.bean.QueryCallback;
-import com.youxi.dataStructure.aabbTree.bean.RayCastCallback;
-import com.youxi.entity.MapHelper;
+import com.youxi.dataStructure.aabbTree.IB2DynamicTree;
+import com.youxi.dataStructure.aabbTree.bean.*;
 import com.youxi.math.box2dGJK.B2Math;
 import com.youxi.math.box2dGJK.shape.B2Vec2;
-import io.swagger.models.auth.In;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.youxi.dataStructure.aabbTree.B2TreeNode.b2_nullNode;
+import static com.youxi.dataStructure.aabbTree.original.B2TreeNode.b2_nullNode;
 
 /**
  * https://blog.csdn.net/cg0206/article/details/8293049
  * https://www.cnblogs.com/duzib/p/4590900.html
  */
-public class B2DynamicTree {
+public class B2DynamicTreeZeroGC implements IB2DynamicTree  {
     //树的根指针(也是索引)
     int m_root;
     //树的真正的头指针，也是一块连续的内存池的首地址
@@ -36,8 +32,22 @@ public class B2DynamicTree {
     //记录插入节点总数量
     int m_insertionCount;
 
+    B2Vec2 range = new B2Vec2(0.1f, 0.1f);
+    ArrayDeque<Integer> stack = new ArrayDeque<>();
+
+    public B2DynamicTreeZeroGC() {
+        init();
+    }
+
     private boolean checkProxy(int proxyId) {
-        return 0 <= proxyId && proxyId < m_nodeCapacity;
+        if (proxyId < 0 || proxyId >= m_nodeCapacity) {
+            return false;
+        }
+        if (m_nodes.get(proxyId) == null || m_nodes.get(proxyId).height == -1) {
+            return false;
+        }
+        //return 0 <= proxyId && proxyId < m_nodeCapacity;
+        return true;
     }
 
     //根据代理id获取userData
@@ -50,18 +60,20 @@ public class B2DynamicTree {
 
 
     //根据代理id获得宽大的AABB
-    B2AABB getFatAABB(int proxyId) {
+   public B2AABB getFatAABB(int proxyId) {
         //验证代理id的有效性
         if (!checkProxy(proxyId)) {
             return null;
         }
-        return m_nodes.get(proxyId).aabb;
+        B2AABB aabb = m_nodes.get(proxyId).aabb;
+        return new B2AABB(aabb.upperBound, aabb.lowerBound);
     }
+
 
     //查询一个aabb重叠代理，每个重叠提供AABB的代理都将回调回调类
     public void query(QueryCallback callback, B2AABB aabb) {
         //申请临时栈，根节点进栈
-        ArrayDeque<Integer> stack = new ArrayDeque<>();
+        stack.clear();
         stack.addLast(m_root);
         //判断栈的个数
         while (stack.size() > 0) {
@@ -152,7 +164,7 @@ public class B2DynamicTree {
         segmentAABB.lowerBound = B2Math.b2Min(p1, t);
         segmentAABB.upperBound = B2Math.b2Max(p1, t);
         //创建一个临时栈，并将根节点进栈
-        ArrayDeque<Integer> stack = new ArrayDeque<>();
+        stack.clear();
         stack.addLast(m_root);
         //栈不为空
         while (stack.size() > 0) {
@@ -165,7 +177,7 @@ public class B2DynamicTree {
             //获取节点
             B2TreeNode node = m_nodes.get(nodeId);
             //判断AABB
-            if (B2Collision.b2TestOverlap(node.aabb, segmentAABB) == false) {
+            if (!B2Collision.b2TestOverlap(node.aabb, segmentAABB)) {
                 continue;
             }
 
@@ -184,12 +196,12 @@ public class B2DynamicTree {
             }
             //是否是叶子节点
             if (node.IsLeaf()) {
-                B2RayCastInput subInput = new B2RayCastInput();
+             /*   B2RayCastInput subInput = new B2RayCastInput();
                 subInput.p1 = input.p1;
                 subInput.p2 = input.p2;
-                subInput.maxFraction = maxFraction;
+                subInput.maxFraction = maxFraction;*/
 
-                float value = callback.rayCastCallback(subInput, nodeId);
+                float value = callback.rayCastCallback(input, nodeId);
 
                 if (value == 0.0f) {
                     //客户端终止了光线投射
@@ -205,6 +217,7 @@ public class B2DynamicTree {
                 if (value > 0.0f) {
                     // 更新线段的盒子边界
                     maxFraction = value;
+                    input.maxFraction = maxFraction;
                     //B2Vec2 t = p1 + maxFraction * (p2 - p1);
                     B2Vec2 t1 = p2.sub(p1).multiply(maxFraction).add(p1);
                     segmentAABB.lowerBound = B2Math.b2Min(p1, t1);
@@ -256,6 +269,7 @@ public class B2DynamicTree {
             List<B2TreeNode> oldNodes = m_nodes;
             m_nodeCapacity *= 2;
             m_nodes = new ArrayList<>(m_nodeCapacity);
+            m_nodes.addAll(oldNodes);
             for (int i = m_nodeCount; i < m_nodeCapacity; i++) {
                 m_nodes.add(new B2TreeNode());
             }
@@ -315,15 +329,15 @@ public class B2DynamicTree {
      user    : 数据
      * 返 回 值：节点的索引来替代指针,来增长我们的节点池
      ***************************************************************************/
-    int createProxy(B2AABB aabb, Object userData) {
+    public int createProxy(B2AABB aabb, Object userData) {
         //申请代理节点id
         int proxyId = allocateNode();
 
         // Fatten the aabb.
         //填充aabb，为节点赋值
-        B2Vec2 r = new B2Vec2(0.1f, 0.1f);
-        m_nodes.get(proxyId).aabb.lowerBound = aabb.lowerBound.sub(r);
-        m_nodes.get(proxyId).aabb.upperBound = aabb.upperBound.add(r);
+        m_nodes.get(proxyId).aabb.copy(aabb);
+        m_nodes.get(proxyId).aabb.lowerBound.subZeroGC(range);
+        m_nodes.get(proxyId).aabb.upperBound.addZeroGC(range);
         m_nodes.get(proxyId).userData = userData;
         m_nodes.get(proxyId).height = 0;
         //插入叶子节点
@@ -337,7 +351,7 @@ public class B2DynamicTree {
      * 参数说明：proxyId     ：叶子代理id
      * 返 回 值：(void)
      ***************************************************************************/
-    void DestroyProxy(int proxyId) {
+    public void destroyProxy(int proxyId) {
         //验证proxyid的有效性
         if (!checkProxy(proxyId)) {
             return;
@@ -359,7 +373,7 @@ public class B2DynamicTree {
      displacement：移动坐标向量
      * 返 回 值： (void)
      ***************************************************************************/
-    boolean moveProxy(int proxyId, B2AABB aabb, B2Vec2 displacement) {
+    public boolean moveProxy(int proxyId, B2AABB aabb, B2Vec2 displacement) {
         //验证proxyid的有效性
         if (!checkProxy(proxyId)) {
             return false;
@@ -374,28 +388,29 @@ public class B2DynamicTree {
         }
         //根据proxyId移除叶子
         removeLeaf(proxyId);
+        B2AABB nodesAABB = m_nodes.get(proxyId).aabb;
+        nodesAABB.copy(aabb);
         //扩大AABB
-        B2AABB b = aabb;
-        B2Vec2 r = new B2Vec2(0.1f, 0.1f);
-        b.lowerBound = b.lowerBound.sub(r);
-        b.upperBound = b.upperBound.add(r);
+        nodesAABB.lowerBound.subZeroGC(range);
+        nodesAABB.upperBound.addZeroGC(range);
         //预测aabb的位移
-        B2Vec2 d = displacement.multiply(4);
+        //B2Vec2 d = displacement.multiply(4);
         // 看往哪边移动 来判断加哪边的边界
         //扩大下限
-        if (d.x < 0.0f) {
-            b.lowerBound.x += d.x;
+        int multipy = 4;
+        if (displacement.x < 0.0f) {
+            nodesAABB.lowerBound.x += displacement.x * multipy;
         } else {
-            b.upperBound.x += d.x;
+            nodesAABB.upperBound.x += displacement.x * multipy;
         }
 
-        if (d.y < 0.0f) {
-            b.lowerBound.y += d.y;
+        if (displacement.y < 0.0f) {
+            nodesAABB.lowerBound.y += displacement.y * multipy;
         } else {
-            b.upperBound.y += d.y;
+            nodesAABB.upperBound.y += displacement.y * multipy;
         }
         //重新设置aabb
-        m_nodes.get(proxyId).aabb = b;
+        //m_nodes.get(proxyId).aabb = b;
         //插入叶子节点
         insertLeaf(proxyId);
         return true;
@@ -428,9 +443,7 @@ public class B2DynamicTree {
             //获取aabb的周长
             float area = m_nodes.get(index).aabb.GetPerimeter();
             //获取
-            B2AABB combinedAABB = new B2AABB();
-            combinedAABB.Combine(m_nodes.get(index).aabb, leafAABB);
-            float combinedArea = combinedAABB.GetPerimeter();
+            float combinedArea = B2AABB.GetPerimeterZeroCG(m_nodes.get(index).aabb, leafAABB);
             //为该节点创建一个新的父节点【一个新叶子节点】
             /**
              * 合并AABB的成本加权（cost = 2.0 * combinedArea）
@@ -458,30 +471,22 @@ public class B2DynamicTree {
             //左孩子是叶子节点
             if (m_nodes.get(child1).IsLeaf()) {
                 //获取cost1
-                B2AABB aabb = new B2AABB();
-                aabb.Combine(leafAABB, m_nodes.get(child1).aabb);
-                cost1 = aabb.GetPerimeter() + inheritanceCost;
+                cost1 = B2AABB.GetPerimeterZeroCG(leafAABB, m_nodes.get(child1).aabb) + inheritanceCost;
             } else {
                 //获取cost1
-                B2AABB aabb = new B2AABB();
-                aabb.Combine(leafAABB, m_nodes.get(child1).aabb);
                 float oldArea = m_nodes.get(child1).aabb.GetPerimeter();
-                float newArea = aabb.GetPerimeter();
+                float newArea = B2AABB.GetPerimeterZeroCG(leafAABB, m_nodes.get(child1).aabb);
                 cost1 = (newArea - oldArea) + inheritanceCost;
             }
             //降低cost到child2
             float cost2;
             if (m_nodes.get(child2).IsLeaf()) {
                 //获取cost2
-                B2AABB aabb = new B2AABB();
-                aabb.Combine(leafAABB, m_nodes.get(child2).aabb);
-                cost2 = aabb.GetPerimeter() + inheritanceCost;
+                cost2 = B2AABB.GetPerimeterZeroCG(leafAABB, m_nodes.get(child2).aabb) + inheritanceCost;
             } else {
                 //获取cost2
-                B2AABB aabb = new B2AABB();
-                aabb.Combine(leafAABB, m_nodes.get(child2).aabb);
                 float oldArea = m_nodes.get(child2).aabb.GetPerimeter();
-                float newArea = aabb.GetPerimeter();
+                float newArea = B2AABB.GetPerimeterZeroCG(leafAABB, m_nodes.get(child2).aabb);
                 cost2 = newArea - oldArea + inheritanceCost;
             }
             /**
@@ -505,7 +510,7 @@ public class B2DynamicTree {
         int newParent = allocateNode();
         m_nodes.get(newParent).parent = oldParent;
         m_nodes.get(newParent).userData = null;
-        m_nodes.get(newParent).aabb.Combine(leafAABB, m_nodes.get(sibling).aabb);
+        m_nodes.get(newParent).aabb.CombineZeroCG(leafAABB, m_nodes.get(sibling).aabb);
         m_nodes.get(newParent).height = m_nodes.get(sibling).height + 1;
 
         if (oldParent != b2_nullNode) {
@@ -548,7 +553,7 @@ public class B2DynamicTree {
             }
             //获取高度和aabb
             m_nodes.get(index).height = 1 + Math.max(m_nodes.get(child1).height, m_nodes.get(child2).height);
-            m_nodes.get(index).aabb.Combine(m_nodes.get(child1).aabb, m_nodes.get(child2).aabb);
+            m_nodes.get(index).aabb.CombineZeroCG(m_nodes.get(child1).aabb, m_nodes.get(child2).aabb);
             //获取parent节点
             index = m_nodes.get(index).parent;
         }
@@ -599,7 +604,7 @@ public class B2DynamicTree {
                 int child2 = m_nodes.get(index).child2;
                 //合并aabb
                 //高度
-                m_nodes.get(index).aabb.Combine(m_nodes.get(child1).aabb, m_nodes.get(child2).aabb);
+                m_nodes.get(index).aabb.CombineZeroCG(m_nodes.get(child1).aabb, m_nodes.get(child2).aabb);
                 m_nodes.get(index).height = 1 + Math.max(m_nodes.get(child1).height, m_nodes.get(child2).height);
                 //更新index
                 index = m_nodes.get(index).parent;
@@ -677,8 +682,8 @@ public class B2DynamicTree {
                 C.child2 = iF;
                 A.child2 = iG;
                 G.parent = iA;
-                A.aabb.Combine(B.aabb, G.aabb);
-                C.aabb.Combine(A.aabb, F.aabb);
+                A.aabb.CombineZeroCG(B.aabb, G.aabb);
+                C.aabb.CombineZeroCG(A.aabb, F.aabb);
 
                 A.height = 1 + Math.max(B.height, G.height);
                 C.height = 1 + Math.max(A.height, F.height);
@@ -687,8 +692,8 @@ public class B2DynamicTree {
                 C.child2 = iG;
                 A.child2 = iF;
                 F.parent = iA;
-                A.aabb.Combine(B.aabb, F.aabb);
-                C.aabb.Combine(A.aabb, G.aabb);
+                A.aabb.CombineZeroCG(B.aabb, F.aabb);
+                C.aabb.CombineZeroCG(A.aabb, G.aabb);
 
                 A.height = 1 + Math.max(B.height, F.height);
                 C.height = 1 + Math.max(A.height, G.height);
@@ -728,8 +733,8 @@ public class B2DynamicTree {
                 B.child2 = iD;
                 A.child1 = iE;
                 E.parent = iA;
-                A.aabb.Combine(C.aabb, E.aabb);
-                B.aabb.Combine(A.aabb, D.aabb);
+                A.aabb.CombineZeroCG(C.aabb, E.aabb);
+                B.aabb.CombineZeroCG(A.aabb, D.aabb);
 
                 A.height = 1 + Math.max(C.height, E.height);
                 B.height = 1 + Math.max(A.height, D.height);
@@ -738,8 +743,8 @@ public class B2DynamicTree {
                 B.child2 = iE;
                 A.child1 = iD;
                 D.parent = iA;
-                A.aabb.Combine(C.aabb, D.aabb);
-                B.aabb.Combine(A.aabb, E.aabb);
+                A.aabb.CombineZeroCG(C.aabb, D.aabb);
+                B.aabb.CombineZeroCG(A.aabb, E.aabb);
 
                 A.height = 1 + Math.max(C.height, D.height);
                 B.height = 1 + Math.max(A.height, E.height);
@@ -802,7 +807,7 @@ public class B2DynamicTree {
         if (!checkProxy(nodeId)) {
             return 0;
         }
-        //b2Assert(0 <= nodeId && nodeId < m_nodeCapacity);
+        b2Assert(0 <= nodeId && nodeId < m_nodeCapacity);
         //获取子树头节点
         B2TreeNode node = m_nodes.get(nodeId);
         // 是否是叶子
@@ -838,7 +843,7 @@ public class B2DynamicTree {
         //子树是整个树
         if (index == m_root) {
             //验证有效性
-            //b2Assert(m_nodes[index).parent == b2_nullNode);
+            b2Assert(m_nodes.get(index).parent == b2_nullNode);
         }
         //获取子树的头指针
         B2TreeNode node = m_nodes.get(index);
@@ -848,17 +853,17 @@ public class B2DynamicTree {
         //node是否是叶子节点
         if (node.IsLeaf()) {
             //验证左右孩子和高度
-            //b2Assert(child1 == b2_nullNode);
-            //b2Assert(child2 == b2_nullNode);
-            //b2Assert(node.height == 0);
+            b2Assert(child1 == b2_nullNode);
+            b2Assert(child2 == b2_nullNode);
+            b2Assert(node.height == 0);
             return;
         }
         //验证左右孩子
-        //b2Assert(0 <= child1 && child1 < m_nodeCapacity);
-        //b2Assert(0 <= child2 && child2 < m_nodeCapacity);
+        b2Assert(0 <= child1 && child1 < m_nodeCapacity);
+        b2Assert(0 <= child2 && child2 < m_nodeCapacity);
         //验证左右孩子的父节点
-        //b2Assert(m_nodes[child1).parent == index);
-        //b2Assert(m_nodes[child2).parent == index);
+        b2Assert(m_nodes.get(child1).parent == index);
+        b2Assert(m_nodes.get(child2).parent == index);
         //递归验证左右孩子的结构
         validateStructure(child1);
         validateStructure(child2);
@@ -882,26 +887,26 @@ public class B2DynamicTree {
         //子树是否是叶子节点
         if (node.IsLeaf()) {
             //验证左右孩子和高度
-            //b2Assert(child1 == b2_nullNode);
-            //b2Assert(child2 == b2_nullNode);
-            //b2Assert(node.height == 0);
+            b2Assert(child1 == b2_nullNode);
+            b2Assert(child2 == b2_nullNode);
+            b2Assert(node.height == 0);
             return;
         }
         //验证左右孩子
-        // b2Assert(0 <= child1 && child1 < m_nodeCapacity);
-        // b2Assert(0 <= child2 && child2 < m_nodeCapacity);
+        b2Assert(0 <= child1 && child1 < m_nodeCapacity);
+        b2Assert(0 <= child2 && child2 < m_nodeCapacity);
         //验证高度
         int height1 = m_nodes.get(child1).height;
         int height2 = m_nodes.get(child2).height;
         int height;
         height = 1 + Math.max(height1, height2);
-        //b2Assert(node.height == height);
+        b2Assert(node.height == height);
         //验证aabb
         B2AABB aabb = new B2AABB();
-        aabb.Combine(m_nodes.get(child1).aabb, m_nodes.get(child2).aabb);
+        aabb.CombineZeroCG(m_nodes.get(child1).aabb, m_nodes.get(child2).aabb);
 
-        // b2Assert(aabb.lowerBound == node.aabb.lowerBound);
-        // b2Assert(aabb.upperBound == node.aabb.upperBound);
+        b2Assert(aabb.lowerBound.equals(node.aabb.lowerBound));
+        b2Assert(aabb.upperBound.equals(node.aabb.upperBound));
         //递归验证左右孩子子树
         validateMetrics(child1);
         validateMetrics(child2);
@@ -912,7 +917,7 @@ public class B2DynamicTree {
      * 参数说明：(void)
      * 返 回 值：(void)
      ***************************************************************************/
-    void Validate() {
+    public void Validate() {
         //验证这棵树的结构和度量
         validateStructure(m_root);
         validateMetrics(m_root);
@@ -920,14 +925,14 @@ public class B2DynamicTree {
         int freeCount = 0;
         int freeIndex = m_freeList;
         while (freeIndex != b2_nullNode) {
-            //b2Assert(0 <= freeIndex && freeIndex < m_nodeCapacity);
+            b2Assert(0 <= freeIndex && freeIndex < m_nodeCapacity);
             freeIndex = m_nodes.get(freeIndex).next;
             ++freeCount;
         }
         //验证高度
-        //b2Assert(GetHeight() == ComputeHeight());
+        b2Assert(getHeight() == computeHeight());
         //验证内存池中的节点总容量
-        //b2Assert(m_nodeCount + freeCount == m_nodeCapacity);
+        b2Assert(m_nodeCount + freeCount == m_nodeCapacity);
     }
 
     /**************************************************************************
@@ -945,7 +950,7 @@ public class B2DynamicTree {
                 continue;
             }
 
-            //b2Assert(node.IsLeaf() == false);
+            b2Assert(node.IsLeaf() == false);
             //获取最大平衡值
             int child1 = node.child1;
             int child2 = node.child2;
@@ -961,12 +966,12 @@ public class B2DynamicTree {
      * 参数说明：(void)
      * 返 回 值：(void)
      ***************************************************************************/
-    void rebuildBottomUp() {
+    public void rebuildBottomUp() {
         //从系统堆中申请一段内存
         //int*nodes = ( int*)b2Alloc(m_nodeCount * sizeof( int));
         List<Integer> nodes = new ArrayList<>(m_nodeCount);
         for (int i = 0; i < m_nodeCount; i++) {
-            nodes.set(i, b2_nullNode);
+            nodes.add(b2_nullNode);
         }
 
         int count = 0;
@@ -998,7 +1003,7 @@ public class B2DynamicTree {
                 for (int j = i + 1; j < count; ++j) {
                     B2AABB aabbj = m_nodes.get(nodes.get(j)).aabb;
                     B2AABB b = new B2AABB();
-                    b.Combine(aabbi, aabbj);
+                    b.CombineZeroCG(aabbi, aabbj);
                     float cost = b.GetPerimeter();
                     //获取最小的cost
                     if (cost < minCost) {
@@ -1020,7 +1025,7 @@ public class B2DynamicTree {
             parent.child1 = index1;
             parent.child2 = index2;
             parent.height = 1 + Math.max(child1.height, child2.height);
-            parent.aabb.Combine(child1.aabb, child2.aabb);
+            parent.aabb.CombineZeroCG(child1.aabb, child2.aabb);
             parent.parent = b2_nullNode;
             //
             child1.parent = parentIndex;
@@ -1039,4 +1044,38 @@ public class B2DynamicTree {
         Validate();
     }
 
+    void b2Assert(boolean b) {
+        if (!b) {
+            throw new RuntimeException("b2Assert");
+        }
+    }
+
+
+    public void printTree() {
+        System.out.println(printTreeToString());
+    }
+
+    public String printTreeToString() {
+        StringBuilder sb = new StringBuilder();
+        printTree(sb, m_root, "", false);
+        return sb.toString();
+    }
+
+    void printTree(StringBuilder sb, int nodeId, String indent, boolean last) {
+        if (!checkProxy(nodeId)) {
+            return;
+        }
+        B2TreeNode node = m_nodes.get(nodeId);
+        if (node != null) {
+            /*System.out.print(indent);
+            System.out.print(last ? "└─ " : "├─ ");
+            System.out.println(node.aabb);*/
+            sb.append(indent);
+            sb.append(last ? "└─ " : "├─ ");
+            sb.append(node.aabb + System.lineSeparator());
+            String childIndent = indent + (last ? "    " : "│   ");
+            printTree(sb, node.child1, childIndent, false);
+            printTree(sb, node.child2, childIndent, true);
+        }
+    }
 }

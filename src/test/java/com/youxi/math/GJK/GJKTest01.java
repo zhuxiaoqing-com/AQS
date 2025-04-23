@@ -67,7 +67,7 @@ public class GJKTest01 {
 	 *
 	 */
 	public boolean GJK(Shape shape1, Shape shape2) {
-		ModifyDir returnDir = new ModifyDir();
+		MDir returnDir = new MDir();
 
 		List<Position> simplexList = new ArrayList<>();
 		// 起始向量是两个形状的中心点向量相减
@@ -113,7 +113,7 @@ public class GJKTest01 {
 
 	}
 
-	private boolean handlerSimplex(List<Position> simplexList, ModifyDir d) {
+	private boolean handlerSimplex(List<Position> simplexList, MDir d) {
 		if (simplexList.size() == 2) {
 			return lineCase(simplexList, d);
 		}
@@ -124,7 +124,7 @@ public class GJKTest01 {
 	 * 已经有两条线了 b,a 点
 	 * 获取 ao投影到 ab 上的垂直向量; 这个向量标准化以后 可以当做第三个方向
 	 */
-	private boolean lineCase(List<Position> simplexList, ModifyDir d) {
+	private boolean lineCase(List<Position> simplexList, MDir d) {
 		Position b = simplexList.get(0);
 		Position a = simplexList.get(1);
 		Position ab = b.sub(a);
@@ -136,7 +136,7 @@ public class GJKTest01 {
 	/**
 	 * 三角形的情况  我们计算他到底在 AB垂直 和AC垂直  三角形本身 的哪个区域
 	 */
-	private boolean triangleCase(List<Position> simplexList, ModifyDir d) {
+	private boolean triangleCase(List<Position> simplexList, MDir d) {
 		Position c = simplexList.get(0);
 		Position b = simplexList.get(1);
 		Position a = simplexList.get(2);

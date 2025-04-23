@@ -1,5 +1,7 @@
 package com.youxi.math.box2dGJK.shape;
 
+import java.util.Objects;
+
 public class B2Vec2 {
 
 	public float x;
@@ -31,6 +33,11 @@ public class B2Vec2 {
 		this.y = y;
 	}
 
+	public void setXY(float x, float y) {
+		this.x = x;
+		this.y = y;
+	}
+
 	public B2Vec2 add(B2Vec2 B2Vec2) {
 		return new B2Vec2(x + B2Vec2.x, y + B2Vec2.y);
 	}
@@ -38,6 +45,17 @@ public class B2Vec2 {
 	public B2Vec2 sub(B2Vec2 B2Vec2) {
 		return new B2Vec2(x - B2Vec2.x, y - B2Vec2.y);
 	}
+
+
+	public void subZeroGC(B2Vec2 B2Vec2) {
+		x = x - B2Vec2.x;
+		y = y - B2Vec2.y;
+	}
+	public void addZeroGC(B2Vec2 B2Vec2) {
+		x = x + B2Vec2.x;
+		y = y + B2Vec2.y;
+	}
+
 
 	public B2Vec2 multiply(float v) {
 		return new B2Vec2(x * v, y * v);
@@ -61,16 +79,6 @@ public class B2Vec2 {
 
 	public  float length() {
 		return (float) Math.sqrt(x*x +y*y);
-	}
-
-
-
-	@Override
-	public String toString() {
-		return "B2Vec2{" +
-				"x=" + x +
-				", y=" + y +
-				'}';
 	}
 
 
@@ -113,5 +121,26 @@ public class B2Vec2 {
 		y *= invLength;
 
 		return length;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof B2Vec2)) return false;
+		B2Vec2 b2Vec2 = (B2Vec2) o;
+		return Float.compare(x, b2Vec2.x) == 0 && Float.compare(y, b2Vec2.y) == 0;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(x, y);
+	}
+
+	@Override
+	public String toString() {
+		return "{" +
+				"" + x +
+				", " + y +
+				'}';
 	}
 }

@@ -88,7 +88,7 @@ public class EPATest01_2 {
 	 * @return
 	 */
 	public boolean GJK(Shape shape1, Shape shape2, List<Position> positions) {
-		ModifyDir returnDir = new ModifyDir();
+		MDir returnDir = new MDir();
 
 		SupportList simplexList = new SupportList();
 		// 起始向量是两个形状的中心点向量相减
@@ -215,7 +215,7 @@ public class EPATest01_2 {
 	 * 已经有两条线了 b,a 点
 	 * 获取 ao投影到 ab 上的垂直向量; 这个向量标准化以后 可以当做第三个方向
 	 */
-	private void lineCase(SupportList simplexList, ModifyDir d) {
+	private void lineCase(SupportList simplexList, MDir d) {
 		Position b = simplexList.getList().get(0).getSupport();
 		Position a = simplexList.getList().get(1).getSupport();
 		Position ab = b.sub(a);
@@ -232,7 +232,7 @@ public class EPATest01_2 {
 	/**
 	 * 三角形的情况  我们计算他到底在 AB垂直 和AC垂直  三角形本身 的哪个区域
 	 */
-	private boolean triangleCase(SupportList simplexList, ModifyDir d) {
+	private boolean triangleCase(SupportList simplexList, MDir d) {
 		Position c = simplexList.getList().get(0).getSupport();
 		Position b = simplexList.getList().get(1).getSupport();
 		Position a = simplexList.getList().get(2).getSupport();
@@ -269,7 +269,7 @@ public class EPATest01_2 {
 	/**
 	 * 三角形的情况  我们计算他到底在 AB垂直 和AC垂直  三角形本身 的哪个区域
 	 *//*
-	private boolean triangleCase(SupportList simplexList, ModifyDir d) {
+	private boolean triangleCase(SupportList simplexList, MDir d) {
 		Position c = simplexList.getList().get(0).getSupport();
 		Position b = simplexList.getList().get(1).getSupport();
 		Position a = simplexList.getList().get(2).getSupport();
