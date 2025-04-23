@@ -106,7 +106,8 @@ public class TreeTest {
         int index = 10;
         map.put(index++, new UserData(index, new B2AABB(new B2Vec2(9, 1), new B2Vec2(10, 2))));
         map.put(index++, new UserData(index, new B2AABB(new B2Vec2(1, 9), new B2Vec2(2, 10))));
-        map.put(index++, new UserData(index, new B2AABB(new B2Vec2(1, -1), new B2Vec2(2f, 0))));
+        map.put(index++, new UserData(index, new B2AABB(new B2Vec2(1, -1), new B2V
+                ec2(2f, 0))));
         // 2x 都打能中 不要
         index = 20;
         // 3x 射线能打中
