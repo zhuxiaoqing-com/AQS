@@ -66,8 +66,8 @@ public class B2DynamicTreeZeroGC implements IB2DynamicTree  {
             return null;
         }
         B2AABB aabb = m_nodes.get(proxyId).aabb;
-        return new B2AABB(aabb.upperBound, aabb.lowerBound);
-    }
+       return new B2AABB(aabb.lowerBound, aabb.upperBound);
+   }
 
 
     //查询一个aabb重叠代理，每个重叠提供AABB的代理都将回调回调类
@@ -90,7 +90,7 @@ public class B2DynamicTreeZeroGC implements IB2DynamicTree  {
                 //是否是叶子节点
                 if (node.IsLeaf()) {
                     //是否成功
-                    boolean proceed = callback.queryCallback(nodeId);
+                    boolean proceed = callback.queryCallback(nodeId,aabb);
                     if (proceed == false) {
                         return;
                     }
@@ -1072,6 +1072,9 @@ public class B2DynamicTreeZeroGC implements IB2DynamicTree  {
             System.out.println(node.aabb);*/
             sb.append(indent);
             sb.append(last ? "└─ " : "├─ ");
+            if(node.userData!= null) {
+                sb.append(node.userData.toString());
+            }
             sb.append(node.aabb + System.lineSeparator());
             String childIndent = indent + (last ? "    " : "│   ");
             printTree(sb, node.child1, childIndent, false);

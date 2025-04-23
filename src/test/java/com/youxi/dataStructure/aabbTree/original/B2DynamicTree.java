@@ -85,7 +85,7 @@ public class B2DynamicTree  implements IB2DynamicTree {
                 //是否是叶子节点
                 if (node.IsLeaf()) {
                     //是否成功
-                    boolean proceed = callback.queryCallback(nodeId);
+                    boolean proceed = callback.queryCallback(nodeId, aabb);
                     if (proceed == false) {
                         return;
                     }
@@ -383,7 +383,7 @@ public class B2DynamicTree  implements IB2DynamicTree {
         //根据proxyId移除叶子
         removeLeaf(proxyId);
         //扩大AABB
-        B2AABB b = new B2AABB(aabb.upperBound, aabb.lowerBound);
+        B2AABB b = new B2AABB(aabb.lowerBound, aabb.upperBound);
         B2Vec2 r = new B2Vec2(0.1f, 0.1f);
         b.lowerBound = b.lowerBound.sub(r);
         b.upperBound = b.upperBound.add(r);
@@ -1074,6 +1074,9 @@ public class B2DynamicTree  implements IB2DynamicTree {
             System.out.println(node.aabb);*/
             sb.append(indent);
             sb.append(last ? "└─ " : "├─ ");
+            if(node.userData!= null) {
+                sb.append(node.userData.toString());
+            }
             sb.append(node.aabb+System.lineSeparator());
             String childIndent = indent + (last ? "    " : "│   ");
             printTree(sb, node.child1, childIndent, false);

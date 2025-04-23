@@ -11,7 +11,7 @@ public class B2AABB {
     public B2AABB() {
     }
 
-    public B2AABB(B2Vec2 upperBound, B2Vec2 lowerBound) {
+    public B2AABB(B2Vec2 lowerBound, B2Vec2 upperBound) {
         this.upperBound = upperBound;
         this.lowerBound = lowerBound;
     }

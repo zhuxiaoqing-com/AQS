@@ -3,13 +3,15 @@ package com.youxi.dataStructure.aabbTree;
 import com.example.demo4.TestUtil;
 import com.example.demo4.testObj1.AA;
 import com.youxi.building.Misc;
-import com.youxi.dataStructure.aabbTree.bean.B2AABB;
-import com.youxi.dataStructure.aabbTree.bean.B2RayCastInput;
-import com.youxi.dataStructure.aabbTree.bean.RayCastCallback;
+import com.youxi.dataStructure.aabbTree.bean.*;
 import com.youxi.dataStructure.aabbTree.original.B2DynamicTree;
 import com.youxi.dataStructure.aabbTree.zeroGC.B2DynamicTreeZeroGC;
 import com.youxi.dataStructure.collisionTree.AABB;
 import com.youxi.db.test.KV;
+import com.youxi.entity.Collision2D;
+import com.youxi.entity.Dir;
+import com.youxi.entity.OutValue;
+import com.youxi.entity.Position;
 import com.youxi.math.box2dGJK.shape.B2Vec2;
 import com.youxi.xstream.A;
 import org.checkerframework.checker.units.qual.K;
@@ -29,6 +31,13 @@ public class TreeTest {
         public UserData(int id, B2AABB aabb) {
             this.id = id;
             this.aabb = aabb;
+        }
+
+        @Override
+        public String toString() {
+            return
+                    "{" + id +
+                    '}';
         }
     }
 
@@ -60,9 +69,11 @@ public class TreeTest {
 
     static Map<Integer, UserData> map = new HashMap<>();
     static List<KV<UserData, B2Vec2>> moveList = new ArrayList<>();
+    static List<KV<B2RayCastInput, B2AABB>> rayCastList = new ArrayList<>();
+
     static int index = 2000;
 
-    static {
+    public void randomData() {
         for (int i = 0; i < index; i++) {
             map.put(i + 1, new UserData(i + 1, randomCreateAABB()));
 
@@ -76,6 +87,46 @@ public class TreeTest {
             UserData random = Misc.getRandom(map.values());
             moveList.add(new KV<>(random, b2Vec2));
         }
+
+        for (int i = 0; i < index; i++) {
+            B2RayCastInput b2RayCastInput = new B2RayCastInput();
+            b2RayCastInput.maxFraction = 1;
+            B2AABB b2AABB = randomCreateAABB();
+            b2RayCastInput.p1 = b2AABB.lowerBound;
+            b2RayCastInput.p2 = b2AABB.upperBound;
+
+            B2AABB b2AABB1 = randomCreateAABB();
+            rayCastList.add(new KV<>(b2RayCastInput, b2AABB1));
+        }
+    }
+
+
+    public void customData() {
+        // 1x 都打不中
+        int index = 10;
+        map.put(index++, new UserData(index, new B2AABB(new B2Vec2(9, 1), new B2Vec2(10, 2))));
+        map.put(index++, new UserData(index, new B2AABB(new B2Vec2(1, 9), new B2Vec2(2, 10))));
+        map.put(index++, new UserData(index, new B2AABB(new B2Vec2(2, 1), new B2Vec2(3, 2))));
+        // 2x 都打能中 不要
+         index = 20;
+        // 3x 射线能打中
+        index = 30;
+        map.put(index++, new UserData(index, new B2AABB(new B2Vec2(1, 0.5f), new B2Vec2(2, 2.5f))));
+        map.put(index++, new UserData(index, new B2AABB(new B2Vec2(2, 2.5f), new B2Vec2(3.5f, 3))));
+        map.put(index++, new UserData(index, new B2AABB(new B2Vec2(8, 8), new B2Vec2(10, 10))));
+        // 4x 矩形能打中
+        index = 40;
+        map.put(index++, new UserData(index, new B2AABB(new B2Vec2(6, 3), new B2Vec2(8, 4))));
+        map.put(index++, new UserData(index, new B2AABB(new B2Vec2(5, 2), new B2Vec2(9, 5))));
+
+        // 打射线
+        B2RayCastInput b2RayCastInput = new B2RayCastInput();
+        b2RayCastInput.maxFraction = 1;
+        b2RayCastInput.p1 = new B2Vec2(-1, -1);
+        b2RayCastInput.p2 = new B2Vec2(10, 10);
+
+        B2AABB b2AABB1 = new B2AABB(new B2Vec2(5, 2), new B2Vec2(9, 5));
+        rayCastList.add(new KV<>(b2RayCastInput, b2AABB1));
     }
 
 
@@ -86,6 +137,7 @@ public class TreeTest {
     public void testTreeSame() {
         int index = 20;
 
+        randomData();
         int errorCount = 0;
         for (int i = 0; i < index; i++) {
             String s1 = treeTest(new B2DynamicTree());
@@ -141,8 +193,47 @@ public class TreeTest {
             //b2DynamicTree.rebuildBottomUp();
         }, 1, b2DynamicTree.getClass().getSimpleName() + " moveProxy");
 
+        RayCastCallback rayCastCallback = new RayCastCallback() {
+            @Override
+            public float rayCastCallback(B2RayCastInput subInput, int nodeId) {
+                UserData userData = (UserData) b2DynamicTree.getUserData(nodeId);
+                B2Vec2 sub = subInput.p2.sub(subInput.p1);
+                Position o = new Position(subInput.p1.x, subInput.p1.y);
+                Dir dir = new Dir(sub.x, sub.y);
+                Dir min = new Dir(userData.moveAAbb.lowerBound.x, userData.moveAAbb.lowerBound.y);
+                Dir max = new Dir(userData.moveAAbb.upperBound.x, userData.moveAAbb.upperBound.y);
+                OutValue outValue = new OutValue();
+                boolean b = Collision2D.TestRayAABB(o, dir, min, max, outValue);
+                if(b) {
+                    System.out.println(String.format("RayCastCallback id %s aabb %s  hit %s", userData.id, userData.moveAAbb, b));
+                }
+                return 1;
+            }
+        };
 
+        QueryCallback queryCallback = new QueryCallback() {
+
+            @Override
+            public boolean queryCallback(int nodeId, B2AABB aabb) {
+                UserData userData = (UserData) b2DynamicTree.getUserData(nodeId);
+                boolean b = B2Collision.b2TestOverlap(aabb, userData.moveAAbb);
+                if (b) {
+                    System.out.println(String.format("QueryCallback id %s aabb %s  hit %s", userData.id, userData.moveAAbb, b));
+                }
+                return true;
+            }
+        };
         String s = b2DynamicTree.printTreeToString();
+        System.out.println(s);
+
+        TestUtil.testTime(() -> {
+            for (KV<B2RayCastInput, B2AABB> kv : rayCastList) {
+                b2DynamicTree.rayCast(rayCastCallback, kv.getK());
+                b2DynamicTree.query(queryCallback, kv.getV());
+            }
+
+        }, 1, b2DynamicTree.getClass().getSimpleName() + " rayAndQuery");
+
         // b2DynamicTree.printTree();
    /*     TestUtil.testTime(() -> {
             for (UserData value : map.values()) {
@@ -156,31 +247,13 @@ public class TreeTest {
 
     @Test
     public void test02() {
+        B2AABB b2AABB = new B2AABB(new B2Vec2(6, 3), new B2Vec2(8, 4));
+        B2AABB b2AABB1 = new B2AABB(new B2Vec2(5, 2), new B2Vec2(9, 5));
+        boolean b = B2Collision.b2TestOverlap(b2AABB, b2AABB1);
+        boolean b1 = B2Collision.b2TestOverlap(b2AABB1, b2AABB);
         B2DynamicTree b2DynamicTree = new B2DynamicTree();
-
-        for (UserData value : map.values()) {
-            int proxy = b2DynamicTree.createProxy(value.aabb, value);
-            value.proxyId = proxy;
-        }
-        //b2DynamicTree.rebuildBottomUp();
-        testRayAndAABB(b2DynamicTree);
-    }
-
-    public void testRayAndAABB(IB2DynamicTree tree) {
-        TestUtil.testTime(() -> {
-            B2RayCastInput b2RayCastInput = new B2RayCastInput();
-            b2RayCastInput.maxFraction = 1;
-            B2AABB b2AABB = randomCreateAABB();
-            b2RayCastInput.p1 = b2AABB.lowerBound;
-            b2RayCastInput.p2 = b2AABB.upperBound;
-            tree.rayCast((a, b) -> 1f, b2RayCastInput);
-
-            b2AABB = randomCreateAABB();
-            tree.query(a -> ThreadLocalRandom.current().nextInt(100) == 1, b2AABB);
-
-        }, 1000, "rayAndQuery");
-
-
+        customData();
+        treeTest(b2DynamicTree);
     }
 
 
