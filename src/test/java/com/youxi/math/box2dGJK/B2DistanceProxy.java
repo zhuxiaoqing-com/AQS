@@ -1,9 +1,6 @@
 package com.youxi.math.box2dGJK;
 
-import com.youxi.math.box2dGJK.shape.B2Circle;
-import com.youxi.math.box2dGJK.shape.B2ConvexPolygon;
-import com.youxi.math.box2dGJK.shape.B2Transform;
-import com.youxi.math.box2dGJK.shape.B2Vec2;
+import com.youxi.math.box2dGJK.shape.*;
 
 import static com.youxi.math.box2dGJK.B2Math.b2Dot;
 
@@ -28,6 +25,13 @@ public class B2DistanceProxy {
 		m_count = polygon.getM_vertexCount();
 		m_radius = polygon.getB2_polygonRadius();
 	}
+
+	public B2DistanceProxy(B2MyPolygon polygon) {
+		m_vertices = polygon.getM_vertices();
+		m_count = polygon.getM_vertexCount();
+		m_radius = polygon.getB2_polygonRadius();
+	}
+
 
 	void Set(B2Vec2[] vertices, int count, float radius) {
 		m_vertices = vertices;

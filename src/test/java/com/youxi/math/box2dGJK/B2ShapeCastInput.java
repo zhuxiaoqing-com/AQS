@@ -6,4 +6,10 @@ public class B2ShapeCastInput {
 	B2DistanceProxy proxyA;
 	B2DistanceProxy proxyB;
 	B2Vec2 translationB;
+
+	public B2ShapeCastInput(B2DistanceProxy proxyA, B2DistanceProxy proxyB, B2Vec2 translationB) {
+		this.proxyA = proxyA;
+		this.proxyB = proxyB;
+		this.translationB = translationB;
+	}
 }

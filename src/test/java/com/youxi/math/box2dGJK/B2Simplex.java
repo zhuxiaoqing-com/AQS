@@ -56,7 +56,7 @@ public class B2Simplex {
 	 B2Vec2 GetSearchDirection() {
 		switch (m_count)
 		{
-			case 1:  //一个顶点从相反的方向去找
+			case 1:  //一个顶点从相反的方向去找 其实就是顺着原点的方向找
 				return m_v1.w.multiply(-1f);
 			case 2: {
 				//两个顶点，1、两个点所组成边向量e12与第一个顶点和原点的所组成的向量-m_v1.w先去判断符号
@@ -124,11 +124,12 @@ public class B2Simplex {
 			/*pA = m_v1.wA;
 			pB = m_v1.wB;*/
 				pA.Set(m_v1.wA);
-				pA.Set(m_v1.wB);
+				pB.Set(m_v1.wB);
 				break;
 
 			case 2: //对于2个点，我们用重心坐标求的的，至于为什么要用重心坐标，我们在下面的讲解中将会看到
 				// 见证点这里其实一般都会有一边是点 一边是边;所以这个重心坐标其实一般都是给边的那一边用;
+				//通过权重a1和a2（由Solve2()计算）对顶点坐标线性插值，得到线段上的最近点3。
 		/*	*pA = m_v1.a * m_v1.wA + m_v2.a * m_v2.wA;
 			*pB = m_v1.a * m_v1.wB + m_v2.a * m_v2.wB;*/
 				pA.Set(add(multiply(m_v1.a, m_v1.wA), multiply(m_v2.a, m_v2.wA)));
@@ -201,13 +202,26 @@ public class B2Simplex {
 // Solution
 // a1 = d12_1 / d12
 // a2 = d12_2 / d12
+	// 查看 solve2.jpg图
 	public  void Solve2()
 	{
-		B2Vec2 w1 = m_v1.w;
-		B2Vec2 w2 = m_v2.w;
+		/*
+		 * 空间中点到线段的最近点必然位于以下三种情况之一：
+		 * w1区域‌：原点在线段起点w1的“外侧”（靠近w1一侧）3。
+		 * w2区域‌：原点在线段终点w2的“外侧”（靠近w2一侧）3。
+		 * e12区域‌：原点在线段内部，需通过插值计算最近点3。
+		 *
+		    d12_2 = -w1·e12：若≤0，说明原点在w1外侧（因投影方向与e12相反）3。
+			d12_1 = w2·e12：若≤0，说明原点在w2外侧（因投影方向与e12相同）3。
+			若两者均>0，则原点在线段内部，需按比例分配权重（a1 = d12_1/(d12_1+d12_2)）
+		 */
+
+		B2Vec2 w1 = m_v1.w; // 单纯形的顶点1
+		B2Vec2 w2 = m_v2.w; // 单纯形的顶点2
 		B2Vec2 e12 = sub(w2, w1);
 
 		// w1 region
+		//d12_2为w1在e12反向的投影，若≤0说明原点在w1这一侧
 		float d12_2 = -b2Dot(w1, e12);
 		if (d12_2 <= 0.0f)
 		{
@@ -217,7 +231,7 @@ public class B2Simplex {
 			return;
 		}
 
-		// w2 region
+		// w2 region 原点在 w2 这一侧
 		float d12_1 = b2Dot(w2, e12);
 		if (d12_1 <= 0.0f)
 		{
@@ -228,10 +242,12 @@ public class B2Simplex {
 			return;
 		}
 
-		// Must be in e12 region.
+		// Must be in e12 region. 原点在线段里面
+		// 根据原点权重 取与中心的距离  这里1.0f/ 就是为了节省一次除法计算
 		float inv_d12 = 1.0f / (d12_1 + d12_2);
-		m_v1.a = d12_1 * inv_d12;
-		m_v2.a = d12_2 * inv_d12;
+		// 里面是取比值  所以可以直接用dot好的结果取，因为两边都同时*了w2-w1线段的长度
+		m_v1.a = d12_1 * inv_d12;// d12_1  / (d12_1 + d12_2)
+		m_v2.a = d12_2 * inv_d12;// d12_2  / (d12_1 + d12_2)
 		m_count = 2;
 	}
 
@@ -241,7 +257,8 @@ public class B2Simplex {
 // - edge points[1]-points[2]
 // - inside the triangle
 
-	//3个单纯顶点时，判断原点位置函数
+	//3个单纯顶点时，判断原点位置函数 下面是判断 原点距离三角形的点最近 还是距离三角形的某条边最近 还是说点在三角形里面
+	//这里的代码 详细可以看 navmesh项目里面的 dtClosestPtPointTriangle
 	public  void Solve3()
 	{
 		B2Vec2 w1 = m_v1.w;

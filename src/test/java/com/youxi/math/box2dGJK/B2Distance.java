@@ -4,6 +4,9 @@ import com.youxi.math.box2dGJK.shape.B2Vec2;
 
 import static com.youxi.math.box2dGJK.B2Math.*;
 
+/**
+ *  box2d  2.4.1
+ */
 public class B2Distance {
 	int b2_gjkCalls;
 	int b2_gjkIters;
@@ -12,20 +15,26 @@ public class B2Distance {
 
 	//  b2Distance的输入
 //  在计算中你必须选择使用形状的半径
-	public class b2DistanceInput {
+	public static class b2DistanceInput {
 		B2DistanceProxy proxyA;    //距离代理A
 		B2DistanceProxy proxyB;    //距离代理B
 		/*B2Transform transformA;    //转换A
 		B2Transform transformB;    //转换B*/
 		boolean useRadii;             //是否使用半径
+
+		public b2DistanceInput(B2DistanceProxy proxyA, B2DistanceProxy proxyB, boolean useRadii) {
+			this.proxyA = proxyA;
+			this.proxyB = proxyB;
+			this.useRadii = useRadii;
+		}
 	}
 
 	;
 
 	// b2Distance的输出
-	public class b2DistanceOutput {
-		B2Vec2 pointA;        //shapeA上最近的点
-		B2Vec2 pointB;        //shapeB上最近的点
+	public static class b2DistanceOutput {
+		B2Vec2 pointA = new B2Vec2(0,0);        //shapeA上最近的点
+		B2Vec2 pointB = new B2Vec2(0,0);        //shapeB上最近的点
 		float distance;   //距离
 		int iterations;    //GJK的迭代次数
 	}
@@ -93,7 +102,7 @@ public class B2Distance {
 				break;
 			}
 			//计算最近的点
-			B2Vec2 p = simplex.GetClosestPoint();
+			/*B2Vec2 p = simplex.GetClosestPoint();
 			distanceSqr2 = p.LengthSquared();
 
 
@@ -101,7 +110,7 @@ public class B2Distance {
 			if (distanceSqr2 >= distanceSqr1) {
 				//break;
 			}
-			distanceSqr1 = distanceSqr2;
+			distanceSqr1 = distanceSqr2;*/
 			//获取查找方向
 			B2Vec2 d = simplex.GetSearchDirection();
 			//确保查找的方向是有效的
@@ -146,7 +155,7 @@ public class B2Distance {
 		output.iterations = iter;
 		//将单纯形写入缓存
 		//simplex.WriteCache(cache);
-		// 如果被要求，则提供半径
+		// 如果被要求，则提供半径 这里是处理圆
 		if (input.useRadii) {
 			float rA = proxyA.m_radius;
 			float rB = proxyB.m_radius;
@@ -335,8 +344,8 @@ public class B2Distance {
 		B2Vec2 v = sub(wA, wB);
 
 		// Sigma is the target distance between polygons
-		float sigma = Math.max(b2_polygonRadius, radius - b2_polygonRadius);
-		float tolerance = 0.5f * b2_linearSlop;
+		float sigma = Math.max(b2_polygonRadius, radius - b2_polygonRadius); // 距离半径值
+		float tolerance = 0.5f * b2_linearSlop; // 误差值
 
 		// Main iteration loop.
 	 int k_maxIters = 20;
