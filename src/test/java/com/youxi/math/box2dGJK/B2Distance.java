@@ -345,7 +345,7 @@ public class B2Distance {
 
 		// Sigma is the target distance between polygons
 		float sigma = Math.max(b2_polygonRadius, radius - b2_polygonRadius); // 距离半径值
-		float tolerance = 0.5f * b2_linearSlop; // 误差值
+		float tolerance = 0.5f * b2_linearSlop;
 
 		// Main iteration loop.
 	 int k_maxIters = 20;
