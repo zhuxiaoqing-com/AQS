@@ -21,8 +21,7 @@ public class Test01 {
 
         aabb1 = new B2MyPolygon(1f, 1f, new B2Vec2(2, 2), 0f);
         aabb2 = new B2MyPolygon(1f, 1f, new B2Vec2(12, 12), 0f);
-        b2Vec2 = new B2Vec2(1, 0);
-        b2Vec2.Normalize();
+        b2Vec2 = new B2Vec2(12, 12).sub(new B2Vec2(2, 2)).multiply(10);
 
 
         bsDistance(aabb1, aabb2, "");
