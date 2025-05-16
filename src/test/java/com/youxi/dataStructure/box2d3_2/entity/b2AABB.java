@@ -5,6 +5,8 @@ public class b2AABB {
     public b2Vec2 upperBound;
 
     public b2AABB() {
+        lowerBound = new b2Vec2();
+        upperBound = new b2Vec2();
     }
 
     public b2AABB(b2Vec2 lowerBound, b2Vec2 upperBound) {

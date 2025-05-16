@@ -2,7 +2,9 @@ package com.youxi.dataStructure.box2d3_2.aabbTree;
 
 import com.youxi.dataStructure.box2d3_2.entity.b2AABB;
 import com.youxi.dataStructure.box2d3_2.entity.b2Math;
+import com.youxi.dataStructure.box2d3_2.entity.b2TreeStats;
 import com.youxi.dataStructure.box2d3_2.entity.b2Vec2;
+import com.youxi.dataStructure.collisionTree.AABB;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +13,8 @@ public class b2DynamicTree {
     public static final int B2_HUGE = 100000; // 最大的坐标范围 -B2_HUGE 到 B2_HUGE
     public static final int B2_NULL_INDEX = -1;
     public static final int NULL = 0;
+    public static final int B2_TREE_STACK_SIZE = 1024;
+
 
     public static final int b2_allocatedNode = 0x0001; // 已经分配
     public static final int b2_enlargedNode = 0x0002;
@@ -56,6 +60,273 @@ public class b2DynamicTree {
 
     /// Allocated space for rebuilding
     int rebuildCapacity;
+
+
+    public b2TreeStats b2DynamicTree_Query(b2AABB aabb, long maskBits, B2TreeQueryCallbackFcn callback, Object context) {
+        b2TreeStats result = new b2TreeStats();
+
+        if (nodeCount == 0) {
+            return result;
+        }
+
+        int stack[] = new int[B2_TREE_STACK_SIZE];
+        int stackCount = 0;
+        stack[stackCount++] = root;
+
+        while (stackCount > 0) {
+            int nodeId = stack[--stackCount];
+            if (nodeId == B2_NULL_INDEX) {
+                // todo huh?
+                B2_ASSERT(false);
+                continue;
+            }
+
+            b2TreeNode node = nodes[nodeId];
+            result.nodeVisits += 1;
+
+            if (b2Math.b2AABB_Overlaps(aabb, aabb) && (node.categoryBits & maskBits) != 0) {
+                if (b2IsLeaf(node)) {
+                    // callback to user code with proxy id
+                    boolean proceed = callback.callback(nodeId, node.userData, context);
+                    result.leafVisits += 1;
+
+                    if (proceed == false) {
+                        return result;
+                    }
+                } else {
+                    if (stackCount < B2_TREE_STACK_SIZE - 1) {
+                        stack[stackCount++] = node.child1;
+                        stack[stackCount++] = node.child2;
+                    } else {
+                        B2_ASSERT(stackCount < B2_TREE_STACK_SIZE - 1);
+                    }
+                }
+            }
+        }
+
+        return result;
+    }
+
+
+    b2TreeStats b2DynamicTree_RayCast(b2RayCastInput input, long maskBits,
+                                      B2TreeRayCastCallbackFcn callback, Object context) {
+        b2TreeStats result = new b2TreeStats();
+
+        if (nodeCount == 0) {
+            return result;
+        }
+
+        b2Vec2 p1 = input.origin;
+        b2Vec2 d = input.translation;
+
+        b2Vec2 r = b2Math.b2Normalize(d);
+
+        // v is perpendicular to the segment.
+        b2Vec2 v = b2Math.b2CrossSV(1.0f, r);
+        b2Vec2 abs_v = b2Math.b2Abs(v);
+
+        // Separating axis for segment (Gino, p80).
+        // |dot(v, p1 - c)| > dot(|v|, h)
+
+        float maxFraction = input.maxFraction;
+
+        b2Vec2 p2 = b2Math.b2MulAdd(p1, maxFraction, d);
+
+        // Build a bounding box for the segment.
+        b2AABB segmentAABB = new b2AABB(b2Math.b2Min(p1, p2), b2Math.b2Max(p1, p2));
+
+        int stack[] = new int[B2_TREE_STACK_SIZE];
+        int stackCount = 0;
+        stack[stackCount++] = root;
+
+
+        b2RayCastInput subInput = input;
+
+        while (stackCount > 0) {
+            // 先把最里面的弹出来
+            int nodeId = stack[--stackCount];
+            if (nodeId == B2_NULL_INDEX) {
+                // todo is this possible?
+                B2_ASSERT(false);
+                continue;
+            }
+
+            b2TreeNode node = nodes[nodeId];
+            result.nodeVisits += 1;
+
+            b2AABB nodeAABB = node.aabb;
+
+            if ((node.categoryBits & maskBits) == 0 || b2Math.b2AABB_Overlaps(nodeAABB, segmentAABB) == false) {
+                continue;
+            }
+
+            // Separating axis for segment (Gino, p80).
+            // |dot(v, p1 - c)| > dot(|v|, h)
+            // radius extension is added to the node in this case
+            b2Vec2 c = b2Math.b2AABB_Center(nodeAABB);
+            b2Vec2 h = b2Math.b2AABB_Extents(nodeAABB);
+            float term1 = b2Math.b2AbsFloat(b2Math.b2Dot(v, b2Math.b2Sub(p1, c)));
+            float term2 = b2Math.b2Dot(abs_v, h);
+            if (term2 < term1) {
+                continue;
+            }
+
+            if (b2IsLeaf(node)) {
+                subInput.maxFraction = maxFraction;
+
+                float value = callback.callback(subInput, nodeId, node.userData, context);
+                result.leafVisits += 1;
+
+                // The user may return -1 to indicate this shape should be skipped
+
+                if (value == 0.0f) {
+                    // The client has terminated the ray cast.
+                    return result;
+                }
+
+                if (0.0f < value && value <= maxFraction) {
+                    // Update segment bounding box.
+                    maxFraction = value;
+                    p2 = b2Math.b2MulAdd(p1, maxFraction, d);
+                    segmentAABB.lowerBound = b2Math.b2Min(p1, p2);
+                    segmentAABB.upperBound = b2Math.b2Max(p1, p2);
+                }
+            } else {
+                if (stackCount < B2_TREE_STACK_SIZE - 1) {
+                    b2Vec2 c1 = b2Math.b2AABB_Center(nodes[node.child1].aabb);
+                    b2Vec2 c2 = b2Math.b2AABB_Center(nodes[node.child2].aabb);
+                    if (b2Math.b2DistanceSquared(c1, p1) < b2Math.b2DistanceSquared(c2, p1)) {
+                        //   int nodeId = stack[--stackCount]; 因为是先把最里面的那个弹出来 所以 这里的话是先检测 child1 在检测child2
+                        stack[stackCount++] = node.child2;
+                        stack[stackCount++] = node.child1;
+                    } else {
+                        stack[stackCount++] = node.child1;
+                        stack[stackCount++] = node.child2;
+                    }
+                } else {
+                    B2_ASSERT(stackCount < B2_TREE_STACK_SIZE - 1);
+                }
+            }
+        }
+
+        return result;
+    }
+
+
+    /**
+     * 和打射线一样 也将boxCast 扩大成了一个特别大的aabb盒子
+     */
+    b2TreeStats b2DynamicTree_ShapeCast(b2ShapeCastInput input, long maskBits,
+                                        B2TreeShapeCastCallbackFcn callback, Object context) {
+        b2TreeStats stats = new b2TreeStats();
+
+        if (nodeCount == 0 || input.proxy.count == 0) {
+            return stats;
+        }
+
+        // 找到proxy的aabb包围盒
+        b2AABB originAABB = new b2AABB(input.proxy.points[0], input.proxy.points[0]);
+        for (int i = 1; i < input.proxy.count; ++i) {
+            originAABB.lowerBound = b2Math.b2Min(originAABB.lowerBound, input.proxy.points[i]);
+            originAABB.upperBound = b2Math.b2Max(originAABB.upperBound, input.proxy.points[i]);
+        }
+
+        b2Vec2 radius = new b2Vec2(input.proxy.radius, input.proxy.radius);
+
+        // 包围盒应用半径
+        originAABB.lowerBound = b2Math.b2Sub(originAABB.lowerBound, radius);
+        originAABB.upperBound = b2Math.b2Add(originAABB.upperBound, radius);
+
+        b2Vec2 p1 = b2Math.b2AABB_Center(originAABB);
+        b2Vec2 extension = b2Math.b2AABB_Extents(originAABB);
+
+        // v is perpendicular to the segment.
+        b2Vec2 r = input.translation;
+        b2Vec2 v = b2Math.b2CrossSV(1.0f, r);
+        b2Vec2 abs_v = b2Math.b2Abs(v);
+
+        // Separating axis for segment (Gino, p80).
+        // |dot(v, p1 - c)| > dot(|v|, h)
+
+        float maxFraction = input.maxFraction;
+
+        // 将盒子和盒子可以前往的最远终点 合成一个最大的aabb盒子
+        // Build total box for the shape cast
+        b2Vec2 t = b2Math.b2MulSV(maxFraction, input.translation);
+        b2AABB totalAABB = new b2AABB(
+                b2Math.b2Min(originAABB.lowerBound, b2Math.b2Add(originAABB.lowerBound, t)),
+                b2Math.b2Max(originAABB.upperBound, b2Math.b2Add(originAABB.upperBound, t))
+        );
+
+        b2ShapeCastInput subInput = input;
+
+        int stack[] = new int[B2_TREE_STACK_SIZE];
+        int stackCount = 0;
+        stack[stackCount++] = root;
+
+        while (stackCount > 0) {
+            int nodeId = stack[--stackCount];
+            if (nodeId == B2_NULL_INDEX) {
+                // todo is this possible?
+                B2_ASSERT(false);
+                continue;
+            }
+
+            b2TreeNode node = nodes[nodeId];
+            stats.nodeVisits += 1;
+
+            if ((node.categoryBits & maskBits) == 0 || b2Math.b2AABB_Overlaps(node.aabb, totalAABB) == false) {
+                continue;
+            }
+
+            // Separating axis for segment (Gino, p80).
+            // |dot(v, p1 - c)| > dot(|v|, h)
+            // radius extension is added to the node in this case
+            b2Vec2 c = b2Math.b2AABB_Center(node.aabb);
+            b2Vec2 h = b2Math.b2Add(b2Math.b2AABB_Extents(node.aabb), extension);
+            float term1 = b2Math.b2AbsFloat(b2Math.b2Dot(v, b2Math.b2Sub(p1, c)));
+            float term2 = b2Math.b2Dot(abs_v, h);
+            if (term2 < term1) {
+                continue;
+            }
+
+            if (b2IsLeaf(node)) {
+                subInput.maxFraction = maxFraction;
+
+                float value = callback.callback(subInput, nodeId, node.userData, context);
+                stats.leafVisits += 1;
+
+                if (value == 0.0f) {
+                    // The client has terminated the ray cast.
+                    return stats;
+                }
+
+                if (0.0f < value && value < maxFraction) {
+                    // Update segment bounding box.
+                    maxFraction = value;
+                    t = b2Math.b2MulSV(maxFraction, input.translation);
+                    totalAABB.lowerBound = b2Math.b2Min(originAABB.lowerBound, b2Math.b2Add(originAABB.lowerBound, t));
+                    totalAABB.upperBound = b2Math.b2Max(originAABB.upperBound, b2Math.b2Add(originAABB.upperBound, t));
+                }
+            } else {
+                if (stackCount < B2_TREE_STACK_SIZE - 1) {
+                    b2Vec2 c1 = b2Math.b2AABB_Center(nodes[node.child1].aabb);
+                    b2Vec2 c2 = b2Math.b2AABB_Center(nodes[node.child2].aabb);
+                    if (b2Math.b2DistanceSquared(c1, p1) < b2Math.b2DistanceSquared(c2, p1)) {
+                        stack[stackCount++] = node.child2;
+                        stack[stackCount++] = node.child1;
+                    } else {
+                        stack[stackCount++] = node.child1;
+                        stack[stackCount++] = node.child2;
+                    }
+                } else {
+                    B2_ASSERT(stackCount < B2_TREE_STACK_SIZE - 1);
+                }
+            }
+        }
+
+        return stats;
+    }
 
 
     boolean b2IsLeaf(b2TreeNode node) {
@@ -709,7 +980,7 @@ public class b2DynamicTree {
 
     // Create a proxy in the tree as a leaf node. We return the index of the node instead of a pointer so that we can grow
 // the node pool.
-    int b2DynamicTree_CreateProxy(b2AABB aabb, long categoryBits, long userData) {
+    public int b2DynamicTree_CreateProxy(b2AABB aabb, long categoryBits, long userData) {
         B2_ASSERT(-B2_HUGE < aabb.lowerBound.x && aabb.lowerBound.x < B2_HUGE);
         B2_ASSERT(-B2_HUGE < aabb.lowerBound.y && aabb.lowerBound.y < B2_HUGE);
         B2_ASSERT(-B2_HUGE < aabb.upperBound.x && aabb.upperBound.x < B2_HUGE);
@@ -732,7 +1003,7 @@ public class b2DynamicTree {
         return proxyId;
     }
 
-    void b2DynamicTree_DestroyProxy(int proxyId) {
+    public void b2DynamicTree_DestroyProxy(int proxyId) {
         B2_ASSERT(0 <= proxyId && proxyId < nodeCapacity);
         B2_ASSERT(b2IsLeaf(nodes[proxyId]));
 
@@ -740,12 +1011,274 @@ public class b2DynamicTree {
         b2FreeNode(proxyId);
 
         B2_ASSERT(proxyCount > 0);
+        B2_ASSERT(proxyCount > 0);
         proxyCount -= 1;
     }
 
     int b2DynamicTree_GetProxyCount() {
         return proxyCount;
     }
+
+
+    public void b2DynamicTree_MoveProxy(int proxyId, b2AABB aabb) {
+        B2_ASSERT(b2Math.b2IsValidAABB(aabb));
+        B2_ASSERT(aabb.upperBound.x - aabb.lowerBound.x < B2_HUGE);
+        B2_ASSERT(aabb.upperBound.y - aabb.lowerBound.y < B2_HUGE);
+        B2_ASSERT(0 <= proxyId && proxyId < nodeCapacity);
+        B2_ASSERT(b2IsLeaf(nodes[proxyId]));
+
+        b2RemoveLeaf(proxyId);
+
+        nodes[proxyId].aabb = aabb;
+
+        boolean shouldRotate = false;
+        b2InsertLeaf(proxyId, shouldRotate);
+    }
+
+    /**
+     * 增大aabb
+     */
+    void b2DynamicTree_EnlargeProxy(int proxyId, b2AABB aabb) {
+        B2_ASSERT(b2Math.b2IsValidAABB(aabb));
+        B2_ASSERT(aabb.upperBound.x - aabb.lowerBound.x < B2_HUGE);
+        B2_ASSERT(aabb.upperBound.y - aabb.lowerBound.y < B2_HUGE);
+        B2_ASSERT(0 <= proxyId && proxyId < nodeCapacity);
+        B2_ASSERT(b2IsLeaf(nodes[proxyId]));
+
+        // Caller must ensure this
+        B2_ASSERT(b2Math.b2AABB_Contains(nodes[proxyId].aabb, aabb) == false);
+
+        nodes[proxyId].aabb = aabb;
+
+        int parentIndex = nodes[proxyId].parent;
+        while (parentIndex != B2_NULL_INDEX) {
+            boolean changed = b2Math.b2EnlargeAABB(nodes[parentIndex].aabb, aabb);
+            nodes[parentIndex].flags |= b2_enlargedNode;
+            parentIndex = nodes[parentIndex].parent;
+
+            if (changed == false) {
+                break;
+            }
+        }
+
+        while (parentIndex != B2_NULL_INDEX) {
+            if ((nodes[parentIndex].flags & b2_enlargedNode) != 0) {
+                // early out because this ancestor was previously ascended and marked as enlarged
+                break;
+            }
+
+            nodes[parentIndex].flags |= b2_enlargedNode;
+            parentIndex = nodes[parentIndex].parent;
+        }
+    }
+
+    void b2DynamicTree_SetCategoryBits(int proxyId, long categoryBits) {
+        B2_ASSERT(nodes[proxyId].child1 == B2_NULL_INDEX);
+        B2_ASSERT(nodes[proxyId].child2 == B2_NULL_INDEX);
+        B2_ASSERT((nodes[proxyId].flags & b2_leafNode) == b2_leafNode);
+
+        nodes[proxyId].categoryBits = categoryBits;
+
+        // Fix up category bits in ancestor internal nodes
+        int nodeIndex = nodes[proxyId].parent;
+        while (nodeIndex != B2_NULL_INDEX) {
+            b2TreeNode node = nodes[nodeIndex];
+            int child1 = node.child1;
+            B2_ASSERT(child1 != B2_NULL_INDEX);
+            int child2 = node.child2;
+            B2_ASSERT(child2 != B2_NULL_INDEX);
+            node.categoryBits = nodes[child1].categoryBits | nodes[child2].categoryBits;
+
+            nodeIndex = node.parent;
+        }
+    }
+
+    long b2DynamicTree_GetCategoryBits(int proxyId) {
+        B2_ASSERT(0 <= proxyId && proxyId < nodeCapacity);
+        return nodes[proxyId].categoryBits;
+    }
+
+    int b2DynamicTree_GetHeight() {
+        if (root == B2_NULL_INDEX) {
+            return 0;
+        }
+
+        return nodes[root].height;
+    }
+
+    //得到节点面积和根面积的比值。
+    float b2DynamicTree_GetAreaRatio() {
+        if (root == B2_NULL_INDEX) {
+            return 0.0f;
+        }
+
+        b2TreeNode root = nodes[this.root];
+        float rootArea = b2Math.b2Perimeter(root.aabb);
+
+        float totalArea = 0.0f;
+        for (int i = 0; i < nodeCapacity; ++i) {
+            b2TreeNode node = nodes[i];
+            if (b2IsAllocated(node) == false || b2IsLeaf(node) || i == this.root) {
+                continue;
+            }
+
+            totalArea += b2Math.b2Perimeter(node.aabb);
+        }
+
+        return totalArea / rootArea;
+    }
+
+    public b2AABB b2DynamicTree_GetRootBounds() {
+        if (root != B2_NULL_INDEX) {
+            return nodes[root].aabb;
+        }
+
+        return new b2AABB();
+    }
+
+
+    // Compute the height of a sub-tree.
+    int b2ComputeHeight(int nodeId) {
+        B2_ASSERT(0 <= nodeId && nodeId < nodeCapacity);
+        b2TreeNode node = nodes[nodeId];
+
+        if (b2IsLeaf(node)) {
+            return 0;
+        }
+
+        int height1 = b2ComputeHeight(node.child1);
+        int height2 = b2ComputeHeight(node.child2);
+        return 1 + b2Math.b2MaxInt(height1, height2);
+    }
+
+    void b2ValidateStructure(int index) {
+        if (index == B2_NULL_INDEX) {
+            return;
+        }
+
+        if (index == root) {
+            B2_ASSERT(nodes[index].parent == B2_NULL_INDEX);
+        }
+
+        b2TreeNode node = nodes[index];
+
+        B2_ASSERT(node.flags == 0 || (node.flags & b2_allocatedNode) != 0);
+
+        if (b2IsLeaf(node)) {
+            B2_ASSERT(node.height == 0);
+            return;
+        }
+
+        int child1 = node.child1;
+        int child2 = node.child2;
+
+        B2_ASSERT(0 <= child1 && child1 < nodeCapacity);
+        B2_ASSERT(0 <= child2 && child2 < nodeCapacity);
+
+        B2_ASSERT(nodes[child1].parent == index);
+        B2_ASSERT(nodes[child2].parent == index);
+
+        if (((nodes[child1].flags | nodes[child2].flags) & b2_enlargedNode) != 0) {
+            B2_ASSERT((node.flags & b2_enlargedNode) != 0);
+        }
+
+        b2ValidateStructure(child1);
+        b2ValidateStructure(child2);
+    }
+
+    void b2ValidateMetrics(int index) {
+        if (index == B2_NULL_INDEX) {
+            return;
+        }
+
+        b2TreeNode node = nodes[index];
+
+        if (b2IsLeaf(node)) {
+            B2_ASSERT(node.height == 0);
+            return;
+        }
+
+        int child1 = node.child1;
+        int child2 = node.child2;
+
+        B2_ASSERT(0 <= child1 && child1 < nodeCapacity);
+        B2_ASSERT(0 <= child2 && child2 < nodeCapacity);
+
+        int height1 = nodes[child1].height;
+        int height2 = nodes[child2].height;
+        int height = 1 + b2Math.b2MaxInt(height1, height2);
+        B2_ASSERT(node.height == height);
+
+        // b2AABB aabb = b2AABB_Union(tree.nodes[child1].aabb, tree.nodes[child2].aabb);
+
+        B2_ASSERT(b2Math.b2AABB_Contains(node.aabb, nodes[child1].aabb));
+        B2_ASSERT(b2Math.b2AABB_Contains(node.aabb, nodes[child2].aabb));
+
+        // B2_ASSERT(aabb.lowerBound.x == node.aabb.lowerBound.x);
+        // B2_ASSERT(aabb.lowerBound.y == node.aabb.lowerBound.y);
+        // B2_ASSERT(aabb.upperBound.x == node.aabb.upperBound.x);
+        // B2_ASSERT(aabb.upperBound.y == node.aabb.upperBound.y);
+
+        long categoryBits = nodes[child1].categoryBits | nodes[child2].categoryBits;
+        B2_ASSERT(node.categoryBits == categoryBits);
+
+        b2ValidateMetrics(child1);
+        b2ValidateMetrics(child2);
+    }
+
+
+    void b2DynamicTree_Validate() {
+        if (root == B2_NULL_INDEX) {
+            return;
+        }
+
+        b2ValidateStructure(root);
+        b2ValidateMetrics(root);
+
+        int freeCount = 0;
+        int freeIndex = freeList;
+        while (freeIndex != B2_NULL_INDEX) {
+            B2_ASSERT(0 <= freeIndex && freeIndex < nodeCapacity);
+            freeIndex = nodes[freeIndex].next;
+            ++freeCount;
+        }
+
+        int height = b2DynamicTree_GetHeight();
+        int computedHeight = b2ComputeHeight(root);
+        B2_ASSERT(height == computedHeight);
+
+        B2_ASSERT(nodeCount + freeCount == nodeCapacity);
+
+        //B2_UNUSED(tree);
+    }
+
+    void b2DynamicTree_ValidateNoEnlarged() {
+        int capacity = nodeCapacity;
+        for (int i = 0; i < capacity; ++i) {
+            b2TreeNode node = nodes[i];
+            if ((node.flags & b2_allocatedNode) != 0) {
+                B2_ASSERT((node.flags & b2_enlargedNode) == 0);
+            }
+        }
+    }
+
+ /*   int b2DynamicTree_GetByteCount( ) {
+        size_t size = sizeof(b2DynamicTree) + sizeof(b2TreeNode) * tree.nodeCapacity +
+                tree.rebuildCapacity * (sizeof( int )+sizeof(b2AABB) + sizeof(b2Vec2) + sizeof( int ) );
+
+        return (int) size;
+    }*/
+
+    long b2DynamicTree_GetUserData(int proxyId) {
+        B2_ASSERT(0 <= proxyId && proxyId < nodeCapacity);
+        return nodes[proxyId].userData;
+    }
+
+    b2AABB b2DynamicTree_GetAABB(int proxyId) {
+        B2_ASSERT(0 <= proxyId && proxyId < nodeCapacity);
+        return nodes[proxyId].aabb;
+    }
+
 
     private void B2_ASSERT(boolean b) {
         if (!b) {
