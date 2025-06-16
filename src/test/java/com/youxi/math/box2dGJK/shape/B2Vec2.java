@@ -94,7 +94,8 @@ public class B2Vec2 {
 
 
 	public void SetZero() {
-
+		this.x = 0.0f;
+		this.y = 0.0f;
 	}
 
 

@@ -1,7 +1,6 @@
-package com.youxi.dataStructure.aabbTree.bean;
+package com.youxi.math.box2dGJK.shape;
 
 import com.youxi.math.box2dGJK.B2Math;
-import com.youxi.math.box2dGJK.shape.B2Vec2;
 
 public class B2AABB {
 

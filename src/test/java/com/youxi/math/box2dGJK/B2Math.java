@@ -1,6 +1,7 @@
 package com.youxi.math.box2dGJK;
 
 
+import com.youxi.math.box2dGJK.shape.B2AABB;
 import com.youxi.math.box2dGJK.shape.B2Rot;
 import com.youxi.math.box2dGJK.shape.B2Transform;
 import com.youxi.math.box2dGJK.shape.B2Vec2;
@@ -84,6 +85,177 @@ public class B2Math {
     public static B2Vec2 b2Abs(B2Vec2 a)
     {
         return new B2Vec2(Math.abs(a.x), Math.abs(a.y));
+    }
+
+
+
+
+    /// Get the center of the AABB.
+    public static B2Vec2 B2AABB_Center(B2AABB a) {
+        return new B2Vec2(0.5f * (a.lowerBound.x + a.upperBound.x), 0.5f * (a.lowerBound.y + a.upperBound.y));
+    }
+
+    /**
+     * 周长
+     */
+    public static float b2Perimeter(B2AABB a) {
+        float wx = a.upperBound.x - a.lowerBound.x;
+        float wy = a.upperBound.y - a.lowerBound.y;
+        return 2.0f * (wx + wy);
+    }
+
+    /// Union of two AABBs
+    public static B2AABB B2AABB_Union(B2AABB a, B2AABB b) {
+        B2AABB c = new B2AABB();
+        c.lowerBound.x = b2MinFloat(a.lowerBound.x, b.lowerBound.x);
+        c.lowerBound.y = b2MinFloat(a.lowerBound.y, b.lowerBound.y);
+        c.upperBound.x = b2MaxFloat(a.upperBound.x, b.upperBound.x);
+        c.upperBound.y = b2MaxFloat(a.upperBound.y, b.upperBound.y);
+        return c;
+    }
+
+    /**
+     * 判断一个AABB包围盒是否完全包含另一个AABB包围盒。若检测结果为真，说明目标包围盒的所有边界均在被检测框内
+     */
+    public static boolean B2AABB_Contains(B2AABB a, B2AABB b) {
+        boolean s = true;
+        s = s && a.lowerBound.x <= b.lowerBound.x;
+        s = s && a.lowerBound.y <= b.lowerBound.y;
+        s = s && b.upperBound.x <= a.upperBound.x;
+        s = s && b.upperBound.y <= a.upperBound.y;
+        return s;
+    }
+
+
+    /**
+     * 判断两个AABB包围盒是否存在任何区域重叠。只要存在部分交集即返回真，用于快速筛选可能发生碰撞的对象
+     */
+    /// Do a and b overlap
+    public static boolean B2AABB_Overlaps(B2AABB a, B2AABB b) {
+        return !(b.lowerBound.x > a.upperBound.x || b.lowerBound.y > a.upperBound.y || a.lowerBound.x > b.upperBound.x ||
+                a.lowerBound.y > b.upperBound.y);
+    }
+
+
+    /// Enlarge a to contain b
+    /// @return true if the AABB grew
+    public static boolean b2EnlargeAABB(B2AABB a, B2AABB b) {
+        boolean changed = false;
+        if (b.lowerBound.x < a.lowerBound.x) {
+            a.lowerBound.x = b.lowerBound.x;
+            changed = true;
+        }
+
+        if (b.lowerBound.y < a.lowerBound.y) {
+            a.lowerBound.y = b.lowerBound.y;
+            changed = true;
+        }
+
+        if (a.upperBound.x < b.upperBound.x) {
+            a.upperBound.x = b.upperBound.x;
+            changed = true;
+        }
+
+        if (a.upperBound.y < b.upperBound.y) {
+            a.upperBound.y = b.upperBound.y;
+            changed = true;
+        }
+
+        return changed;
+    }
+
+
+    public static boolean b2IsValidAABB(B2AABB a) {
+        B2Vec2 d = b2Sub(a.upperBound, a.lowerBound);
+        boolean valid = d.x >= 0.0f && d.y >= 0.0f;
+        valid = valid && b2IsValidVec2(a.lowerBound) && b2IsValidVec2(a.upperBound);
+        return valid;
+    }
+
+    public static boolean b2IsValidVec2(B2Vec2 v) {
+        if (Float.isNaN(v.x) || Float.isNaN(v.y)) {
+            return false;
+        }
+
+        if (Float.isFinite(v.x) || Float.isFinite(v.y)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public static float b2MinFloat(float a, float b) {
+        return a < b ? a : b;
+    }
+
+    /// @return the maximum of two floats
+    public static float b2MaxFloat(float a, float b) {
+        return a > b ? a : b;
+    }
+
+    public static B2Vec2 b2Add(B2Vec2 a, B2Vec2 b) {
+        return new B2Vec2(a.x + b.x, a.y + b.y);
+    }
+
+    /// Vector subtraction
+    public static B2Vec2 b2Sub(B2Vec2 a, B2Vec2 b) {
+        return new B2Vec2(a.x - b.x, a.y - b.y);
+    }
+
+    /// Vector negation
+    public static B2Vec2 b2Neg(B2Vec2 a) {
+        return new B2Vec2(-a.x, -a.y);
+    }
+
+    public static float b2LengthSquared(B2Vec2 v) {
+        return v.x * v.x + v.y * v.y;
+    }
+
+
+    public static B2Vec2 b2Normalize(B2Vec2 v) {
+        double length = Math.sqrt(v.x * v.x + v.y * v.y);
+        if (length < 0.00001) {
+            return new B2Vec2();
+        }
+
+        double invLength = 1.0f / length;
+        B2Vec2 n = new B2Vec2((float) (invLength * v.x), (float) (invLength * v.y));
+        return n;
+    }
+
+    public static int b2MaxInt(int height1, int height2) {
+        return Math.max(height1, height2);
+    }
+
+    public static B2Vec2 b2CrossSV(float s, B2Vec2 v) {
+        return new B2Vec2(-s * v.y, s * v.x);
+    }
+
+
+
+    public static B2Vec2 B2AABB_Extents(B2AABB a) {
+        B2Vec2 b = new B2Vec2(0.5f * (a.upperBound.x - a.lowerBound.x), 0.5f * (a.upperBound.y - a.lowerBound.y));
+        return b;
+    }
+
+
+    public static float b2AbsFloat(float a) {
+        return a < 0 ? -a : a;
+    }
+
+    public static float b2DistanceSquared(B2Vec2 a, B2Vec2 b) {
+        B2Vec2 c = new B2Vec2(b.x - a.x, b.y - a.y);
+        return c.x * c.x + c.y * c.y;
+    }
+
+
+    public static B2Vec2 b2MulAdd(B2Vec2 a, float s, B2Vec2 b) {
+        return new B2Vec2(a.x + s * b.x, a.y + s * b.y);
+    }
+
+
+    public static B2Vec2 b2MulSV(float s, B2Vec2 v) {
+        return new B2Vec2(s * v.x, s * v.y);
     }
 
 }

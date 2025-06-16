@@ -1,7 +1,5 @@
 package com.youxi.dataStructure.box2d3_2.collidePolygons.entity;
 
-import com.youxi.dataStructure.box2d3_2.entity.b2Vec2;
-
 public class b2Manifold {
     /// The unit normal vector in world space, points from shape A to bodyB
     // 世界空间中的单位法向量，从形状A指向物体b

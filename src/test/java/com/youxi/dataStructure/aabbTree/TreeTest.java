@@ -1,20 +1,18 @@
 package com.youxi.dataStructure.aabbTree;
 
 import com.example.demo4.TestUtil;
-import com.example.demo4.testObj1.AA;
 import com.youxi.building.Misc;
 import com.youxi.dataStructure.aabbTree.bean.*;
 import com.youxi.dataStructure.aabbTree.original.B2DynamicTree;
 import com.youxi.dataStructure.aabbTree.zeroGC.B2DynamicTreeZeroGC;
-import com.youxi.dataStructure.collisionTree.AABB;
 import com.youxi.db.test.KV;
 import com.youxi.entity.Collision2D;
 import com.youxi.entity.Dir;
 import com.youxi.entity.OutValue;
 import com.youxi.entity.Position;
+import com.youxi.math.box2dGJK.shape.B2AABB;
+import com.youxi.math.box2dGJK.shape.B2Collision;
 import com.youxi.math.box2dGJK.shape.B2Vec2;
-import com.youxi.xstream.A;
-import org.checkerframework.checker.units.qual.K;
 import org.junit.Test;
 
 import java.util.*;

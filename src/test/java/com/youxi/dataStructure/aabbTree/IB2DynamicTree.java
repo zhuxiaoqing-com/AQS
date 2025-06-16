@@ -1,15 +1,8 @@
 package com.youxi.dataStructure.aabbTree;
 
 import com.youxi.dataStructure.aabbTree.bean.*;
-import com.youxi.dataStructure.aabbTree.original.B2TreeNode;
-import com.youxi.math.box2dGJK.B2Math;
+import com.youxi.math.box2dGJK.shape.B2AABB;
 import com.youxi.math.box2dGJK.shape.B2Vec2;
-
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.youxi.dataStructure.aabbTree.original.B2TreeNode.b2_nullNode;
 
 /**
  * https://blog.csdn.net/cg0206/article/details/8293049

@@ -3,6 +3,8 @@ package com.youxi.dataStructure.aabbTree.original;
 import com.youxi.dataStructure.aabbTree.IB2DynamicTree;
 import com.youxi.dataStructure.aabbTree.bean.*;
 import com.youxi.math.box2dGJK.B2Math;
+import com.youxi.math.box2dGJK.shape.B2AABB;
+import com.youxi.math.box2dGJK.shape.B2Collision;
 import com.youxi.math.box2dGJK.shape.B2Vec2;
 
 import java.util.ArrayDeque;

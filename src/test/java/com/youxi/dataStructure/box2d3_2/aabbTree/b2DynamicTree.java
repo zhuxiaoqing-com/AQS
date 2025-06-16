@@ -1,13 +1,9 @@
 package com.youxi.dataStructure.box2d3_2.aabbTree;
 
-import com.youxi.dataStructure.box2d3_2.entity.b2AABB;
-import com.youxi.dataStructure.box2d3_2.entity.b2Math;
 import com.youxi.dataStructure.box2d3_2.entity.b2TreeStats;
-import com.youxi.dataStructure.box2d3_2.entity.b2Vec2;
-import com.youxi.dataStructure.collisionTree.AABB;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.youxi.math.box2dGJK.B2Math;
+import com.youxi.math.box2dGJK.shape.B2AABB;
+import com.youxi.math.box2dGJK.shape.B2Vec2;
 
 public class b2DynamicTree {
     public static final int B2_HUGE = 100000; // 最大的坐标范围 -B2_HUGE 到 B2_HUGE
@@ -50,10 +46,10 @@ public class b2DynamicTree {
     int leafIndices;
 
     /// Leaf bounding boxes for rebuild
-    b2AABB leafBoxes;
+    B2AABB leafBoxes;
 
     /// Leaf bounding box centers for rebuild
-    b2Vec2 leafCenters;
+    B2Vec2 leafCenters;
 
     /// Bins for sorting during rebuild
     int binIndices;
@@ -62,7 +58,7 @@ public class b2DynamicTree {
     int rebuildCapacity;
 
 
-    public b2TreeStats b2DynamicTree_Query(b2AABB aabb, long maskBits, B2TreeQueryCallbackFcn callback, Object context) {
+    public b2TreeStats b2DynamicTree_Query(B2AABB aabb, long maskBits, B2TreeQueryCallbackFcn callback, Object context) {
         b2TreeStats result = new b2TreeStats();
 
         if (nodeCount == 0) {
@@ -84,7 +80,7 @@ public class b2DynamicTree {
             b2TreeNode node = nodes[nodeId];
             result.nodeVisits += 1;
 
-            if (b2Math.b2AABB_Overlaps(aabb, aabb) && (node.categoryBits & maskBits) != 0) {
+            if (B2Math.B2AABB_Overlaps(aabb, aabb) && (node.categoryBits & maskBits) != 0) {
                 if (b2IsLeaf(node)) {
                     // callback to user code with proxy id
                     boolean proceed = callback.callback(nodeId, node.userData, context);
@@ -116,24 +112,24 @@ public class b2DynamicTree {
             return result;
         }
 
-        b2Vec2 p1 = input.origin;
-        b2Vec2 d = input.translation;
+        B2Vec2 p1 = input.origin;
+        B2Vec2 d = input.translation;
 
-        b2Vec2 r = b2Math.b2Normalize(d);
+        B2Vec2 r = B2Math.b2Normalize(d);
 
         // v is perpendicular to the segment.
-        b2Vec2 v = b2Math.b2CrossSV(1.0f, r);
-        b2Vec2 abs_v = b2Math.b2Abs(v);
+        B2Vec2 v = B2Math.b2CrossSV(1.0f, r);
+        B2Vec2 abs_v = B2Math.b2Abs(v);
 
         // Separating axis for segment (Gino, p80).
         // |dot(v, p1 - c)| > dot(|v|, h)
 
         float maxFraction = input.maxFraction;
 
-        b2Vec2 p2 = b2Math.b2MulAdd(p1, maxFraction, d);
+        B2Vec2 p2 = B2Math.b2MulAdd(p1, maxFraction, d);
 
         // Build a bounding box for the segment.
-        b2AABB segmentAABB = new b2AABB(b2Math.b2Min(p1, p2), b2Math.b2Max(p1, p2));
+        B2AABB segmentAABB = new B2AABB(B2Math.b2Min(p1, p2), B2Math.b2Max(p1, p2));
 
         int stack[] = new int[B2_TREE_STACK_SIZE];
         int stackCount = 0;
@@ -154,19 +150,19 @@ public class b2DynamicTree {
             b2TreeNode node = nodes[nodeId];
             result.nodeVisits += 1;
 
-            b2AABB nodeAABB = node.aabb;
+            B2AABB nodeAABB = node.aabb;
 
-            if ((node.categoryBits & maskBits) == 0 || b2Math.b2AABB_Overlaps(nodeAABB, segmentAABB) == false) {
+            if ((node.categoryBits & maskBits) == 0 || B2Math.B2AABB_Overlaps(nodeAABB, segmentAABB) == false) {
                 continue;
             }
 
             // Separating axis for segment (Gino, p80).
             // |dot(v, p1 - c)| > dot(|v|, h)
             // radius extension is added to the node in this case
-            b2Vec2 c = b2Math.b2AABB_Center(nodeAABB);
-            b2Vec2 h = b2Math.b2AABB_Extents(nodeAABB);
-            float term1 = b2Math.b2AbsFloat(b2Math.b2Dot(v, b2Math.b2Sub(p1, c)));
-            float term2 = b2Math.b2Dot(abs_v, h);
+            B2Vec2 c = B2Math.B2AABB_Center(nodeAABB);
+            B2Vec2 h = B2Math.B2AABB_Extents(nodeAABB);
+            float term1 = B2Math.b2AbsFloat(B2Math.b2Dot(v, B2Math.b2Sub(p1, c)));
+            float term2 = B2Math.b2Dot(abs_v, h);
             if (term2 < term1) {
                 continue;
             }
@@ -187,15 +183,15 @@ public class b2DynamicTree {
                 if (0.0f < value && value <= maxFraction) {
                     // Update segment bounding box.
                     maxFraction = value;
-                    p2 = b2Math.b2MulAdd(p1, maxFraction, d);
-                    segmentAABB.lowerBound = b2Math.b2Min(p1, p2);
-                    segmentAABB.upperBound = b2Math.b2Max(p1, p2);
+                    p2 = B2Math.b2MulAdd(p1, maxFraction, d);
+                    segmentAABB.lowerBound = B2Math.b2Min(p1, p2);
+                    segmentAABB.upperBound = B2Math.b2Max(p1, p2);
                 }
             } else {
                 if (stackCount < B2_TREE_STACK_SIZE - 1) {
-                    b2Vec2 c1 = b2Math.b2AABB_Center(nodes[node.child1].aabb);
-                    b2Vec2 c2 = b2Math.b2AABB_Center(nodes[node.child2].aabb);
-                    if (b2Math.b2DistanceSquared(c1, p1) < b2Math.b2DistanceSquared(c2, p1)) {
+                    B2Vec2 c1 = B2Math.B2AABB_Center(nodes[node.child1].aabb);
+                    B2Vec2 c2 = B2Math.B2AABB_Center(nodes[node.child2].aabb);
+                    if (B2Math.b2DistanceSquared(c1, p1) < B2Math.b2DistanceSquared(c2, p1)) {
                         //   int nodeId = stack[--stackCount]; 因为是先把最里面的那个弹出来 所以 这里的话是先检测 child1 在检测child2
                         stack[stackCount++] = node.child2;
                         stack[stackCount++] = node.child1;
@@ -225,25 +221,25 @@ public class b2DynamicTree {
         }
 
         // 找到proxy的aabb包围盒
-        b2AABB originAABB = new b2AABB(input.proxy.points[0], input.proxy.points[0]);
+        B2AABB originAABB = new B2AABB(input.proxy.points[0], input.proxy.points[0]);
         for (int i = 1; i < input.proxy.count; ++i) {
-            originAABB.lowerBound = b2Math.b2Min(originAABB.lowerBound, input.proxy.points[i]);
-            originAABB.upperBound = b2Math.b2Max(originAABB.upperBound, input.proxy.points[i]);
+            originAABB.lowerBound = B2Math.b2Min(originAABB.lowerBound, input.proxy.points[i]);
+            originAABB.upperBound = B2Math.b2Max(originAABB.upperBound, input.proxy.points[i]);
         }
 
-        b2Vec2 radius = new b2Vec2(input.proxy.radius, input.proxy.radius);
+        B2Vec2 radius = new B2Vec2(input.proxy.radius, input.proxy.radius);
 
         // 包围盒应用半径
-        originAABB.lowerBound = b2Math.b2Sub(originAABB.lowerBound, radius);
-        originAABB.upperBound = b2Math.b2Add(originAABB.upperBound, radius);
+        originAABB.lowerBound = B2Math.b2Sub(originAABB.lowerBound, radius);
+        originAABB.upperBound = B2Math.b2Add(originAABB.upperBound, radius);
 
-        b2Vec2 p1 = b2Math.b2AABB_Center(originAABB);
-        b2Vec2 extension = b2Math.b2AABB_Extents(originAABB);
+        B2Vec2 p1 = B2Math.B2AABB_Center(originAABB);
+        B2Vec2 extension = B2Math.B2AABB_Extents(originAABB);
 
         // v is perpendicular to the segment.
-        b2Vec2 r = input.translation;
-        b2Vec2 v = b2Math.b2CrossSV(1.0f, r);
-        b2Vec2 abs_v = b2Math.b2Abs(v);
+        B2Vec2 r = input.translation;
+        B2Vec2 v = B2Math.b2CrossSV(1.0f, r);
+        B2Vec2 abs_v = B2Math.b2Abs(v);
 
         // Separating axis for segment (Gino, p80).
         // |dot(v, p1 - c)| > dot(|v|, h)
@@ -252,10 +248,10 @@ public class b2DynamicTree {
 
         // 将盒子和盒子可以前往的最远终点 合成一个最大的aabb盒子
         // Build total box for the shape cast
-        b2Vec2 t = b2Math.b2MulSV(maxFraction, input.translation);
-        b2AABB totalAABB = new b2AABB(
-                b2Math.b2Min(originAABB.lowerBound, b2Math.b2Add(originAABB.lowerBound, t)),
-                b2Math.b2Max(originAABB.upperBound, b2Math.b2Add(originAABB.upperBound, t))
+        B2Vec2 t = B2Math.b2MulSV(maxFraction, input.translation);
+        B2AABB totalAABB = new B2AABB(
+                B2Math.b2Min(originAABB.lowerBound, B2Math.b2Add(originAABB.lowerBound, t)),
+                B2Math.b2Max(originAABB.upperBound, B2Math.b2Add(originAABB.upperBound, t))
         );
 
         b2ShapeCastInput subInput = input;
@@ -275,17 +271,17 @@ public class b2DynamicTree {
             b2TreeNode node = nodes[nodeId];
             stats.nodeVisits += 1;
 
-            if ((node.categoryBits & maskBits) == 0 || b2Math.b2AABB_Overlaps(node.aabb, totalAABB) == false) {
+            if ((node.categoryBits & maskBits) == 0 || B2Math.B2AABB_Overlaps(node.aabb, totalAABB) == false) {
                 continue;
             }
 
             // Separating axis for segment (Gino, p80).
             // |dot(v, p1 - c)| > dot(|v|, h)
             // radius extension is added to the node in this case
-            b2Vec2 c = b2Math.b2AABB_Center(node.aabb);
-            b2Vec2 h = b2Math.b2Add(b2Math.b2AABB_Extents(node.aabb), extension);
-            float term1 = b2Math.b2AbsFloat(b2Math.b2Dot(v, b2Math.b2Sub(p1, c)));
-            float term2 = b2Math.b2Dot(abs_v, h);
+            B2Vec2 c = B2Math.B2AABB_Center(node.aabb);
+            B2Vec2 h = B2Math.b2Add(B2Math.B2AABB_Extents(node.aabb), extension);
+            float term1 = B2Math.b2AbsFloat(B2Math.b2Dot(v, B2Math.b2Sub(p1, c)));
+            float term2 = B2Math.b2Dot(abs_v, h);
             if (term2 < term1) {
                 continue;
             }
@@ -304,15 +300,15 @@ public class b2DynamicTree {
                 if (0.0f < value && value < maxFraction) {
                     // Update segment bounding box.
                     maxFraction = value;
-                    t = b2Math.b2MulSV(maxFraction, input.translation);
-                    totalAABB.lowerBound = b2Math.b2Min(originAABB.lowerBound, b2Math.b2Add(originAABB.lowerBound, t));
-                    totalAABB.upperBound = b2Math.b2Max(originAABB.upperBound, b2Math.b2Add(originAABB.upperBound, t));
+                    t = B2Math.b2MulSV(maxFraction, input.translation);
+                    totalAABB.lowerBound = B2Math.b2Min(originAABB.lowerBound, B2Math.b2Add(originAABB.lowerBound, t));
+                    totalAABB.upperBound = B2Math.b2Max(originAABB.upperBound, B2Math.b2Add(originAABB.upperBound, t));
                 }
             } else {
                 if (stackCount < B2_TREE_STACK_SIZE - 1) {
-                    b2Vec2 c1 = b2Math.b2AABB_Center(nodes[node.child1].aabb);
-                    b2Vec2 c2 = b2Math.b2AABB_Center(nodes[node.child2].aabb);
-                    if (b2Math.b2DistanceSquared(c1, p1) < b2Math.b2DistanceSquared(c2, p1)) {
+                    B2Vec2 c1 = B2Math.B2AABB_Center(nodes[node.child1].aabb);
+                    B2Vec2 c2 = B2Math.B2AABB_Center(nodes[node.child2].aabb);
+                    if (B2Math.b2DistanceSquared(c1, p1) < B2Math.b2DistanceSquared(c2, p1)) {
                         stack[stackCount++] = node.child2;
                         stack[stackCount++] = node.child1;
                     } else {
@@ -455,16 +451,16 @@ public class b2DynamicTree {
     //假设B（或C）是一个内部节点，那么最低成本将是以下两种情况之一：
 // case1: D成为B的兄弟姐妹
 // case2: D成为B的后代，同时有一个新的区域(D)的内部节点。
-    int b2FindBestSibling(b2AABB boxD) {
-        b2Vec2 centerD = b2Math.b2AABB_Center(boxD);
-        float areaD = b2Math.b2Perimeter(boxD);
+    int b2FindBestSibling(B2AABB boxD) {
+        B2Vec2 centerD = B2Math.B2AABB_Center(boxD);
+        float areaD = B2Math.b2Perimeter(boxD);
 
         int rootIndex = root;
-        b2AABB rootBox = nodes[rootIndex].aabb;
+        B2AABB rootBox = nodes[rootIndex].aabb;
         // Area of current node 当前节点面积
-        float areaBase = b2Math.b2Perimeter(rootBox);
+        float areaBase = B2Math.b2Perimeter(rootBox);
         // Area of inflated node 膨胀节点面积
-        float directCost = b2Math.b2Perimeter(b2Math.b2AABB_Union(rootBox, boxD));
+        float directCost = B2Math.b2Perimeter(B2Math.B2AABB_Union(rootBox, boxD));
         float inheritedCost = 0.0f; // 继承消耗
 
         int bestSibling = rootIndex;
@@ -497,8 +493,8 @@ public class b2DynamicTree {
 
             // Cost of descending into child 1   下降到子节点1的代价
             float lowerCost1 = Float.MAX_VALUE;
-            b2AABB box1 = nodes[child1].aabb;
-            float directCost1 = b2Math.b2Perimeter(b2Math.b2AABB_Union(box1, boxD));
+            B2AABB box1 = nodes[child1].aabb;
+            float directCost1 = B2Math.b2Perimeter(B2Math.B2AABB_Union(box1, boxD));
             float area1 = 0.0f;
             if (leaf1) {
                 // Child 1 is a leaf
@@ -512,7 +508,7 @@ public class b2DynamicTree {
                 }
             } else {
                 // Child 1 is an internal node  子节点1是一个内部节点
-                area1 = b2Math.b2Perimeter(box1);
+                area1 = B2Math.b2Perimeter(box1);
 
                 // Lower bound cost of inserting under child 1. The minimum accounts for two possibilities:
                 // 1. Child1 could be the sibling with cost1 = inheritedCost + directCost1
@@ -525,13 +521,13 @@ public class b2DynamicTree {
                 // 2。child - 1的后代可以是代价的下限为的兄弟姐妹
                 // cost1 = inheritedCost + (directCost1 - area1) + areaD
                 //这里的最小值导致这两个代价的最小值。
-                lowerCost1 = inheritedCost + directCost1 + b2Math.b2MinFloat(areaD - area1, 0.0f);
+                lowerCost1 = inheritedCost + directCost1 + B2Math.b2MinFloat(areaD - area1, 0.0f);
             }
 
             // Cost of descending into child 2
             float lowerCost2 = Float.MAX_VALUE;
-            b2AABB box2 = nodes[child2].aabb;
-            float directCost2 = b2Math.b2Perimeter(b2Math.b2AABB_Union(box2, boxD));
+            B2AABB box2 = nodes[child2].aabb;
+            float directCost2 = B2Math.b2Perimeter(B2Math.B2AABB_Union(box2, boxD));
             float area2 = 0.0f;
             if (leaf2) {
                 float cost2 = directCost2 + inheritedCost;
@@ -541,8 +537,8 @@ public class b2DynamicTree {
                     bestCost = cost2;
                 }
             } else {
-                area2 = b2Math.b2Perimeter(box2);
-                lowerCost2 = inheritedCost + directCost2 + b2Math.b2MinFloat(areaD - area2, 0.0f);
+                area2 = B2Math.b2Perimeter(box2);
+                lowerCost2 = inheritedCost + directCost2 + B2Math.b2MinFloat(areaD - area2, 0.0f);
             }
 
             if (leaf1 && leaf2) {
@@ -561,10 +557,10 @@ public class b2DynamicTree {
                 ///没有基于下界表面积的明确选择。当两个子节点都完全包含d时，就会发生这种情况。
                 // No clear choice based on lower bound surface area. This can happen when both
                 // children fully contain D. Fall back to node distance.
-                b2Vec2 d1 = b2Math.b2Sub(b2Math.b2AABB_Center(box1), centerD);
-                b2Vec2 d2 = b2Math.b2Sub(b2Math.b2AABB_Center(box2), centerD);
-                lowerCost1 = b2Math.b2LengthSquared(d1);
-                lowerCost2 = b2Math.b2LengthSquared(d2);
+                B2Vec2 d1 = B2Math.b2Sub(B2Math.B2AABB_Center(box1), centerD);
+                B2Vec2 d2 = B2Math.b2Sub(B2Math.B2AABB_Center(box2), centerD);
+                lowerCost1 = B2Math.b2LengthSquared(d1);
+                lowerCost2 = B2Math.b2LengthSquared(d2);
             }
 
             // Descend
@@ -618,15 +614,15 @@ public class b2DynamicTree {
             B2_ASSERT(0 <= iG && iG < nodeCapacity);
 
             // Base cost
-            float costBase = b2Math.b2Perimeter(C.aabb);
+            float costBase = B2Math.b2Perimeter(C.aabb);
 
             // Cost of swapping B and F
-            b2AABB aabbBG = b2Math.b2AABB_Union(B.aabb, G.aabb);
-            float costBF = b2Math.b2Perimeter(aabbBG);
+            B2AABB aabbBG = B2Math.B2AABB_Union(B.aabb, G.aabb);
+            float costBF = B2Math.b2Perimeter(aabbBG);
 
             // Cost of swapping B and G
-            b2AABB aabbBF = b2Math.b2AABB_Union(B.aabb, F.aabb);
-            float costBG = b2Math.b2Perimeter(aabbBF);
+            B2AABB aabbBF = B2Math.B2AABB_Union(B.aabb, F.aabb);
+            float costBG = B2Math.b2Perimeter(aabbBF);
 
             if (costBase < costBF && costBase < costBG) {
                 // Rotation does not improve cost
@@ -678,15 +674,15 @@ public class b2DynamicTree {
             B2_ASSERT(0 <= iE && iE < nodeCapacity);
 
             // Base cost
-            float costBase = b2Math.b2Perimeter(B.aabb);
+            float costBase = B2Math.b2Perimeter(B.aabb);
 
             // Cost of swapping C and D
-            b2AABB aabbCE = b2Math.b2AABB_Union(C.aabb, E.aabb);
-            float costCD = b2Math.b2Perimeter(aabbCE);
+            B2AABB aabbCE = B2Math.B2AABB_Union(C.aabb, E.aabb);
+            float costCD = B2Math.b2Perimeter(aabbCE);
 
             // Cost of swapping C and E
-            b2AABB aabbCD = b2Math.b2AABB_Union(C.aabb, D.aabb);
-            float costCE = b2Math.b2Perimeter(aabbCD);
+            B2AABB aabbCD = B2Math.B2AABB_Union(C.aabb, D.aabb);
+            float costCE = B2Math.b2Perimeter(aabbCD);
 
             if (costBase < costCD && costBase < costCE) {
                 // Rotation does not improve cost
@@ -742,39 +738,39 @@ public class b2DynamicTree {
             B2_ASSERT(0 <= iG && iG < nodeCapacity);
 
             // Base cost
-            float areaB = b2Math.b2Perimeter(B.aabb);
-            float areaC = b2Math.b2Perimeter(C.aabb);
+            float areaB = B2Math.b2Perimeter(B.aabb);
+            float areaC = B2Math.b2Perimeter(C.aabb);
             float costBase = areaB + areaC;
             b2RotateType bestRotation = b2RotateType.b2_rotateNone;
             float bestCost = costBase;
 
             // Cost of swapping B and F
-            b2AABB aabbBG = b2Math.b2AABB_Union(B.aabb, G.aabb);
-            float costBF = areaB + b2Math.b2Perimeter(aabbBG);
+            B2AABB aabbBG = B2Math.B2AABB_Union(B.aabb, G.aabb);
+            float costBF = areaB + B2Math.b2Perimeter(aabbBG);
             if (costBF < bestCost) {
                 bestRotation = b2RotateType.b2_rotateBF;
                 bestCost = costBF;
             }
 
             // Cost of swapping B and G
-            b2AABB aabbBF = b2Math.b2AABB_Union(B.aabb, F.aabb);
-            float costBG = areaB + b2Math.b2Perimeter(aabbBF);
+            B2AABB aabbBF = B2Math.B2AABB_Union(B.aabb, F.aabb);
+            float costBG = areaB + B2Math.b2Perimeter(aabbBF);
             if (costBG < bestCost) {
                 bestRotation = b2RotateType.b2_rotateBG;
                 bestCost = costBG;
             }
 
             // Cost of swapping C and D
-            b2AABB aabbCE = b2Math.b2AABB_Union(C.aabb, E.aabb);
-            float costCD = areaC + b2Math.b2Perimeter(aabbCE);
+            B2AABB aabbCE = B2Math.B2AABB_Union(C.aabb, E.aabb);
+            float costCD = areaC + B2Math.b2Perimeter(aabbCE);
             if (costCD < bestCost) {
                 bestRotation = b2RotateType.b2_rotateCD;
                 bestCost = costCD;
             }
 
             // Cost of swapping C and E
-            b2AABB aabbCD = b2Math.b2AABB_Union(C.aabb, D.aabb);
-            float costCE = areaC + b2Math.b2Perimeter(aabbCD);
+            B2AABB aabbCD = B2Math.B2AABB_Union(C.aabb, D.aabb);
+            float costCE = areaC + B2Math.b2Perimeter(aabbCD);
             if (costCE < bestCost) {
                 bestRotation = b2RotateType.b2_rotateCE;
                 // bestCost = costCE;
@@ -864,7 +860,7 @@ public class b2DynamicTree {
         }
 
         // Stage 1: find the best sibling for this node
-        b2AABB leafAABB = nodes[leaf].aabb;
+        B2AABB leafAABB = nodes[leaf].aabb;
         int sibling = b2FindBestSibling(leafAABB);
 
         // Stage 2: create a new parent for the leaf and sibling
@@ -874,7 +870,7 @@ public class b2DynamicTree {
         // warning: node pointer can change after allocation
         nodes[newParent].parent = oldParent;
         nodes[newParent].userData = Long.MAX_VALUE;
-        nodes[newParent].aabb = b2Math.b2AABB_Union(leafAABB, nodes[sibling].aabb);
+        nodes[newParent].aabb = B2Math.B2AABB_Union(leafAABB, nodes[sibling].aabb);
         nodes[newParent].categoryBits = nodes[leaf].categoryBits | nodes[sibling].categoryBits;
         nodes[newParent].height = nodes[sibling].height + 1;
 
@@ -908,7 +904,7 @@ public class b2DynamicTree {
             B2_ASSERT(child1 != B2_NULL_INDEX);
             B2_ASSERT(child2 != B2_NULL_INDEX);
 
-            nodes[index].aabb = b2Math.b2AABB_Union(nodes[child1].aabb, nodes[child2].aabb);
+            nodes[index].aabb = B2Math.B2AABB_Union(nodes[child1].aabb, nodes[child2].aabb);
             nodes[index].categoryBits = nodes[child1].categoryBits | nodes[child2].categoryBits;
             nodes[index].height = 1 + b2MaxUInt16(nodes[child1].height, nodes[child2].height);
             nodes[index].flags |= (nodes[child1].flags | nodes[child2].flags) & b2_enlargedNode;
@@ -964,7 +960,7 @@ public class b2DynamicTree {
                 //__m128 aabb = _mm_shuffle_ps(lower, upper, _MM_SHUFFLE(3, 2, 1, 0));
                 //_mm_store_ps(&node.aabb.lowerBound.x, aabb);
 
-                node.aabb = b2Math.b2AABB_Union(child1.aabb, child2.aabb);
+                node.aabb = B2Math.B2AABB_Union(child1.aabb, child2.aabb);
                 node.categoryBits = child1.categoryBits | child2.categoryBits;
                 node.height = 1 + b2MaxUInt16(child1.height, child2.height);
 
@@ -980,7 +976,7 @@ public class b2DynamicTree {
 
     // Create a proxy in the tree as a leaf node. We return the index of the node instead of a pointer so that we can grow
 // the node pool.
-    public int b2DynamicTree_CreateProxy(b2AABB aabb, long categoryBits, long userData) {
+    public int b2DynamicTree_CreateProxy(B2AABB aabb, long categoryBits, long userData) {
         B2_ASSERT(-B2_HUGE < aabb.lowerBound.x && aabb.lowerBound.x < B2_HUGE);
         B2_ASSERT(-B2_HUGE < aabb.lowerBound.y && aabb.lowerBound.y < B2_HUGE);
         B2_ASSERT(-B2_HUGE < aabb.upperBound.x && aabb.upperBound.x < B2_HUGE);
@@ -1020,8 +1016,8 @@ public class b2DynamicTree {
     }
 
 
-    public void b2DynamicTree_MoveProxy(int proxyId, b2AABB aabb) {
-        B2_ASSERT(b2Math.b2IsValidAABB(aabb));
+    public void b2DynamicTree_MoveProxy(int proxyId, B2AABB aabb) {
+        B2_ASSERT(B2Math.b2IsValidAABB(aabb));
         B2_ASSERT(aabb.upperBound.x - aabb.lowerBound.x < B2_HUGE);
         B2_ASSERT(aabb.upperBound.y - aabb.lowerBound.y < B2_HUGE);
         B2_ASSERT(0 <= proxyId && proxyId < nodeCapacity);
@@ -1038,21 +1034,21 @@ public class b2DynamicTree {
     /**
      * 增大aabb
      */
-    void b2DynamicTree_EnlargeProxy(int proxyId, b2AABB aabb) {
-        B2_ASSERT(b2Math.b2IsValidAABB(aabb));
+    void b2DynamicTree_EnlargeProxy(int proxyId, B2AABB aabb) {
+        B2_ASSERT(B2Math.b2IsValidAABB(aabb));
         B2_ASSERT(aabb.upperBound.x - aabb.lowerBound.x < B2_HUGE);
         B2_ASSERT(aabb.upperBound.y - aabb.lowerBound.y < B2_HUGE);
         B2_ASSERT(0 <= proxyId && proxyId < nodeCapacity);
         B2_ASSERT(b2IsLeaf(nodes[proxyId]));
 
         // Caller must ensure this
-        B2_ASSERT(b2Math.b2AABB_Contains(nodes[proxyId].aabb, aabb) == false);
+        B2_ASSERT(B2Math.B2AABB_Contains(nodes[proxyId].aabb, aabb) == false);
 
         nodes[proxyId].aabb = aabb;
 
         int parentIndex = nodes[proxyId].parent;
         while (parentIndex != B2_NULL_INDEX) {
-            boolean changed = b2Math.b2EnlargeAABB(nodes[parentIndex].aabb, aabb);
+            boolean changed = B2Math.b2EnlargeAABB(nodes[parentIndex].aabb, aabb);
             nodes[parentIndex].flags |= b2_enlargedNode;
             parentIndex = nodes[parentIndex].parent;
 
@@ -1113,7 +1109,7 @@ public class b2DynamicTree {
         }
 
         b2TreeNode root = nodes[this.root];
-        float rootArea = b2Math.b2Perimeter(root.aabb);
+        float rootArea = B2Math.b2Perimeter(root.aabb);
 
         float totalArea = 0.0f;
         for (int i = 0; i < nodeCapacity; ++i) {
@@ -1122,18 +1118,18 @@ public class b2DynamicTree {
                 continue;
             }
 
-            totalArea += b2Math.b2Perimeter(node.aabb);
+            totalArea += B2Math.b2Perimeter(node.aabb);
         }
 
         return totalArea / rootArea;
     }
 
-    public b2AABB b2DynamicTree_GetRootBounds() {
+    public B2AABB b2DynamicTree_GetRootBounds() {
         if (root != B2_NULL_INDEX) {
             return nodes[root].aabb;
         }
 
-        return new b2AABB();
+        return new B2AABB();
     }
 
 
@@ -1148,7 +1144,7 @@ public class b2DynamicTree {
 
         int height1 = b2ComputeHeight(node.child1);
         int height2 = b2ComputeHeight(node.child2);
-        return 1 + b2Math.b2MaxInt(height1, height2);
+        return 1 + B2Math.b2MaxInt(height1, height2);
     }
 
     void b2ValidateStructure(int index) {
@@ -1206,13 +1202,13 @@ public class b2DynamicTree {
 
         int height1 = nodes[child1].height;
         int height2 = nodes[child2].height;
-        int height = 1 + b2Math.b2MaxInt(height1, height2);
+        int height = 1 + B2Math.b2MaxInt(height1, height2);
         B2_ASSERT(node.height == height);
 
-        // b2AABB aabb = b2AABB_Union(tree.nodes[child1].aabb, tree.nodes[child2].aabb);
+        // B2AABB aabb = B2AABB_Union(tree.nodes[child1].aabb, tree.nodes[child2].aabb);
 
-        B2_ASSERT(b2Math.b2AABB_Contains(node.aabb, nodes[child1].aabb));
-        B2_ASSERT(b2Math.b2AABB_Contains(node.aabb, nodes[child2].aabb));
+        B2_ASSERT(B2Math.B2AABB_Contains(node.aabb, nodes[child1].aabb));
+        B2_ASSERT(B2Math.B2AABB_Contains(node.aabb, nodes[child2].aabb));
 
         // B2_ASSERT(aabb.lowerBound.x == node.aabb.lowerBound.x);
         // B2_ASSERT(aabb.lowerBound.y == node.aabb.lowerBound.y);
@@ -1264,7 +1260,7 @@ public class b2DynamicTree {
 
  /*   int b2DynamicTree_GetByteCount( ) {
         size_t size = sizeof(b2DynamicTree) + sizeof(b2TreeNode) * tree.nodeCapacity +
-                tree.rebuildCapacity * (sizeof( int )+sizeof(b2AABB) + sizeof(b2Vec2) + sizeof( int ) );
+                tree.rebuildCapacity * (sizeof( int )+sizeof(B2AABB) + sizeof(B2Vec2) + sizeof( int ) );
 
         return (int) size;
     }*/
@@ -1274,7 +1270,7 @@ public class b2DynamicTree {
         return nodes[proxyId].userData;
     }
 
-    b2AABB b2DynamicTree_GetAABB(int proxyId) {
+    B2AABB b2DynamicTree_GetAABB(int proxyId) {
         B2_ASSERT(0 <= proxyId && proxyId < nodeCapacity);
         return nodes[proxyId].aabb;
     }

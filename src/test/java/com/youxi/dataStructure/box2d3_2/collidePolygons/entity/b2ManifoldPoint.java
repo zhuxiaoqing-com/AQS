@@ -1,7 +1,5 @@
 package com.youxi.dataStructure.box2d3_2.collidePolygons.entity;
 
-import com.youxi.dataStructure.box2d3_2.entity.b2Vec2;
-
 public class b2ManifoldPoint {
     /// Location of the contact point in world space. Subject to precision loss at large coordinates.
     /// @note Should only be used for debugging.

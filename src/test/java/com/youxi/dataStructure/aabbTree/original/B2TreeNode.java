@@ -1,7 +1,7 @@
 package com.youxi.dataStructure.aabbTree.original;
 
 
-import com.youxi.dataStructure.aabbTree.bean.B2AABB;
+import com.youxi.math.box2dGJK.shape.B2AABB;
 
 public class B2TreeNode {
     public final static int b2_nullNode = -1;

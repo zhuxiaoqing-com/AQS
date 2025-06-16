@@ -157,8 +157,8 @@ public class B2Distance {
 		//simplex.WriteCache(cache);
 		// 如果被要求，则提供半径 这里是处理圆
 		if (input.useRadii) {
-			float rA = proxyA.m_radius;
-			float rB = proxyB.m_radius;
+			float rA = proxyA.radius;
+			float rB = proxyB.radius;
 
 			if (output.distance > rA + rB && output.distance > b2_epsilon) {
 				// 形状没有重叠,移动见证点到外面
@@ -293,8 +293,8 @@ public class B2Distance {
 			} else {
 				// Keep closest points on perimeter even if overlapped, this way
 				// the points move smoothly.
-				float rA = proxyA.m_radius;
-				float rB = proxyB.m_radius;
+				float rA = proxyA.radius;
+				float rB = proxyB.radius;
 				B2Vec2 normal = B2Math.sub(output.pointB, output.pointA);
 				normal.Normalize();
 				output.distance = Math.max(0.0f, output.distance - rA - rB);
@@ -321,8 +321,8 @@ public class B2Distance {
 	 B2DistanceProxy proxyA = input.proxyA;
 	 B2DistanceProxy proxyB = input.proxyB;
 
-		float radiusA = Math.max(proxyA.m_radius, b2_polygonRadius);
-		float radiusB = Math.max(proxyB.m_radius, b2_polygonRadius);
+		float radiusA = Math.max(proxyA.radius, b2_polygonRadius);
+		float radiusB = Math.max(proxyB.radius, b2_polygonRadius);
 		float radius = radiusA + radiusB;
 		
 

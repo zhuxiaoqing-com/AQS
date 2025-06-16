@@ -1,11 +1,11 @@
 package com.youxi.dataStructure.box2d3_2.aabbTree;
 
-import com.youxi.dataStructure.box2d3_2.entity.b2AABB;
-import com.youxi.dataStructure.box2d3_2.entity.b2Vec2;
+import com.youxi.math.box2dGJK.shape.B2AABB;
+import com.youxi.math.box2dGJK.shape.B2Vec2;
 
 public class b2TreeNode {
     public static final int B2_DEFAULT_CATEGORY_BITS = 1;
-    b2AABB aabb;
+    B2AABB aabb;
     // 碰撞过滤的分类位
     long categoryBits;
     int child1, child2;
@@ -20,7 +20,7 @@ public class b2TreeNode {
 
 
     public void init() {
-        aabb = new b2AABB(new b2Vec2(0, 0), new b2Vec2(0, 0));
+        aabb = new B2AABB(new B2Vec2(0, 0), new B2Vec2(0, 0));
         categoryBits = B2_DEFAULT_CATEGORY_BITS;
         child1 = b2DynamicTree.B2_NULL_INDEX;
         child2 = b2DynamicTree.B2_NULL_INDEX;
