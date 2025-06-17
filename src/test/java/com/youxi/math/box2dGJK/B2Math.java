@@ -10,6 +10,8 @@ public class B2Math {
     public static float b2_epsilon = 0.0000001f;
     public static float b2_polygonRadius = 2.0f * 0.005f;
     public static float b2_linearSlop = 0.005f;
+    public static float B2_LINEAR_SLOP = 0.005f;
+
 
     public static B2Vec2 b2Mul(B2Transform T, B2Vec2 v) {
         float x = (T.q.c * v.x - T.q.s * v.y) + T.p.x;
@@ -27,7 +29,7 @@ public class B2Math {
         return new B2Vec2(q.c * v.x + q.s * v.y, -q.s * v.x + q.c * v.y);
     }
 
-    protected static float b2Distance(B2Vec2 a, B2Vec2 b) {
+    public static float b2Distance(B2Vec2 a, B2Vec2 b) {
         B2Vec2 c = a.sub(b);
         return c.length();
     }
@@ -82,12 +84,9 @@ public class B2Math {
         return new B2Vec2(Math.max(a.x, b.x), Math.max(a.y, b.y));
     }
 
-    public static B2Vec2 b2Abs(B2Vec2 a)
-    {
+    public static B2Vec2 b2Abs(B2Vec2 a) {
         return new B2Vec2(Math.abs(a.x), Math.abs(a.y));
     }
-
-
 
 
     /// Get the center of the AABB.
@@ -138,6 +137,7 @@ public class B2Math {
 
 
     /// Enlarge a to contain b
+    ///
     /// @return true if the AABB grew
     public static boolean b2EnlargeAABB(B2AABB a, B2AABB b) {
         boolean changed = false;
@@ -235,7 +235,6 @@ public class B2Math {
     }
 
 
-
     public static B2Vec2 B2AABB_Extents(B2AABB a) {
         B2Vec2 b = new B2Vec2(0.5f * (a.upperBound.x - a.lowerBound.x), 0.5f * (a.upperBound.y - a.lowerBound.y));
         return b;
@@ -256,9 +255,17 @@ public class B2Math {
         return new B2Vec2(a.x + s * b.x, a.y + s * b.y);
     }
 
+    public static B2Vec2 b2MulSub(B2Vec2 a, float s, B2Vec2 b) {
+        return new B2Vec2(a.x - s * b.x, a.y - s * b.y);
+    }
+
 
     public static B2Vec2 b2MulSV(float s, B2Vec2 v) {
         return new B2Vec2(s * v.x, s * v.y);
+    }
+
+    public static B2Vec2 b2Lerp(B2Vec2 a, B2Vec2 b, float t) {
+        return new B2Vec2((1.0f - t) * a.x + t * b.x, (1.0f - t) * a.y + t * b.y);
     }
 
 }

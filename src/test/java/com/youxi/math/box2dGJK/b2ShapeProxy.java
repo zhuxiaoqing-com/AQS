@@ -10,25 +10,25 @@ public class b2ShapeProxy {
 	public int count;
 	public float radius;
 
-	public b2ShapeProxy() {
-	}
-
 	public b2ShapeProxy(B2Circle circle) {
 		points = new B2Vec2[]{circle.getCenter()};
 		count = 1;
 		radius = circle.getRegionRadius();
+		init();
 	}
 
 	public b2ShapeProxy(B2ConvexPolygon polygon) {
 		points = polygon.getM_vertices();
 		count = polygon.getM_vertexCount();
 		radius = polygon.getB2_polygonRadius();
+		init();
 	}
 
 	public b2ShapeProxy(B2MyPolygon polygon) {
 		points = polygon.getM_vertices();
 		count = polygon.getM_vertexCount();
 		radius = polygon.getB2_polygonRadius();
+		init();
 	}
 
 
@@ -36,8 +36,15 @@ public class b2ShapeProxy {
 		points = vertices;
 		this.count = count;
 		this.radius = radius;
+		init();
 	}
 
+	public void init() {
+		// 将 points里面的B2Vec2 新弄个对象
+		for (int i = 0; i < points.length; i++) {
+			points[i] = new B2Vec2(points[i].x, points[i].y);
+		}
+	}
 
 
 	//
