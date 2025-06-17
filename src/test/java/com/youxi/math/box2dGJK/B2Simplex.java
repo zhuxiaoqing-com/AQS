@@ -1,6 +1,5 @@
 package com.youxi.math.box2dGJK;
 
-import com.youxi.math.box2dGJK.shape.B2Transform;
 import com.youxi.math.box2dGJK.shape.B2Vec2;
 
 import static com.youxi.math.box2dGJK.B2Math.*;
@@ -8,10 +7,10 @@ import static com.youxi.math.box2dGJK.B2Math.multiply;
 
 public class B2Simplex {
 
-	B2SimplexVertex m_v1 = new B2SimplexVertex(); //m_v1, m_v2, m_v3;//单纯形的顶点变量
-	B2SimplexVertex m_v2 = new B2SimplexVertex();
-	B2SimplexVertex m_v3 = new B2SimplexVertex();
-	 int m_count;//单纯形顶点个数
+	public B2SimplexVertex v1 = new B2SimplexVertex(); //m_v1, m_v2, m_v3;//单纯形的顶点变量
+	public B2SimplexVertex v2 = new B2SimplexVertex();
+	public B2SimplexVertex v3 = new B2SimplexVertex();
+	public int count;//单纯形顶点个数
 
 	public B2Simplex() {
 	}
@@ -19,11 +18,11 @@ public class B2Simplex {
 	public B2SimplexVertex get(int index) {
 		switch (index){
 			case 0:
-				return m_v1;
+				return v1;
 			case 1:
-				return m_v2;
+				return v2;
 			case 2:
-				return m_v3;
+				return v3;
 		}
 		return null;
 	}
@@ -37,16 +36,16 @@ public class B2Simplex {
 		int indexB[]= new int[3];	//shapeB上的顶点索引数组
 	};
 
-	public void init(B2DistanceProxy proxyA,
-					 B2DistanceProxy proxyB ) {
-		B2SimplexVertex v = m_v1;
+	public void init(b2ShapeProxy proxyA,
+					 b2ShapeProxy proxyB ) {
+		B2SimplexVertex v = v1;
 		v.indexA = 0;
 		v.indexB = 0;
 		v.wA= proxyA.GetVertex(0);
 		v.wB = proxyB.GetVertex(0);
 		v.w = sub(v.wB, v.wA);
 		v.a = 1.0f;
-		m_count = 1;
+		count = 1;
 	}
 
 
@@ -54,17 +53,17 @@ public class B2Simplex {
 	 * 获取搜索方向
 	 */
 	 B2Vec2 GetSearchDirection() {
-		switch (m_count)
+		switch (count)
 		{
 			case 1:  //一个顶点从相反的方向去找 其实就是顺着原点的方向找
-				return m_v1.w.multiply(-1f);
+				return v1.w.multiply(-1f);
 			case 2: {
 				//两个顶点，1、两个点所组成边向量e12与第一个顶点和原点的所组成的向量-m_v1.w先去判断符号
 				//          2、再求e12相应方向的法向量a
 				//          3、将a作为查找方向返回
-				B2Vec2 e12 = m_v2.w.sub(m_v1.w);
+				B2Vec2 e12 = v2.w.sub(v1.w);
 				//float sgn = b2Cross(e12, -m_v1.w);
-				float sgn = e12.cross(m_v1.w.multiply(-1));
+				float sgn = e12.cross(v1.w.multiply(-1));
 				if (sgn > 0.0f)
 				{
 					// Origin is left of e12. // 原点在e12的左边
@@ -87,17 +86,17 @@ public class B2Simplex {
 	 * 获取最近的点
 	 */
 	 B2Vec2 GetClosestPoint() {
-		switch (m_count)
+		switch (count)
 		{
 			case 0://对于0个顶点，没有最近点这一说，所以我们在此处断言
 				return null;
 
 			case 1:
-				return m_v1.w; //对于1个顶点，最近点就是那个顶点
+				return v1.w; //对于1个顶点，最近点就是那个顶点
 
 			case 2: //对于两个顶点，重心是它们的最近点
 				//return m_v1.a * m_v1.w + m_v2.a * m_v2.w;
-				return m_v1.w.multiply(m_v1.a).add(m_v2.w.multiply(m_v2.a));
+				return v1.w.multiply(v1.a).add(v2.w.multiply(v2.a));
 
 			case 3:  //对于三个顶点来说，单纯形（此处是三角形）已形成，不需要在找最近点
 				//故返回零向量
@@ -115,7 +114,7 @@ public class B2Simplex {
 	 * 返 回 值： (void)
 	 ***************************************************************************/
 	 void GetWitnessPoints(B2Vec2 pA, B2Vec2 pB) {
-		switch (m_count)
+		switch (count)
 		{
 			case 0: 	//对于0个点，还没有开始查找单纯形的顶点，不存在见证点，故断言
 				return;
@@ -123,8 +122,8 @@ public class B2Simplex {
 			case 1: 	//对于1个点，见证点就是wA和wB，直接赋值
 			/*pA = m_v1.wA;
 			pB = m_v1.wB;*/
-				pA.Set(m_v1.wA);
-				pB.Set(m_v1.wB);
+				pA.Set(v1.wA);
+				pB.Set(v1.wB);
 				break;
 
 			case 2: //对于2个点，我们用重心坐标求的的，至于为什么要用重心坐标，我们在下面的讲解中将会看到
@@ -132,14 +131,14 @@ public class B2Simplex {
 				//通过权重a1和a2（由Solve2()计算）对顶点坐标线性插值，得到线段上的最近点3。
 		/*	*pA = m_v1.a * m_v1.wA + m_v2.a * m_v2.wA;
 			*pB = m_v1.a * m_v1.wB + m_v2.a * m_v2.wB;*/
-				pA.Set(add(multiply(m_v1.a, m_v1.wA), multiply(m_v2.a, m_v2.wA)));
-				pB.Set(add(multiply(m_v1.a, m_v1.wB), multiply(m_v2.a, m_v2.wB)));
+				pA.Set(add(multiply(v1.a, v1.wA), multiply(v2.a, v2.wA)));
+				pB.Set(add(multiply(v1.a, v1.wB), multiply(v2.a, v2.wB)));
 				break;
 
 			case 3: //对于3个点，我们可以判断此时两形状一碰撞了，见证点，就是两形状的碰撞点，故是一样的。
 				/* *pA = m_v1.a * m_v1.wA + m_v2.a * m_v2.wA + m_v3.a * m_v3.wA;
 				 *pB = *pA;*/
-				pA.Set(add(multiply(m_v1.a, m_v1.wA), multiply(m_v2.a, m_v2.wA), multiply(m_v3.a, m_v3.wA)));
+				pA.Set(add(multiply(v1.a, v1.wA), multiply(v2.a, v2.wA), multiply(v3.a, v3.wA)));
 				pB.Set(pA);
 				break;
 
@@ -154,7 +153,7 @@ public class B2Simplex {
 	 * 返 回 值： 尺度（长度）
 	 ***************************************************************************/
 	float GetMetric() {
-		switch (m_count)
+		switch (count)
 		{
 			case 0: //对于0个点，还没有开始查找单纯形的顶点，不存在长度，故断言
 				return 0.0f;
@@ -164,13 +163,13 @@ public class B2Simplex {
 
 			case 2: //对于2个点，计算其长度，并返回
 				//return b2Distance(m_v1.w, m_v2.w);
-				return m_v1.w.sub(m_v2.w).length();
+				return v1.w.sub(v2.w).length();
 
 			case 3:
 				//对于3个点，获取(m_v2.w - m_v1.w)与(m_v3.w - m_v1.w)
 				//两向量组成的平行四边形面积
 				//return b2Cross(m_v2.w - m_v1.w, m_v3.w - m_v1.w);
-				return b2Cross(sub(m_v2.w ,m_v1.w), sub(m_v3.w ,m_v1.w));
+				return b2Cross(sub(v2.w , v1.w), sub(v3.w , v1.w));
 
 			default: //不存在更多的点，如果到这里就出现了异常
 				return 0.0f;
@@ -216,8 +215,8 @@ public class B2Simplex {
 			若两者均>0，则原点在线段内部，需按比例分配权重（a1 = d12_1/(d12_1+d12_2)）
 		 */
 
-		B2Vec2 w1 = m_v1.w; // 单纯形的顶点1
-		B2Vec2 w2 = m_v2.w; // 单纯形的顶点2
+		B2Vec2 w1 = v1.w; // 单纯形的顶点1
+		B2Vec2 w2 = v2.w; // 单纯形的顶点2
 		B2Vec2 e12 = sub(w2, w1);
 
 		// w1 region
@@ -226,8 +225,8 @@ public class B2Simplex {
 		if (d12_2 <= 0.0f)
 		{
 			// a2 <= 0, so we clamp it to 0 // a2 <= 0, 所以我们将它置为0
-			m_v1.a = 1.0f;
-			m_count = 1;
+			v1.a = 1.0f;
+			count = 1;
 			return;
 		}
 
@@ -236,9 +235,9 @@ public class B2Simplex {
 		if (d12_1 <= 0.0f)
 		{
 			// a1 <= 0, so we clamp it to 0    a1 <= 0,所以我们将它置为0
-			m_v2.a = 1.0f;
-			m_count = 1;
-			m_v1 = m_v2;
+			v2.a = 1.0f;
+			count = 1;
+			v1 = v2;
 			return;
 		}
 
@@ -246,9 +245,9 @@ public class B2Simplex {
 		// 根据原点权重 取与中心的距离  这里1.0f/ 就是为了节省一次除法计算
 		float inv_d12 = 1.0f / (d12_1 + d12_2);
 		// 里面是取比值  所以可以直接用dot好的结果取，因为两边都同时*了w2-w1线段的长度
-		m_v1.a = d12_1 * inv_d12;// d12_1  / (d12_1 + d12_2)
-		m_v2.a = d12_2 * inv_d12;// d12_2  / (d12_1 + d12_2)
-		m_count = 2;
+		v1.a = d12_1 * inv_d12;// d12_1  / (d12_1 + d12_2)
+		v2.a = d12_2 * inv_d12;// d12_2  / (d12_1 + d12_2)
+		count = 2;
 	}
 
 	// Possible regions:
@@ -261,9 +260,9 @@ public class B2Simplex {
 	//这里的代码 详细可以看 navmesh项目里面的 dtClosestPtPointTriangle
 	public  void Solve3()
 	{
-		B2Vec2 w1 = m_v1.w;
-		B2Vec2 w2 = m_v2.w;
-		B2Vec2 w3 = m_v3.w;
+		B2Vec2 w1 = v1.w;
+		B2Vec2 w2 = v2.w;
+		B2Vec2 w3 = v3.w;
 
 		// Edge12
 		// [1      1     ][a1] = [1]
@@ -305,8 +304,8 @@ public class B2Simplex {
 		// w1 region
 		if (d12_2 <= 0.0f && d13_2 <= 0.0f)
 		{
-			m_v1.a = 1.0f;
-			m_count = 1;
+			v1.a = 1.0f;
+			count = 1;
 			return;
 		}
 
@@ -314,9 +313,9 @@ public class B2Simplex {
 		if (d12_1 > 0.0f && d12_2 > 0.0f && d123_3 <= 0.0f)
 		{
 			float inv_d12 = 1.0f / (d12_1 + d12_2);
-			m_v1.a = d12_1 * inv_d12;
-			m_v2.a = d12_2 * inv_d12;
-			m_count = 2;
+			v1.a = d12_1 * inv_d12;
+			v2.a = d12_2 * inv_d12;
+			count = 2;
 			return;
 		}
 
@@ -324,28 +323,28 @@ public class B2Simplex {
 		if (d13_1 > 0.0f && d13_2 > 0.0f && d123_2 <= 0.0f)
 		{
 			float inv_d13 = 1.0f / (d13_1 + d13_2);
-			m_v1.a = d13_1 * inv_d13;
-			m_v3.a = d13_2 * inv_d13;
-			m_count = 2;
-			m_v2 = m_v3;
+			v1.a = d13_1 * inv_d13;
+			v3.a = d13_2 * inv_d13;
+			count = 2;
+			v2 = v3;
 			return;
 		}
 
 		// w2 region
 		if (d12_1 <= 0.0f && d23_2 <= 0.0f)
 		{
-			m_v2.a = 1.0f;
-			m_count = 1;
-			m_v1 = m_v2;
+			v2.a = 1.0f;
+			count = 1;
+			v1 = v2;
 			return;
 		}
 
 		// w3 region
 		if (d13_1 <= 0.0f && d23_1 <= 0.0f)
 		{
-			m_v3.a = 1.0f;
-			m_count = 1;
-			m_v1 = m_v3;
+			v3.a = 1.0f;
+			count = 1;
+			v1 = v3;
 			return;
 		}
 
@@ -353,19 +352,19 @@ public class B2Simplex {
 		if (d23_1 > 0.0f && d23_2 > 0.0f && d123_1 <= 0.0f)
 		{
 			float inv_d23 = 1.0f / (d23_1 + d23_2);
-			m_v2.a = d23_1 * inv_d23;
-			m_v3.a = d23_2 * inv_d23;
-			m_count = 2;
-			m_v1 = m_v3;
+			v2.a = d23_1 * inv_d23;
+			v3.a = d23_2 * inv_d23;
+			count = 2;
+			v1 = v3;
 			return;
 		}
 
 		// Must be in triangle123
 		float inv_d123 = 1.0f / (d123_1 + d123_2 + d123_3);
-		m_v1.a = d123_1 * inv_d123;
-		m_v2.a = d123_2 * inv_d123;
-		m_v3.a = d123_3 * inv_d123;
-		m_count = 3;
+		v1.a = d123_1 * inv_d123;
+		v2.a = d123_2 * inv_d123;
+		v3.a = d123_3 * inv_d123;
+		count = 3;
 	}
 
 

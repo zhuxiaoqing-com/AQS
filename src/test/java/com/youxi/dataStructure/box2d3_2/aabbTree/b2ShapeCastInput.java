@@ -1,5 +1,6 @@
 package com.youxi.dataStructure.box2d3_2.aabbTree;
 
+import com.youxi.math.box2dGJK.b2ShapeProxy;
 import com.youxi.math.box2dGJK.shape.B2Vec2;
 
 public class b2ShapeCastInput {

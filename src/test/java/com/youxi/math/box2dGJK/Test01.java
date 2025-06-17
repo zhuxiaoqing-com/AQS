@@ -29,7 +29,7 @@ public class Test01 {
     }
 
     private static void b2ShapeCast(B2MyPolygon aabb1, B2MyPolygon aabb2, B2Vec2 b2Vec2, String param) {
-        B2ShapeCastInput b2ShapeCastInput = new B2ShapeCastInput(new B2DistanceProxy(aabb1), new B2DistanceProxy(aabb2), b2Vec2);
+        B2ShapeCastInput b2ShapeCastInput = new B2ShapeCastInput(new b2ShapeProxy(aabb1), new b2ShapeProxy(aabb2), b2Vec2);
         B2ShapeCastOutput b2ShapeCastOutput = new B2ShapeCastOutput();
         new B2Distance().b2ShapeCast(b2ShapeCastOutput, b2ShapeCastInput);
 
@@ -38,7 +38,7 @@ public class Test01 {
     }
 
     private static void bsDistance(B2MyPolygon aabb1, B2MyPolygon aabb2, String param) {
-        B2Distance.b2DistanceInput b2DistanceInput = new B2Distance.b2DistanceInput(new B2DistanceProxy(aabb1), new B2DistanceProxy(aabb2), true);
+        B2Distance.b2DistanceInput b2DistanceInput = new B2Distance.b2DistanceInput(new b2ShapeProxy(aabb1), new b2ShapeProxy(aabb2), true);
         B2Distance.b2DistanceOutput b2DistanceOutput = new B2Distance.b2DistanceOutput();
         new B2Distance().b2Distance(b2DistanceOutput, b2DistanceInput);
 

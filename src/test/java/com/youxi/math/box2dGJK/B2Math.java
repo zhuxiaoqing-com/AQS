@@ -227,6 +227,9 @@ public class B2Math {
         return Math.max(height1, height2);
     }
 
+    /**
+     * 设置1我们将返回的向量视为逆时针旋转了90°，或者将 s 设置为-1时视为顺时针旋转了90°
+     */
     public static B2Vec2 b2CrossSV(float s, B2Vec2 v) {
         return new B2Vec2(-s * v.y, s * v.x);
     }

@@ -16,13 +16,13 @@ public class B2Distance {
 	//  b2Distance的输入
 //  在计算中你必须选择使用形状的半径
 	public static class b2DistanceInput {
-		B2DistanceProxy proxyA;    //距离代理A
-		B2DistanceProxy proxyB;    //距离代理B
+		b2ShapeProxy proxyA;    //距离代理A
+		b2ShapeProxy proxyB;    //距离代理B
 		/*B2Transform transformA;    //转换A
 		B2Transform transformB;    //转换B*/
 		boolean useRadii;             //是否使用半径
 
-		public b2DistanceInput(B2DistanceProxy proxyA, B2DistanceProxy proxyB, boolean useRadii) {
+		public b2DistanceInput(b2ShapeProxy proxyA, b2ShapeProxy proxyB, boolean useRadii) {
 			this.proxyA = proxyA;
 			this.proxyB = proxyB;
 			this.useRadii = useRadii;
@@ -56,8 +56,8 @@ public class B2Distance {
 					   b2DistanceInput input) {
 		++b2_gjkCalls;
 		//初始化代理
-		B2DistanceProxy proxyA = input.proxyA;
-		B2DistanceProxy proxyB = input.proxyB;
+		b2ShapeProxy proxyA = input.proxyA;
+		b2ShapeProxy proxyB = input.proxyB;
 		//获取变换
 		/*B2Transform transformA = input.transformA;
 		B2Transform transformB = input.transformB;*/
@@ -78,13 +78,13 @@ public class B2Distance {
 		int iter = 0;
 		while (iter < k_maxIters) {
 			// 拷贝单纯形，我们可以识别重复
-			saveCount = simplex.m_count;
+			saveCount = simplex.count;
 			for (int i = 0; i < saveCount; ++i) {
 				saveA[i] = simplex.get(i).indexA;
 				saveB[i] = simplex.get(i).indexB;
 			}
 			//获取单纯形顶点,并判断
-			switch (simplex.m_count) {
+			switch (simplex.count) {
 				case 1:
 					break;
 				case 2:
@@ -98,7 +98,7 @@ public class B2Distance {
 					throw new RuntimeException();
 			}
 			// 如果我们有3个点，原点在相应的三角形内。
-			if (simplex.m_count == 3) {
+			if (simplex.count == 3) {
 				break;
 			}
 			//计算最近的点
@@ -121,7 +121,7 @@ public class B2Distance {
 				break;
 			}
 			//用支撑点计算一个试探性的新的单纯形顶点
-			B2SimplexVertex vertex = simplex.get(simplex.m_count);
+			B2SimplexVertex vertex = simplex.get(simplex.count);
 			vertex.indexA = proxyA.GetSupport(d.multiply(-1));
 			vertex.wA = proxyA.GetVertex(vertex.indexA);
 			B2Vec2 wBLocal;
@@ -145,7 +145,7 @@ public class B2Distance {
 				break;
 			}
 			// 新的顶点是好的且需要的
-			++simplex.m_count;
+			++simplex.count;
 		}
 
 		b2_gjkMaxIters = Math.max(b2_gjkMaxIters, iter);
@@ -183,8 +183,8 @@ public class B2Distance {
 	void b2Distance(b2DistanceOutput output, b2DistanceInput input) {
 		++b2_gjkCalls;
 
-		B2DistanceProxy proxyA = input.proxyA;
-		B2DistanceProxy proxyB = input.proxyB;
+		b2ShapeProxy proxyA = input.proxyA;
+		b2ShapeProxy proxyB = input.proxyB;
 
 
 		// Initialize the simplex.
@@ -204,13 +204,13 @@ public class B2Distance {
 		int iter = 0;
 		while (iter < k_maxIters) {
 			// Copy simplex so we can identify duplicates.
-			saveCount = simplex.m_count;
+			saveCount = simplex.count;
 			for (int i = 0; i < saveCount; ++i) {
 				saveA[i] = simplex.get(i).indexA;
 				saveB[i] = simplex.get(i).indexB;
 			}
 
-			switch (simplex.m_count) {
+			switch (simplex.count) {
 				case 1:
 					break;
 
@@ -227,7 +227,7 @@ public class B2Distance {
 			}
 
 			// If we have 3 points, then the origin is in the corresponding triangle.
-			if (simplex.m_count == 3) {
+			if (simplex.count == 3) {
 				break;
 			}
 
@@ -246,7 +246,7 @@ public class B2Distance {
 			}
 
 			// Compute a tentative new simplex vertex using support points.
-			B2SimplexVertex vertex = simplex.get(simplex.m_count);
+			B2SimplexVertex vertex = simplex.get(simplex.count);
 			vertex.indexA = proxyA.GetSupport(d.multiply(-1));
 			vertex.wA = proxyA.GetVertex(vertex.indexA);
 			vertex.indexB = proxyB.GetSupport(d);
@@ -272,7 +272,7 @@ public class B2Distance {
 			}
 
 			// New vertex is ok and needed.
-			++simplex.m_count;
+			++simplex.count;
 		}
 
 		b2_gjkMaxIters = Math.max(b2_gjkMaxIters, iter);
@@ -318,8 +318,8 @@ public class B2Distance {
 		output.normal.SetZero();
 		output.point.SetZero();
 
-	 B2DistanceProxy proxyA = input.proxyA;
-	 B2DistanceProxy proxyB = input.proxyB;
+	 b2ShapeProxy proxyA = input.proxyA;
+	 b2ShapeProxy proxyB = input.proxyB;
 
 		float radiusA = Math.max(proxyA.radius, b2_polygonRadius);
 		float radiusB = Math.max(proxyB.radius, b2_polygonRadius);
@@ -332,7 +332,7 @@ public class B2Distance {
 
 		// Initial simplex
 		B2Simplex simplex = new B2Simplex();
-		simplex.m_count = 0;
+		simplex.count = 0;
 
 		// Get simplex vertices as an array.
 
@@ -383,14 +383,14 @@ public class B2Distance {
 				}
 
 				n = v.multiply(-1);
-				simplex.m_count = 0;
+				simplex.count = 0;
 			}
 
 			// Reverse simplex since it works with B - A.
 			// Shift by lambda * r because we want the closest point to the current clip point.
 			// Note that the support point p is not shifted because we want the plane equation
 			// to be formed in unshifted space.
-			B2SimplexVertex vertex = simplex.get(simplex.m_count);
+			B2SimplexVertex vertex = simplex.get(simplex.count);
 			vertex.indexA = indexB;
 			//vertex.wA = wB + lambda * r;
 			vertex.wA = add(wB, r.multiply(lambda));
@@ -399,9 +399,9 @@ public class B2Distance {
 			//vertex.w = vertex.wB - vertex.wA;
 			vertex.w = sub(vertex.wB, vertex.wA);
 			vertex.a = 1.0f;
-			simplex.m_count += 1;
+			simplex.count += 1;
 
-			switch (simplex.m_count)
+			switch (simplex.count)
 			{
 				case 1:
 					break;
@@ -419,7 +419,7 @@ public class B2Distance {
 			}
 
 			// If we have 3 points, then the origin is in the corresponding triangle.
-			if (simplex.m_count == 3)
+			if (simplex.count == 3)
 			{
 				// Overlap
 				return false;
