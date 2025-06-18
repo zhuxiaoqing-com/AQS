@@ -1,6 +1,8 @@
 package com.youxi.math.box2dGJK;
 
 
+import com.youxi.entity.CMath;
+import com.youxi.entity.Dir;
 import com.youxi.math.box2dGJK.shape.B2AABB;
 import com.youxi.math.box2dGJK.shape.B2Rot;
 import com.youxi.math.box2dGJK.shape.B2Transform;
@@ -268,4 +270,24 @@ public class B2Math {
         return new B2Vec2((1.0f - t) * a.x + t * b.x, (1.0f - t) * a.y + t * b.y);
     }
 
+    public static B2Vec2 rotate(B2Vec2 b, float deg) {
+        float radians = (float) Math.toRadians(deg);
+        double cos = Math.cos(radians);
+        double sin = Math.sin(radians);
+        float x = (float) (b.getX() * cos - b.getY() * sin);
+        float y = (float) (b.getY() * cos + b.getX() * sin);
+        return new B2Vec2(x, y);
+    }
+
+    /**
+     * unity 左手坐标系 应用右手坐标系的旋转需要 -deg
+     */
+    public static B2Vec2 unityRotate(B2Vec2 b, float deg) {
+        float radians = (float) Math.toRadians(-deg);
+        double cos = Math.cos(radians);
+        double sin = Math.sin(radians);
+        float x = (float) (b.getX() * cos - b.getY() * sin);
+        float y = (float) (b.getY() * cos + b.getX() * sin);
+        return new B2Vec2(x, y);
+    }
 }

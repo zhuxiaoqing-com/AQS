@@ -12,41 +12,10 @@ import static com.youxi.math.box2dGJK.B2Math.*;
 
 public class Distance {
 
-    //  b2Distance的输入
-//  在计算中你必须选择使用形状的半径
-    public static class b2DistanceInput {
-        b2ShapeProxy proxyA;    //距离代理A
-        b2ShapeProxy proxyB;    //距离代理B
-        /*B2Transform transformA;    //转换A
-        B2Transform transformB;    //转换B*/
-        boolean useRadii;             //是否使用半径
 
-        public b2DistanceInput() {
-        }
 
-        public b2DistanceInput(b2ShapeProxy proxyA, b2ShapeProxy proxyB, boolean useRadii) {
-            this.proxyA = proxyA;
-            this.proxyB = proxyB;
-            this.useRadii = useRadii;
-        }
-    }
 
-    ;
-
-    // b2Distance的输出
-    public static class b2DistanceOutput {
-        B2Vec2 pointA = new B2Vec2(0, 0);        //shapeA上最近的点 如果碰撞了 pointA和pointB相等
-        B2Vec2 pointB = new B2Vec2(0, 0);        //shapeB上最近的点
-        B2Vec2 normal;
-        /// < Normal vector that points from A to B. Invalid if distance is zero.
-        float distance;
-        /// < The final distance, zero if overlapped
-        int iterations;
-        /// < Number of GJK iterations used
-        int simplexCount; ///< The number of simplexes stored in the simplex array
-    }
-
-    b2DistanceOutput b2ShapeDistance(b2DistanceInput input, List<B2Simplex> simplexes, int simplexCapacity) {
+    public static Cob2DistanceOutput b2ShapeDistance(b2DistanceInput input, List<B2Simplex> simplexes, int simplexCapacity) {
         B2_ASSERT(input.proxyA.count > 0 && input.proxyB.count > 0);
         B2_ASSERT(input.proxyA.radius >= 0.0f);
         B2_ASSERT(input.proxyB.radius >= 0.0f);
@@ -213,59 +182,8 @@ public class Distance {
     }
 
 
-    class b2ShapeCastPairInput {
-        b2ShapeProxy proxyA;
-        /// < The proxy for shape A
-        b2ShapeProxy proxyB;
-        /// < The proxy for shape B
-        //b2Transform transformA; ///< The world transform for shape A
-        //b2Transform transformB; ///< The world transform for shape B
-        // 形状B的平移向量，表示其移动方向和距离  根据AI解释默认A是静止的  B往A撞
-        B2Vec2 translationB;
-        /// < The translation of shape B
-        //考虑平移的分数比例，通常为1（即完整平移）
-        float maxFraction;
-        /// < The fraction of the translation to consider, typically 1
-        /**
-         * canEncroach 的作用‌
-         * ‌允许轻微穿透‌
-         * 当设置为 true 时，允许带有半径（如圆形或胶囊体）的形状在已经接触的情况下略微靠近对方，避免因严格碰撞检测导致的运动卡顿
-         *
-         * 适用于需要平滑移动的场景，如角色控制器或动态物体的连续运动。
-         * ‌严格碰撞检测‌
-         * 当设置为 false 时，强制保持形状间的严格距离，即使已接触也不会进一步靠近。
-         *
-         * 适用于需要精确物理模拟的场景，如刚体堆叠或机械结构。
-         * Box2D 通过 b2ShapeCastPairInput 结构体传递该参数，影响形状投射计算中的接触点判定逻辑。
-         * 若形状已接触且 canEncroach=true，则允许忽略半径的微小重叠，否则强制分离
-         * 所以如果设置了就运行获取法向量进行分离
-         */
-        // 布尔值，若为真，允许已接触的形状（带半径）略微靠近
-        boolean canEncroach;        ///< Allows shapes with a radius to move slightly closer if already touching
-    }
-
-    // 低级光线投射或形状投射输出数据。在初始重叠的情况下，返回零分数和法线。
-
-    /// Low level ray cast or shape-cast output data. Returns a zero fraction and normal in the case of initial overlap.
-    class b2CastOutput {
-        /// The surface normal at the hit point 碰撞法线
-        B2Vec2 normal;
-
-        /// The surface hit point
-        B2Vec2 point; // 碰撞点
-
-        /// The fraction of the input translation at collision
-        float fraction;
-
-        /// The number of iterations used
-        int iterations;
-
-        /// Did the cast hit?
-        boolean hit;
-    }
-
     // Shape cast using conservative advancement
-    b2CastOutput b2ShapeCast(b2ShapeCastPairInput input) {
+    public static b2CastOutput b2ShapeCast(b2ShapeCastPairInput input) {
         // Compute tolerance
         float linearSlop = B2_LINEAR_SLOP;
         float totalRadius = input.proxyA.radius + input.proxyB.radius;
