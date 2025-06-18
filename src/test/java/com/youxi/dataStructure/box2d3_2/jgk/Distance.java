@@ -15,7 +15,7 @@ public class Distance {
 
 
 
-    public static Cob2DistanceOutput b2ShapeDistance(b2DistanceInput input, List<B2Simplex> simplexes, int simplexCapacity) {
+    public static b2DistanceOutput b2ShapeDistance(b2DistanceInput input, List<B2Simplex> simplexes, int simplexCapacity) {
         B2_ASSERT(input.proxyA.count > 0 && input.proxyB.count > 0);
         B2_ASSERT(input.proxyA.radius >= 0.0f);
         B2_ASSERT(input.proxyB.radius >= 0.0f);

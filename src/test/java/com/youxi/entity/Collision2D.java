@@ -73,6 +73,7 @@ public class Collision2D {
 	 * 实现原理，可查看下面两个网址
 	 * https://math.stackexchange.com/questions/311921/get-location-of-vector-circle-intersection
 	 * https://stackoverflow.com/questions/1073336/circle-line-segment-collision-detection-algorithm#
+	 * https://www.pianshen.com/article/2429198750/
 	 */
 	public static boolean TestRayCircle(Position cPos, int cR, Position rB, Dir rDir, OutValue ov) {
 		ModifyPosition d = rDir.toPosition(ov.circleCache.d);
