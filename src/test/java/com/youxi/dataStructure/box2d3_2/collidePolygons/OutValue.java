@@ -20,6 +20,14 @@ public class OutValue {
     private B2Vec2 hitPoint;
 
 
+    public OutValue reset() {
+        hitEdge = 0;
+        hitPoint = null;
+        t = 0;
+        return this;
+    }
+
+
     public float getT() {
         return t;
     }

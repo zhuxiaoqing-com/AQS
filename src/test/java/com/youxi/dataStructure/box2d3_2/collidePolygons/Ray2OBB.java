@@ -6,6 +6,10 @@ import com.youxi.math.box2dGJK.shape.B2Vec2;
 
 public class Ray2OBB {
     public static boolean TestRayOBB(B2Vec2 src, B2Vec2 dir, B2Vec2 center, B2Vec2 sizeDirRightTop, float deg, OutValue ov) {
+        // 没有方向向量
+        if(dir.length()<=0.0001){
+            return false;
+        }
         // 以center当做新的原点
         B2Vec2 raySrc = B2Math.b2Sub(src, center);
         // 这里将obb的坐标系 变换成aabb的坐标系 也就是说需要反向旋转下 obb变换成aabb其实只要忽略deg就好了

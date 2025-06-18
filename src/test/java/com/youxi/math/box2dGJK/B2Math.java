@@ -290,4 +290,12 @@ public class B2Math {
         float y = (float) (b.getY() * cos + b.getX() * sin);
         return new B2Vec2(x, y);
     }
+
+    /**
+     * unity 左手坐标系 角度转向量
+     */
+    public static B2Vec2 unityDegreeToDir(float deg) {
+        B2Vec2 b2Vec2 = new B2Vec2(0, 1);
+        return unityRotate(b2Vec2, deg);
+    }
 }
