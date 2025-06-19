@@ -8,6 +8,8 @@ import com.youxi.math.box2dGJK.shape.B2Vec2;
 
 /**
  * https://blog.csdn.net/qq_37043683/article/details/80375691
+ * https://www.cnblogs.com/sanyejun/p/16743843.html
+ * https://zhuanlan.zhihu.com/p/583879987?utm_id=0
  */
 public class OBB2Circle {
     public static boolean testCircleAABB(B2Vec2 circleCenter, float circleRadius,

@@ -1,6 +1,6 @@
 package com.youxi.dataStructure.box2d3_2.jgk;
 
-import com.youxi.dataStructure.box2d3_2.aabbTree.b2ShapeCastInput;
+import com.youxi.dataStructure.box2d3_2.BHVaabbTree.b2ShapeCastInput;
 import com.youxi.math.box2dGJK.b2ShapeProxy;
 import com.youxi.math.box2dGJK.shape.B2Circle;
 import com.youxi.math.box2dGJK.shape.B2MyPolygon;

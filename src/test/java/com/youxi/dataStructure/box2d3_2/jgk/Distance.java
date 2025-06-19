@@ -13,7 +13,9 @@ import static com.youxi.math.box2dGJK.B2Math.*;
 public class Distance {
 
 
-
+    public static b2DistanceOutput b2ShapeDistance(b2DistanceInput input) {
+        return b2ShapeDistance(input, null, 0);
+    }
 
     public static b2DistanceOutput b2ShapeDistance(b2DistanceInput input, List<B2Simplex> simplexes, int simplexCapacity) {
         B2_ASSERT(input.proxyA.count > 0 && input.proxyB.count > 0);
@@ -75,7 +77,7 @@ public class Distance {
                 default:
                     B2_ASSERT(false);
             }
-
+            System.out.println(String.format("count %s d %s  v1w %s  v2w %s", simplex.count, d, simplex.v1.w, simplex.v2.w));
             // If we have 3 points, then the origin is in the corresponding triangle.
             if (simplex.count == 3) {
                 // Overlap
@@ -83,6 +85,8 @@ public class Distance {
                 b2ComputeSimplexWitnessPoints(localPointA, localPointB, simplex);
                 output.pointA = localPointA;
                 output.pointB = localPointB;
+                System.out.println(String.format("GetWitnessPoints count %s v1a %s v1wa %s v1wb %s v2a %s v2wa %s v2wb %s",
+                        simplex.count, simplex.v1.a, simplex.v1.wA, simplex.v1.wB, simplex.v2.a, simplex.v2.wA, simplex.v2.wB));
                 return output;
             }
 
@@ -109,6 +113,8 @@ public class Distance {
                 b2ComputeSimplexWitnessPoints(localPointA, localPointB, simplex);
                 output.pointA = localPointA;
                 output.pointB = localPointB;
+                System.out.println(String.format("GetWitnessPoints count %s v1a %s v1wa %s v1wb %s v2a %s v2wa %s v2wb %s",
+                        simplex.count, simplex.v1.a, simplex.v1.wA, simplex.v1.wB, simplex.v2.a, simplex.v2.wA, simplex.v2.wB));
                 return output;
             }
 
@@ -158,6 +164,9 @@ public class Distance {
 
         B2Vec2 localPointA = new B2Vec2(), localPointB = new B2Vec2();
         b2ComputeSimplexWitnessPoints(localPointA, localPointB, simplex);
+        System.out.println(String.format("GetWitnessPoints count %s v1a %s v1wa %s v1wb %s v2a %s v2wa %s v2wb %s",
+                simplex.count, simplex.v1.a, simplex.v1.wA, simplex.v1.wB, simplex.v2.a, simplex.v2.wA, simplex.v2.wB));
+
         output.normal = normal;
         output.distance = b2Distance(localPointA, localPointB);
         output.pointA = localPointA;

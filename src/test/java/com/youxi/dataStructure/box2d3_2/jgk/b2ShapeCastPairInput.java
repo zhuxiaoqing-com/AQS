@@ -31,5 +31,19 @@ public class b2ShapeCastPairInput {
      * 所以如果设置了就运行获取法向量进行分离
      */
     // 布尔值，若为真，允许已接触的形状（带半径）略微靠近
-    boolean canEncroach;        ///< Allows shapes with a radius to move slightly closer if already touching
+    boolean canEncroach;
+
+    public b2ShapeCastPairInput() {
+    }
+
+    ///< Allows shapes with a radius to move slightly closer if already touching
+
+
+    public b2ShapeCastPairInput(b2ShapeProxy proxyA, b2ShapeProxy proxyB, B2Vec2 translationB) {
+        this.proxyA = proxyA;
+        this.proxyB = proxyB;
+        this.translationB = translationB;
+        this.maxFraction = 1;
+        this.canEncroach = false;
+    }
 }

@@ -24,16 +24,16 @@ public class Test01 {
         b2Vec2 = new B2Vec2(12, 12).sub(new B2Vec2(2, 2)).multiply(10);
 
 
-        bsDistance(aabb1, aabb2, "");
-        b2ShapeCast(aabb1, aabb2, b2Vec2, "");
+       // bsDistance(aabb1, aabb2, "");
+        //b2ShapeCast(aabb1, aabb2, b2Vec2, "");
     }
 
     private static void b2ShapeCast(B2MyPolygon aabb1, B2MyPolygon aabb2, B2Vec2 b2Vec2, String param) {
         B2ShapeCastInput b2ShapeCastInput = new B2ShapeCastInput(new b2ShapeProxy(aabb1), new b2ShapeProxy(aabb2), b2Vec2);
         B2ShapeCastOutput b2ShapeCastOutput = new B2ShapeCastOutput();
-        new B2Distance().b2ShapeCast(b2ShapeCastOutput, b2ShapeCastInput);
+        boolean b = new B2Distance().b2ShapeCast(b2ShapeCastOutput, b2ShapeCastInput);
 
-        System.out.printf("param %s aabb1 %s   aabb2 %s dir %s b2ShapeCastOutput point %s normal %s lambda %s iterations %s %n", param,
+        System.out.printf("param %s hit %s aabb1 %s   aabb2 %s dir %s b2ShapeCastOutput point %s normal %s lambda %s iterations %s %n", param,b,
                 aabb1, aabb2, b2Vec2, b2ShapeCastOutput.point, b2ShapeCastOutput.normal, b2ShapeCastOutput.lambda, b2ShapeCastOutput.iterations);
     }
 
@@ -42,7 +42,7 @@ public class Test01 {
         B2Distance.b2DistanceOutput b2DistanceOutput = new B2Distance.b2DistanceOutput();
         new B2Distance().b2Distance(b2DistanceOutput, b2DistanceInput);
 
-        System.out.printf("param %s  aabb1 %s   aabb2 %s b2DistanceOutput pointA %s pointB %s distance %s iterations %s%n", param,
+        System.out.printf("param %s hit %s  aabb1 %s   aabb2 %s b2DistanceOutput pointA %s pointB %s distance %s iterations %s%n", param,b2DistanceOutput.distance<0.0001f,
                 aabb1, aabb2, b2DistanceOutput.pointA, b2DistanceOutput.pointB, b2DistanceOutput.distance, b2DistanceOutput.iterations);
     }
 

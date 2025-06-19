@@ -31,6 +31,13 @@ public class b2ShapeProxy {
 		init();
 	}
 
+	public b2ShapeProxy(B2OBB polygon) {
+		points = polygon.getPoints().toArray(new B2Vec2[0]);
+		count = polygon.getPoints().size();
+		radius = polygon.getRadius();
+		init();
+	}
+
 
 	void Set(B2Vec2[] vertices, int count, float radius) {
 		points = vertices;

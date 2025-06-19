@@ -233,6 +233,7 @@ public class B2Distance {
 
 			// Get search direction.
 			B2Vec2 d = simplex.GetSearchDirection();
+			System.out.println(String.format("count %s d %s  v1w %s  v2w %s", simplex.count, d, simplex.v1.w, simplex.v2.w));
 
 			// Ensure the search direction is numerically fit.
 			if (d.LengthSquared() < b2_epsilon * b2_epsilon) {
@@ -279,6 +280,9 @@ public class B2Distance {
 
 		// Prepare output.
 		simplex.GetWitnessPoints(output.pointA, output.pointB);
+		System.out.println(String.format("GetWitnessPoints count %s v1a %s v1wa %s v1wb %s v2a %s v2wa %s v2wb %s",
+				simplex.count, simplex.v1.a, simplex.v1.wA, simplex.v1.wB, simplex.v2.a, simplex.v2.wA, simplex.v2.wB));
+
 		output.distance = B2Math.b2Distance(output.pointA, output.pointB);
 		output.iterations = iter;
 
