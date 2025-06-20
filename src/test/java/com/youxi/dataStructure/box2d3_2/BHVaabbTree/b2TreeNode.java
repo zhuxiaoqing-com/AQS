@@ -9,7 +9,7 @@ public class b2TreeNode {
     // 碰撞过滤的分类位
     long categoryBits;
     int child1, child2;
-    long userData;
+    Object userData;
     /// The node parent index (allocated node)
     int parent;
     /// The node freelist next index (free node)

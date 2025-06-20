@@ -1264,8 +1264,7 @@ public class b2DynamicTree {
 
         return (int) size;
     }*/
-
-    long b2DynamicTree_GetUserData(int proxyId) {
+    public Object b2DynamicTree_GetUserData(int proxyId) {
         B2_ASSERT(0 <= proxyId && proxyId < nodeCapacity);
         return nodes[proxyId].userData;
     }
@@ -1281,4 +1280,37 @@ public class b2DynamicTree {
             throw new RuntimeException("b2Assert");
         }
     }
+
+    public void printTree() {
+        System.out.println(printTreeToString());
+    }
+
+    public String printTreeToString() {
+        StringBuilder sb = new StringBuilder();
+        printTree(sb, root, "", false);
+        return sb.toString();
+    }
+
+    void printTree(StringBuilder sb, int nodeId, String indent, boolean last) {
+        boolean valid = 0 <= nodeId && nodeId < nodeCapacity;
+        if(!valid) { // 只处理子节点
+            return;
+        }
+        b2TreeNode node = nodes[nodeId];
+        if (node != null) {
+            /*System.out.print(indent);
+            System.out.print(last ? "└─ " : "├─ ");
+            System.out.println(node.aabb);*/
+            sb.append(indent);
+            sb.append(last ? "└─ " : "├─ ");
+            if(node.userData!= null) {
+                sb.append(node.userData.toString());
+            }
+            sb.append(node.aabb + System.lineSeparator());
+            String childIndent = indent + (last ? "    " : "│   ");
+            printTree(sb, node.child1, childIndent, false);
+            printTree(sb, node.child2, childIndent, true);
+        }
+    }
+
 }
