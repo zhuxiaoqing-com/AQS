@@ -24,8 +24,8 @@ public class Test01 {
         b2Vec2 = new B2Vec2(12, 12).sub(new B2Vec2(2, 2)).multiply(10);
 
 
-       // bsDistance(aabb1, aabb2, "");
-        //b2ShapeCast(aabb1, aabb2, b2Vec2, "");
+        bsDistance(aabb1, aabb2, "");
+        b2ShapeCast(aabb1, aabb2, b2Vec2, "");
     }
 
     private static void b2ShapeCast(B2MyPolygon aabb1, B2MyPolygon aabb2, B2Vec2 b2Vec2, String param) {

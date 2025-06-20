@@ -6,7 +6,9 @@ import com.youxi.math.box2dGJK.B2SimplexVertex;
 import com.youxi.math.box2dGJK.b2ShapeProxy;
 import com.youxi.math.box2dGJK.shape.B2Vec2;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.youxi.math.box2dGJK.B2Math.*;
 
@@ -32,7 +34,7 @@ public class Distance {
 
         // Initialize the simplex.
         B2Simplex simplex = new B2Simplex();
-        simplex.init(proxyA, localProxyB);
+        simplex.init_3_2(proxyA, localProxyB);
 
         int simplexIndex = 0;
         if (simplexes != null && simplexIndex < simplexCapacity) {
@@ -77,7 +79,6 @@ public class Distance {
                 default:
                     B2_ASSERT(false);
             }
-            System.out.println(String.format("count %s d %s  v1w %s  v2w %s", simplex.count, d, simplex.v1.w, simplex.v2.w));
             // If we have 3 points, then the origin is in the corresponding triangle.
             if (simplex.count == 3) {
                 // Overlap
@@ -85,8 +86,6 @@ public class Distance {
                 b2ComputeSimplexWitnessPoints(localPointA, localPointB, simplex);
                 output.pointA = localPointA;
                 output.pointB = localPointB;
-                System.out.println(String.format("GetWitnessPoints count %s v1a %s v1wa %s v1wb %s v2a %s v2wa %s v2wb %s",
-                        simplex.count, simplex.v1.a, simplex.v1.wA, simplex.v1.wB, simplex.v2.a, simplex.v2.wA, simplex.v2.wB));
                 return output;
             }
 
@@ -113,8 +112,6 @@ public class Distance {
                 b2ComputeSimplexWitnessPoints(localPointA, localPointB, simplex);
                 output.pointA = localPointA;
                 output.pointB = localPointB;
-                System.out.println(String.format("GetWitnessPoints count %s v1a %s v1wa %s v1wb %s v2a %s v2wa %s v2wb %s",
-                        simplex.count, simplex.v1.a, simplex.v1.wA, simplex.v1.wB, simplex.v2.a, simplex.v2.wA, simplex.v2.wB));
                 return output;
             }
 
@@ -164,8 +161,6 @@ public class Distance {
 
         B2Vec2 localPointA = new B2Vec2(), localPointB = new B2Vec2();
         b2ComputeSimplexWitnessPoints(localPointA, localPointB, simplex);
-        System.out.println(String.format("GetWitnessPoints count %s v1a %s v1wa %s v1wb %s v2a %s v2wa %s v2wb %s",
-                simplex.count, simplex.v1.a, simplex.v1.wA, simplex.v1.wB, simplex.v2.a, simplex.v2.wA, simplex.v2.wB));
 
         output.normal = normal;
         output.distance = b2Distance(localPointA, localPointB);
@@ -204,8 +199,8 @@ public class Distance {
         float fraction = 0.0f;
 
         b2DistanceInput distanceInput = new b2DistanceInput();
-        distanceInput.proxyA = input.proxyA;
-        distanceInput.proxyB = input.proxyB;
+        distanceInput.proxyA = new b2ShapeProxy(input.proxyA);
+        distanceInput.proxyB = new b2ShapeProxy(input.proxyB);
         distanceInput.useRadii = false;
 
         B2Vec2 delta2 = input.translationB;
@@ -275,10 +270,10 @@ public class Distance {
             // 将形状B的位置往前移动一点;移动到已经移动的比例那里
             //distanceInput.transformB.p = b2MulAdd(input.transformB.p, fraction, delta2);
             // 这里没办法 只能把每个点都移动下了;因为这里并没有 transform
-            for (B2Vec2 point : distanceInput.proxyB.points) {
-                B2Vec2 b2Vec2 = b2MulAdd(point, fraction, delta2);
-                point.setXY(b2Vec2.x, b2Vec2.y);
-            }
+            float finalFraction = fraction;
+            B2Vec2[] array = Arrays.stream(input.proxyB.points).map(point ->
+                    b2MulAdd(point, finalFraction, delta2)).toArray(B2Vec2[]::new);
+            distanceInput.proxyB.Set(array, input.proxyB.count, input.proxyB.radius);
         }
 
         // Failure!

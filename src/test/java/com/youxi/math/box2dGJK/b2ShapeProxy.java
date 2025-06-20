@@ -10,6 +10,16 @@ public class b2ShapeProxy {
 	public int count;
 	public float radius;
 
+
+	public b2ShapeProxy(b2ShapeProxy proxy) {
+		points = new B2Vec2[proxy.points.length];
+		for (int i = 0; i < proxy.points.length; i++) {
+			points[i] = proxy.points[i];
+		}
+		count = proxy.count;
+		radius = proxy.radius;
+	}
+
 	public b2ShapeProxy(B2Circle circle) {
 		points = new B2Vec2[]{circle.getCenter()};
 		count = 1;
@@ -39,7 +49,7 @@ public class b2ShapeProxy {
 	}
 
 
-	void Set(B2Vec2[] vertices, int count, float radius) {
+	public void Set(B2Vec2[] vertices, int count, float radius) {
 		points = vertices;
 		this.count = count;
 		this.radius = radius;
@@ -47,10 +57,13 @@ public class b2ShapeProxy {
 	}
 
 	public void init() {
+		B2Vec2[] tempPoints = new B2Vec2[this.points.length];
 		// 将 points里面的B2Vec2 新弄个对象
 		for (int i = 0; i < points.length; i++) {
-			points[i] = new B2Vec2(points[i].x, points[i].y);
+			tempPoints[i] = new B2Vec2(points[i].x, points[i].y);
 		}
+
+		this.points = tempPoints;
 	}
 
 

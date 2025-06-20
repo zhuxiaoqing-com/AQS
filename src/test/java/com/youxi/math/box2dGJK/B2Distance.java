@@ -33,10 +33,10 @@ public class B2Distance {
 
 	// b2Distance的输出
 	public static class b2DistanceOutput {
-		B2Vec2 pointA = new B2Vec2(0,0);        //shapeA上最近的点
-		B2Vec2 pointB = new B2Vec2(0,0);        //shapeB上最近的点
-		float distance;   //距离
-		int iterations;    //GJK的迭代次数
+		public B2Vec2 pointA = new B2Vec2(0,0);        //shapeA上最近的点
+		public B2Vec2 pointB = new B2Vec2(0,0);        //shapeB上最近的点
+		public float distance;   //距离
+		public int iterations;    //GJK的迭代次数
 	}
 
 	;
@@ -63,7 +63,7 @@ public class B2Distance {
 		B2Transform transformB = input.transformB;*/
 		//初始化单纯形
 		B2Simplex simplex = new B2Simplex();
-		simplex.init(proxyA, proxyB);
+		simplex.init_2(proxyA, proxyB);
 		//获取单纯形顶点
 		int k_maxIters = 20;
 		// 存储最近的单纯形顶点，以便我们检测是否重复和阻止循环
@@ -180,7 +180,7 @@ public class B2Distance {
 	}
 
 
-	void b2Distance(b2DistanceOutput output, b2DistanceInput input) {
+	public void b2Distance(b2DistanceOutput output, b2DistanceInput input) {
 		++b2_gjkCalls;
 
 		b2ShapeProxy proxyA = input.proxyA;
@@ -189,7 +189,7 @@ public class B2Distance {
 
 		// Initialize the simplex.
 		B2Simplex simplex = new B2Simplex();
-		simplex.init(proxyA, proxyB);
+		simplex.init_2(proxyA, proxyB);
 
 		// Get simplex vertices as an array.
 		int k_maxIters = 20;
@@ -233,7 +233,6 @@ public class B2Distance {
 
 			// Get search direction.
 			B2Vec2 d = simplex.GetSearchDirection();
-			System.out.println(String.format("count %s d %s  v1w %s  v2w %s", simplex.count, d, simplex.v1.w, simplex.v2.w));
 
 			// Ensure the search direction is numerically fit.
 			if (d.LengthSquared() < b2_epsilon * b2_epsilon) {
@@ -280,8 +279,6 @@ public class B2Distance {
 
 		// Prepare output.
 		simplex.GetWitnessPoints(output.pointA, output.pointB);
-		System.out.println(String.format("GetWitnessPoints count %s v1a %s v1wa %s v1wb %s v2a %s v2wa %s v2wb %s",
-				simplex.count, simplex.v1.a, simplex.v1.wA, simplex.v1.wB, simplex.v2.a, simplex.v2.wA, simplex.v2.wB));
 
 		output.distance = B2Math.b2Distance(output.pointA, output.pointB);
 		output.iterations = iter;
@@ -352,7 +349,7 @@ public class B2Distance {
 		float tolerance = 0.5f * b2_linearSlop;
 
 		// Main iteration loop.
-	 int k_maxIters = 20;
+	 int k_maxIters = 200;
 		int iter = 0;
 		while (iter < k_maxIters && v.Length() - sigma > tolerance)
 		{
@@ -426,7 +423,9 @@ public class B2Distance {
 			if (simplex.count == 3)
 			{
 				// Overlap
-				return false;
+				//return false;
+				// todo 为了和box2d 3.2一样 直接返回true
+				return true;
 			}
 
 			// Get search direction.
@@ -436,11 +435,13 @@ public class B2Distance {
 			++iter;
 		}
 
-		if (iter == 0)
+		/*if (iter == 0)
 		{
 			// Initial overlap
-			return false;
-		}
+			//return false;
+			// todo 为了和box2d 3.2一样 直接返回true
+			return true;
+		}*/
 
 		// Prepare output.
 		B2Vec2 pointA = new B2Vec2(), pointB = new B2Vec2();
