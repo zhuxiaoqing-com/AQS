@@ -128,8 +128,7 @@ public class B2ConvexPolygon extends B2Shape {
 		if (count < 3) {
 			return null;
 		}
-		B2Vec2 c = new B2Vec2();
-		c.Set(0.0f, 0.0f);
+		B2Vec2 c = new B2Vec2(0.0f, 0.0f);
 		float area = 0.0f;
 		//三角形的一个参考点
 		//它的位置并不能改变结构(除了舍入误差)
@@ -179,7 +178,7 @@ public class B2ConvexPolygon extends B2Shape {
 			B2Vec2 edge = m_vertices[i2].sub(m_vertices[i1]);
 			//计算法线，并标准化
 			m_normals[i] = b2Cross(edge, 1.0f);
-			m_normals[i].Normalize();
+			m_normals[i] = m_normals[i].Normalize();
 		}
 
 		//计算重心

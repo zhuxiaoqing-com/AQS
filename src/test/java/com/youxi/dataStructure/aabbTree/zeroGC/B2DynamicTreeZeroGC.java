@@ -148,7 +148,7 @@ public class B2DynamicTreeZeroGC implements IB2DynamicTree  {
         if (r.LengthSquared() <= 0) {
             return;
         }
-        r.Normalize();
+        r = r.Normalize();
         //v垂直于向量r
         B2Vec2 v = B2Math.b2Cross(1.0f, r);
         B2Vec2 abs_v = B2Math.b2Abs(v);

@@ -1,5 +1,7 @@
 package com.youxi.math.box2dGJK.shape;
 
+import com.youxi.math.box2dGJK.B2Math;
+
 import java.util.Objects;
 
 public class B2Vec2 {
@@ -111,17 +113,8 @@ public class B2Vec2 {
 	}
 
 	/// Convert this vector into a unit vector. Returns the length.
-	public float Normalize() {
-		float length = Length();
-		if (length < 0.000001)
-		{
-			return 0.0f;
-		}
-		float invLength = 1.0f / length;
-		x *= invLength;
-		y *= invLength;
-
-		return length;
+	public B2Vec2 Normalize() {
+		return B2Math.b2Normalize(this);
 	}
 
 	@Override

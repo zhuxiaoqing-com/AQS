@@ -18,25 +18,25 @@ public class Test01 {
     public void test02() {
 
         // obb打obb碰撞 需要打射线才在一起在一起
+        // 圆打obb 需要打射线才在一起在一起
         B2MyPolygon aabb1 = new B2MyPolygon(1f, 1f, new B2Vec2(2, 2), 40f);
-        B2MyPolygon aabb2 = new B2MyPolygon(1f, 1f, new B2Vec2(20, 2), 50f);
-        new B2OBB(new B2Vec2(2,2), new B2Vec2(1,1), 50);
-       B2Vec2 b2Vec2 = new B2Vec2(-1, 0);
-        b2Vec2.Normalize();
+        B2Circle b2Circle1 = new B2Circle(new B2Vec2(20, 2), 2);
+        B2Vec2 b2Vec2 = new B2Vec2(1, 0);
+        b2Vec2 = b2Vec2.Normalize();
         b2Vec2 = b2Vec2.multiply(30);
-        b2ShapeCast(new b2ShapeProxy(aabb1), new b2ShapeProxy(aabb2), b2Vec2, "obb打obb碰撞 需要打射线才在一起在一起");
-        System.out.println("-------------");
-        System.out.println("-------------");
+  //      bsDistance(new b2ShapeProxy(b2Circle1), new b2ShapeProxy(aabb1), "圆打obb 需要打射线才在一起在一起");
+        b2ShapeCast(new b2ShapeProxy(b2Circle1), new b2ShapeProxy(aabb1), b2Vec2, "圆打obb 需要打射线才在一起在一起");
 
 
     }
+
     @Test
     public void test01() {
         // obb打obb碰撞 一开始就重叠在一起
         B2MyPolygon aabb1 = new B2MyPolygon(1f, 1f, new B2Vec2(2, 2), 40f);
         B2MyPolygon aabb2 = new B2MyPolygon(1f, 1f, new B2Vec2(3, 3), 50f);
         B2Vec2 b2Vec2 = new B2Vec2(1, 0);
-        b2Vec2.Normalize();
+        b2Vec2 = b2Vec2.Normalize();
         bsDistance(new b2ShapeProxy(aabb1), new b2ShapeProxy(aabb2), "obb打obb碰撞 一开始就重叠在一起");
         b2ShapeCast(new b2ShapeProxy(aabb1), new b2ShapeProxy(aabb2), b2Vec2, "obb打obb碰撞 一开始就重叠在一起");
         System.out.println("-------------");
@@ -45,9 +45,9 @@ public class Test01 {
         // obb打obb碰撞 需要打射线才在一起在一起
         aabb1 = new B2MyPolygon(1f, 1f, new B2Vec2(2, 2), 40f);
         aabb2 = new B2MyPolygon(1f, 1f, new B2Vec2(20, 2), 50f);
-        new B2OBB(new B2Vec2(2,2), new B2Vec2(1,1), 50);
+        new B2OBB(new B2Vec2(2, 2), new B2Vec2(1, 1), 50);
         b2Vec2 = new B2Vec2(-1, 0);
-        b2Vec2.Normalize();
+        b2Vec2 = b2Vec2.Normalize();
         b2Vec2 = b2Vec2.multiply(30);
         bsDistance(new b2ShapeProxy(aabb1), new b2ShapeProxy(aabb2), "obb打obb碰撞 需要打射线才在一起在一起");
         b2ShapeCast(new b2ShapeProxy(aabb1), new b2ShapeProxy(aabb2), b2Vec2, "obb打obb碰撞 需要打射线才在一起在一起");
@@ -59,7 +59,7 @@ public class Test01 {
         aabb1 = new B2MyPolygon(1f, 1f, new B2Vec2(2, 2), 40f);
         B2Circle b2Circle1 = new B2Circle(new B2Vec2(3, 3), 2);
         b2Vec2 = new B2Vec2(-1, 0);
-        b2Vec2.Normalize();
+        b2Vec2 = b2Vec2.Normalize();
         bsDistance(new b2ShapeProxy(aabb1), new b2ShapeProxy(b2Circle1), "obb打圆 一开始就重叠在一起");
         b2ShapeCast(new b2ShapeProxy(aabb1), new b2ShapeProxy(b2Circle1), b2Vec2, "obb打圆 一开始就重叠在一起");
         System.out.println("-------------");
@@ -67,9 +67,9 @@ public class Test01 {
 
         // obb打圆 需要打射线才在一起在一起
         aabb1 = new B2MyPolygon(1f, 1f, new B2Vec2(2, 2), 40f);
-         b2Circle1 = new B2Circle( new B2Vec2(20, 2), 2);
+        b2Circle1 = new B2Circle(new B2Vec2(20, 2), 2);
         b2Vec2 = new B2Vec2(-1, 0);
-        b2Vec2.Normalize();
+        b2Vec2 = b2Vec2.Normalize();
         b2Vec2 = b2Vec2.multiply(30);
         bsDistance(new b2ShapeProxy(aabb1), new b2ShapeProxy(b2Circle1), "obb打圆 需要打射线才在一起在一起");
         b2ShapeCast(new b2ShapeProxy(aabb1), new b2ShapeProxy(b2Circle1), b2Vec2, "obb打圆 需要打射线才在一起在一起");
@@ -78,9 +78,9 @@ public class Test01 {
 
         // 圆打obb 一开始就重叠在一起
         aabb1 = new B2MyPolygon(1f, 1f, new B2Vec2(2, 2), 40f);
-         b2Circle1 = new B2Circle(new B2Vec2(3, 3), 2);
+        b2Circle1 = new B2Circle(new B2Vec2(3, 3), 2);
         b2Vec2 = new B2Vec2(-1, 0);
-        b2Vec2.Normalize();
+        b2Vec2 = b2Vec2.Normalize();
         bsDistance(new b2ShapeProxy(b2Circle1), new b2ShapeProxy(aabb1), "圆打obb 一开始就重叠在一起");
         b2ShapeCast(new b2ShapeProxy(b2Circle1), new b2ShapeProxy(aabb1), b2Vec2, "圆打obb 一开始就重叠在一起");
         System.out.println("-------------");
@@ -88,9 +88,9 @@ public class Test01 {
 
         // 圆打obb 需要打射线才在一起在一起
         aabb1 = new B2MyPolygon(1f, 1f, new B2Vec2(2, 2), 40f);
-        b2Circle1 = new B2Circle( new B2Vec2(20, 2), 2);
-        b2Vec2 = new B2Vec2(-1, 0);
-        b2Vec2.Normalize();
+        b2Circle1 = new B2Circle(new B2Vec2(20, 2), 2);
+        b2Vec2 = new B2Vec2(-1, 0); // 这里需要反向 因为a在 b的右边
+        b2Vec2 = b2Vec2.Normalize();
         b2Vec2 = b2Vec2.multiply(30);
         bsDistance(new b2ShapeProxy(b2Circle1), new b2ShapeProxy(aabb1), "圆打obb 需要打射线才在一起在一起");
         b2ShapeCast(new b2ShapeProxy(b2Circle1), new b2ShapeProxy(aabb1), b2Vec2, "圆打obb 需要打射线才在一起在一起");
@@ -98,10 +98,10 @@ public class Test01 {
         System.out.println("-------------");
 
         // 圆打圆 一开始就重叠在一起
-         b2Circle1 = new B2Circle(new B2Vec2(2, 2), 1f);
+        b2Circle1 = new B2Circle(new B2Vec2(2, 2), 1f);
         B2Circle b2Circle2 = new B2Circle(new B2Vec2(3, 3), 1f);
-         b2Vec2 = new B2Vec2(1, 0);
-        b2Vec2.Normalize();
+        b2Vec2 = new B2Vec2(1, 0);
+        b2Vec2 = b2Vec2.Normalize();
         bsDistance(new b2ShapeProxy(b2Circle1), new b2ShapeProxy(b2Circle2), "圆打圆 一开始就重叠在一起");
         b2ShapeCast(new b2ShapeProxy(b2Circle1), new b2ShapeProxy(b2Circle2), b2Vec2, "圆打圆 一开始就重叠在一起");
         System.out.println("-------------");
@@ -110,9 +110,9 @@ public class Test01 {
 
         // 圆打圆 需要打射线才在一起在一起
         b2Circle1 = new B2Circle(new B2Vec2(2, 2), 1f);
-         b2Circle2 = new B2Circle( new B2Vec2(20, 2), 2f);
+        b2Circle2 = new B2Circle(new B2Vec2(20, 2), 2f);
         b2Vec2 = new B2Vec2(-1, 0);
-        b2Vec2.Normalize();
+        b2Vec2 = b2Vec2.Normalize();
         b2Vec2 = b2Vec2.multiply(30);
         bsDistance(new b2ShapeProxy(aabb1), new b2ShapeProxy(aabb2), "圆打圆 需要打射线才在一起在一起");
         b2ShapeCast(new b2ShapeProxy(aabb1), new b2ShapeProxy(aabb2), b2Vec2, "圆打圆 需要打射线才在一起在一起");
@@ -124,7 +124,7 @@ public class Test01 {
         B2MyPolygon aabb1 = new B2MyPolygon(1f, 1f, new B2Vec2(2, 2), 0f);
         B2MyPolygon aabb2 = new B2MyPolygon(1f, 1f, new B2Vec2(4, 4), 0f);
         B2Vec2 b2Vec2 = new B2Vec2(1, 0);
-        b2Vec2.Normalize();
+        b2Vec2 = b2Vec2.Normalize();
 
         bsDistance(new b2ShapeProxy(aabb1), new b2ShapeProxy(aabb2), "aabb 打 aabb碰撞");
         b2ShapeCast(new b2ShapeProxy(aabb1), new b2ShapeProxy(aabb2), b2Vec2, "aabb 打 aabb碰撞");
@@ -149,7 +149,7 @@ public class Test01 {
         B2MyPolygon aabb1 = new B2MyPolygon(1f, 1f, new B2Vec2(2, 2), 0f);
         B2MyPolygon aabb2 = new B2MyPolygon(1f, 1f, new B2Vec2(4, 4), 0f);
         B2Vec2 b2Vec2 = new B2Vec2(1, 0);
-        b2Vec2.Normalize();
+        b2Vec2 = b2Vec2.Normalize();
 
         bsDistance(new b2ShapeProxy(aabb1), new b2ShapeProxy(aabb2), "aabb 打 aabb碰撞");
         b2ShapeCast(new b2ShapeProxy(aabb1), new b2ShapeProxy(aabb2), b2Vec2, "aabb 打 aabb碰撞");

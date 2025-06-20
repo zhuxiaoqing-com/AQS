@@ -14,7 +14,7 @@ public class Test01 {
         B2MyPolygon aabb1 = new B2MyPolygon(1f, 1f, new B2Vec2(2, 2), 0f);
         B2MyPolygon aabb2 = new B2MyPolygon(1f, 1f, new B2Vec2(4, 4), 0f);
         B2Vec2 b2Vec2 = new B2Vec2(1, 0);
-        b2Vec2.Normalize();
+        b2Vec2 = b2Vec2.Normalize();
 
         bsDistance(aabb1, aabb2, "");
         b2ShapeCast(aabb1, aabb2, b2Vec2, "");
