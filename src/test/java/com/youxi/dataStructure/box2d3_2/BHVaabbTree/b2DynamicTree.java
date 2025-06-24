@@ -5,6 +5,7 @@ import com.youxi.math.box2dGJK.B2Math;
 import com.youxi.math.box2dGJK.shape.B2AABB;
 import com.youxi.math.box2dGJK.shape.B2Vec2;
 
+
 public class b2DynamicTree {
     public static final int B2_HUGE = 100000; // 最大的坐标范围 -B2_HUGE 到 B2_HUGE
     public static final int B2_NULL_INDEX = -1;
@@ -1033,7 +1034,7 @@ public class b2DynamicTree {
 
     /**
      * 增大aabb
-     *
+     * <p>
      * 移动时调用该方法 和Box2d移动时候调用moveproxy不一样;
      * box2d3.2是移动时调用该方法,然后统一定时重建移动的Proxy
      */
@@ -1150,6 +1151,18 @@ public class b2DynamicTree {
         return 1 + B2Math.b2MaxInt(height1, height2);
     }
 
+    class b2RebuildItem {
+        int nodeIndex;
+        int childCount;
+
+        // Leaf indices
+        int startIndex;
+        int splitIndex;
+        int endIndex;
+    }
+
+    ;
+
 
     public int b2DynamicTree_Rebuild(boolean fullBuild) {
         if (proxyCount == 0) {
@@ -1225,25 +1238,25 @@ public class b2DynamicTree {
     }
 
     // Returns root node index
-     int b2BuildTree(int leafCount) {
+    int b2BuildTree(int leafCount) {
         if (leafCount == 1) {
             nodes[leafIndices[0]].parent = B2_NULL_INDEX;
             return leafIndices[0];
         }
 
         // todo large stack item
-         b2RebuildItem stack[B2_TREE_STACK_SIZE];
+        b2RebuildItem stack[] = new b2RebuildItem[B2_TREE_STACK_SIZE];
         int top = 0;
 
-        stack[0].nodeIndex = b2AllocateNode(tree);
+        stack[0].nodeIndex = b2AllocateNode();
         stack[0].childCount = -1;
         stack[0].startIndex = 0;
         stack[0].endIndex = leafCount;
-#if B2_TREE_HEURISTIC == 0
-        stack[0].splitIndex = b2PartitionMid(leafIndices, leafCenters, leafCount);
+
+        stack[0].splitIndex = b2PartitionMid(leafIndices, leafCenters, 0, 0, leafCount);
 
         while (true) {
-            struct b2RebuildItem*item = stack + top;
+             b2RebuildItem item = stack[top];
 
             item.childCount += 1;
 
@@ -1255,29 +1268,29 @@ public class b2DynamicTree {
                     break;
                 }
 
-                struct b2RebuildItem*parentItem = stack + (top - 1);
-                b2TreeNode * parentNode = nodes + parentItem.nodeIndex;
+                 b2RebuildItem parentItem = stack[(top - 1)];
+                b2TreeNode  parentNode = nodes[parentItem.nodeIndex];
 
                 if (parentItem.childCount == 0) {
-                    B2_ASSERT(parentNode.children.child1 == B2_NULL_INDEX);
-                    parentNode.children.child1 = item.nodeIndex;
+                    B2_ASSERT(parentNode.child1 == B2_NULL_INDEX);
+                    parentNode.child1 = item.nodeIndex;
                 } else {
                     B2_ASSERT(parentItem.childCount == 1);
-                    B2_ASSERT(parentNode.children.child2 == B2_NULL_INDEX);
-                    parentNode.children.child2 = item.nodeIndex;
+                    B2_ASSERT(parentNode.child2 == B2_NULL_INDEX);
+                    parentNode.child2 = item.nodeIndex;
                 }
 
-                b2TreeNode * node = nodes + item.nodeIndex;
+                b2TreeNode  node = nodes[item.nodeIndex];
 
                 B2_ASSERT(node.parent == B2_NULL_INDEX);
                 node.parent = parentItem.nodeIndex;
 
-                B2_ASSERT(node.children.child1 != B2_NULL_INDEX);
-                B2_ASSERT(node.children.child2 != B2_NULL_INDEX);
-                b2TreeNode * child1 = nodes + node.children.child1;
-                b2TreeNode * child2 = nodes + node.children.child2;
+                B2_ASSERT(node.child1 != B2_NULL_INDEX);
+                B2_ASSERT(node.child2 != B2_NULL_INDEX);
+                b2TreeNode  child1 = nodes[node.child1];
+                b2TreeNode  child2 = nodes[node.child2];
 
-                node.aabb = b2AABB_Union(child1.aabb, child2.aabb);
+                node.aabb = B2Math.B2AABB_Union(child1.aabb, child2.aabb);
                 node.height = 1 + b2MaxUInt16(child1.height, child2.height);
                 node.categoryBits = child1.categoryBits | child2.categoryBits;
 
@@ -1298,18 +1311,18 @@ public class b2DynamicTree {
 
                 if (count == 1) {
                     int childIndex = leafIndices[startIndex];
-                    b2TreeNode * node = nodes + item.nodeIndex;
+                    b2TreeNode node = nodes[item.nodeIndex];
 
                     if (item.childCount == 0) {
-                        B2_ASSERT(node.children.child1 == B2_NULL_INDEX);
-                        node.children.child1 = childIndex;
+                        B2_ASSERT(node.child1 == B2_NULL_INDEX);
+                        node.child1 = childIndex;
                     } else {
                         B2_ASSERT(item.childCount == 1);
-                        B2_ASSERT(node.children.child2 == B2_NULL_INDEX);
-                        node.children.child2 = childIndex;
+                        B2_ASSERT(node.child2 == B2_NULL_INDEX);
+                        node.child2 = childIndex;
                     }
 
-                    b2TreeNode * childNode = nodes + childIndex;
+                    b2TreeNode  childNode = nodes[childIndex];
                     B2_ASSERT(childNode.parent == B2_NULL_INDEX);
                     childNode.parent = item.nodeIndex;
                 } else {
@@ -1317,32 +1330,130 @@ public class b2DynamicTree {
                     B2_ASSERT(top < B2_TREE_STACK_SIZE);
 
                     top += 1;
-                    struct b2RebuildItem*newItem = stack + top;
-                    newItem.nodeIndex = b2AllocateNode(tree);
+                     b2RebuildItem newItem = stack[top];
+                    newItem.nodeIndex = b2AllocateNode();
                     newItem.childCount = -1;
                     newItem.startIndex = startIndex;
                     newItem.endIndex = endIndex;
-#if B2_TREE_HEURISTIC == 0
-                    newItem.splitIndex = b2PartitionMid(leafIndices + startIndex, leafCenters + startIndex, count);
+
+                    newItem.splitIndex = b2PartitionMid(leafIndices, leafCenters, startIndex, startIndex, count);
                     newItem.splitIndex += startIndex;
                 }
             }
         }
 
-        b2TreeNode * rootNode = nodes + stack[0].nodeIndex;
+        b2TreeNode  rootNode = nodes[stack[0].nodeIndex];
         B2_ASSERT(rootNode.parent == B2_NULL_INDEX);
-        B2_ASSERT(rootNode.children.child1 != B2_NULL_INDEX);
-        B2_ASSERT(rootNode.children.child2 != B2_NULL_INDEX);
+        B2_ASSERT(rootNode.child1 != B2_NULL_INDEX);
+        B2_ASSERT(rootNode.child2 != B2_NULL_INDEX);
 
-        b2TreeNode * child1 = nodes + rootNode.children.child1;
-        b2TreeNode * child2 = nodes + rootNode.children.child2;
+        b2TreeNode  child1 = nodes[rootNode.child1];
+        b2TreeNode  child2 = nodes[rootNode.child2];
 
-        rootNode.aabb = b2AABB_Union(child1.aabb, child2.aabb);
+        rootNode.aabb = B2Math.B2AABB_Union(child1.aabb, child2.aabb);
         rootNode.height = 1 + b2MaxUInt16(child1.height, child2.height);
         rootNode.categoryBits = child1.categoryBits | child2.categoryBits;
 
         return stack[0].nodeIndex;
 
+    }
+
+    // Median split heuristic
+     int b2PartitionMid(int[] indices, B2Vec2[] centers, int indicesStartIndex, int centersStartIndex, int count) {
+        // Handle trivial case
+        if (count <= 2) {
+            return count / 2;
+        }
+
+        B2Vec2 lowerBound = centers[centersStartIndex + 0];
+        B2Vec2 upperBound = centers[centersStartIndex + 0];
+
+        for (int i = 1; i < count; ++i) {
+            lowerBound = B2Math.b2Min(lowerBound, centers[centersStartIndex + i]);
+            upperBound = B2Math.b2Max(upperBound, centers[centersStartIndex + i]);
+        }
+
+        B2Vec2 d = B2Math.b2Sub(upperBound, lowerBound);
+        B2Vec2 c = new B2Vec2(0.5f * (lowerBound.x + upperBound.x), 0.5f * (lowerBound.y + upperBound.y));
+
+        // Partition longest axis using the Hoare partition scheme
+        // https://en.wikipedia.org/wiki/Quicksort
+        // https://nicholasvadivelu.com/2021/01/11/array-partition/
+        int i1 = 0, i2 = count;
+        if (d.x > d.y) {
+            float pivot = c.x;
+
+            while (i1 < i2) {
+                while (i1 < i2 && centers[centersStartIndex + i1].x < pivot) {
+                    i1 += 1;
+                }
+                ;
+
+                while (i1 < i2 && centers[centersStartIndex + i2 - 1].x >= pivot) {
+                    i2 -= 1;
+                }
+                ;
+
+                if (i1 < i2) {
+                    // Swap indices
+                    {
+                        int temp = indices[indicesStartIndex + i1];
+                        indices[indicesStartIndex + i1] = indices[indicesStartIndex + i2 - 1];
+                        indices[indicesStartIndex + i2 - 1] = temp;
+                    }
+
+                    // Swap centers
+                    {
+                        B2Vec2 temp = centers[centersStartIndex + i1];
+                        centers[centersStartIndex + i1] = centers[centersStartIndex + i2 - 1];
+                        centers[centersStartIndex + i2 - 1] = temp;
+                    }
+
+                    i1 += 1;
+                    i2 -= 1;
+                }
+            }
+        } else {
+            float pivot = c.y;
+
+            while (i1 < i2) {
+                while (i1 < i2 && centers[centersStartIndex + i1].y < pivot) {
+                    i1 += 1;
+                }
+                ;
+
+                while (i1 < i2 && centers[centersStartIndex + i2 - 1].y >= pivot) {
+                    i2 -= 1;
+                }
+                ;
+
+                if (i1 < i2) {
+                    // Swap indices
+                    {
+                        int temp = indices[indicesStartIndex +i1];
+                        indices[indicesStartIndex +i1] = indices[indicesStartIndex +i2 - 1];
+                        indices[indicesStartIndex +i2 - 1] = temp;
+                    }
+
+                    // Swap centers
+                    {
+                        B2Vec2 temp = centers[centersStartIndex + i1];
+                        centers[centersStartIndex + i1] = centers[centersStartIndex + i2 - 1];
+                        centers[centersStartIndex + i2 - 1] = temp;
+                    }
+
+                    i1 += 1;
+                    i2 -= 1;
+                }
+            }
+        }
+        B2_ASSERT(i1 == i2);
+
+        if (i1 > 0 && i1 < count) {
+            return i1;
+        }
+
+        return count / 2;
     }
 
 
