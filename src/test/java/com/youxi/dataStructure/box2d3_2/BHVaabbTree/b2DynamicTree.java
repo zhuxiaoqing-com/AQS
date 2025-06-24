@@ -43,13 +43,13 @@ public class b2DynamicTree {
     int proxyCount;
 
     /// Leaf indices for rebuild
-    int leafIndices;
+    int[] leafIndices;
 
     /// Leaf bounding boxes for rebuild
     B2AABB leafBoxes;
 
     /// Leaf bounding box centers for rebuild
-    B2Vec2 leafCenters;
+    B2Vec2[] leafCenters;
 
     /// Bins for sorting during rebuild
     int binIndices;
@@ -1033,6 +1033,9 @@ public class b2DynamicTree {
 
     /**
      * 增大aabb
+     *
+     * 移动时调用该方法 和Box2d移动时候调用moveproxy不一样;
+     * box2d3.2是移动时调用该方法,然后统一定时重建移动的Proxy
      */
     void b2DynamicTree_EnlargeProxy(int proxyId, B2AABB aabb) {
         B2_ASSERT(B2Math.b2IsValidAABB(aabb));
@@ -1147,6 +1150,202 @@ public class b2DynamicTree {
         return 1 + B2Math.b2MaxInt(height1, height2);
     }
 
+
+    public int b2DynamicTree_Rebuild(boolean fullBuild) {
+        if (proxyCount == 0) {
+            return 0;
+        }
+
+        // Ensure capacity for rebuild space
+        if (proxyCount > rebuildCapacity) {
+            int newCapacity = proxyCount + proxyCount / 2;
+
+            //b2Free(tree . leafIndices, tree . rebuildCapacity * sizeof( int ) );
+            leafIndices = new int[newCapacity];
+
+            leafCenters = new B2Vec2[newCapacity];
+            rebuildCapacity = newCapacity;
+        }
+
+        int leafCount = 0;
+        int stack[] = new int[B2_TREE_STACK_SIZE];
+        int stackCount = 0;
+
+        int nodeIndex = root;
+        b2TreeNode node = nodes[nodeIndex];
+
+        // These are the nodes that get sorted to rebuild the tree.
+        // I'm using indices because the node pool may grow during the build.
+
+
+        while (true) {
+            if (node.height == 0 || ((node.flags & b2_enlargedNode) == 0 && fullBuild == false)) {
+                leafIndices[leafCount] = nodeIndex;
+
+                leafCenters[leafCount] = B2Math.b2AABB_Center(node.aabb);
+                leafCount += 1;
+
+                // Detach
+                node.parent = B2_NULL_INDEX;
+            } else {
+                int doomedNodeIndex = nodeIndex;
+
+                // Handle children
+                nodeIndex = node.child1;
+
+                if (stackCount < B2_TREE_STACK_SIZE) {
+                    stack[stackCount++] = node.child2;
+                } else {
+                    B2_ASSERT(stackCount < B2_TREE_STACK_SIZE);
+                }
+
+                node = nodes[nodeIndex];
+
+                // Remove doomed node
+                b2FreeNode(doomedNodeIndex);
+
+                continue;
+            }
+
+
+            if (stackCount == 0) {
+                break;
+            }
+
+            nodeIndex = stack[--stackCount];
+            node = nodes[nodeIndex];
+        }
+
+        B2_ASSERT(leafCount <= proxyCount);
+
+        root = b2BuildTree(leafCount);
+
+        b2DynamicTree_Validate();
+        return leafCount;
+    }
+
+    // Returns root node index
+     int b2BuildTree(int leafCount) {
+        if (leafCount == 1) {
+            nodes[leafIndices[0]].parent = B2_NULL_INDEX;
+            return leafIndices[0];
+        }
+
+        // todo large stack item
+         b2RebuildItem stack[B2_TREE_STACK_SIZE];
+        int top = 0;
+
+        stack[0].nodeIndex = b2AllocateNode(tree);
+        stack[0].childCount = -1;
+        stack[0].startIndex = 0;
+        stack[0].endIndex = leafCount;
+#if B2_TREE_HEURISTIC == 0
+        stack[0].splitIndex = b2PartitionMid(leafIndices, leafCenters, leafCount);
+
+        while (true) {
+            struct b2RebuildItem*item = stack + top;
+
+            item.childCount += 1;
+
+            if (item.childCount == 2) {
+                // This internal node has both children established
+
+                if (top == 0) {
+                    // all done
+                    break;
+                }
+
+                struct b2RebuildItem*parentItem = stack + (top - 1);
+                b2TreeNode * parentNode = nodes + parentItem.nodeIndex;
+
+                if (parentItem.childCount == 0) {
+                    B2_ASSERT(parentNode.children.child1 == B2_NULL_INDEX);
+                    parentNode.children.child1 = item.nodeIndex;
+                } else {
+                    B2_ASSERT(parentItem.childCount == 1);
+                    B2_ASSERT(parentNode.children.child2 == B2_NULL_INDEX);
+                    parentNode.children.child2 = item.nodeIndex;
+                }
+
+                b2TreeNode * node = nodes + item.nodeIndex;
+
+                B2_ASSERT(node.parent == B2_NULL_INDEX);
+                node.parent = parentItem.nodeIndex;
+
+                B2_ASSERT(node.children.child1 != B2_NULL_INDEX);
+                B2_ASSERT(node.children.child2 != B2_NULL_INDEX);
+                b2TreeNode * child1 = nodes + node.children.child1;
+                b2TreeNode * child2 = nodes + node.children.child2;
+
+                node.aabb = b2AABB_Union(child1.aabb, child2.aabb);
+                node.height = 1 + b2MaxUInt16(child1.height, child2.height);
+                node.categoryBits = child1.categoryBits | child2.categoryBits;
+
+                // Pop stack
+                top -= 1;
+            } else {
+                int startIndex, endIndex;
+                if (item.childCount == 0) {
+                    startIndex = item.startIndex;
+                    endIndex = item.splitIndex;
+                } else {
+                    B2_ASSERT(item.childCount == 1);
+                    startIndex = item.splitIndex;
+                    endIndex = item.endIndex;
+                }
+
+                int count = endIndex - startIndex;
+
+                if (count == 1) {
+                    int childIndex = leafIndices[startIndex];
+                    b2TreeNode * node = nodes + item.nodeIndex;
+
+                    if (item.childCount == 0) {
+                        B2_ASSERT(node.children.child1 == B2_NULL_INDEX);
+                        node.children.child1 = childIndex;
+                    } else {
+                        B2_ASSERT(item.childCount == 1);
+                        B2_ASSERT(node.children.child2 == B2_NULL_INDEX);
+                        node.children.child2 = childIndex;
+                    }
+
+                    b2TreeNode * childNode = nodes + childIndex;
+                    B2_ASSERT(childNode.parent == B2_NULL_INDEX);
+                    childNode.parent = item.nodeIndex;
+                } else {
+                    B2_ASSERT(count > 0);
+                    B2_ASSERT(top < B2_TREE_STACK_SIZE);
+
+                    top += 1;
+                    struct b2RebuildItem*newItem = stack + top;
+                    newItem.nodeIndex = b2AllocateNode(tree);
+                    newItem.childCount = -1;
+                    newItem.startIndex = startIndex;
+                    newItem.endIndex = endIndex;
+#if B2_TREE_HEURISTIC == 0
+                    newItem.splitIndex = b2PartitionMid(leafIndices + startIndex, leafCenters + startIndex, count);
+                    newItem.splitIndex += startIndex;
+                }
+            }
+        }
+
+        b2TreeNode * rootNode = nodes + stack[0].nodeIndex;
+        B2_ASSERT(rootNode.parent == B2_NULL_INDEX);
+        B2_ASSERT(rootNode.children.child1 != B2_NULL_INDEX);
+        B2_ASSERT(rootNode.children.child2 != B2_NULL_INDEX);
+
+        b2TreeNode * child1 = nodes + rootNode.children.child1;
+        b2TreeNode * child2 = nodes + rootNode.children.child2;
+
+        rootNode.aabb = b2AABB_Union(child1.aabb, child2.aabb);
+        rootNode.height = 1 + b2MaxUInt16(child1.height, child2.height);
+        rootNode.categoryBits = child1.categoryBits | child2.categoryBits;
+
+        return stack[0].nodeIndex;
+
+    }
+
+
     void b2ValidateStructure(int index) {
         if (index == B2_NULL_INDEX) {
             return;
@@ -1258,12 +1457,12 @@ public class b2DynamicTree {
         }
     }
 
- /*   int b2DynamicTree_GetByteCount( ) {
-        size_t size = sizeof(b2DynamicTree) + sizeof(b2TreeNode) * tree.nodeCapacity +
-                tree.rebuildCapacity * (sizeof( int )+sizeof(B2AABB) + sizeof(B2Vec2) + sizeof( int ) );
+    /*   int b2DynamicTree_GetByteCount( ) {
+           size_t size = sizeof(b2DynamicTree) + sizeof(b2TreeNode) * tree.nodeCapacity +
+                   tree.rebuildCapacity * (sizeof( int )+sizeof(B2AABB) + sizeof(B2Vec2) + sizeof( int ) );
 
-        return (int) size;
-    }*/
+           return (int) size;
+       }*/
     public Object b2DynamicTree_GetUserData(int proxyId) {
         B2_ASSERT(0 <= proxyId && proxyId < nodeCapacity);
         return nodes[proxyId].userData;
@@ -1293,7 +1492,7 @@ public class b2DynamicTree {
 
     void printTree(StringBuilder sb, int nodeId, String indent, boolean last) {
         boolean valid = 0 <= nodeId && nodeId < nodeCapacity;
-        if(!valid) { // 只处理子节点
+        if (!valid) { // 只处理子节点
             return;
         }
         b2TreeNode node = nodes[nodeId];
@@ -1303,7 +1502,7 @@ public class b2DynamicTree {
             System.out.println(node.aabb);*/
             sb.append(indent);
             sb.append(last ? "└─ " : "├─ ");
-            if(node.userData!= null) {
+            if (node.userData != null) {
                 sb.append(node.userData.toString());
             }
             sb.append(node.aabb + System.lineSeparator());

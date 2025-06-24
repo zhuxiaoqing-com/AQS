@@ -298,4 +298,8 @@ public class B2Math {
         B2Vec2 b2Vec2 = new B2Vec2(0, 1);
         return unityRotate(b2Vec2, deg);
     }
+
+    public static B2Vec2 b2AABB_Center(B2AABB a) {
+        return new B2Vec2(0.5f * (a.lowerBound.x + a.upperBound.x), 0.5f * (a.lowerBound.y + a.upperBound.y));
+    }
 }
