@@ -240,7 +240,7 @@ public class B2Simplex {
             // a1 <= 0, so we clamp it to 0    a1 <= 0,所以我们将它置为0
             v2.a = 1.0f;
             count = 1;
-            v1 = v2;
+            v1.set(v2);
             return;
         }
 
@@ -325,7 +325,7 @@ public class B2Simplex {
             v1.a = d13_1 * inv_d13;
             v3.a = d13_2 * inv_d13;
             count = 2;
-            v2 = v3;
+            v2.set(v3);
             return;
         }
 
@@ -333,7 +333,7 @@ public class B2Simplex {
         if (d12_1 <= 0.0f && d23_2 <= 0.0f) {
             v2.a = 1.0f;
             count = 1;
-            v1 = v2;
+            v1.set(v2);
             return;
         }
 
@@ -341,7 +341,7 @@ public class B2Simplex {
         if (d13_1 <= 0.0f && d23_1 <= 0.0f) {
             v3.a = 1.0f;
             count = 1;
-            v1 = v3;
+            v1.set( v3);
             return;
         }
 
@@ -351,7 +351,7 @@ public class B2Simplex {
             v2.a = d23_1 * inv_d23;
             v3.a = d23_2 * inv_d23;
             count = 2;
-            v1 = v3;
+            v1.set(v3);;
             return;
         }
 

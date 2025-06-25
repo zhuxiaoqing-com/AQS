@@ -15,6 +15,7 @@ public class B2SimplexVertex {
 	public B2SimplexVertex() {
 	}
 
+
 	public B2SimplexVertex(B2Vec2 wA, B2Vec2 wB, B2Vec2 w, float a, int indexA, int indexB) {
 		this.wA = wA;
 		this.wB = wB;
@@ -22,6 +23,15 @@ public class B2SimplexVertex {
 		this.a = a;
 		this.indexA = indexA;
 		this.indexB = indexB;
+	}
+
+	public void set(B2SimplexVertex a) {
+		this.wA = a.wA;
+		this.wB = a.wB;
+		this.w = a.w;
+		this.a = a.a;
+		this.indexA = a.indexA;
+		this.indexB = a.indexB;
 	}
 
 	public B2Vec2 getwA() {

@@ -8,23 +8,22 @@ import com.youxi.math.box2dGJK.shape.B2Vec2;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.youxi.math.box2dGJK.B2Math.*;
 
 public class Distance {
 
 
-    public static b2DistanceOutput b2ShapeDistance(b2DistanceInput input) {
+    public static B2DistanceOutput b2ShapeDistance(B2DistanceInput input) {
         return b2ShapeDistance(input, null, 0);
     }
 
-    public static b2DistanceOutput b2ShapeDistance(b2DistanceInput input, List<B2Simplex> simplexes, int simplexCapacity) {
+    public static B2DistanceOutput b2ShapeDistance(B2DistanceInput input, List<B2Simplex> simplexes, int simplexCapacity) {
         B2_ASSERT(input.proxyA.count > 0 && input.proxyB.count > 0);
         B2_ASSERT(input.proxyA.radius >= 0.0f);
         B2_ASSERT(input.proxyB.radius >= 0.0f);
 
-        b2DistanceOutput output = new b2DistanceOutput();
+        B2DistanceOutput output = new B2DistanceOutput();
 
         b2ShapeProxy proxyA = input.proxyA;
 
@@ -187,7 +186,7 @@ public class Distance {
 
 
     // Shape cast using conservative advancement
-    public static b2CastOutput b2ShapeCast(b2ShapeCastPairInput input) {
+    public static B2CastOutput b2ShapeCast(B2ShapeCastPairInput input) {
         // Compute tolerance
         float linearSlop = B2_LINEAR_SLOP;
         float totalRadius = input.proxyA.radius + input.proxyB.radius;
@@ -198,20 +197,20 @@ public class Distance {
 
         float fraction = 0.0f;
 
-        b2DistanceInput distanceInput = new b2DistanceInput();
+        B2DistanceInput distanceInput = new B2DistanceInput();
         distanceInput.proxyA = new b2ShapeProxy(input.proxyA);
         distanceInput.proxyB = new b2ShapeProxy(input.proxyB);
         distanceInput.useRadii = false;
 
         B2Vec2 delta2 = input.translationB;
-        b2CastOutput output = new b2CastOutput();
+        B2CastOutput output = new B2CastOutput();
 
         int iteration = 0;
         int maxIterations = 20;
         for (; iteration < maxIterations; ++iteration) {
             output.iterations += 1;
 
-            b2DistanceOutput distanceOutput = b2ShapeDistance(distanceInput, null, 0);
+            B2DistanceOutput distanceOutput = b2ShapeDistance(distanceInput, null, 0);
 
             // 两个最近点之间的距离 小于 两个形状的半径 就是碰撞了
             if (distanceOutput.distance < target + tolerance) {
@@ -333,7 +332,7 @@ public class Distance {
             // a1 <= 0, so we clamp it to 0
             s.v2.a = 1.0f;
             s.count = 1;
-            s.v1 = s.v2;
+            s.v1.set(s.v2);
             return B2Math.b2Neg(w2);
         }
 
@@ -412,7 +411,7 @@ public class Distance {
             s.v1.a = d13_1 * inv_d13;
             s.v3.a = d13_2 * inv_d13;
             s.count = 2;
-            s.v2 = s.v3;
+            s.v2.set(s.v3);
             return b2CrossSV(b2Cross(b2Add(w1, w3), e13), e13);
         }
 
@@ -420,7 +419,7 @@ public class Distance {
         if (d12_1 <= 0.0f && d23_2 <= 0.0f) {
             s.v2.a = 1.0f;
             s.count = 1;
-            s.v1 = s.v2;
+            s.v1.set(s.v2);
             return b2Neg(w2);
         }
 
@@ -428,7 +427,7 @@ public class Distance {
         if (d13_1 <= 0.0f && d23_1 <= 0.0f) {
             s.v3.a = 1.0f;
             s.count = 1;
-            s.v1 = s.v3;
+            s.v1.set(s.v3);
             return b2Neg(w3);
         }
 
@@ -438,7 +437,7 @@ public class Distance {
             s.v2.a = d23_1 * inv_d23;
             s.v3.a = d23_2 * inv_d23;
             s.count = 2;
-            s.v1 = s.v3;
+            s.v1.set(s.v3);
             return b2CrossSV(b2Cross(b2Add(w2, w3), e23), e23);
         }
 

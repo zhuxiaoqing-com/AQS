@@ -26,7 +26,6 @@ public class B2MyPolygon {
 
     public B2MyPolygon(float hx, float hy, B2Vec2 center, float deg) {
         float angle = (float) Math.toRadians(deg);
-        angle = deg;
         //初始化盒子顶点坐标
         m_vertexCount = 4;
         m_vertices = new B2Vec2[m_vertexCount];

@@ -23,29 +23,29 @@ public class B2ShapeCastShape {
         return output;
     }*/
 
-    public b2CastOutput b2ShapeCastCircle(b2ShapeCastInput input, B2Circle shape )
+    public B2CastOutput b2ShapeCastCircle(b2ShapeCastInput input, B2Circle shape )
     {
-        b2ShapeCastPairInput pairInput = new b2ShapeCastPairInput();
+        B2ShapeCastPairInput pairInput = new B2ShapeCastPairInput();
         pairInput.proxyA = new b2ShapeProxy(shape);
         pairInput.proxyB = input.proxy;
         pairInput.translationB = input.translation;
         pairInput.maxFraction = input.maxFraction;
         pairInput.canEncroach = input.canEncroach;
 
-        b2CastOutput output = Distance.b2ShapeCast(pairInput );
+        B2CastOutput output = Distance.b2ShapeCast(pairInput );
         return output;
     }
 
-    b2CastOutput b2ShapeCastPolygon(b2ShapeCastInput input, B2MyPolygon shape )
+    B2CastOutput b2ShapeCastPolygon(b2ShapeCastInput input, B2MyPolygon shape )
     {
-        b2ShapeCastPairInput pairInput = new b2ShapeCastPairInput();
+        B2ShapeCastPairInput pairInput = new B2ShapeCastPairInput();
         pairInput.proxyA = new b2ShapeProxy(shape);
         pairInput.proxyB = input.proxy;
         pairInput.translationB = input.translation;
         pairInput.maxFraction = input.maxFraction;
         pairInput.canEncroach = input.canEncroach;
 
-        b2CastOutput output = Distance.b2ShapeCast(pairInput );
+        B2CastOutput output = Distance.b2ShapeCast(pairInput );
         return output;
     }
 

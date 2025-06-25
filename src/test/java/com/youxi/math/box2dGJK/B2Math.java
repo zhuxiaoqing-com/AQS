@@ -115,6 +115,11 @@ public class B2Math {
         return c;
     }
 
+
+    public static B2Vec2 b2AABB_Center(B2AABB a) {
+        return new B2Vec2(0.5f * (a.lowerBound.x + a.upperBound.x), 0.5f * (a.lowerBound.y + a.upperBound.y));
+    }
+
     /**
      * 判断一个AABB包围盒是否完全包含另一个AABB包围盒。若检测结果为真，说明目标包围盒的所有边界均在被检测框内
      */
@@ -299,7 +304,27 @@ public class B2Math {
         return unityRotate(b2Vec2, deg);
     }
 
-    public static B2Vec2 b2AABB_Center(B2AABB a) {
-        return new B2Vec2(0.5f * (a.lowerBound.x + a.upperBound.x), 0.5f * (a.lowerBound.y + a.upperBound.y));
+
+    /**
+     * a在b的顺时针方向 是负角度
+     * a在b的逆时针方向 是正角度
+     *
+     * 在DirectX里用左手系，程序员调用cross(a,b)函数时，引擎内部其实偷偷把Z结果取反了，这样公式形式上就能统一用右手定则。
+     */
+    public static double getDegree(B2Vec2 a, B2Vec2 b) {
+        double n = b2Dot(a, b);
+        double cc = b2Cross(a, b);
+
+        //(x1*x1 + z1*z1 ) *(x2*x2 + z2*z2 )
+		/*double m = CMath.fixedMultiply(CMath.sqrt(CMath.square(x1) + CMath.square(z1)),
+				CMath.sqrt(CMath.square(x2) + CMath.square(z2)));*/
+
+        double m = a.length() * b.length();
+        if (m == 0)
+            return 0; // 正常情况不会出现这样，除非朝向向量为空。
+
+        // 因为改为定点数以后有误差，导致cos值可能超过1，所以做矫正在-1，1范围内
+        double ac = Math.min(Math.max(-1, n / m), 1);
+        return Math.acos(ac) * (180 / Math.PI) * (cc > 0 ? -1 : 1);
     }
 }

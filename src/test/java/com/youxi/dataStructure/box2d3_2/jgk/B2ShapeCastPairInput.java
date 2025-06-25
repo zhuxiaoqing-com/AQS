@@ -3,7 +3,7 @@ package com.youxi.dataStructure.box2d3_2.jgk;
 import com.youxi.math.box2dGJK.b2ShapeProxy;
 import com.youxi.math.box2dGJK.shape.B2Vec2;
 
-public class b2ShapeCastPairInput {
+public class B2ShapeCastPairInput {
     b2ShapeProxy proxyA;
     /// < The proxy for shape A
     b2ShapeProxy proxyB;
@@ -33,13 +33,13 @@ public class b2ShapeCastPairInput {
     // 布尔值，若为真，允许已接触的形状（带半径）略微靠近
     boolean canEncroach;
 
-    public b2ShapeCastPairInput() {
+    public B2ShapeCastPairInput() {
     }
 
     ///< Allows shapes with a radius to move slightly closer if already touching
 
 
-    public b2ShapeCastPairInput(b2ShapeProxy proxyA, b2ShapeProxy proxyB, B2Vec2 translationB) {
+    public B2ShapeCastPairInput(b2ShapeProxy proxyA, b2ShapeProxy proxyB, B2Vec2 translationB) {
         this.proxyA = proxyA;
         this.proxyB = proxyB;
         this.translationB = translationB;
