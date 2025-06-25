@@ -59,11 +59,13 @@ public class GJKRecast {
 	 * <p>
 	 * 记录一个参数currDist=第一个support距离原点的位置这个位置的平方 (dot(support,support))
 	 * 记录第二个参数 minDist 最小的距离原点的距离
+
+	 * @param castDir 是B方向的射线
 	 */
 	public boolean GJKRecast(Shape shapeA, Shape shapeB, Dir castDir, int inflation) {
 		int maxDist = Integer.MAX_VALUE;
 		float lambda = 0;
-		Position x = Position.ZERO;
+		Position x = Position.ZERO; // 单纯形到圆心的距离被延长了多少
 
 		Dir initDir = shapeA.getCenter().sub(shapeB.getCenter()).toDir();
 		initDir = initDir.normalize();
@@ -146,9 +148,11 @@ public class GJKRecast {
 						x = castDir.multiply(lambda).toPosition();
 						Position offset = x.sub(preCenter);
 
+						// 将B的用来计算单纯形的点延长
 						for (int i = 0; i < B.size(); i++) {
 							B.set(i, B.get(i).sub(offset));
 						}
+						// 重新计算单纯性
 						for (int i = 0; i < Q.size(); i++) {
 							Q.set(i, A.get(i).sub(B.get(i)));
 						}

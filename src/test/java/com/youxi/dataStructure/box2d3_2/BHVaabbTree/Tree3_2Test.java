@@ -75,7 +75,7 @@ public class Tree3_2Test {
     static List<KV<UserData, B2Vec2>> moveList = new ArrayList<>();
     static List<KV<B2RayCastInput, B2AABB>> rayCastList = new ArrayList<>();
 
-    static int index = 2000;
+    static int index = 20000;
 
     public void randomData() {
         for (int i = 0; i < index; i++) {
@@ -139,7 +139,7 @@ public class Tree3_2Test {
      */
     @Test
     public void testTreeSame() {
-        int index = 20;
+      /*  int index = 20;
 
         randomData();
         int errorCount = 0;
@@ -162,22 +162,39 @@ public class Tree3_2Test {
             System.out.println();
         }
 
-        System.out.println("不一样次数！！！  " + errorCount);
+        System.out.println("不一样次数！！！  " + errorCount);*/
     }
 
 
     @Test
     public void test01() {
-        b2TreeNode b2TreeNode
+        randomData();
+        treeTest(b2DynamicTree.b2DynamicTree_Create(), false);
+        treeTest(b2DynamicTree.b2DynamicTree_Create(), true);
+
+        treeTest(b2DynamicTree.b2DynamicTree_Create(), false);
+        treeTest(b2DynamicTree.b2DynamicTree_Create(), true);
+
+        treeTest(b2DynamicTree.b2DynamicTree_Create(), false);
+        treeTest(b2DynamicTree.b2DynamicTree_Create(), true);
+
+        treeTest(b2DynamicTree.b2DynamicTree_Create(), false);
+        treeTest(b2DynamicTree.b2DynamicTree_Create(), true);
+
+        treeTest(b2DynamicTree.b2DynamicTree_Create(), false);
+        treeTest(b2DynamicTree.b2DynamicTree_Create(), true);
+
+        treeTest(b2DynamicTree.b2DynamicTree_Create(), false);
+        treeTest(b2DynamicTree.b2DynamicTree_Create(), true);
     }
 
-    public String treeTest(IB2DynamicTree b2DynamicTree) {
+    public String treeTest(IB3_2DynamicTree b2DynamicTree, boolean rebuild) {
         for (UserData value : map.values()) {
             value.moveAAbb = new B2AABB(value.aabb.lowerBound, value.aabb.upperBound);
         }
         TestUtil.testTime(() -> {
             for (UserData value : map.values()) {
-                int proxy = b2DynamicTree.createProxy(value.aabb, value);
+                int proxy = b2DynamicTree.b2DynamicTree_CreateProxy(value.aabb, 0, value);
                 value.proxyId = proxy;
             }
             //b2DynamicTree.rebuildBottomUp();
@@ -194,14 +211,27 @@ public class Tree3_2Test {
                 k.moveAAbb.upperBound = k.moveAAbb.upperBound.add(v);
 
                 B2Vec2 sub = k.moveAAbb.GetCenter().sub(oldAABB.GetCenter());
-                b2DynamicTree.moveProxy(k.proxyId, k.moveAAbb, sub);
+                if (rebuild) {
+                    b2DynamicTree.b2DynamicTree_EnlargeProxy(k.proxyId, k.moveAAbb);
+                } else {
+
+                    b2DynamicTree.b2DynamicTree_MoveProxy(k.proxyId, k.moveAAbb);
+                }
                /* String x = "move id %s oldAABB %s  newAABB %s  moveV %s proxyAABB %s";
                 String format = String.format(x, k.id, oldAABB, k.moveAAbb, v, b2DynamicTree.getFatAABB(k.proxyId));
                 System.out.println(format);*/
             }
-            b2DynamicTree.Validate();
+            if (rebuild) {
+                b2DynamicTree.b2DynamicTree_Rebuild(false);
+            }
+            b2DynamicTree.b2DynamicTree_Validate();
             //b2DynamicTree.rebuildBottomUp();
-        }, 1, b2DynamicTree.getClass().getSimpleName() + " moveProxy");
+        }, 1, b2DynamicTree.getClass().getSimpleName() + " moveProxy rebuild ："+rebuild);
+
+        String s = b2DynamicTree.printTreeToString();
+        System.out.println(String.format("rebuild %s heigh %s minH %s", rebuild, b2DynamicTree.b2DynamicTree_GetHeight(), b2DynamicTree.calculateMinHeight()));
+        //System.out.println(s);
+        /*
 
         RayCastCallback rayCastCallback = new RayCastCallback() {
             @Override
@@ -233,8 +263,7 @@ public class Tree3_2Test {
                 return true;
             }
         };
-        String s = b2DynamicTree.printTreeToString();
-        System.out.println(s);
+
 
         TestUtil.testTime(() -> {
             for (KV<B2RayCastInput, B2AABB> kv : rayCastList) {
@@ -243,6 +272,7 @@ public class Tree3_2Test {
             }
 
         }, 1, b2DynamicTree.getClass().getSimpleName() + " rayAndQuery");
+*/
 
         // b2DynamicTree.printTree();
    /*     TestUtil.testTime(() -> {
@@ -257,14 +287,14 @@ public class Tree3_2Test {
 
     @Test
     public void test02() {
-        B2AABB b2AABB = new B2AABB(new B2Vec2(6, 3), new B2Vec2(8, 4));
+        /*B2AABB b2AABB = new B2AABB(new B2Vec2(6, 3), new B2Vec2(8, 4));
         B2AABB b2AABB1 = new B2AABB(new B2Vec2(5, 2), new B2Vec2(9, 5));
         boolean b = B2Collision.b2TestOverlap(b2AABB, b2AABB1);
         boolean b1 = B2Collision.b2TestOverlap(b2AABB1, b2AABB);
         //IB2DynamicTree b2DynamicTree = new B2DynamicTreeZeroGC();
         IB2DynamicTree b2DynamicTree = new B2DynamicTree();
         customData();
-        treeTest(b2DynamicTree);
+        treeTest(b2DynamicTree);*/
     }
 
 

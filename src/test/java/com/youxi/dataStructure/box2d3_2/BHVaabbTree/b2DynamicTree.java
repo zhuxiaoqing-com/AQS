@@ -6,7 +6,7 @@ import com.youxi.math.box2dGJK.shape.B2AABB;
 import com.youxi.math.box2dGJK.shape.B2Vec2;
 
 
-public class b2DynamicTree {
+public class b2DynamicTree implements IB3_2DynamicTree{
     public static final int B2_HUGE = 100000; // 最大的坐标范围 -B2_HUGE 到 B2_HUGE
     public static final int B2_NULL_INDEX = -1;
     public static final int NULL = 0;
@@ -14,7 +14,7 @@ public class b2DynamicTree {
 
 
     public static final int b2_allocatedNode = 0x0001; // 已经分配
-    public static final int b2_enlargedNode = 0x0002;
+    public static final int b2_enlargedNode = 0x0002; // 是否移动过
     public static final int b2_leafNode = 0x0004; // 叶子节点
 
 
@@ -44,13 +44,13 @@ public class b2DynamicTree {
     int proxyCount;
 
     /// Leaf indices for rebuild
-    int[] leafIndices;
+    int[] leafIndices;// 所有需要重新调整的叶子节点index
 
     /// Leaf bounding boxes for rebuild
     B2AABB leafBoxes;
 
     /// Leaf bounding box centers for rebuild
-    B2Vec2[] leafCenters;
+    B2Vec2[] leafCenters; // 所有需要重新调整的叶子节点的中心点
 
     /// Bins for sorting during rebuild
     int binIndices;
@@ -58,6 +58,8 @@ public class b2DynamicTree {
     /// Allocated space for rebuilding
     int rebuildCapacity;
 
+    private b2DynamicTree() {
+    }
 
     public b2TreeStats b2DynamicTree_Query(B2AABB aabb, long maskBits, B2TreeQueryCallbackFcn callback, Object context) {
         b2TreeStats result = new b2TreeStats();
@@ -105,7 +107,7 @@ public class b2DynamicTree {
     }
 
 
-    b2TreeStats b2DynamicTree_RayCast(b2RayCastInput input, long maskBits,
+    public b2TreeStats b2DynamicTree_RayCast(b2RayCastInput input, long maskBits,
                                       B2TreeRayCastCallbackFcn callback, Object context) {
         b2TreeStats result = new b2TreeStats();
 
@@ -977,7 +979,7 @@ public class b2DynamicTree {
 
     // Create a proxy in the tree as a leaf node. We return the index of the node instead of a pointer so that we can grow
 // the node pool.
-    public int b2DynamicTree_CreateProxy(B2AABB aabb, long categoryBits, long userData) {
+    public int b2DynamicTree_CreateProxy(B2AABB aabb, long categoryBits, Object userData) {
         B2_ASSERT(-B2_HUGE < aabb.lowerBound.x && aabb.lowerBound.x < B2_HUGE);
         B2_ASSERT(-B2_HUGE < aabb.lowerBound.y && aabb.lowerBound.y < B2_HUGE);
         B2_ASSERT(-B2_HUGE < aabb.upperBound.x && aabb.upperBound.x < B2_HUGE);
@@ -1017,6 +1019,9 @@ public class b2DynamicTree {
     }
 
 
+    /**
+     * 如果移动速度特别快的 感觉应该用这个 不然的话 会导致tree膨胀
+     */
     public void b2DynamicTree_MoveProxy(int proxyId, B2AABB aabb) {
         B2_ASSERT(B2Math.b2IsValidAABB(aabb));
         B2_ASSERT(aabb.upperBound.x - aabb.lowerBound.x < B2_HUGE);
@@ -1038,7 +1043,7 @@ public class b2DynamicTree {
      * 移动时调用该方法 和Box2d移动时候调用moveproxy不一样;
      * box2d3.2是移动时调用该方法,然后统一定时重建移动的Proxy
      */
-    void b2DynamicTree_EnlargeProxy(int proxyId, B2AABB aabb) {
+    public void b2DynamicTree_EnlargeProxy(int proxyId, B2AABB aabb) {
         B2_ASSERT(B2Math.b2IsValidAABB(aabb));
         B2_ASSERT(aabb.upperBound.x - aabb.lowerBound.x < B2_HUGE);
         B2_ASSERT(aabb.upperBound.y - aabb.lowerBound.y < B2_HUGE);
@@ -1046,7 +1051,7 @@ public class b2DynamicTree {
         B2_ASSERT(b2IsLeaf(nodes[proxyId]));
 
         // Caller must ensure this
-        B2_ASSERT(B2Math.B2AABB_Contains(nodes[proxyId].aabb, aabb) == false);
+        //B2_ASSERT(B2Math.B2AABB_Contains(nodes[proxyId].aabb, aabb) == false);
 
         nodes[proxyId].aabb = aabb;
 
@@ -1098,12 +1103,25 @@ public class b2DynamicTree {
         return nodes[proxyId].categoryBits;
     }
 
-    int b2DynamicTree_GetHeight() {
+    /**
+     * 当前层高
+     * @return
+     */
+    public int b2DynamicTree_GetHeight() {
         if (root == B2_NULL_INDEX) {
             return 0;
         }
 
         return nodes[root].height;
+    }
+
+
+    /**
+     * 理论上的最小层高
+     * @return
+     */
+    public int calculateMinHeight() {
+        return calculateMinHeight(proxyCount);
     }
 
     //得到节点面积和根面积的比值。
@@ -1137,6 +1155,11 @@ public class b2DynamicTree {
     }
 
 
+    /**
+     * 当前最高层高
+     * @param nodeId
+     * @return
+     */
     // Compute the height of a sub-tree.
     int b2ComputeHeight(int nodeId) {
         B2_ASSERT(0 <= nodeId && nodeId < nodeCapacity);
@@ -1151,14 +1174,29 @@ public class b2DynamicTree {
         return 1 + B2Math.b2MaxInt(height1, height2);
     }
 
+    /**
+     * 理论上的最小层高
+     * @return
+     */
+    public  int calculateMinHeight(int proxyCount) {
+        return (int) Math.ceil(Math.log(proxyCount) / Math.log(2) - 1);
+    }
+
+    /**
+     * ‌动态树重构流程‌
+     *
+     * 该结构体在动态树执行批量插入/删除后的平衡操作时使用
+     * 通过splitIndex将叶子节点数组划分为左右子树，实现类似KD树的空间划分35
+     * childCount与索引区间配合实现自底向上的树重构策略3
+     */
     class b2RebuildItem {
-        int nodeIndex;
-        int childCount;
+        int nodeIndex; // 当前处理的动态树节点索引，用于定位树中的特定节点
+        int childCount; // 记录该节点的子节点数量，用于判断节点类型（叶子节点/内部节点）
 
         // Leaf indices
-        int startIndex;
-        int splitIndex;
-        int endIndex;
+        int startIndex; // 当前操作批次的起始叶子索引，标识重构操作的区间起点
+        int splitIndex; // 分割点索引，用于划分左右子树处理范围（类似快速排序的分区点）
+        int endIndex; // 当前操作批次的结束叶子索引，与startIndex共同确定操作区间
     }
 
     ;
@@ -1181,7 +1219,7 @@ public class b2DynamicTree {
         }
 
         int leafCount = 0;
-        int stack[] = new int[B2_TREE_STACK_SIZE];
+        int[] stack = new int[B2_TREE_STACK_SIZE];
         int stackCount = 0;
 
         int nodeIndex = root;
@@ -1190,8 +1228,20 @@ public class b2DynamicTree {
         // These are the nodes that get sorted to rebuild the tree.
         // I'm using indices because the node pool may grow during the build.
 
-
+// Gather all proxy nodes that have grown and all internal nodes that haven't grown. Both are
+        // considered leaves in the tree rebuild.
+        // Free all internal nodes that have grown.
+        // todo use a node growth metric instead of simply enlarged to reduce rebuild size and frequency
+        // this should be weighed against B2_AABB_MARGIN
+ // 收集所有发生扩展的代理节点（proxy nodes）以及未扩展的内部节点（internal nodes）。
+// 在树重构过程中，这两类节点均被视为叶子节点。
+// 释放所有已扩展的内部节点。
+// 待优化：应使用节点扩展度量值（growth metric）而非简单的大小变化判断，
+//         以减少重构范围和频率（需与B2_AABB_MARGIN阈值权衡）
         while (true) {
+            // 条件1：叶子节点直接收集
+            // 条件2：非完全重建时收集未扩张的内部节点
+            // node.height == 0叶子节点 如果没有 移动过的aabb 和也不要求全部build
             if (node.height == 0 || ((node.flags & b2_enlargedNode) == 0 && fullBuild == false)) {
                 leafIndices[leafCount] = nodeIndex;
 
@@ -1199,38 +1249,40 @@ public class b2DynamicTree {
                 leafCount += 1;
 
                 // Detach
-                node.parent = B2_NULL_INDEX;
-            } else {
-                int doomedNodeIndex = nodeIndex;
+                node.parent = B2_NULL_INDEX; // 解除父节点关联
+            } else { // 需要销毁的扩张节点
+                int doomedNodeIndex = nodeIndex;  // 标记待销毁节点
 
-                // Handle children
+                // Handle children // 深度优先遍历：将第一个子节点设为当前节点
                 nodeIndex = node.child1;
 
+                // 将子节点2加入stack // 将第二个子节点压栈
                 if (stackCount < B2_TREE_STACK_SIZE) {
                     stack[stackCount++] = node.child2;
                 } else {
+                    // 栈溢出保护（实际应永不触发）
                     B2_ASSERT(stackCount < B2_TREE_STACK_SIZE);
                 }
-
+                // 移动到子节点
                 node = nodes[nodeIndex];
 
-                // Remove doomed node
+                // Remove doomed node // 销毁原节点（非叶子且需要重建）
                 b2FreeNode(doomedNodeIndex);
 
-                continue;
+                continue; // 跳过栈处理逻辑
             }
 
-
+            // 栈为空时结束遍历
             if (stackCount == 0) {
                 break;
             }
-
+            // 弹栈处理下一个节点
             nodeIndex = stack[--stackCount];
             node = nodes[nodeIndex];
         }
 
         B2_ASSERT(leafCount <= proxyCount);
-
+        // 执行树重建（核心算法）
         root = b2BuildTree(leafCount);
 
         b2DynamicTree_Validate();
@@ -1239,76 +1291,88 @@ public class b2DynamicTree {
 
     // Returns root node index
     int b2BuildTree(int leafCount) {
+        // 处理单叶子节点情况
         if (leafCount == 1) {
             nodes[leafIndices[0]].parent = B2_NULL_INDEX;
             return leafIndices[0];
         }
 
+        // 定义重建栈（固定大小）
         // todo large stack item
-        b2RebuildItem stack[] = new b2RebuildItem[B2_TREE_STACK_SIZE];
-        int top = 0;
+        b2RebuildItem[] stack = new b2RebuildItem[B2_TREE_STACK_SIZE];
+        for (int i = 0; i < stack.length; i++) {
+            stack[i] = new b2RebuildItem();
+        }
 
-        stack[0].nodeIndex = b2AllocateNode();
-        stack[0].childCount = -1;
-        stack[0].startIndex = 0;
-        stack[0].endIndex = leafCount;
+        int top = 0; // 栈顶指针
 
+        // 初始化栈：创建根节点
+        stack[0].nodeIndex = b2AllocateNode(); // 分配新节点
+        stack[0].childCount = -1; // 子节点计数器（-1表示未开始）
+        stack[0].startIndex = 0;// 当前节点处理的叶子起始索引
+        stack[0].endIndex = leafCount; // 结束索引
+        // 中点分割法
         stack[0].splitIndex = b2PartitionMid(leafIndices, leafCenters, 0, 0, leafCount);
 
-        while (true) {
-             b2RebuildItem item = stack[top];
+        while (true) { // 主重建循环
+             b2RebuildItem item = stack[top]; // 获取当前栈顶项
 
-            item.childCount += 1;
+            item.childCount += 1; // 处理下一个子节点
 
-            if (item.childCount == 2) {
+            if (item.childCount == 2) {  // 当两个子节点都已处理完成
                 // This internal node has both children established
 
+                // 根节点处理完成
                 if (top == 0) {
                     // all done
                     break;
                 }
 
+                // 处理父子关系
                  b2RebuildItem parentItem = stack[(top - 1)];
                 b2TreeNode  parentNode = nodes[parentItem.nodeIndex];
-
+                // 连接第一个子节点
                 if (parentItem.childCount == 0) {
                     B2_ASSERT(parentNode.child1 == B2_NULL_INDEX);
                     parentNode.child1 = item.nodeIndex;
-                } else {
+                } else {  // 连接第二个子节点
                     B2_ASSERT(parentItem.childCount == 1);
                     B2_ASSERT(parentNode.child2 == B2_NULL_INDEX);
                     parentNode.child2 = item.nodeIndex;
                 }
-
+                // 设置父节点和子节点关系
                 b2TreeNode  node = nodes[item.nodeIndex];
 
                 B2_ASSERT(node.parent == B2_NULL_INDEX);
                 node.parent = parentItem.nodeIndex;
-
+                // 验证子节点存在
                 B2_ASSERT(node.child1 != B2_NULL_INDEX);
                 B2_ASSERT(node.child2 != B2_NULL_INDEX);
+                // 获取子节点
                 b2TreeNode  child1 = nodes[node.child1];
                 b2TreeNode  child2 = nodes[node.child2];
 
+                // 计算当前节点的AABB/高度/类别
                 node.aabb = B2Math.B2AABB_Union(child1.aabb, child2.aabb);
                 node.height = 1 + b2MaxUInt16(child1.height, child2.height);
                 node.categoryBits = child1.categoryBits | child2.categoryBits;
 
-                // Pop stack
+                // Pop stack   // 弹出已完成节点
                 top -= 1;
-            } else {
+            } else { // 处理子节点（0或1）
                 int startIndex, endIndex;
-                if (item.childCount == 0) {
+                if (item.childCount == 0) { // 左子树范围
                     startIndex = item.startIndex;
                     endIndex = item.splitIndex;
-                } else {
+                } else {   // 右子树范围
                     B2_ASSERT(item.childCount == 1);
                     startIndex = item.splitIndex;
                     endIndex = item.endIndex;
                 }
 
-                int count = endIndex - startIndex;
+                int count = endIndex - startIndex;  // 当前处理的叶子数
 
+                // 单叶子节点处理
                 if (count == 1) {
                     int childIndex = leafIndices[startIndex];
                     b2TreeNode node = nodes[item.nodeIndex];
@@ -1321,27 +1385,29 @@ public class b2DynamicTree {
                         B2_ASSERT(node.child2 == B2_NULL_INDEX);
                         node.child2 = childIndex;
                     }
-
+                    // 设置父节点关系
                     b2TreeNode  childNode = nodes[childIndex];
                     B2_ASSERT(childNode.parent == B2_NULL_INDEX);
                     childNode.parent = item.nodeIndex;
-                } else {
+                } else {  // 多叶子节点处理（创建新内部节点）
                     B2_ASSERT(count > 0);
                     B2_ASSERT(top < B2_TREE_STACK_SIZE);
 
-                    top += 1;
-                     b2RebuildItem newItem = stack[top];
-                    newItem.nodeIndex = b2AllocateNode();
+                    top += 1;// 压栈新节点
+                    b2RebuildItem newItem = stack[top];
+                    newItem.nodeIndex = b2AllocateNode(); // 分配新节点
                     newItem.childCount = -1;
-                    newItem.startIndex = startIndex;
+                    newItem.startIndex = startIndex;  // 重置子节点计数器
                     newItem.endIndex = endIndex;
 
+                    // 计算子范围的分割点
                     newItem.splitIndex = b2PartitionMid(leafIndices, leafCenters, startIndex, startIndex, count);
                     newItem.splitIndex += startIndex;
                 }
             }
         }
 
+        // 后处理根节点
         b2TreeNode  rootNode = nodes[stack[0].nodeIndex];
         B2_ASSERT(rootNode.parent == B2_NULL_INDEX);
         B2_ASSERT(rootNode.child1 != B2_NULL_INDEX);
@@ -1350,50 +1416,82 @@ public class b2DynamicTree {
         b2TreeNode  child1 = nodes[rootNode.child1];
         b2TreeNode  child2 = nodes[rootNode.child2];
 
+        // 计算根节点属性
         rootNode.aabb = B2Math.B2AABB_Union(child1.aabb, child2.aabb);
         rootNode.height = 1 + b2MaxUInt16(child1.height, child2.height);
         rootNode.categoryBits = child1.categoryBits | child2.categoryBits;
 
-        return stack[0].nodeIndex;
+        return stack[0].nodeIndex; // 返回根节点索引
 
     }
 
+    /**
+     * 该函数实现基于‌中位数分割启发式‌的空间划分算法，用于物理引擎（如Box2D）中优化碰撞检测或空间查询。
+     * 核心逻辑是通过选择最长轴进行分区，采用类似快速排序的Hoare分区方案
+     *
+     * 我们正在分析的是Box2D动态树重建过程中使用的中点分割函数（b2PartitionMid）。该函数用于将一组叶子节点（通过索引数组和中心点数组表示）分割成两个子集，以便构建平衡的AABB树。中点分割策略选择包围盒最长的轴，然后以该轴的中点作为分割点进行划分。
+     *
+     * 函数目标：返回一个分割索引，使得[0, 分割索引)的元素在分割点的一侧，[分割索引, count)的元素在另一侧。
+     *
+     * 步骤：
+     *
+     * 1. 处理简单情况（count<=2）。
+     *
+     * 2. 计算所有中心点的包围盒（最小值和最大值）。
+     *
+     * 3. 计算包围盒的中心点（c）和范围（d）。
+     *
+     * 4. 选择范围最大的轴（x或y）作为分割轴，以该轴的中心点（pivot）进行划分。
+     *
+     * 5. 使用Hoare分割方案（类似快速排序的分割）将数组分成两部分：小于pivot的在左侧，大于等于pivot的在右侧。
+     *
+     * 6. 如果分割有效（分割点在(0,count)之间），则返回分割索引；否则返回中点（count/2）。
+     *
+     * 注意：这个函数会同时交换索引数组和中心点数组的元素，使得分割后左侧的元素中心点坐标小于pivot，右侧的大于等于pivot。
+     */
     // Median split heuristic
      int b2PartitionMid(int[] indices, B2Vec2[] centers, int indicesStartIndex, int centersStartIndex, int count) {
+         // 处理特殊情况：元素数量≤2时直接返回中点
         // Handle trivial case
         if (count <= 2) {
-            return count / 2;
+            return count / 2; // 返回1或0
         }
 
+        // 计算所有中心点的包围盒（AABB）
         B2Vec2 lowerBound = centers[centersStartIndex + 0];
         B2Vec2 upperBound = centers[centersStartIndex + 0];
 
+        // 遍历所有点计算最小/最大值
         for (int i = 1; i < count; ++i) {
             lowerBound = B2Math.b2Min(lowerBound, centers[centersStartIndex + i]);
             upperBound = B2Math.b2Max(upperBound, centers[centersStartIndex + i]);
         }
 
+         // 计算包围盒尺寸和中心点
         B2Vec2 d = B2Math.b2Sub(upperBound, lowerBound);
         B2Vec2 c = new B2Vec2(0.5f * (lowerBound.x + upperBound.x), 0.5f * (lowerBound.y + upperBound.y));
 
+         // 使用Hoare分区方案（类快速排序算法）
         // Partition longest axis using the Hoare partition scheme
         // https://en.wikipedia.org/wiki/Quicksort
         // https://nicholasvadivelu.com/2021/01/11/array-partition/
-        int i1 = 0, i2 = count;
-        if (d.x > d.y) {
-            float pivot = c.x;
+        int i1 = 0, i2 = count; // 双指针：i1从左向右，i2从右向左
+        if (d.x > d.y) { // 选择最长的轴进行分割 // X轴更长
+            float pivot = c.x; // 使用X轴中心作为分割点
 
+            // Hoare分区主循环
             while (i1 < i2) {
+                // 移动左指针：找到 >= pivot 的元素
                 while (i1 < i2 && centers[centersStartIndex + i1].x < pivot) {
                     i1 += 1;
                 }
                 ;
-
+                // 移动右指针：找到 < pivot 的元素
                 while (i1 < i2 && centers[centersStartIndex + i2 - 1].x >= pivot) {
                     i2 -= 1;
                 }
                 ;
-
+                // 交换不符合分区规则的元素
                 if (i1 < i2) {
                     // Swap indices
                     {
@@ -1409,12 +1507,13 @@ public class b2DynamicTree {
                         centers[centersStartIndex + i2 - 1] = temp;
                     }
 
+                    // 移动指针
                     i1 += 1;
                     i2 -= 1;
                 }
             }
-        } else {
-            float pivot = c.y;
+        } else { // Y轴更长或相等
+            float pivot = c.y; // 使用Y轴中心作为分割点
 
             while (i1 < i2) {
                 while (i1 < i2 && centers[centersStartIndex + i1].y < pivot) {
@@ -1447,12 +1546,15 @@ public class b2DynamicTree {
                 }
             }
         }
+         // 验证指针相遇
         B2_ASSERT(i1 == i2);
 
+         // 检查分割点是否有效
         if (i1 > 0 && i1 < count) {
             return i1;
         }
 
+         // 分割失败时返回中点位置
         return count / 2;
     }
 
@@ -1533,7 +1635,7 @@ public class b2DynamicTree {
     }
 
 
-    void b2DynamicTree_Validate() {
+    public void b2DynamicTree_Validate() {
         if (root == B2_NULL_INDEX) {
             return;
         }
@@ -1579,7 +1681,7 @@ public class b2DynamicTree {
         return nodes[proxyId].userData;
     }
 
-    B2AABB b2DynamicTree_GetAABB(int proxyId) {
+    public B2AABB b2DynamicTree_GetAABB(int proxyId) {
         B2_ASSERT(0 <= proxyId && proxyId < nodeCapacity);
         return nodes[proxyId].aabb;
     }

@@ -8,7 +8,7 @@ public class b2TreeNode {
     B2AABB aabb;
     // 碰撞过滤的分类位
     long categoryBits;
-    int child1, child2;
+    int child1, child2; // child1有值 child2就一定也有值
     Object userData;
     /// The node parent index (allocated node)
     int parent;

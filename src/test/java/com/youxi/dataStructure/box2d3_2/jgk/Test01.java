@@ -208,6 +208,18 @@ public class Test01 {
         if (PRINT)
             System.out.printf("param %s hit %s  dir %s b2ShapeCastOutput point %s normal %s lambda %s iterations %s %n", param, b,
                     b2Vec2, b2ShapeCastOutput.point, b2ShapeCastOutput.normal, b2ShapeCastOutput.lambda, b2ShapeCastOutput.iterations);
+
+        b2ShapeCast3(aabb1, aabb2, b2Vec2, param);
+    }
+
+    private static void b2ShapeCast3(b2ShapeProxy aabb1, b2ShapeProxy aabb2, B2Vec2 b2Vec2, String param) {
+        B2ShapeCastInput b2ShapeCastInput = new B2ShapeCastInput(aabb1, aabb2, b2Vec2);
+        B2ShapeCastOutput b2ShapeCastOutput = new B2ShapeCastOutput();
+        boolean b = new B2Distance().b2ShapeCast222(b2ShapeCastOutput, b2ShapeCastInput);
+
+        if (PRINT)
+            System.out.printf("param %s hit %s  dir %s b2ShapeCastOutput point %s normal %s lambda %s iterations %s %n", param, b,
+                    b2Vec2, b2ShapeCastOutput.point, b2ShapeCastOutput.normal, b2ShapeCastOutput.lambda, b2ShapeCastOutput.iterations);
     }
 
 

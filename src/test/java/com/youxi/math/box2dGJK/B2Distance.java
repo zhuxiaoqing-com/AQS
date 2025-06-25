@@ -453,6 +453,149 @@ public class B2Distance {
         return true;
     }
 
+
+    public boolean b2ShapeCast222(B2ShapeCastOutput output, B2ShapeCastInput input) {
+        output.iterations = 0;
+        output.lambda = 1.0f;
+        output.normal.SetZero();
+        output.point.SetZero();
+
+        b2ShapeProxy proxyA = input.proxyA;
+        b2ShapeProxy proxyB = input.proxyB;
+
+        float radiusA = Math.max(proxyA.radius, b2_polygonRadius);
+        float radiusB = Math.max(proxyB.radius, b2_polygonRadius);
+        float radius = radiusA + radiusB;
+
+
+        B2Vec2 r = input.translationB;
+        B2Vec2 n = new B2Vec2(0.0f, 0.0f);
+        float lambda = 0.0f;
+
+        // Initial simplex
+        B2Simplex simplex = new B2Simplex();
+        simplex.count = 0;
+
+        // Get simplex vertices as an array.
+
+        // Get support point in -r direction
+        int indexA = proxyA.GetSupport(r.multiply(-1));
+        B2Vec2 wA = proxyA.GetVertex(indexA);
+        int indexB = proxyB.GetSupport(r);
+        B2Vec2 wB = proxyB.GetVertex(indexB);
+        B2Vec2 v = sub(wA, wB);
+
+        // Sigma is the target distance between polygons
+        float sigma = Math.max(b2_polygonRadius, radius - b2_polygonRadius); // 距离半径值
+        float tolerance = 0.5f * b2_linearSlop;
+
+        // Main iteration loop.
+        int k_maxIters = 20;
+        int iter = 0;
+        while (iter < k_maxIters && v.Length() - sigma > tolerance) {
+            output.iterations += 1;
+
+            // Support in direction -v (A - B)
+            indexA = proxyA.GetSupport(v.multiply(-1));
+            wA = proxyA.GetVertex(indexA);
+            indexB = proxyB.GetSupport(v);
+            wB = proxyB.GetVertex(indexB);
+            B2Vec2 p = sub(wA, wB);
+
+            // -v is a normal at p
+            v = v.Normalize();
+
+            // p(当前两个点的距离投影到离原点最近的线段上)
+            // Intersect ray with plane
+            float vp = b2Dot(v, p);
+            // r(移动方向投影到离原点最近的线段上)
+            float vr = b2Dot(v, r);
+            if (vp - sigma > lambda * vr) {
+                // 已经往移动方向相反的地方去了
+                if (vr <= 0.0f) {
+                    return false;
+                }
+                lambda = (vp - sigma) / vr;
+                if (lambda > 1.0f) // 射线延长的太多了 超过了100%
+                {
+                    return false;
+                }
+
+                n = v.multiply(-1);
+                simplex.count = 0;
+            }
+
+            // Reverse simplex since it works with B - A.
+            // Shift by lambda * r because we want the closest point to the current clip point.
+            // Note that the support point p is not shifted because we want the plane equation
+            // to be formed in unshifted space.
+            B2SimplexVertex vertex = simplex.get(simplex.count);
+            vertex.indexA = indexA;
+            //vertex.wA = wB + lambda * r;
+            vertex.wA = wA;
+            vertex.indexB = indexB;
+            vertex.wB = add(wB, r.multiply(lambda));;
+            //vertex.w = vertex.wB - vertex.wA;
+            vertex.w = sub(vertex.wA, vertex.wB);
+            vertex.a = 1.0f;
+            simplex.count += 1;
+
+            switch (simplex.count) {
+                case 1:
+                    break;
+
+                case 2:
+                    simplex.Solve2();
+                    break;
+
+                case 3:
+                    simplex.Solve3();
+                    break;
+
+                default:
+                    return false;
+            }
+
+            // If we have 3 points, then the origin is in the corresponding triangle.
+            if (simplex.count == 3) {
+                // Overlap
+                //return false;
+                // todo 为了和box2d 3.2一样 直接返回true
+                return true;
+            }
+
+            // Get search direction.
+            v = simplex.GetClosestPoint();
+
+            // Iteration count is equated to the number of support point calls.
+            ++iter;
+        }
+
+		/*if (iter == 0)
+		{
+			// Initial overlap
+			//return false;
+			// todo 为了和box2d 3.2一样 直接返回true
+			return true;
+		}*/
+
+        // Prepare output.
+        B2Vec2 pointA = new B2Vec2(), pointB = new B2Vec2();
+        simplex.GetWitnessPoints(pointA, pointB);
+
+        if (v.LengthSquared() > 0.0f) {
+            n = v.multiply(-1);
+            n = n.Normalize();
+        }
+
+        //output.point = pointA + radiusA * n;
+        output.point = add(pointA, n.multiply(radiusA));
+        output.normal = n;
+        output.lambda = lambda;
+        output.iterations = iter;
+        return true;
+    }
+
     public boolean intersect(b2DistanceInput input) {
         return false;
     }

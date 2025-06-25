@@ -179,7 +179,7 @@ public class B2Math {
             return false;
         }
 
-        if (Float.isFinite(v.x) || Float.isFinite(v.y)) {
+        if (!Float.isFinite(v.x) || !Float.isFinite(v.y)) {
             return false;
         }
 
