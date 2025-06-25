@@ -1,1 +1,22 @@
-gjk
+box2d 两个都子弹的物体是不会进行ccd检测的；
+粗筛（Broad-Phase）和细筛（Narrow-Phase）
+默认流程是  粗筛，rebuildAABB动态树，细筛，CCD，EnlargeProxy;
+    默认流程是进行粗筛 然后进行 rebuildAABB动态树 再细筛 这两个都是用的上一帧的数据;
+    然后进行CDD检测;
+    CCD检测有两个条件
+       if ( body->type == b2_dynamicBody && enableContinuous && maxVelocity * timeStep > 0.5f * sim->minExtent )
+       标记为子弹 或者 移动速度超过多少;
+       CCD查询AABB动态树比较特殊 是用上上帧 和上一帧的数据构成一个AABB进行查询
+       然后再更新位置。
+
+因为Box2d的帧特别快  所以全部用上一帧的数据没问题;
+
+为什么先粗筛 再rebuildAABB动态树，再细筛
+// Task that can be done in parallel with the narrow-phase
+	// - rebuild the collision tree for dynamic and kinematic bodies to keep their query performance good
+	// todo_erin move this to start when contacts are being created
+
+“可与窄相位（碰撞检测阶段）并行执行的任务”
+ ‌“为动态刚体和运动学刚体重建碰撞树，以维持其查询性能”
+“待办（由Erin处理）：将此任务移至接触点生成阶段开始时执行”
+
