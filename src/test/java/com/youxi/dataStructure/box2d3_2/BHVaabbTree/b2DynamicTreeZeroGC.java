@@ -250,16 +250,18 @@ public class b2DynamicTreeZeroGC implements IB3_2DynamicTree{
         originAABB.set(input.proxy.points[0],input.proxy.points[0]);
 
         for (int i = 1; i < input.proxy.count; ++i) {
-            B2Math.b2MinZeroGC(originAABB.lowerBound, input.proxy.points[i], originAABB.lowerBound);
-            B2Math.b2MaxZeroGC(originAABB.upperBound, input.proxy.points[i], originAABB.upperBound);
+            B2Vec2 lowerBound = B2Math.b2MinZeroGC(originAABB.lowerBound, input.proxy.points[i], originAABB.lowerBound);
+            B2Vec2 upperBound = B2Math.b2MaxZeroGC(originAABB.upperBound, input.proxy.points[i], originAABB.upperBound);
+            originAABB.set(lowerBound, upperBound);
         }
 
         B2Vec2 radius = incrCacheVec();
         radius.setXY(input.proxy.radius, input.proxy.radius);
 
         // 包围盒应用半径
-        B2Math.b2SubZeroGC(originAABB.lowerBound, radius, originAABB.lowerBound);
-        B2Math.b2AddZeroGC(originAABB.upperBound, radius, originAABB.upperBound);
+        B2Vec2 lowerBound = B2Math.b2SubZeroGC(originAABB.lowerBound, radius, originAABB.lowerBound);
+        B2Vec2 upperBound = B2Math.b2AddZeroGC(originAABB.upperBound, radius, originAABB.upperBound);
+        originAABB.set(lowerBound, upperBound);
 
         B2Vec2 p1 = B2Math.B2AABB_Center(originAABB);
         B2Vec2 extension = B2Math.B2AABB_Extents(originAABB);
@@ -279,8 +281,9 @@ public class b2DynamicTreeZeroGC implements IB3_2DynamicTree{
         B2Vec2 t = B2Math.b2MulSVZeroGC(maxFraction, input.translation, incrCacheVec());
         B2AABB totalAABB = cacheTotalAABB;
 
-        B2Math.b2MinZeroGC(originAABB.lowerBound, B2Math.b2AddZeroGC(originAABB.lowerBound, t, cacheTotalAABBV1), totalAABB.lowerBound);
-        B2Math.b2MaxZeroGC(originAABB.upperBound, B2Math.b2AddZeroGC(originAABB.upperBound, t, cacheTotalAABBV2), totalAABB.upperBound);
+        lowerBound = B2Math.b2MinZeroGC(originAABB.lowerBound, B2Math.b2AddZeroGC(originAABB.lowerBound, t, cacheTotalAABBV1), totalAABB.lowerBound);
+        upperBound = B2Math.b2MaxZeroGC(originAABB.upperBound, B2Math.b2AddZeroGC(originAABB.upperBound, t, cacheTotalAABBV2), totalAABB.upperBound);
+        totalAABB.set(lowerBound, upperBound);
 
 
         b2ShapeCastInput subInput = input;
@@ -330,8 +333,9 @@ public class b2DynamicTreeZeroGC implements IB3_2DynamicTree{
                     // Update segment bounding box.
                     maxFraction = value;
                     t = B2Math.b2MulSVZeroGC(maxFraction, input.translation, t);
-                    B2Math.b2MinZeroGC(originAABB.lowerBound, B2Math.b2AddZeroGC(originAABB.lowerBound, t, cacheTotalAABBV1), totalAABB.lowerBound);
-                    B2Math.b2MaxZeroGC(originAABB.upperBound, B2Math.b2AddZeroGC(originAABB.upperBound, t, cacheTotalAABBV2), totalAABB.upperBound);
+                    lowerBound = B2Math.b2MinZeroGC(originAABB.lowerBound, B2Math.b2AddZeroGC(originAABB.lowerBound, t, cacheTotalAABBV1), totalAABB.lowerBound);
+                    upperBound = B2Math.b2MaxZeroGC(originAABB.upperBound, B2Math.b2AddZeroGC(originAABB.upperBound, t, cacheTotalAABBV2), totalAABB.upperBound);
+                    totalAABB.set(lowerBound, upperBound);
                 }
             } else {
                 if (stackCount < B2_TREE_STACK_SIZE - 1) {

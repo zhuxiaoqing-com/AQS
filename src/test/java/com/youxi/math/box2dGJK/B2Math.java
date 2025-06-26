@@ -178,6 +178,7 @@ public class B2Math {
         c.lowerBound.y = b2MinFloat(a.lowerBound.y, b.lowerBound.y);
         c.upperBound.x = b2MaxFloat(a.upperBound.x, b.upperBound.x);
         c.upperBound.y = b2MaxFloat(a.upperBound.y, b.upperBound.y);
+        c.calcCenterAndHalfB2Vec2();
         return c;
     }
 
@@ -187,16 +188,17 @@ public class B2Math {
         c.lowerBound.y = b2MinFloat(a.y, b.y);
         c.upperBound.x = b2MaxFloat(a.x, b.x);
         c.upperBound.y = b2MaxFloat(a.y, b.y);
+        c.calcCenterAndHalfB2Vec2();
         return c;
     }
 
 
     public static B2AABB B2AABB_UnionZeroGC(B2Vec2 a, B2Vec2 b, B2AABB ret) {
-
         ret.lowerBound.x = b2MinFloat(a.x, b.x);
         ret.lowerBound.y = b2MinFloat(a.y, b.y);
         ret.upperBound.x = b2MaxFloat(a.x, b.x);
         ret.upperBound.y = b2MaxFloat(a.y, b.y);
+        ret.calcCenterAndHalfB2Vec2();
         return ret;
     }
 

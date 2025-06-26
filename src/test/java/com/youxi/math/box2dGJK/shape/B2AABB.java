@@ -13,15 +13,20 @@ public class B2AABB {
     }
 
     public B2AABB(B2Vec2 lowerBound, B2Vec2 upperBound) {
-        this.upperBound = upperBound;
-        this.lowerBound = lowerBound;
-        this.center = lowerBound.add(upperBound).multiply(0.5f);
-        this.halfB2Vec2 = upperBound.sub(lowerBound).multiply(0.5f);
+        this.upperBound.setXY(upperBound);
+        this.lowerBound.setXY(lowerBound);;
+        calcCenterAndHalfB2Vec2();
+        //this.center = lowerBound.add(upperBound).multiply(0.5f);
+        //this.halfB2Vec2 = upperBound.sub(lowerBound).multiply(0.5f);
     }
 
     public void set(B2Vec2 lowerBound, B2Vec2 upperBound) {
         this.lowerBound.setXY(lowerBound);
         this.upperBound.setXY(upperBound);
+        calcCenterAndHalfB2Vec2();
+    }
+
+    public void calcCenterAndHalfB2Vec2() {
         B2Math.addZeroGC(lowerBound, upperBound, 0.5f, this.center);
         B2Math.subZeroGC(upperBound, lowerBound, 0.5f, this.halfB2Vec2);
     }

@@ -115,20 +115,20 @@ public class Tree3_2Test {
     public void customData() {
         // 1x 都打不中
         int index = 10;
-        map.put(index++, new UserData(index, new B2AABB(new B2Vec2(9, 1), new B2Vec2(10, 2))));
-        map.put(index++, new UserData(index, new B2AABB(new B2Vec2(1, 9), new B2Vec2(2, 10))));
-        map.put(index++, new UserData(index, new B2AABB(new B2Vec2(1, -1), new B2Vec2(2f, 0))));
+        map.put(index, new UserData(index++, new B2AABB(new B2Vec2(9, 1), new B2Vec2(10, 2))));
+        map.put(index, new UserData(index++, new B2AABB(new B2Vec2(1, 9), new B2Vec2(2, 10))));
+        map.put(index, new UserData(index++, new B2AABB(new B2Vec2(1, -1), new B2Vec2(2f, 0))));
         // 2x 都打能中 不要
         index = 20;
         // 3x 射线能打中
         index = 30;
-        map.put(index++, new UserData(index, new B2AABB(new B2Vec2(1, 0.5f), new B2Vec2(2, 2.5f))));
-        map.put(index++, new UserData(index, new B2AABB(new B2Vec2(2, 2.5f), new B2Vec2(3.5f, 3))));
-        map.put(index++, new UserData(index, new B2AABB(new B2Vec2(8, 8), new B2Vec2(10, 10))));
+        map.put(index, new UserData(index++, new B2AABB(new B2Vec2(1, 0.5f), new B2Vec2(2, 2.5f))));
+        map.put(index, new UserData(index++, new B2AABB(new B2Vec2(2, 2.5f), new B2Vec2(3.5f, 3))));
+        map.put(index, new UserData(index++, new B2AABB(new B2Vec2(8, 8), new B2Vec2(10, 10))));
         // 4x 矩形能打中
         index = 40;
-        map.put(index++, new UserData(index, new B2AABB(new B2Vec2(6, 3), new B2Vec2(8, 4))));
-        map.put(index++, new UserData(index, new B2AABB(new B2Vec2(5, 2), new B2Vec2(9, 5))));
+        map.put(index, new UserData(index++, new B2AABB(new B2Vec2(6, 3), new B2Vec2(8, 4))));
+        map.put(index, new UserData(index++, new B2AABB(new B2Vec2(5, 2), new B2Vec2(9, 5))));
 
         // 打射线
         b2RayCastInput b2RayCastInput = new b2RayCastInput();
@@ -140,9 +140,9 @@ public class Tree3_2Test {
 
         // boxcast
         b2ShapeCastInput b2ShapeCastInput = new b2ShapeCastInput();
-        B2OBB b2OBB = new B2OBB(b2RayCastInput.origin, new B2Vec2(1, 1), 30);
+        B2OBB b2OBB = new B2OBB( new B2Vec2(-2, -1), new B2Vec2(1, 1), 30);
         b2ShapeCastInput.proxy = new b2ShapeProxy(b2OBB);
-        b2ShapeCastInput.translation = b2RayCastInput.translation;
+        b2ShapeCastInput.translation = new B2Vec2(10, 10);
 
 
         rayCastList.add(new ThreeKV<>(b2RayCastInput, b2AABB1, b2ShapeCastInput));
@@ -190,6 +190,15 @@ public class Tree3_2Test {
         treeTest(b2DynamicTreeZeroGC.b2DynamicTree_Create(), true);
     }
 
+    @Test
+    public void test02() {
+        //randomData();
+        customData();
+        //treeTest(b2DynamicTree.b2DynamicTree_Create(), true);
+        System.out.println("-------------------");
+        treeTest(b2DynamicTreeZeroGC.b2DynamicTree_Create(), true);
+    }
+
     public String treeTest(IB3_2DynamicTree b2DynamicTree, boolean rebuild) {
         for (UserData value : map.values()) {
             value.moveAAbb = new B2AABB(value.aabb.lowerBound, value.aabb.upperBound);
@@ -207,14 +216,16 @@ public class Tree3_2Test {
                 UserData k = integerB2Vec2KV.getK();
                 B2Vec2 v = integerB2Vec2KV.getV();
 
-                B2AABB oldAABB = new B2AABB(k.moveAAbb.upperBound, k.moveAAbb.lowerBound);
+                //B2AABB oldAABB = new B2AABB(k.moveAAbb.upperBound, k.moveAAbb.lowerBound);
 
-                k.moveAAbb.lowerBound = k.moveAAbb.lowerBound.add(v);
-                k.moveAAbb.upperBound = k.moveAAbb.upperBound.add(v);
+                /*k.moveAAbb.lowerBound = k.moveAAbb.lowerBound.add(v);
+                k.moveAAbb.upperBound = k.moveAAbb.upperBound.add(v);*/
+                k.moveAAbb.set(k.moveAAbb.lowerBound.add(v), k.moveAAbb.upperBound.add(v));
 
-                B2Vec2 sub = k.moveAAbb.GetCenter().sub(oldAABB.GetCenter());
+                //B2Vec2 sub = k.moveAAbb.GetCenter().sub(oldAABB.GetCenter());
+                B2AABB aabb = new B2AABB(k.moveAAbb.lowerBound, k.moveAAbb.upperBound);
                 if (rebuild) {
-                    b2DynamicTree.b2DynamicTree_EnlargeProxy(k.proxyId, k.moveAAbb);
+                    b2DynamicTree.b2DynamicTree_EnlargeProxy(k.proxyId, aabb);
                 } else {
                     b2DynamicTree.b2DynamicTree_MoveProxy(k.proxyId, k.moveAAbb);
                 }
@@ -267,8 +278,8 @@ public class Tree3_2Test {
                 UserData u = (UserData) userData;
                 OutValue outValue = new OutValue();
                 B2ShapeCastPairInput b2ShapeCastPairInput = new B2ShapeCastPairInput();
-                b2ShapeCastPairInput.proxyA = input.proxy;
-                b2ShapeCastPairInput.proxyB = new b2ShapeProxy(new B2OBB(u.aabb.GetCenter(), u.aabb.halfB2Vec2, 0));
+                b2ShapeCastPairInput.proxyA = new b2ShapeProxy(new B2OBB(u.aabb.GetCenter(), u.aabb.halfB2Vec2, 0));
+                b2ShapeCastPairInput.proxyB = input.proxy;
                 b2ShapeCastPairInput.translationB = input.translation;
                 B2CastOutput b2CastOutput = Distance.b2ShapeCast(b2ShapeCastPairInput);
                 if (b2CastOutput.hit) {
@@ -281,14 +292,15 @@ public class Tree3_2Test {
 
         TestUtil.testTime(() -> {
             for (ThreeKV<b2RayCastInput, B2AABB, b2ShapeCastInput> kv : rayCastList) {
-                b2DynamicTree.b2DynamicTree_RayCast(kv.getK(), Long.MAX_VALUE, rayCastCallback, new Object());
                 b2DynamicTree.b2DynamicTree_Query(kv.getV(), Long.MAX_VALUE, queryCallback, new Object());
+                b2DynamicTree.b2DynamicTree_RayCast(kv.getK(), Long.MAX_VALUE, rayCastCallback, new Object());
                 b2DynamicTree.b2DynamicTree_ShapeCast(kv.getP(), Long.MAX_VALUE, boxCastback, new Object());
             }
 
         }, 1, b2DynamicTree.getClass().getSimpleName() + " rayAndQuery");
 
 
+        //System.out.println(s);
         // b2DynamicTree.printTree();
    /*     TestUtil.testTime(() -> {
             for (UserData value : map.values()) {
@@ -301,7 +313,7 @@ public class Tree3_2Test {
 
 
     @Test
-    public void test02() {
+    public void test10() {
         /*B2AABB b2AABB = new B2AABB(new B2Vec2(6, 3), new B2Vec2(8, 4));
         B2AABB b2AABB1 = new B2AABB(new B2Vec2(5, 2), new B2Vec2(9, 5));
         boolean b = B2Collision.b2TestOverlap(b2AABB, b2AABB1);
