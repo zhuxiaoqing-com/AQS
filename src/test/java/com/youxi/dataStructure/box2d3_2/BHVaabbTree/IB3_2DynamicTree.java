@@ -22,6 +22,9 @@ public interface IB3_2DynamicTree {
     b2TreeStats b2DynamicTree_RayCast(b2RayCastInput input, long maskBits,
                                       B2TreeRayCastCallbackFcn callback, Object context);
 
+    // boxcast
+    public b2TreeStats b2DynamicTree_ShapeCast(b2ShapeCastInput input, long maskBits,
+                                               B2TreeShapeCastCallbackFcn callback, Object context);
 
     /**************************************************************************
      * 功能描述：在树上创建一个叶子节点代理

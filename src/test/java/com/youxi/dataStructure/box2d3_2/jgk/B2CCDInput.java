@@ -7,8 +7,8 @@ public class B2CCDInput {
    public b2ShapeProxy proxyA; // 上一帧的位置
     /// < The proxy for shape A
    public b2ShapeProxy proxyB; //上一帧的位置
-   public B2Vec2 proxyADir; // proxyA上一帧到该帧的移动dir  包含移动速度
-   public B2Vec2 proxyBDir; // proxyB上一帧到该帧的移动dir
+   public B2Vec2 proxyADir = new B2Vec2(); // proxyA上一帧到该帧的移动dir  包含移动速度
+   public B2Vec2 proxyBDir = new B2Vec2(); // proxyB上一帧到该帧的移动dir
     // 布尔值，若为真，允许已接触的形状（带半径）略微靠近
    public boolean canEncroach;
 

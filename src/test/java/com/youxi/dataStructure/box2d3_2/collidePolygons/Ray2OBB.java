@@ -49,11 +49,12 @@ public class Ray2OBB {
      * @param min
      * @param max
      * @param ov
-     * @param calcNearest
+     * @param outer
      * @return
      */
-    public static boolean TestRayAABB(B2Vec2 o, B2Vec2 dir, B2Vec2 min, B2Vec2 max, OutValue ov, boolean calcNearest) {
-        float tmin = Float.MIN_VALUE; // set to -FLT_MAX to get first hit on line 进入平面的T值最大
+    public static boolean TestRayAABB(B2Vec2 o, B2Vec2 dir, B2Vec2 min, B2Vec2 max, OutValue ov, boolean outer) {
+        //float tmin = Float.MIN_VALUE; // Float.MIN_VALUE 是一个特别小的正数 所有不能用这个
+        float tmin = -Float.MAX_VALUE; // set to -FLT_MAX to get first hit on line 进入平面的T值最大
         float tmax = Float.MAX_VALUE; // set to max distance ray can travel (for segment) 离开平面的T值最小
 
 
@@ -70,8 +71,8 @@ public class Ray2OBB {
         } else {
             // t = (d - o.x) / Dir.x
             float dirX = 1 / dir.getX();
-            float t1 = (min.getX() - dir.getX()) * dirX;
-            float t2 = (max.getX() - dir.getX()) * dirX;
+            float t1 = (min.getX() - o.getX()) * dirX;
+            float t2 = (max.getX() - o.getX()) * dirX;
 
             if (t1 > t2) {
                 // 令 t1 为与近平面的交点，t2 为与远平面的交点
@@ -100,8 +101,8 @@ public class Ray2OBB {
         } else {
             // t = (d - o.y) / Dir.y
             float dirY = 1 / dir.getY();
-            float t1 = (min.getY() - dir.getY()) * dirY;
-            float t2 = (max.getY() - dir.getY()) * dirY;
+            float t1 = (min.getY() - o.getY()) * dirY;
+            float t2 = (max.getY() - o.getY()) * dirY;
 
             if (t1 > t2) {
                 // 令 t1 为与近平面的交点，t2 为与远平面的交点
@@ -151,7 +152,7 @@ public class Ray2OBB {
         if (ov != null) {
             ov.setT(tmin);
             ov.setHitEdge(direction);
-            if (calcNearest) {
+            if (outer) {
                 B2Vec2 b2Vec2 = B2Math.b2MulAdd(o, tmin, dir);
                 ov.setHitPoint(b2Vec2);
             }

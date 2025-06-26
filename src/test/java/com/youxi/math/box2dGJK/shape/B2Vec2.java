@@ -6,6 +6,7 @@ import java.util.Objects;
 
 public class B2Vec2 {
 
+	public static final B2Vec2 ZERO = new B2Vec2(0, 0);
 	public float x;
 
 	public float y;

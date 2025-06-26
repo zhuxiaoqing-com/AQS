@@ -3,9 +3,9 @@ package com.youxi.dataStructure.box2d3_2.jgk.zeroGC;
 import com.youxi.math.box2dGJK.shape.B2Vec2;
 
 public class B2SimplexVertexZeroGC {
-    public B2Vec2 wA;    // proxyA的顶点
-    public B2Vec2 wB;    // proxyB的顶点
-    public B2Vec2 w;    // 这个是支撑点，也可能是单纯形的一个顶点，等于 wB - wA
+    public B2Vec2 wA = new B2Vec2();    // proxyA的顶点
+    public B2Vec2 wB = new B2Vec2();    // proxyB的顶点
+    public B2Vec2 w = new B2Vec2();    // 这个是支撑点，也可能是单纯形的一个顶点，等于 wB - wA
     public float a;        // 参数，用于求重心坐标的
     public int indexA;    // wA的索引
     public int indexB;    // wB的索引

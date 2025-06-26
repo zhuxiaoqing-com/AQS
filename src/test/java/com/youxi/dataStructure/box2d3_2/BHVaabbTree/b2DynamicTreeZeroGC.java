@@ -61,6 +61,22 @@ public class b2DynamicTreeZeroGC implements IB3_2DynamicTree{
     private b2DynamicTreeZeroGC() {
     }
 
+    private int cacheIndex = 0;
+    private final B2Vec2[] cacheB2Vecs = new B2Vec2[10];
+    {
+        for (int i = 0; i < cacheB2Vecs.length; i++) {
+            cacheB2Vecs[i] = new B2Vec2();
+        }
+    }
+    public void resetCacheIndex() {
+        cacheIndex = 0;
+    }
+    public B2Vec2 incrCacheVec() {
+        return cacheB2Vecs[cacheIndex++];
+    }
+
+
+
     int stack[] = new int[B2_TREE_STACK_SIZE];
     public b2TreeStats b2DynamicTree_Query(B2AABB aabb, long maskBits, B2TreeQueryCallbackFcn callback, Object context) {
         b2TreeStats result = new b2TreeStats();
@@ -86,7 +102,7 @@ public class b2DynamicTreeZeroGC implements IB3_2DynamicTree{
             if (B2Math.B2AABB_Overlaps(aabb, aabb) && (node.categoryBits & maskBits) != 0) {
                 if (b2IsLeaf(node)) {
                     // callback to user code with proxy id
-                    boolean proceed = callback.callback(nodeId, node.userData, context);
+                    boolean proceed = callback.callback(aabb, nodeId, node.userData, context);
                     result.leafVisits += 1;
 
                     if (proceed == false) {
@@ -106,9 +122,12 @@ public class b2DynamicTreeZeroGC implements IB3_2DynamicTree{
         return result;
     }
 
-
+    B2AABB cacheSegmentAABB = new B2AABB();
+    B2Vec2 cacheP2 = new B2Vec2();
     public b2TreeStats b2DynamicTree_RayCast(b2RayCastInput input, long maskBits,
                                       B2TreeRayCastCallbackFcn callback, Object context) {
+        resetCacheIndex();
+
         b2TreeStats result = new b2TreeStats();
 
         if (nodeCount == 0) {
@@ -118,21 +137,21 @@ public class b2DynamicTreeZeroGC implements IB3_2DynamicTree{
         B2Vec2 p1 = input.origin;
         B2Vec2 d = input.translation;
 
-        B2Vec2 r = B2Math.b2Normalize(d);
+        B2Vec2 r = B2Math.b2NormalizeZeroGC(d, incrCacheVec());
 
         // v is perpendicular to the segment.
-        B2Vec2 v = B2Math.b2CrossSV(1.0f, r);
-        B2Vec2 abs_v = B2Math.b2Abs(v);
+        B2Vec2 v = B2Math.b2CrossSVZeroGC(1.0f, r,incrCacheVec());
+        B2Vec2 abs_v = B2Math.b2AbsZeroGC(v,incrCacheVec());
 
         // Separating axis for segment (Gino, p80).
         // |dot(v, p1 - c)| > dot(|v|, h)
 
         float maxFraction = input.maxFraction;
 
-        B2Vec2 p2 = B2Math.b2MulAdd(p1, maxFraction, d);
+        B2Vec2 p2 = B2Math.b2MulAddZeroGC(p1, maxFraction, d,incrCacheVec());
 
         // Build a bounding box for the segment.
-        B2AABB segmentAABB = new B2AABB(B2Math.b2Min(p1, p2), B2Math.b2Max(p1, p2));
+        B2AABB segmentAABB = B2Math.B2AABB_UnionZeroGC(p1, p2,cacheSegmentAABB);
 
         int stackCount = 0;
         stack[stackCount++] = root;
@@ -185,9 +204,8 @@ public class b2DynamicTreeZeroGC implements IB3_2DynamicTree{
                 if (0.0f < value && value <= maxFraction) {
                     // Update segment bounding box.
                     maxFraction = value;
-                    p2 = B2Math.b2MulAdd(p1, maxFraction, d);
-                    segmentAABB.lowerBound = B2Math.b2Min(p1, p2);
-                    segmentAABB.upperBound = B2Math.b2Max(p1, p2);
+                    p2 = B2Math.b2MulAddZeroGC(p1, maxFraction, d, cacheP2);
+                    segmentAABB = B2Math.B2AABB_UnionZeroGC(p1, p2, cacheSegmentAABB);
                 }
             } else {
                 if (stackCount < B2_TREE_STACK_SIZE - 1) {
@@ -214,8 +232,13 @@ public class b2DynamicTreeZeroGC implements IB3_2DynamicTree{
     /**
      * 和打射线一样 也将boxCast 扩大成了一个特别大的aabb盒子
      */
-    b2TreeStats b2DynamicTree_ShapeCast(b2ShapeCastInput input, long maskBits,
+    B2AABB cacheOriginAABB = new B2AABB();
+    B2AABB cacheTotalAABB = new B2AABB();
+    B2Vec2 cacheTotalAABBV1 = new B2Vec2();
+    B2Vec2 cacheTotalAABBV2 = new B2Vec2();
+    public b2TreeStats b2DynamicTree_ShapeCast(b2ShapeCastInput input, long maskBits,
                                         B2TreeShapeCastCallbackFcn callback, Object context) {
+        resetCacheIndex();
         b2TreeStats stats = new b2TreeStats();
 
         if (nodeCount == 0 || input.proxy.count == 0) {
@@ -223,25 +246,28 @@ public class b2DynamicTreeZeroGC implements IB3_2DynamicTree{
         }
 
         // 找到proxy的aabb包围盒
-        B2AABB originAABB = new B2AABB(input.proxy.points[0], input.proxy.points[0]);
+        B2AABB originAABB = cacheOriginAABB;
+        originAABB.set(input.proxy.points[0],input.proxy.points[0]);
+
         for (int i = 1; i < input.proxy.count; ++i) {
-            originAABB.lowerBound = B2Math.b2Min(originAABB.lowerBound, input.proxy.points[i]);
-            originAABB.upperBound = B2Math.b2Max(originAABB.upperBound, input.proxy.points[i]);
+            B2Math.b2MinZeroGC(originAABB.lowerBound, input.proxy.points[i], originAABB.lowerBound);
+            B2Math.b2MaxZeroGC(originAABB.upperBound, input.proxy.points[i], originAABB.upperBound);
         }
 
-        B2Vec2 radius = new B2Vec2(input.proxy.radius, input.proxy.radius);
+        B2Vec2 radius = incrCacheVec();
+        radius.setXY(input.proxy.radius, input.proxy.radius);
 
         // 包围盒应用半径
-        originAABB.lowerBound = B2Math.b2Sub(originAABB.lowerBound, radius);
-        originAABB.upperBound = B2Math.b2Add(originAABB.upperBound, radius);
+        B2Math.b2SubZeroGC(originAABB.lowerBound, radius, originAABB.lowerBound);
+        B2Math.b2AddZeroGC(originAABB.upperBound, radius, originAABB.upperBound);
 
         B2Vec2 p1 = B2Math.B2AABB_Center(originAABB);
         B2Vec2 extension = B2Math.B2AABB_Extents(originAABB);
 
         // v is perpendicular to the segment.
         B2Vec2 r = input.translation;
-        B2Vec2 v = B2Math.b2CrossSV(1.0f, r);
-        B2Vec2 abs_v = B2Math.b2Abs(v);
+        B2Vec2 v = B2Math.b2CrossSVZeroGC(1.0f, r, incrCacheVec());
+        B2Vec2 abs_v = B2Math.b2AbsZeroGC(v, incrCacheVec());
 
         // Separating axis for segment (Gino, p80).
         // |dot(v, p1 - c)| > dot(|v|, h)
@@ -250,11 +276,12 @@ public class b2DynamicTreeZeroGC implements IB3_2DynamicTree{
 
         // 将盒子和盒子可以前往的最远终点 合成一个最大的aabb盒子
         // Build total box for the shape cast
-        B2Vec2 t = B2Math.b2MulSV(maxFraction, input.translation);
-        B2AABB totalAABB = new B2AABB(
-                B2Math.b2Min(originAABB.lowerBound, B2Math.b2Add(originAABB.lowerBound, t)),
-                B2Math.b2Max(originAABB.upperBound, B2Math.b2Add(originAABB.upperBound, t))
-        );
+        B2Vec2 t = B2Math.b2MulSVZeroGC(maxFraction, input.translation, incrCacheVec());
+        B2AABB totalAABB = cacheTotalAABB;
+
+        B2Math.b2MinZeroGC(originAABB.lowerBound, B2Math.b2AddZeroGC(originAABB.lowerBound, t, cacheTotalAABBV1), totalAABB.lowerBound);
+        B2Math.b2MaxZeroGC(originAABB.upperBound, B2Math.b2AddZeroGC(originAABB.upperBound, t, cacheTotalAABBV2), totalAABB.upperBound);
+
 
         b2ShapeCastInput subInput = input;
 
@@ -302,9 +329,9 @@ public class b2DynamicTreeZeroGC implements IB3_2DynamicTree{
                 if (0.0f < value && value < maxFraction) {
                     // Update segment bounding box.
                     maxFraction = value;
-                    t = B2Math.b2MulSV(maxFraction, input.translation);
-                    totalAABB.lowerBound = B2Math.b2Min(originAABB.lowerBound, B2Math.b2Add(originAABB.lowerBound, t));
-                    totalAABB.upperBound = B2Math.b2Max(originAABB.upperBound, B2Math.b2Add(originAABB.upperBound, t));
+                    t = B2Math.b2MulSVZeroGC(maxFraction, input.translation, t);
+                    B2Math.b2MinZeroGC(originAABB.lowerBound, B2Math.b2AddZeroGC(originAABB.lowerBound, t, cacheTotalAABBV1), totalAABB.lowerBound);
+                    B2Math.b2MaxZeroGC(originAABB.upperBound, B2Math.b2AddZeroGC(originAABB.upperBound, t, cacheTotalAABBV2), totalAABB.upperBound);
                 }
             } else {
                 if (stackCount < B2_TREE_STACK_SIZE - 1) {
@@ -1468,6 +1495,8 @@ public class b2DynamicTreeZeroGC implements IB3_2DynamicTree{
      *
      * 注意：这个函数会同时交换索引数组和中心点数组的元素，使得分割后左侧的元素中心点坐标小于pivot，右侧的大于等于pivot。
      */
+    B2Vec2 cacheD = new B2Vec2();
+    B2Vec2 cacheC = new B2Vec2();
     // Median split heuristic
      int b2PartitionMid(int[] indices, B2Vec2[] centers, int indicesStartIndex, int centersStartIndex, int count) {
          // 处理特殊情况：元素数量≤2时直接返回中点
@@ -1487,8 +1516,9 @@ public class b2DynamicTreeZeroGC implements IB3_2DynamicTree{
         }
 
          // 计算包围盒尺寸和中心点
-        B2Vec2 d = B2Math.b2Sub(upperBound, lowerBound);
-        B2Vec2 c = new B2Vec2(0.5f * (lowerBound.x + upperBound.x), 0.5f * (lowerBound.y + upperBound.y));
+         B2Vec2 d = B2Math.b2SubZeroGC(upperBound, lowerBound, cacheD);
+         B2Vec2 c = cacheC;
+         c.setXY(0.5f * (lowerBound.x + upperBound.x), 0.5f * (lowerBound.y + upperBound.y));
 
          // 使用Hoare分区方案（类快速排序算法）
         // Partition longest axis using the Hoare partition scheme

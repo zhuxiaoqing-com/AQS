@@ -201,7 +201,7 @@ public class DistanceZeroGC {
                    // B2_ASSERT(distanceOutput.distance > 0.0f && b2IsNormalized(distanceOutput.normal));
                     output.fraction = fraction;
                     b2MulAddZeroGC(distanceOutput.pointA, input.proxyA.radius, distanceOutput.normal, output.point);
-                    output.normal = distanceOutput.normal;
+                    output.normal.setXY(distanceOutput.normal);
                     output.hit = true;
                     return output;
                 }
@@ -278,9 +278,11 @@ public class DistanceZeroGC {
 // returns a vector that points towards the origin
     // 具体看 B2Distance 的 Solve2 方法
     static B2Vec2 b2SolveSimplex2(B2SimplexZeroGC s) {
+        s.resetCacheIndex();
+
         B2Vec2 w1 = s.v1.w;
         B2Vec2 w2 = s.v2.w;
-        B2Vec2 e12 = b2SubZeroGC(w2, w1, s.cacheB2Vec1);
+        B2Vec2 e12 = b2SubZeroGC(w2, w1, s.incrCacheVec());
 
         // w1 region
         float d12_2 = -B2Math.b2Dot(w1, e12);
@@ -308,11 +310,13 @@ public class DistanceZeroGC {
         s.count = 2;
         // 返回一个指向原点的向量
         // 这里 B2Math.b2Cross(B2Math.b2Add(w1, w2), e12) e12是线段, w1+w2是从原点出来的向量, 两个叉乘可以获取和原点的方向(顺时针 还是逆时针);
-        return B2Math.b2CrossSVZeroGC(B2Math.b2Cross(B2Math.b2AddZeroGC(w1, w2, s.cacheB2Vec2), e12), e12, s.d);
+        return B2Math.b2CrossSVZeroGC(B2Math.b2Cross(B2Math.b2AddZeroGC(w1, w2, s.incrCacheVec()), e12), e12, s.d);
     }
 
 
     static B2Vec2 b2SolveSimplex3(B2SimplexZeroGC s) {
+        s.resetCacheIndex();
+
         B2Vec2 w1 = s.v1.w;
         B2Vec2 w2 = s.v2.w;
         B2Vec2 w3 = s.v3.w;
@@ -321,7 +325,7 @@ public class DistanceZeroGC {
         // [1      1     ][a1] = [1]
         // [w1.e12 w2.e12][a2] = [0]
         // a3 = 0
-        B2Vec2 e12 = b2SubZeroGC(w2, w1, s.cacheB2Vec1);
+        B2Vec2 e12 = b2SubZeroGC(w2, w1, s.incrCacheVec());
         float w1e12 = b2Dot(w1, e12);
         float w2e12 = b2Dot(w2, e12);
         float d12_1 = w2e12;
@@ -331,7 +335,7 @@ public class DistanceZeroGC {
         // [1      1     ][a1] = [1]
         // [w1.e13 w3.e13][a3] = [0]
         // a2 = 0
-        B2Vec2 e13 = b2SubZeroGC(w3, w1, s.cacheB2Vec2);
+        B2Vec2 e13 = b2SubZeroGC(w3, w1, s.incrCacheVec());
         float w1e13 = b2Dot(w1, e13);
         float w3e13 = b2Dot(w3, e13);
         float d13_1 = w3e13;
@@ -341,7 +345,7 @@ public class DistanceZeroGC {
         // [1      1     ][a2] = [1]
         // [w2.e23 w3.e23][a3] = [0]
         // a1 = 0
-        B2Vec2 e23 = b2SubZeroGC(w3, w2, s.cacheB2Vec3);
+        B2Vec2 e23 = b2SubZeroGC(w3, w2, s.incrCacheVec());
         float w2e23 = b2Dot(w2, e23);
         float w3e23 = b2Dot(w3, e23);
         float d23_1 = w3e23;
@@ -367,7 +371,7 @@ public class DistanceZeroGC {
             s.v1.a = d12_1 * inv_d12;
             s.v2.a = d12_2 * inv_d12;
             s.count = 2;
-            return b2CrossSVZeroGC(b2Cross(b2AddZeroGC(w1, w2, s.cacheB2Vec4), e12), e12, s.d);
+            return b2CrossSVZeroGC(b2Cross(b2AddZeroGC(w1, w2, s.incrCacheVec()), e12), e12, s.d);
         }
 
         // e13
@@ -377,7 +381,7 @@ public class DistanceZeroGC {
             s.v3.a = d13_2 * inv_d13;
             s.count = 2;
             s.v2.set(s.v3);
-            return b2CrossSVZeroGC(b2Cross(b2AddZeroGC(w1, w3, s.cacheB2Vec4), e13), e13, s.d);
+            return b2CrossSVZeroGC(b2Cross(b2AddZeroGC(w1, w3, s.incrCacheVec()), e13), e13, s.d);
         }
 
         // w2 region
@@ -403,7 +407,7 @@ public class DistanceZeroGC {
             s.v3.a = d23_2 * inv_d23;
             s.count = 2;
             s.v1.set(s.v3);
-            return b2CrossSVZeroGC(b2Cross(b2AddZeroGC(w2, w3, s.cacheB2Vec4), e23), e23, s.d);
+            return b2CrossSVZeroGC(b2Cross(b2AddZeroGC(w2, w3, s.incrCacheVec()), e23), e23, s.d);
         }
 
         // Must be in triangle123
@@ -425,6 +429,7 @@ public class DistanceZeroGC {
      * 返 回 值： (void)
      ***************************************************************************/
     static void b2ComputeSimplexWitnessPoints(B2Vec2 pA, B2Vec2 pB, B2SimplexZeroGC s) {
+        s.resetCacheIndex();
         switch (s.count) {
             case 1:
                 /**a = s.v1.wA;
@@ -438,12 +443,12 @@ public class DistanceZeroGC {
                 //通过权重a1和a2（由Solve2()计算）对顶点坐标线性插值，得到线段上的最近点3。
                 /**a = b2Weight2(s.v1.a, s.v1.wA, s.v2.a, s.v2.wA);
                  *b = b2Weight2(s.v1.a, s.v1.wB, s.v2.a, s.v2.wB);*/
-                pA.Set(addZeroGC(multiplyZeroGC(s.v1.a, s.v1.wA, s.cacheB2Vec1),
-                        multiplyZeroGC(s.v2.a, s.v2.wA, s.cacheB2Vec2),
-                        s.cacheB2Vec3));
-                pB.Set(addZeroGC(multiplyZeroGC(s.v1.a, s.v1.wB, s.cacheB2Vec1),
-                        multiplyZeroGC(s.v2.a, s.v2.wB, s.cacheB2Vec2),
-                        s.cacheB2Vec3));
+                pA.Set(addZeroGC(multiplyZeroGC(s.v1.a, s.v1.wA, s.incrCacheVec()),
+                        multiplyZeroGC(s.v2.a, s.v2.wA, s.incrCacheVec()),
+                        s.incrCacheVec()));
+                pB.Set(addZeroGC(multiplyZeroGC(s.v1.a, s.v1.wB, s.incrCacheVec()),
+                        multiplyZeroGC(s.v2.a, s.v2.wB, s.incrCacheVec()),
+                        s.incrCacheVec()));
                 break;
 
             case 3://对于3个点，我们可以判断此时两形状一碰撞了，见证点，就是两形状的碰撞点，故是一样的。
@@ -451,10 +456,10 @@ public class DistanceZeroGC {
                  // todo why are these not equal?
                  //*b = b2Weight3(s.v1.a, s.v1.wB, s.v2.a, s.v2.wB, s.v3.a, s.v3.wB);
                  *b = * a;*/
-                pA.Set(addZeroGC(multiplyZeroGC(s.v1.a, s.v1.wA, s.cacheB2Vec1),
-                        multiplyZeroGC(s.v2.a, s.v2.wA, s.cacheB2Vec2),
-                        multiplyZeroGC(s.v3.a, s.v3.wA, s.cacheB2Vec3),
-                        s.cacheB2Vec4));
+                pA.Set(addZeroGC(multiplyZeroGC(s.v1.a, s.v1.wA, s.incrCacheVec()),
+                        multiplyZeroGC(s.v2.a, s.v2.wA, s.incrCacheVec()),
+                        multiplyZeroGC(s.v3.a, s.v3.wA, s.incrCacheVec()),
+                        s.incrCacheVec()));
                 pB.Set(pA);
                 break;
 

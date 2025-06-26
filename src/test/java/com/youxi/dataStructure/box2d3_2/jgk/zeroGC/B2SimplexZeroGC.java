@@ -11,14 +11,11 @@ public class B2SimplexZeroGC {
     public B2SimplexVertexZeroGC v3 = new B2SimplexVertexZeroGC();
     public int count;//单纯形顶点个数
 
-    public B2Vec2 cacheB2Vec1 = new B2Vec2();
-    public B2Vec2 cacheB2Vec2 = new B2Vec2();
-    public B2Vec2 cacheB2Vec3 = new B2Vec2();
-    public B2Vec2 cacheB2Vec4 = new B2Vec2();
-    public B2Vec2 cacheB2Vec5 = new B2Vec2();
 
     public B2Vec2 nonUnitNormal = new B2Vec2();
     public B2Vec2 d = new B2Vec2();
+
+
 
     public B2SimplexZeroGC() {
     }
@@ -55,14 +52,29 @@ public class B2SimplexZeroGC {
         v.a = 1.0f;
         count = 1;
 
-
-        cacheB2Vec1.setXY(0, 0);
-        cacheB2Vec2.setXY(0, 0);
-        cacheB2Vec3.setXY(0, 0);
-        cacheB2Vec4.setXY(0, 0);
-        cacheB2Vec5.setXY(0, 0);
-
         nonUnitNormal.setXY(0, 0);
         d.setXY(0, 0);
+
+        cacheIndex = 0;
+        for (B2Vec2 cacheB2Vec : cacheB2Vecs) {
+            cacheB2Vec.setXY(0,0);
+        }
     }
+
+
+    private int cacheIndex = 0;
+    private final B2Vec2[] cacheB2Vecs = new B2Vec2[6];
+    {
+        for (int i = 0; i < cacheB2Vecs.length; i++) {
+            cacheB2Vecs[i] = new B2Vec2();
+        }
+    }
+    public void resetCacheIndex() {
+        cacheIndex = 0;
+    }
+    public B2Vec2 incrCacheVec() {
+        return cacheB2Vecs[cacheIndex++];
+    }
+
+
 }

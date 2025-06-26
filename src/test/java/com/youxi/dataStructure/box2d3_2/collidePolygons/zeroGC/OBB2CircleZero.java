@@ -1,0 +1,69 @@
+package com.youxi.dataStructure.box2d3_2.collidePolygons.zeroGC;
+
+import com.youxi.math.box2dGJK.B2Math;
+import com.youxi.math.box2dGJK.shape.B2Vec2;
+
+import static com.youxi.math.box2dGJK.B2Math.*;
+
+/**
+ * https://blog.csdn.net/qq_37043683/article/details/80375691
+ * https://www.cnblogs.com/sanyejun/p/16743843.html
+ * https://zhuanlan.zhihu.com/p/583879987?utm_id=0
+ */
+public class OBB2CircleZero {
+    public static boolean testCircleAABB(B2Vec2 circleCenter, float circleRadius,
+                                         B2Vec2 aabbCenter, B2Vec2 aabbSizeB, OutValueZeroGC outValueZeroGC) {
+        outValueZeroGC.reset();
+        // 计算圆心到AABB中心的向量绝对值
+        B2Vec2 cacheVec1 = subZeroGC(aabbCenter, circleCenter, outValueZeroGC.incrCacheVec());
+        B2Vec2 abs = b2AbsZeroGC(cacheVec1, outValueZeroGC.incrCacheVec());
+        // 计算圆心到AABB边界的最近点偏移 若圆心在AABB内部，结果为负值；否则为超出边界的距离。
+        // 这一步 相当于吧aabb变成了一个点 然后比较点和半径的距离
+        B2Vec2 u = b2MaxZeroGC(subZeroGC(abs, aabbSizeB, outValueZeroGC.incrCacheVec()), B2Vec2.ZERO, outValueZeroGC.incrCacheVec());
+        // 距离平方比较 若该值小于半径平方，则相交。
+        return b2LengthSquared(u) <= circleRadius * circleRadius;
+    }
+
+    /**
+     * 将圆旋转到aabb的坐标系 然后用aabb的算法
+     */
+    public static boolean testCircleOBB(B2Vec2 circleCenter, float circleRadius,
+                                        B2Vec2 obbCenter, float obbDeg, B2Vec2 obbSizeB, OutValueZeroGC outValueZeroGC) {
+        outValueZeroGC.reset();
+
+        B2Vec2 p =  subZeroGC(obbCenter, circleCenter, outValueZeroGC.incrCacheVec());
+        B2Vec2 pRotate = unityRotateZeroGC(p, -obbDeg, outValueZeroGC.incrCacheVec());
+
+        B2Vec2 abs = b2AbsZeroGC(pRotate, outValueZeroGC.incrCacheVec());
+        B2Vec2 u = b2MaxZeroGC(subZeroGC(abs, obbSizeB, outValueZeroGC.incrCacheVec()), B2Vec2.ZERO, outValueZeroGC.incrCacheVec());
+
+        // 距离平方比较 若该值小于半径平方，则相交。
+        return b2LengthSquared(u) <= circleRadius * circleRadius;
+    }
+
+    public static final OutValueZeroGC outValueZeroGC = new OutValueZeroGC();
+    public static void main(String[] args) {
+        B2Vec2 center = new B2Vec2(2, 2);
+        float cr = 1;
+        // 圆和aabb相交
+        B2Vec2 aabbCenter = new B2Vec2(0.7f, 0.7f);
+        B2Vec2 aabbSize = new B2Vec2(1f, 1f);
+        System.out.println("圆和aabb相交 "+ testCircleAABB(center, cr, aabbCenter, aabbSize, outValueZeroGC));
+
+        // 圆和aabb不相交
+        aabbCenter = new B2Vec2(-0.7f, -0.7f);
+        aabbSize = new B2Vec2(1f, 1f);
+        System.out.println("圆和aabb不相交 " + testCircleAABB(center, cr, aabbCenter, aabbSize, outValueZeroGC));
+
+
+        // 圆和obb相交
+        aabbCenter = new B2Vec2(0.7f, 0.7f);
+        aabbSize = new B2Vec2(1f, 1f);
+        System.out.println("圆和obb相交 " + testCircleOBB(center, cr, aabbCenter, 30, aabbSize, outValueZeroGC));
+        // 圆和obb不相交
+        aabbCenter = new B2Vec2(-0.7f, -0.7f);
+        aabbSize = new B2Vec2(1f, 1f);
+        System.out.println("圆和obb不相交 " + testCircleOBB(center, cr, aabbCenter, 30, aabbSize, outValueZeroGC));
+    }
+}
+

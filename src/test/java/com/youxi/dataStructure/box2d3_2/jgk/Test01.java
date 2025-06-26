@@ -1,11 +1,7 @@
 package com.youxi.dataStructure.box2d3_2.jgk;
 
 
-import com.youxi.dataStructure.box2d3_2.collidePolygons.CCD;
-import com.youxi.dataStructure.box2d3_2.jgk.zeroGC.B2CastOutputZeroGC;
-import com.youxi.dataStructure.box2d3_2.jgk.zeroGC.B2DistanceInputZeroGC;
-import com.youxi.dataStructure.box2d3_2.jgk.zeroGC.B2DistanceOutputZeroGC;
-import com.youxi.dataStructure.box2d3_2.jgk.zeroGC.B2ShapeCastPairInputZeroGC;
+import com.youxi.dataStructure.box2d3_2.jgk.zeroGC.*;
 import com.youxi.math.box2dGJK.B2Distance;
 import com.youxi.math.box2dGJK.B2ShapeCastInput;
 import com.youxi.math.box2dGJK.B2ShapeCastOutput;
@@ -20,24 +16,28 @@ import java.util.Arrays;
 public class Test01 {
     public static final boolean PRINT = true;
 
-    public static B2ShapeCastPairInputZeroGC  b2ShapeCastPairInputZeroGC = new B2ShapeCastPairInputZeroGC();
+    public static B2ShapeCastPairInputZeroGC b2ShapeCastPairInputZeroGC = new B2ShapeCastPairInputZeroGC();
     public static B2CastOutputZeroGC b2CastOutputZeroGC = new B2CastOutputZeroGC();
 
-    public static B2DistanceInputZeroGC  b2DistanceInputZeroGC = new B2DistanceInputZeroGC();
+    public static B2DistanceInputZeroGC b2DistanceInputZeroGC = new B2DistanceInputZeroGC();
     public static B2DistanceOutputZeroGC b2DistanceOutputZeroGC = new B2DistanceOutputZeroGC();
+
+    public static B2CCDInputZeroGC b2CCDInputZeroGC = new B2CCDInputZeroGC();
+    public static B2CCDOutputZeroGC b2CCDOutputZeroGC = new B2CCDOutputZeroGC();
 
     @Test
     public void test02() {
 
-        // obb打obb碰撞 需要打射线才在一起在一起
-        // 圆打obb 需要打射线才在一起在一起
-        B2MyPolygon aabb1 = new B2MyPolygon(1f, 1f, new B2Vec2(2, 2), 40f);
-        B2Circle b2Circle1 = new B2Circle(new B2Vec2(20, 2), 2);
-        B2Vec2 b2Vec2 = new B2Vec2(1, 0);
+
+        // obb打圆 一开始就重叠在一起
+        B2MyPolygon    aabb1 = new B2MyPolygon(1f, 1f, new B2Vec2(2, 2), 40f);
+        B2Circle b2Circle1 = new B2Circle(new B2Vec2(3, 3), 2);
+        B2Vec2  b2Vec2 = new B2Vec2(-1, 0);
         b2Vec2 = b2Vec2.Normalize();
-        b2Vec2 = b2Vec2.multiply(30);
-        //      bsDistance(new b2ShapeProxy(b2Circle1), new b2ShapeProxy(aabb1), "圆打obb 需要打射线才在一起在一起");
-        b2ShapeCast(new b2ShapeProxy(b2Circle1), new b2ShapeProxy(aabb1), b2Vec2, "圆打obb 需要打射线才在一起在一起");
+        bsDistance(new b2ShapeProxy(aabb1), new b2ShapeProxy(b2Circle1), "obb打圆 一开始就重叠在一起");
+        b2ShapeCast(new b2ShapeProxy(aabb1), new b2ShapeProxy(b2Circle1), b2Vec2, "obb打圆 一开始就重叠在一起");
+        System.out.println("-------------");
+        System.out.println("-------------");
 
 
     }
@@ -150,6 +150,8 @@ public class Test01 {
         b2CCD(new b2ShapeProxy(a), new b2ShapeProxy(b), dirA, dirB, "CCD 测试");
 
 
+        System.out.println("----------");
+        System.out.println("----------");
         // 这个ccd 运行时间能长一点 用这个来测试 gjk是否有问题
         a = new B2MyPolygon(40f, 1f, 1f, new B2Vec2(2, 2));
         b = new B2MyPolygon(50f, 1f, 1f, new B2Vec2(2, 5));
@@ -169,32 +171,59 @@ public class Test01 {
         B2DistanceInput b2DistanceInput = new B2DistanceInput(aabb1, aabb2, true);
         B2DistanceOutput b2DistanceOutput = Distance.b2ShapeDistance(b2DistanceInput);
 
+
+        String format = String.format("param %s  hit %s b2DistanceOutput pointA %s pointB %s distance %s iterations %s",
+                "bsDistance " + param, b2DistanceOutput.distance < 0.0001f,
+                b2DistanceOutput.pointA, b2DistanceOutput.pointB,
+                b2DistanceOutput.distance, b2DistanceOutput.iterations);
         if (PRINT)
-            System.out.printf("param %s  hit %s b2DistanceOutput pointA %s pointB %s distance %s iterations %s%n",
-                    "bsDistance " + param, b2DistanceOutput.distance < 0.0001f,
-                    b2DistanceOutput.pointA, b2DistanceOutput.pointB,
-                    b2DistanceOutput.distance, b2DistanceOutput.iterations);
+            System.out.println(format);
+
 
         // 测试zeroGC
-        Dista
+        b2DistanceInputZeroGC.proxyA.reset(aabb1);
+        b2DistanceInputZeroGC.proxyB.reset(aabb2);
+        B2DistanceOutputZeroGC b2DistanceOutputZeroGC1 = DistanceZeroGC.b2ShapeDistance(b2DistanceInputZeroGC, b2DistanceOutputZeroGC);
+        String format2 = String.format("param %s  hit %s b2DistanceOutput pointA %s pointB %s distance %s iterations %s",
+                "bsDistance " + param, b2DistanceOutputZeroGC1.distance < 0.0001f,
+                b2DistanceOutputZeroGC1.pointA, b2DistanceOutputZeroGC1.pointB,
+                b2DistanceOutputZeroGC1.distance, b2DistanceOutputZeroGC1.iterations);
+        if (PRINT)
+            System.out.println(String.format("测试 zeroGC  %s   %s", format.equals(format2), format2));
+
 
         bsDistance2(aabb1, aabb2, param);
-        System.out.println();
     }
 
     private static void b2ShapeCast(b2ShapeProxy aabb1, b2ShapeProxy aabb2, B2Vec2 b2Vec2, String param) {
         B2ShapeCastPairInput b2ShapeCastInput = new B2ShapeCastPairInput(aabb1, aabb2, b2Vec2);
         B2CastOutput b2CastOutput = Distance.b2ShapeCast(b2ShapeCastInput);
 
+        String format = String.format("param %s hit %s dir %s b2ShapeCastOutput point %s normal %s lambda %s iterations %s",
+                "b2ShapeCast " + param, b2CastOutput.hit,
+                b2Vec2, b2CastOutput.point,
+                b2CastOutput.normal, b2CastOutput.fraction, b2CastOutput.iterations);
         if (PRINT)
-            System.out.printf("param %s hit %s dir %s b2ShapeCastOutput point %s normal %s lambda %s iterations %s %n",
-                    "b2ShapeCast " + param, b2CastOutput.hit,
-                    b2Vec2, b2CastOutput.point,
-                    b2CastOutput.normal, b2CastOutput.fraction, b2CastOutput.iterations);
+            System.out.println(format);
 
+
+        // 测试zeroGC
+        b2ShapeCastPairInputZeroGC.proxyA.reset(aabb1);
+        b2ShapeCastPairInputZeroGC.proxyB.reset(aabb2);
+        b2ShapeCastPairInputZeroGC.translationB.setXY(b2Vec2);
+        b2ShapeCastPairInputZeroGC.canEncroach = false;
+        b2ShapeCastPairInputZeroGC.maxFraction = 1;
+        B2CastOutputZeroGC b2CastOutputZeroGC1 = DistanceZeroGC.b2ShapeCast(b2ShapeCastPairInputZeroGC, b2CastOutputZeroGC);
+
+        String format2 = String.format("param %s hit %s dir %s b2ShapeCastOutput point %s normal %s lambda %s iterations %s",
+                "b2ShapeCast " + param, b2CastOutputZeroGC1.hit,
+                b2Vec2, b2CastOutputZeroGC1.point,
+                b2CastOutputZeroGC1.normal, b2CastOutputZeroGC1.fraction, b2CastOutputZeroGC1.iterations);
+
+        if (PRINT)
+            System.out.println(String.format("测试 zeroGC  %s  %s ", format.equals(format2), format2));
 
         b2ShapeCast2(aabb1, aabb2, b2Vec2, param);
-        System.out.println();
     }
 
 
@@ -238,11 +267,26 @@ public class Test01 {
         B2CCDInput b2CCDInput = new B2CCDInput(aabb1, aabb2, dirA, dirB);
         B2CCDOutput ccd = CCD.ccd(b2CCDInput);
 
+        String format = String.format("CCD param %s hit %s  dir %s b2ShapeCastOutput point %s normal %s lambda %s iterations %s ",
+                param, ccd.hit,
+                dirB, ccd.point, ccd.normal, ccd.fraction, ccd.iterations);
         if (PRINT)
-            System.out.printf("CCD param %s hit %s  dir %s b2ShapeCastOutput point %s normal %s lambda %s iterations %s %n", param, ccd.hit,
-                    dirB, ccd.point, ccd.normal, ccd.fraction, ccd.iterations);
+            System.out.println(format);
+        // 测试 zeroGC
 
-        // b2ShapeCast3(aabb1, aabb2, b2Vec2, param);
+        b2CCDInputZeroGC.proxyA.reset(aabb1);
+        b2CCDInputZeroGC.proxyB.reset(aabb2);
+        b2CCDInputZeroGC.proxyADir.setXY(dirA);
+        b2CCDInputZeroGC.proxyBDir.setXY(dirB);
+
+        b2CCDInputZeroGC.canEncroach = false;
+
+        B2CCDOutputZeroGC b2CCDOutputZeroGC1 = CCDZeroGC.ccd(b2CCDInputZeroGC, b2CCDOutputZeroGC);
+        String format2 = String.format("CCD param %s hit %s  dir %s b2ShapeCastOutput point %s normal %s lambda %s iterations %s ",
+                param, b2CCDOutputZeroGC1.hit,
+                dirB, b2CCDOutputZeroGC1.point, b2CCDOutputZeroGC1.normal, b2CCDOutputZeroGC1.fraction, b2CCDOutputZeroGC1.iterations);
+        if (PRINT)
+            System.out.println(String.format("CCD 测试 zeroGC  %s  %s ", format.equals(format2), format2));
     }
 
 

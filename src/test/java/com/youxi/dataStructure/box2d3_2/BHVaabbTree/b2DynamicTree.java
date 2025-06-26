@@ -86,7 +86,7 @@ public class b2DynamicTree implements IB3_2DynamicTree{
             if (B2Math.B2AABB_Overlaps(aabb, aabb) && (node.categoryBits & maskBits) != 0) {
                 if (b2IsLeaf(node)) {
                     // callback to user code with proxy id
-                    boolean proceed = callback.callback(nodeId, node.userData, context);
+                    boolean proceed = callback.callback(aabb, nodeId, node.userData, context);
                     result.leafVisits += 1;
 
                     if (proceed == false) {
@@ -187,8 +187,9 @@ public class b2DynamicTree implements IB3_2DynamicTree{
                     // Update segment bounding box.
                     maxFraction = value;
                     p2 = B2Math.b2MulAdd(p1, maxFraction, d);
-                    segmentAABB.lowerBound = B2Math.b2Min(p1, p2);
-                    segmentAABB.upperBound = B2Math.b2Max(p1, p2);
+                    segmentAABB.set(B2Math.b2Min(p1, p2), B2Math.b2Max(p1, p2));
+                    /*segmentAABB.lowerBound = B2Math.b2Min(p1, p2);
+                    segmentAABB.upperBound = B2Math.b2Max(p1, p2);*/
                 }
             } else {
                 if (stackCount < B2_TREE_STACK_SIZE - 1) {
@@ -215,7 +216,7 @@ public class b2DynamicTree implements IB3_2DynamicTree{
     /**
      * 和打射线一样 也将boxCast 扩大成了一个特别大的aabb盒子
      */
-    b2TreeStats b2DynamicTree_ShapeCast(b2ShapeCastInput input, long maskBits,
+   public b2TreeStats b2DynamicTree_ShapeCast(b2ShapeCastInput input, long maskBits,
                                         B2TreeShapeCastCallbackFcn callback, Object context) {
         b2TreeStats stats = new b2TreeStats();
 
@@ -226,15 +227,17 @@ public class b2DynamicTree implements IB3_2DynamicTree{
         // 找到proxy的aabb包围盒
         B2AABB originAABB = new B2AABB(input.proxy.points[0], input.proxy.points[0]);
         for (int i = 1; i < input.proxy.count; ++i) {
-            originAABB.lowerBound = B2Math.b2Min(originAABB.lowerBound, input.proxy.points[i]);
-            originAABB.upperBound = B2Math.b2Max(originAABB.upperBound, input.proxy.points[i]);
+            B2Vec2 lowerBound = B2Math.b2Min(originAABB.lowerBound, input.proxy.points[i]);
+            B2Vec2 upperBound = B2Math.b2Max(originAABB.upperBound, input.proxy.points[i]);
+            originAABB.set(lowerBound, upperBound);
         }
 
         B2Vec2 radius = new B2Vec2(input.proxy.radius, input.proxy.radius);
 
         // 包围盒应用半径
-        originAABB.lowerBound = B2Math.b2Sub(originAABB.lowerBound, radius);
-        originAABB.upperBound = B2Math.b2Add(originAABB.upperBound, radius);
+        B2Vec2 lowerBound = B2Math.b2Sub(originAABB.lowerBound, radius);
+        B2Vec2 upperBound = B2Math.b2Add(originAABB.upperBound, radius);
+        originAABB.set(lowerBound, upperBound);
 
         B2Vec2 p1 = B2Math.B2AABB_Center(originAABB);
         B2Vec2 extension = B2Math.B2AABB_Extents(originAABB);
@@ -304,8 +307,9 @@ public class b2DynamicTree implements IB3_2DynamicTree{
                     // Update segment bounding box.
                     maxFraction = value;
                     t = B2Math.b2MulSV(maxFraction, input.translation);
-                    totalAABB.lowerBound = B2Math.b2Min(originAABB.lowerBound, B2Math.b2Add(originAABB.lowerBound, t));
-                    totalAABB.upperBound = B2Math.b2Max(originAABB.upperBound, B2Math.b2Add(originAABB.upperBound, t));
+                    B2Vec2 lowerBound1 = B2Math.b2Min(originAABB.lowerBound, B2Math.b2Add(originAABB.lowerBound, t));
+                    B2Vec2 upperBound1 = B2Math.b2Max(originAABB.upperBound, B2Math.b2Add(originAABB.upperBound, t));
+                    totalAABB.set(lowerBound1, upperBound1);
                 }
             } else {
                 if (stackCount < B2_TREE_STACK_SIZE - 1) {
@@ -984,6 +988,7 @@ public class b2DynamicTree implements IB3_2DynamicTree{
         B2_ASSERT(-B2_HUGE < aabb.lowerBound.y && aabb.lowerBound.y < B2_HUGE);
         B2_ASSERT(-B2_HUGE < aabb.upperBound.x && aabb.upperBound.x < B2_HUGE);
         B2_ASSERT(-B2_HUGE < aabb.upperBound.y && aabb.upperBound.y < B2_HUGE);
+        B2_ASSERT(categoryBits > 0);
 
         int proxyId = b2AllocateNode();
         b2TreeNode node = nodes[proxyId];

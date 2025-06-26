@@ -2,19 +2,17 @@ package com.youxi.dataStructure.box2d3_2.BHVaabbTree;
 
 import com.example.demo4.TestUtil;
 import com.youxi.building.Misc;
-import com.youxi.dataStructure.aabbTree.IB2DynamicTree;
-import com.youxi.dataStructure.aabbTree.bean.B2RayCastInput;
-import com.youxi.dataStructure.aabbTree.bean.QueryCallback;
-import com.youxi.dataStructure.aabbTree.bean.RayCastCallback;
-import com.youxi.dataStructure.aabbTree.original.B2DynamicTree;
-import com.youxi.dataStructure.aabbTree.zeroGC.B2DynamicTreeZeroGC;
+import com.youxi.dataStructure.box2d3_2.collidePolygons.OutValue;
+import com.youxi.dataStructure.box2d3_2.collidePolygons.Ray2OBB;
+import com.youxi.dataStructure.box2d3_2.jgk.B2CastOutput;
+import com.youxi.dataStructure.box2d3_2.jgk.B2ShapeCastPairInput;
+import com.youxi.dataStructure.box2d3_2.jgk.Distance;
 import com.youxi.db.test.KV;
-import com.youxi.entity.Collision2D;
-import com.youxi.entity.Dir;
-import com.youxi.entity.OutValue;
-import com.youxi.entity.Position;
+import com.youxi.db.test.ThreeKV;
+import com.youxi.math.box2dGJK.B2Math;
+import com.youxi.math.box2dGJK.b2ShapeProxy;
 import com.youxi.math.box2dGJK.shape.B2AABB;
-import com.youxi.math.box2dGJK.shape.B2Collision;
+import com.youxi.math.box2dGJK.shape.B2OBB;
 import com.youxi.math.box2dGJK.shape.B2Vec2;
 import org.junit.Test;
 
@@ -73,7 +71,7 @@ public class Tree3_2Test {
 
     static Map<Integer, UserData> map = new HashMap<>();
     static List<KV<UserData, B2Vec2>> moveList = new ArrayList<>();
-    static List<KV<B2RayCastInput, B2AABB>> rayCastList = new ArrayList<>();
+    static List<ThreeKV<b2RayCastInput, B2AABB, b2ShapeCastInput>> rayCastList = new ArrayList<>();
 
     static int index = 20000;
 
@@ -93,14 +91,23 @@ public class Tree3_2Test {
         }
 
         for (int i = 0; i < index; i++) {
-            B2RayCastInput b2RayCastInput = new B2RayCastInput();
+            b2RayCastInput b2RayCastInput = new b2RayCastInput();
             b2RayCastInput.maxFraction = 1;
             B2AABB b2AABB = randomCreateAABB();
-            b2RayCastInput.p1 = b2AABB.lowerBound;
-            b2RayCastInput.p2 = b2AABB.upperBound;
+            b2RayCastInput.origin = b2AABB.lowerBound;
+            b2RayCastInput.translation = b2AABB.upperBound.sub(b2AABB.lowerBound);
 
             B2AABB b2AABB1 = randomCreateAABB();
-            rayCastList.add(new KV<>(b2RayCastInput, b2AABB1));
+
+            // boxcast
+            b2ShapeCastInput b2ShapeCastInput = new b2ShapeCastInput();
+            B2AABB b2AABB3 = randomCreateAABB();
+            B2OBB b2OBB = new B2OBB(b2AABB3.center, b2AABB3.halfB2Vec2, ThreadLocalRandom.current().nextInt(360));
+            b2ShapeCastInput.proxy = new b2ShapeProxy(b2OBB);
+            B2AABB b2AABB4 = randomCreateAABB();
+            b2ShapeCastInput.translation = b2AABB4.upperBound.sub(b2AABB4.lowerBound);
+
+            rayCastList.add(new ThreeKV<>(b2RayCastInput, b2AABB1, b2ShapeCastInput));
         }
     }
 
@@ -124,13 +131,21 @@ public class Tree3_2Test {
         map.put(index++, new UserData(index, new B2AABB(new B2Vec2(5, 2), new B2Vec2(9, 5))));
 
         // 打射线
-        B2RayCastInput b2RayCastInput = new B2RayCastInput();
+        b2RayCastInput b2RayCastInput = new b2RayCastInput();
         b2RayCastInput.maxFraction = 1;
-        b2RayCastInput.p1 = new B2Vec2(-1, -1);
-        b2RayCastInput.p2 = new B2Vec2(10, 10);
+        b2RayCastInput.origin = new B2Vec2(-1, -1);
+        b2RayCastInput.translation = new B2Vec2(10, 10);
 
-        B2AABB b2AABB1 = new B2AABB(new B2Vec2(5, 2), new B2Vec2(9, 5));
-        rayCastList.add(new KV<>(b2RayCastInput, b2AABB1));
+        B2AABB b2AABB1 = new B2AABB(new B2Vec2(5, 2), new B2Vec2(8.6f, 5));
+
+        // boxcast
+        b2ShapeCastInput b2ShapeCastInput = new b2ShapeCastInput();
+        B2OBB b2OBB = new B2OBB(b2RayCastInput.origin, new B2Vec2(1, 1), 30);
+        b2ShapeCastInput.proxy = new b2ShapeProxy(b2OBB);
+        b2ShapeCastInput.translation = b2RayCastInput.translation;
+
+
+        rayCastList.add(new ThreeKV<>(b2RayCastInput, b2AABB1, b2ShapeCastInput));
     }
 
 
@@ -168,24 +183,11 @@ public class Tree3_2Test {
 
     @Test
     public void test01() {
-        randomData();
-        treeTest(b2DynamicTree.b2DynamicTree_Create(), false);
+        //randomData();
+        customData();
         treeTest(b2DynamicTree.b2DynamicTree_Create(), true);
-
-        treeTest(b2DynamicTree.b2DynamicTree_Create(), false);
-        treeTest(b2DynamicTree.b2DynamicTree_Create(), true);
-
-        treeTest(b2DynamicTree.b2DynamicTree_Create(), false);
-        treeTest(b2DynamicTree.b2DynamicTree_Create(), true);
-
-        treeTest(b2DynamicTree.b2DynamicTree_Create(), false);
-        treeTest(b2DynamicTree.b2DynamicTree_Create(), true);
-
-        treeTest(b2DynamicTree.b2DynamicTree_Create(), false);
-        treeTest(b2DynamicTree.b2DynamicTree_Create(), true);
-
-        treeTest(b2DynamicTree.b2DynamicTree_Create(), false);
-        treeTest(b2DynamicTree.b2DynamicTree_Create(), true);
+        System.out.println("-------------------");
+        treeTest(b2DynamicTreeZeroGC.b2DynamicTree_Create(), true);
     }
 
     public String treeTest(IB3_2DynamicTree b2DynamicTree, boolean rebuild) {
@@ -194,7 +196,7 @@ public class Tree3_2Test {
         }
         TestUtil.testTime(() -> {
             for (UserData value : map.values()) {
-                int proxy = b2DynamicTree.b2DynamicTree_CreateProxy(value.aabb, 0, value);
+                int proxy = b2DynamicTree.b2DynamicTree_CreateProxy(value.aabb, 1, value);
                 value.proxyId = proxy;
             }
             //b2DynamicTree.rebuildBottomUp();
@@ -225,53 +227,67 @@ public class Tree3_2Test {
             }
             b2DynamicTree.b2DynamicTree_Validate();
             //b2DynamicTree.rebuildBottomUp();
-        }, 1, b2DynamicTree.getClass().getSimpleName() + " moveProxy rebuild ："+rebuild);
+        }, 1, b2DynamicTree.getClass().getSimpleName() + " moveProxy rebuild ：" + rebuild);
 
         String s = b2DynamicTree.printTreeToString();
         System.out.println(String.format("rebuild %s heigh %s minH %s", rebuild, b2DynamicTree.b2DynamicTree_GetHeight(), b2DynamicTree.calculateMinHeight()));
         //System.out.println(s);
-        /*
 
-        RayCastCallback rayCastCallback = new RayCastCallback() {
+
+        B2TreeRayCastCallbackFcn rayCastCallback = new B2TreeRayCastCallbackFcn() {
             @Override
-            public float rayCastCallback(B2RayCastInput subInput, int nodeId) {
-                UserData userData = (UserData) b2DynamicTree.getUserData(nodeId);
-                B2Vec2 sub = subInput.p2.sub(subInput.p1);
-                Position o = new Position(subInput.p1.x, subInput.p1.y);
-                Dir dir = new Dir(sub.x, sub.y);
-                Dir min = new Dir(userData.moveAAbb.lowerBound.x, userData.moveAAbb.lowerBound.y);
-                Dir max = new Dir(userData.moveAAbb.upperBound.x, userData.moveAAbb.upperBound.y);
+            public float callback(b2RayCastInput input, int proxyId, Object userData, Object context) {
+                UserData u = (UserData) userData;
                 OutValue outValue = new OutValue();
-                boolean b = Collision2D.TestRayAABB(o, dir, min, max, outValue);
+                boolean b = Ray2OBB.TestRayOBB(input.origin, input.translation, u.aabb.center, u.aabb.halfB2Vec2, 0, outValue);
                 if (b) {
-                    System.out.println(String.format("RayCastCallback id %s aabb %s  hit %s", userData.id, userData.moveAAbb, b));
+                    System.out.println(String.format("RayCastCallback id %s aabb %s  hit %s", u.id, u.moveAAbb, b));
                 }
                 return 1;
             }
         };
 
-        QueryCallback queryCallback = new QueryCallback() {
+        B2TreeQueryCallbackFcn queryCallback = new B2TreeQueryCallbackFcn() {
 
             @Override
-            public boolean queryCallback(int nodeId, B2AABB aabb) {
-                UserData userData = (UserData) b2DynamicTree.getUserData(nodeId);
-                boolean b = B2Collision.b2TestOverlap(aabb, userData.moveAAbb);
+            public boolean callback(B2AABB aabb, int proxyId, Object userData, Object context) {
+                UserData u = (UserData) userData;
+                boolean b = B2Math.B2AABB_Overlaps(aabb, u.aabb);
                 if (b) {
-                    System.out.println(String.format("QueryCallback id %s aabb %s  hit %s", userData.id, userData.moveAAbb, b));
+                    System.out.println(String.format("QueryCallback id %s aabb %s  hit %s", u.id, u.moveAAbb, b));
                 }
                 return true;
             }
         };
 
+        B2TreeShapeCastCallbackFcn boxCastback = new B2TreeShapeCastCallbackFcn() {
+
+            @Override
+            public float callback(b2ShapeCastInput input, int proxyId, Object userData, Object context) {
+                UserData u = (UserData) userData;
+                OutValue outValue = new OutValue();
+                B2ShapeCastPairInput b2ShapeCastPairInput = new B2ShapeCastPairInput();
+                b2ShapeCastPairInput.proxyA = input.proxy;
+                b2ShapeCastPairInput.proxyB = new b2ShapeProxy(new B2OBB(u.aabb.GetCenter(), u.aabb.halfB2Vec2, 0));
+                b2ShapeCastPairInput.translationB = input.translation;
+                B2CastOutput b2CastOutput = Distance.b2ShapeCast(b2ShapeCastPairInput);
+                if (b2CastOutput.hit) {
+                    System.out.println(String.format("BoxCastCallback id %s aabb %s  hit %s", u.id, u.moveAAbb, b2CastOutput.hit));
+                }
+                return 1;
+            }
+        };
+
 
         TestUtil.testTime(() -> {
-            for (KV<B2RayCastInput, B2AABB> kv : rayCastList) {
-                b2DynamicTree.rayCast(rayCastCallback, kv.getK());
-                b2DynamicTree.query(queryCallback, kv.getV());
+            for (ThreeKV<b2RayCastInput, B2AABB, b2ShapeCastInput> kv : rayCastList) {
+                b2DynamicTree.b2DynamicTree_RayCast(kv.getK(), Long.MAX_VALUE, rayCastCallback, new Object());
+                b2DynamicTree.b2DynamicTree_Query(kv.getV(), Long.MAX_VALUE, queryCallback, new Object());
+                b2DynamicTree.b2DynamicTree_ShapeCast(kv.getP(), Long.MAX_VALUE, boxCastback, new Object());
             }
 
         }, 1, b2DynamicTree.getClass().getSimpleName() + " rayAndQuery");
-*/
+
 
         // b2DynamicTree.printTree();
    /*     TestUtil.testTime(() -> {

@@ -10,5 +10,5 @@ public class b2RayCastInput {
     B2Vec2 translation;
 
     /// The maximum fraction of the translation to consider, typically 1
-    float maxFraction;
+    float maxFraction = 1;
 }

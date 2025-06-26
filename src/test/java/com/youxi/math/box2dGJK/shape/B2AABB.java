@@ -19,6 +19,13 @@ public class B2AABB {
         this.halfB2Vec2 = upperBound.sub(lowerBound).multiply(0.5f);
     }
 
+    public void set(B2Vec2 lowerBound, B2Vec2 upperBound) {
+        this.lowerBound.setXY(lowerBound);
+        this.upperBound.setXY(upperBound);
+        B2Math.addZeroGC(lowerBound, upperBound, 0.5f, this.center);
+        B2Math.subZeroGC(upperBound, lowerBound, 0.5f, this.halfB2Vec2);
+    }
+
     /// Verify that the bounds are sorted.
    public boolean IsValid(){
         return true;

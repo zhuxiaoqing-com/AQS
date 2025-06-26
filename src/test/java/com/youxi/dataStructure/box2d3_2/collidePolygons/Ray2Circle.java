@@ -1,7 +1,5 @@
 package com.youxi.dataStructure.box2d3_2.collidePolygons;
 
-import com.youxi.entity.Dir;
-import com.youxi.entity.Position;
 import com.youxi.math.box2dGJK.B2Math;
 import com.youxi.math.box2dGJK.shape.B2Vec2;
 
@@ -15,7 +13,7 @@ public class Ray2Circle {
     /**
      * 这里用图形法取解 好像有很多特殊情况 额
      */
-    public static boolean textRayCircle(B2Vec2 cPos, float cR, B2Vec2 rayO, B2Vec2 rDir, OutValue ov) {
+    public static boolean testRayCircle(B2Vec2 cPos, float cR, B2Vec2 rayO, B2Vec2 rDir, OutValue ov) {
         if (Math.abs(rDir.getX()) < 0.0001 || Math.abs(rDir.getY()) < 0.0001) {
             return false;
         }
@@ -80,7 +78,7 @@ public class Ray2Circle {
         B2Vec2 rayO = new B2Vec2(0.5f, 5);
         B2Vec2 b2Vec2 = new B2Vec2(1, 0.1f);
         b2Vec2 = B2Math.multiply(b2Vec2, 10);
-        boolean hit = textRayCircle(center, cr, rayO, b2Vec2, outValue.reset());
+        boolean hit = testRayCircle(center, cr, rayO, b2Vec2, outValue.reset());
         System.out.printf("射线和圆不相交 射线在圆左边  hit %s t %s hitPos %s", hit, outValue.getT(), outValue.getHitPoint());
         System.out.println();
 
@@ -88,7 +86,7 @@ public class Ray2Circle {
         rayO = new B2Vec2(5, 5);
         b2Vec2 = new B2Vec2(1, 0.1f);
         b2Vec2 = B2Math.multiply(b2Vec2, 10).multiply(-1);
-        hit = textRayCircle(center, cr, rayO, b2Vec2, outValue.reset());
+        hit = testRayCircle(center, cr, rayO, b2Vec2, outValue.reset());
         System.out.printf("射线和圆不相交 射线在圆右边  hit %s t %s hitPos %s", hit, outValue.getT(), outValue.getHitPoint());
         System.out.println();
 
@@ -96,7 +94,7 @@ public class Ray2Circle {
         rayO = new B2Vec2(1.5f, 1.3f);
         b2Vec2 = new B2Vec2(1, 0.1f);
         b2Vec2 = B2Math.multiply(b2Vec2, 10);
-        hit = textRayCircle(center, cr, rayO, b2Vec2, outValue.reset());
+        hit = testRayCircle(center, cr, rayO, b2Vec2, outValue.reset());
         System.out.printf("射线在圆里面 在圆心的左边  hit %s t %s hitPos %s", hit, outValue.getT(), outValue.getHitPoint());
         System.out.println();
 
@@ -104,14 +102,14 @@ public class Ray2Circle {
         rayO = new B2Vec2(2.3f, 2.5f);
         b2Vec2 = new B2Vec2(1, 0.1f);
         b2Vec2 = B2Math.multiply(b2Vec2, 10);
-        hit = textRayCircle(center, cr, rayO, b2Vec2, outValue.reset());
+        hit = testRayCircle(center, cr, rayO, b2Vec2, outValue.reset());
         System.out.printf("射线在圆里面 在圆心的右边  hit %s t %s hitPos %s", hit, outValue.getT(), outValue.getHitPoint());
         System.out.println();
         // 射线在圆里面 在圆上
         rayO = new B2Vec2(2f, 3f);
         b2Vec2 = new B2Vec2(1, 0.1f);
         b2Vec2 = B2Math.multiply(b2Vec2, 10);
-        hit = textRayCircle(center, cr, rayO, b2Vec2, outValue.reset());
+        hit = testRayCircle(center, cr, rayO, b2Vec2, outValue.reset());
         System.out.printf("射线在圆里面 在圆上  hit %s t %s hitPos %s", hit, outValue.getT(), outValue.getHitPoint());
         System.out.println();
 
@@ -119,7 +117,7 @@ public class Ray2Circle {
         rayO = new B2Vec2(0.3f, 2.1f);
         b2Vec2 = new B2Vec2(1, 0.1f);
         b2Vec2 = B2Math.b2Normalize(b2Vec2).multiply(0.1f);
-        hit = textRayCircle(center, cr, rayO, b2Vec2, outValue.reset());
+        hit = testRayCircle(center, cr, rayO, b2Vec2, outValue.reset());
         System.out.printf("射线的延长线和圆相交  hit %s t %s hitPos %s", hit, outValue.getT(), outValue.getHitPoint());
         System.out.println();
 
@@ -127,7 +125,7 @@ public class Ray2Circle {
         rayO = new B2Vec2(4f, 2.1f);
         b2Vec2 = new B2Vec2(1, 0.1f);
         b2Vec2 = B2Math.multiply(b2Vec2, 10);
-        hit = textRayCircle(center, cr, rayO, b2Vec2, outValue.reset());
+        hit = testRayCircle(center, cr, rayO, b2Vec2, outValue.reset());
         System.out.printf("射线的反方向延长线和圆相交  hit %s t %s hitPos %s", hit, outValue.getT(), outValue.getHitPoint());
         System.out.println();
 
@@ -135,7 +133,7 @@ public class Ray2Circle {
         rayO = new B2Vec2(0.1f, 2.1f);
         b2Vec2 = new B2Vec2(1, 0.1f);
         b2Vec2 = B2Math.b2Normalize(b2Vec2).multiply(2f);
-        hit = textRayCircle(center, cr, rayO, b2Vec2, outValue.reset());
+        hit = testRayCircle(center, cr, rayO, b2Vec2, outValue.reset());
         System.out.printf("射线起点在圆外面 射线没有穿透圆  hit %s t %s hitPos %s", hit, outValue.getT(), outValue.getHitPoint());
         System.out.println();
 
@@ -143,7 +141,7 @@ public class Ray2Circle {
          rayO = new B2Vec2(0.5f, 2.1f);
          b2Vec2 = new B2Vec2(1, 0.1f);
         b2Vec2 = B2Math.multiply(b2Vec2, 10);
-         hit = textRayCircle(center, cr, rayO, b2Vec2, outValue.reset());
+         hit = testRayCircle(center, cr, rayO, b2Vec2, outValue.reset());
         System.out.printf("射线和圆相交 射线在圆左边  hit %s t %s hitPos %s", hit, outValue.getT(), outValue.getHitPoint());
         System.out.println();
     }

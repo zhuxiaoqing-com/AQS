@@ -1,6 +1,5 @@
-package com.youxi.dataStructure.box2d3_2.collidePolygons;
+package com.youxi.dataStructure.box2d3_2.jgk;
 
-import com.youxi.dataStructure.box2d3_2.jgk.*;
 import com.youxi.math.box2dGJK.B2Math;
 import com.youxi.math.box2dGJK.shape.B2Vec2;
 

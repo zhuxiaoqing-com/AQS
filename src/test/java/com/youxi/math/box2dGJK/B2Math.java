@@ -60,28 +60,47 @@ public class B2Math {
     public static B2Vec2 add(B2Vec2 a, B2Vec2 B2Vec2) {
         return new B2Vec2(a.x + B2Vec2.x, a.y + B2Vec2.y);
     }
-
-    public static B2Vec2 add(B2Vec2 a, B2Vec2 B2Vec2, B2Vec2 c) {
-        return new B2Vec2(a.x + B2Vec2.x + c.x, a.y + B2Vec2.y + c.y);
-    }
-
     public static B2Vec2 addZeroGC(B2Vec2 a, B2Vec2 B2Vec2, B2Vec2 ret) {
         ret.setXY(a.x + B2Vec2.x, a.y + B2Vec2.y);
         return ret;
     }
-
+    public static B2Vec2 add(B2Vec2 a, B2Vec2 B2Vec2, B2Vec2 c) {
+        return new B2Vec2(a.x + B2Vec2.x + c.x, a.y + B2Vec2.y + c.y);
+    }
     public static B2Vec2 addZeroGC(B2Vec2 a, B2Vec2 B2Vec2, B2Vec2 c, B2Vec2 ret) {
         ret.setXY(a.x + B2Vec2.x + c.x, a.y + B2Vec2.y + c.y);
         return ret;
         //return new B2Vec2(a.x + B2Vec2.x + c.x, a.y + B2Vec2.y + c.y);
     }
 
+
+    public static B2Vec2 add(B2Vec2 a, B2Vec2 B2Vec2, float t) {
+        return new B2Vec2((a.x + B2Vec2.x) * t, (a.y + B2Vec2.y) * t);
+    }
+
+    public static B2Vec2 addZeroGC(B2Vec2 a, B2Vec2 B2Vec2, float t, B2Vec2 ret) {
+        ret.setXY((a.x + B2Vec2.x) * t, (a.y + B2Vec2.y) * t);
+        return ret;
+    }
+
+
+
+
     public static B2Vec2 sub(B2Vec2 a, B2Vec2 B2Vec2) {
         return new B2Vec2(a.x - B2Vec2.x, a.y - B2Vec2.y);
     }
-    public static B2Vec2 subZeroGC(B2Vec2 a, B2Vec2 B2Vec2, B2Vec2 returnVec2) {
-        returnVec2.setXY(a.x - B2Vec2.x, a.y - B2Vec2.y);
-        return returnVec2;
+
+    public static B2Vec2 subZeroGC(B2Vec2 a, B2Vec2 B2Vec2, B2Vec2 ret) {
+        ret.setXY(a.x - B2Vec2.x, a.y - B2Vec2.y);
+        return ret;
+    }
+
+    public static B2Vec2 sub(B2Vec2 a, B2Vec2 B2Vec2, float t) {
+        return new B2Vec2((a.x - B2Vec2.x) * t, (a.y - B2Vec2.y) * t);
+    }
+    public static B2Vec2 subZeroGC(B2Vec2 a, B2Vec2 B2Vec2, float t, B2Vec2 ret) {
+        ret.setXY((a.x - B2Vec2.x) * t, (a.y - B2Vec2.y) * t);
+        return ret;
     }
 
     public static B2Vec2 multiply(B2Vec2 a, float v) {
@@ -101,13 +120,27 @@ public class B2Math {
     public static B2Vec2 b2Min(B2Vec2 a, B2Vec2 b) {
         return new B2Vec2(Math.min(a.x, b.x), Math.min(a.y, b.y));
     }
+    public static B2Vec2 b2MinZeroGC(B2Vec2 a, B2Vec2 b, B2Vec2 ret) {
+        ret.setXY(Math.min(a.x, b.x), Math.min(a.y, b.y));
+        return ret;
+        //return new B2Vec2(Math.min(a.x, b.x), Math.min(a.y, b.y));
+    }
+
 
     public static B2Vec2 b2Max(B2Vec2 a, B2Vec2 b) {
         return new B2Vec2(Math.max(a.x, b.x), Math.max(a.y, b.y));
     }
+    public static B2Vec2 b2MaxZeroGC(B2Vec2 a, B2Vec2 b, B2Vec2 ret) {
+        ret.setXY(Math.max(a.x, b.x), Math.max(a.y, b.y));
+        return ret;
+    }
 
     public static B2Vec2 b2Abs(B2Vec2 a) {
         return new B2Vec2(Math.abs(a.x), Math.abs(a.y));
+    }
+    public static B2Vec2 b2AbsZeroGC(B2Vec2 a, B2Vec2 ret) {
+        ret.setXY(Math.abs(a.x), Math.abs(a.y));
+        return ret;
     }
 
 
@@ -147,6 +180,26 @@ public class B2Math {
         c.upperBound.y = b2MaxFloat(a.upperBound.y, b.upperBound.y);
         return c;
     }
+
+    public static B2AABB B2AABB_Union(B2Vec2 a, B2Vec2 b) {
+        B2AABB c = new B2AABB();
+        c.lowerBound.x = b2MinFloat(a.x, b.x);
+        c.lowerBound.y = b2MinFloat(a.y, b.y);
+        c.upperBound.x = b2MaxFloat(a.x, b.x);
+        c.upperBound.y = b2MaxFloat(a.y, b.y);
+        return c;
+    }
+
+
+    public static B2AABB B2AABB_UnionZeroGC(B2Vec2 a, B2Vec2 b, B2AABB ret) {
+
+        ret.lowerBound.x = b2MinFloat(a.x, b.x);
+        ret.lowerBound.y = b2MinFloat(a.y, b.y);
+        ret.upperBound.x = b2MaxFloat(a.x, b.x);
+        ret.upperBound.y = b2MaxFloat(a.y, b.y);
+        return ret;
+    }
+
 
 
     /**
@@ -310,8 +363,8 @@ public class B2Math {
 
 
     public static B2Vec2 B2AABB_Extents(B2AABB a) {
-        B2Vec2 b = new B2Vec2(0.5f * (a.upperBound.x - a.lowerBound.x), 0.5f * (a.upperBound.y - a.lowerBound.y));
-        return b;
+        //B2Vec2 b = new B2Vec2(0.5f * (a.upperBound.x - a.lowerBound.x), 0.5f * (a.upperBound.y - a.lowerBound.y));
+        return a.GetExtents();
     }
 
 
@@ -346,6 +399,11 @@ public class B2Math {
     public static B2Vec2 b2MulSV(float s, B2Vec2 v) {
         return new B2Vec2(s * v.x, s * v.y);
     }
+    public static B2Vec2 b2MulSVZeroGC(float s, B2Vec2 v, B2Vec2 ret) {
+        ret.setXY(s * v.x, s * v.y);
+        return ret;
+        //return new B2Vec2(s * v.x, s * v.y);
+    }
 
     public static B2Vec2 b2Lerp(B2Vec2 a, B2Vec2 b, float t) {
         return new B2Vec2((1.0f - t) * a.x + t * b.x, (1.0f - t) * a.y + t * b.y);
@@ -374,6 +432,16 @@ public class B2Math {
         float x = (float) (b.getX() * cos - b.getY() * sin);
         float y = (float) (b.getY() * cos + b.getX() * sin);
         return new B2Vec2(x, y);
+    }
+    public static B2Vec2 unityRotateZeroGC(B2Vec2 b, float deg, B2Vec2 ret) {
+        float radians = (float) Math.toRadians(-deg);
+        double cos = Math.cos(radians);
+        double sin = Math.sin(radians);
+        float x = (float) (b.getX() * cos - b.getY() * sin);
+        float y = (float) (b.getY() * cos + b.getX() * sin);
+
+        ret.setXY(x, y);
+        return ret;
     }
 
     /**
@@ -406,5 +474,20 @@ public class B2Math {
         // 因为改为定点数以后有误差，导致cos值可能超过1，所以做矫正在-1，1范围内
         double ac = Math.min(Math.max(-1, n / m), 1);
         return Math.acos(ac) * (180 / Math.PI) * (cc > 0 ? -1 : 1);
+    }
+
+
+    public static float min(float a1, float a2, float a3, float a4) {
+        float min = Math.min(a1, a2);
+        min = Math.min(min, a3);
+        min = Math.min(min, a4);
+        return min;
+    }
+
+    public static float max(float a1, float a2, float a3, float a4) {
+        float max = Math.max(a1, a2);
+        max = Math.max(max, a3);
+        max = Math.max(max, a4);
+        return max;
     }
 }
