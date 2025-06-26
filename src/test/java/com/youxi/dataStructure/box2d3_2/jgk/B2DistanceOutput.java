@@ -12,5 +12,7 @@ public class B2DistanceOutput {
     /// < The final distance, zero if overlapped
     int iterations;
     /// < Number of GJK iterations used
-    int simplexCount; ///< The number of simplexes stored in the simplex array
+    //int simplexCount; ///< The number of simplexes stored in the simplex array
+
+
 }

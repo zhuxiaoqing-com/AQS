@@ -4,6 +4,8 @@ import com.youxi.math.box2dGJK.B2Math;
 
 public class B2AABB {
 
+    public B2Vec2 center = new B2Vec2();
+    public B2Vec2 halfB2Vec2 = new B2Vec2();
     public B2Vec2 lowerBound = new B2Vec2();	///< the lower vertex
     public B2Vec2 upperBound = new B2Vec2();	///< the upper vertex
 
@@ -13,6 +15,8 @@ public class B2AABB {
     public B2AABB(B2Vec2 lowerBound, B2Vec2 upperBound) {
         this.upperBound = upperBound;
         this.lowerBound = lowerBound;
+        this.center = lowerBound.add(upperBound).multiply(0.5f);
+        this.halfB2Vec2 = upperBound.sub(lowerBound).multiply(0.5f);
     }
 
     /// Verify that the bounds are sorted.
@@ -24,14 +28,16 @@ public class B2AABB {
     public B2Vec2 GetCenter()
     {
         //return 0.5f * (lowerBound + upperBound);
-        return lowerBound.add(upperBound).multiply(0.5f);
+        //return lowerBound.add(upperBound).multiply(0.5f);
+        return center;
     }
 
     /// Get the extents of the AABB (half-widths).
     public B2Vec2 GetExtents()
     {
         //return 0.5f * (upperBound - lowerBound);
-        return upperBound.sub(lowerBound).multiply(0.5f);
+        //return upperBound.sub(lowerBound).multiply(0.5f);
+        return halfB2Vec2;
     }
 
     /// Get the perimeter length 得到周长

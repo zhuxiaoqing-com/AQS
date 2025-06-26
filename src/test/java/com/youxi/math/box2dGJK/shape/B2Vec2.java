@@ -39,6 +39,11 @@ public class B2Vec2 {
 		this.x = x;
 		this.y = y;
 	}
+	public void setXY(B2Vec2 v) {
+		this.x = v.getX();
+		this.y = v.getY();
+	}
+
 
 	public B2Vec2 add(B2Vec2 B2Vec2) {
 		return new B2Vec2(x + B2Vec2.x, y + B2Vec2.y);

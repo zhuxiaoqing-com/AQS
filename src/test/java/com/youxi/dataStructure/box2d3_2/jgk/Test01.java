@@ -2,6 +2,10 @@ package com.youxi.dataStructure.box2d3_2.jgk;
 
 
 import com.youxi.dataStructure.box2d3_2.collidePolygons.CCD;
+import com.youxi.dataStructure.box2d3_2.jgk.zeroGC.B2CastOutputZeroGC;
+import com.youxi.dataStructure.box2d3_2.jgk.zeroGC.B2DistanceInputZeroGC;
+import com.youxi.dataStructure.box2d3_2.jgk.zeroGC.B2DistanceOutputZeroGC;
+import com.youxi.dataStructure.box2d3_2.jgk.zeroGC.B2ShapeCastPairInputZeroGC;
 import com.youxi.math.box2dGJK.B2Distance;
 import com.youxi.math.box2dGJK.B2ShapeCastInput;
 import com.youxi.math.box2dGJK.B2ShapeCastOutput;
@@ -15,6 +19,12 @@ import java.util.Arrays;
 
 public class Test01 {
     public static final boolean PRINT = true;
+
+    public static B2ShapeCastPairInputZeroGC  b2ShapeCastPairInputZeroGC = new B2ShapeCastPairInputZeroGC();
+    public static B2CastOutputZeroGC b2CastOutputZeroGC = new B2CastOutputZeroGC();
+
+    public static B2DistanceInputZeroGC  b2DistanceInputZeroGC = new B2DistanceInputZeroGC();
+    public static B2DistanceOutputZeroGC b2DistanceOutputZeroGC = new B2DistanceOutputZeroGC();
 
     @Test
     public void test02() {
@@ -138,6 +148,20 @@ public class Test01 {
         B2Vec2 dirB = new B2Vec2(3, -2).Normalize().multiply(10);
         System.out.println(dirB);
         b2CCD(new b2ShapeProxy(a), new b2ShapeProxy(b), dirA, dirB, "CCD 测试");
+
+
+        // 这个ccd 运行时间能长一点 用这个来测试 gjk是否有问题
+        a = new B2MyPolygon(40f, 1f, 1f, new B2Vec2(2, 2));
+        b = new B2MyPolygon(50f, 1f, 1f, new B2Vec2(2, 5));
+        System.out.println(Arrays.toString(a.getM_vertices()));
+        System.out.println(Arrays.toString(b.getM_vertices()));
+       /* B2Vec2 dirA = new B2Vec2(3, 2).Normalize().multiply(10);
+        B2Vec2 dirB = new B2Vec2(1, -3).Normalize().multiply(10);*/
+        dirA = new B2Vec2(3, 2).Normalize().multiply(10);
+        System.out.println(dirA);
+        dirB = new B2Vec2(3, -2).Normalize().multiply(10);
+        System.out.println(dirB);
+        b2CCD(new b2ShapeProxy(a), new b2ShapeProxy(b), dirA, dirB, "CCD 测试");
     }
 
 
@@ -150,6 +174,9 @@ public class Test01 {
                     "bsDistance " + param, b2DistanceOutput.distance < 0.0001f,
                     b2DistanceOutput.pointA, b2DistanceOutput.pointB,
                     b2DistanceOutput.distance, b2DistanceOutput.iterations);
+
+        // 测试zeroGC
+        Dista
 
         bsDistance2(aabb1, aabb2, param);
         System.out.println();
@@ -164,6 +191,7 @@ public class Test01 {
                     "b2ShapeCast " + param, b2CastOutput.hit,
                     b2Vec2, b2CastOutput.point,
                     b2CastOutput.normal, b2CastOutput.fraction, b2CastOutput.iterations);
+
 
         b2ShapeCast2(aabb1, aabb2, b2Vec2, param);
         System.out.println();

@@ -1245,7 +1245,7 @@ public class b2DynamicTree implements IB3_2DynamicTree{
             if (node.height == 0 || ((node.flags & b2_enlargedNode) == 0 && fullBuild == false)) {
                 leafIndices[leafCount] = nodeIndex;
 
-                leafCenters[leafCount] = B2Math.b2AABB_Center(node.aabb);
+                leafCenters[leafCount] = B2Math.B2AABB_Center(node.aabb);
                 leafCount += 1;
 
                 // Detach
@@ -1285,7 +1285,7 @@ public class b2DynamicTree implements IB3_2DynamicTree{
         // 执行树重建（核心算法）
         root = b2BuildTree(leafCount);
 
-        b2DynamicTree_Validate();
+        // b2DynamicTree_Validate();
         return leafCount;
     }
 

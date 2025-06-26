@@ -139,13 +139,13 @@ public class Tree3_2Test {
      */
     @Test
     public void testTreeSame() {
-      /*  int index = 20;
+        int index = 20;
 
         randomData();
         int errorCount = 0;
         for (int i = 0; i < index; i++) {
-            String s1 = treeTest(new B2DynamicTree());
-            String s = treeTest(new B2DynamicTreeZeroGC());
+            String s1 = treeTest(b2DynamicTree.b2DynamicTree_Create(), false);
+            String s = treeTest(b2DynamicTreeZeroGC.b2DynamicTree_Create(), false);
 
             boolean equals = s.equals(s1);
             System.out.println(" 对比是否一样  ：" + equals);
@@ -162,7 +162,7 @@ public class Tree3_2Test {
             System.out.println();
         }
 
-        System.out.println("不一样次数！！！  " + errorCount);*/
+        System.out.println("不一样次数！！！  " + errorCount);
     }
 
 
@@ -214,7 +214,6 @@ public class Tree3_2Test {
                 if (rebuild) {
                     b2DynamicTree.b2DynamicTree_EnlargeProxy(k.proxyId, k.moveAAbb);
                 } else {
-
                     b2DynamicTree.b2DynamicTree_MoveProxy(k.proxyId, k.moveAAbb);
                 }
                /* String x = "move id %s oldAABB %s  newAABB %s  moveV %s proxyAABB %s";

@@ -20,4 +20,5 @@ public class B2CastOutput {
 
     /// Did the cast hit?
    public boolean hit;
+
 }

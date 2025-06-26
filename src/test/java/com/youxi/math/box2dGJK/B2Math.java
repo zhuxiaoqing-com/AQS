@@ -1,12 +1,11 @@
 package com.youxi.math.box2dGJK;
 
 
-import com.youxi.entity.CMath;
-import com.youxi.entity.Dir;
 import com.youxi.math.box2dGJK.shape.B2AABB;
 import com.youxi.math.box2dGJK.shape.B2Rot;
 import com.youxi.math.box2dGJK.shape.B2Transform;
 import com.youxi.math.box2dGJK.shape.B2Vec2;
+import org.apache.regexp.RE;
 
 public class B2Math {
     public static float b2_epsilon = 0.0000001f;
@@ -66,8 +65,23 @@ public class B2Math {
         return new B2Vec2(a.x + B2Vec2.x + c.x, a.y + B2Vec2.y + c.y);
     }
 
+    public static B2Vec2 addZeroGC(B2Vec2 a, B2Vec2 B2Vec2, B2Vec2 ret) {
+        ret.setXY(a.x + B2Vec2.x, a.y + B2Vec2.y);
+        return ret;
+    }
+
+    public static B2Vec2 addZeroGC(B2Vec2 a, B2Vec2 B2Vec2, B2Vec2 c, B2Vec2 ret) {
+        ret.setXY(a.x + B2Vec2.x + c.x, a.y + B2Vec2.y + c.y);
+        return ret;
+        //return new B2Vec2(a.x + B2Vec2.x + c.x, a.y + B2Vec2.y + c.y);
+    }
+
     public static B2Vec2 sub(B2Vec2 a, B2Vec2 B2Vec2) {
         return new B2Vec2(a.x - B2Vec2.x, a.y - B2Vec2.y);
+    }
+    public static B2Vec2 subZeroGC(B2Vec2 a, B2Vec2 B2Vec2, B2Vec2 returnVec2) {
+        returnVec2.setXY(a.x - B2Vec2.x, a.y - B2Vec2.y);
+        return returnVec2;
     }
 
     public static B2Vec2 multiply(B2Vec2 a, float v) {
@@ -76,6 +90,12 @@ public class B2Math {
 
     public static B2Vec2 multiply(float v, B2Vec2 a) {
         return new B2Vec2(a.x * v, a.y * v);
+    }
+
+    public static B2Vec2 multiplyZeroGC(float v, B2Vec2 a, B2Vec2 ret) {
+        ret.setXY(a.x * v, a.y * v);
+        return ret;
+        //return new B2Vec2(a.x * v, a.y * v);
     }
 
     public static B2Vec2 b2Min(B2Vec2 a, B2Vec2 b) {
@@ -93,8 +113,21 @@ public class B2Math {
 
     /// Get the center of the AABB.
     public static B2Vec2 B2AABB_Center(B2AABB a) {
-        return new B2Vec2(0.5f * (a.lowerBound.x + a.upperBound.x), 0.5f * (a.lowerBound.y + a.upperBound.y));
+        //return new B2Vec2(0.5f * (a.lowerBound.x + a.upperBound.x), 0.5f * (a.lowerBound.y + a.upperBound.y));
+        return a.GetCenter();
     }
+
+    public static float b2Perimeter(B2AABB a, B2AABB b) {
+        float lowerX = b2MinFloat(a.lowerBound.x, b.lowerBound.x);
+        float lowerY = b2MinFloat(a.lowerBound.y, b.lowerBound.y);
+        float upperX = b2MaxFloat(a.upperBound.x, b.upperBound.x);
+        float upperY = b2MaxFloat(a.upperBound.y, b.upperBound.y);
+
+        float wx = upperX - lowerX;
+        float wy = upperY - lowerY;
+        return 2.0f * (wx + wy);
+    }
+
 
     /**
      * 周长
@@ -115,10 +148,6 @@ public class B2Math {
         return c;
     }
 
-
-    public static B2Vec2 b2AABB_Center(B2AABB a) {
-        return new B2Vec2(0.5f * (a.lowerBound.x + a.upperBound.x), 0.5f * (a.lowerBound.y + a.upperBound.y));
-    }
 
     /**
      * 判断一个AABB包围盒是否完全包含另一个AABB包围盒。若检测结果为真，说明目标包围盒的所有边界均在被检测框内
@@ -204,9 +233,18 @@ public class B2Math {
         return new B2Vec2(a.x + b.x, a.y + b.y);
     }
 
+    public static B2Vec2 b2AddZeroGC(B2Vec2 a, B2Vec2 b, B2Vec2 ret) {
+        ret.setXY(a.x + b.x, a.y + b.y);
+        return ret;
+    }
+
     /// Vector subtraction
     public static B2Vec2 b2Sub(B2Vec2 a, B2Vec2 b) {
         return new B2Vec2(a.x - b.x, a.y - b.y);
+    }
+    public static B2Vec2 b2SubZeroGC(B2Vec2 a, B2Vec2 b, B2Vec2 ret) {
+        ret.setXY(a.x - b.x, a.y - b.y);
+        return ret;
     }
 
     /// Vector negation
@@ -214,8 +252,20 @@ public class B2Math {
         return new B2Vec2(-a.x, -a.y);
     }
 
+    public static B2Vec2 b2NegZeroGC(B2Vec2 a, B2Vec2 ret) {
+        ret.setXY(-a.x, -a.y);
+        return ret;
+    }
+
     public static float b2LengthSquared(B2Vec2 v) {
         return v.x * v.x + v.y * v.y;
+    }
+
+
+    public static float b2LengthSquared(B2Vec2 a, B2Vec2 b) {
+        float x = a.getX() - b.getX();
+        float y = a.getY() - b.getY();
+        return x*x + y*y;
     }
 
 
@@ -230,6 +280,18 @@ public class B2Math {
         return n;
     }
 
+    public static B2Vec2 b2NormalizeZeroGC(B2Vec2 v, B2Vec2 ret) {
+        double length = Math.sqrt(v.x * v.x + v.y * v.y);
+        if (length < 0.00001) {
+            ret.setXY(0,0);
+            return ret;
+        }
+
+        double invLength = 1.0f / length;
+        ret.setXY((float) (invLength * v.x), (float) (invLength * v.y));
+        return ret;
+    }
+
     public static int b2MaxInt(int height1, int height2) {
         return Math.max(height1, height2);
     }
@@ -239,6 +301,11 @@ public class B2Math {
      */
     public static B2Vec2 b2CrossSV(float s, B2Vec2 v) {
         return new B2Vec2(-s * v.y, s * v.x);
+    }
+
+    public static B2Vec2 b2CrossSVZeroGC(float s, B2Vec2 v, B2Vec2 ret) {
+        ret.setXY(-s * v.y, s * v.x);
+        return ret;
     }
 
 
@@ -261,9 +328,18 @@ public class B2Math {
     public static B2Vec2 b2MulAdd(B2Vec2 a, float s, B2Vec2 b) {
         return new B2Vec2(a.x + s * b.x, a.y + s * b.y);
     }
+    public static B2Vec2 b2MulAddZeroGC(B2Vec2 a, float s, B2Vec2 b, B2Vec2 returnVec2) {
+        returnVec2.setXY(a.x + s * b.x, a.y + s * b.y);
+        return returnVec2;
+    }
 
     public static B2Vec2 b2MulSub(B2Vec2 a, float s, B2Vec2 b) {
         return new B2Vec2(a.x - s * b.x, a.y - s * b.y);
+    }
+
+    public static B2Vec2 b2MulSubZeroGC(B2Vec2 a, float s, B2Vec2 b, B2Vec2 ret) {
+        ret.setXY(a.x - s * b.x, a.y - s * b.y);
+        return ret;
     }
 
 
@@ -273,6 +349,10 @@ public class B2Math {
 
     public static B2Vec2 b2Lerp(B2Vec2 a, B2Vec2 b, float t) {
         return new B2Vec2((1.0f - t) * a.x + t * b.x, (1.0f - t) * a.y + t * b.y);
+    }
+    public static B2Vec2 b2LerpZeroGC(B2Vec2 a, B2Vec2 b, float t, B2Vec2 returnVec2) {
+        returnVec2.setXY((1.0f - t) * a.x + t * b.x, (1.0f - t) * a.y + t * b.y);
+        return returnVec2;
     }
 
     public static B2Vec2 rotate(B2Vec2 b, float deg) {

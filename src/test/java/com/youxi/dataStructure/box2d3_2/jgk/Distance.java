@@ -166,7 +166,7 @@ public class Distance {
         output.pointA = localPointA;
         output.pointB = localPointB;
         output.iterations = iteration;
-        output.simplexCount = simplexIndex;
+        //output.simplexCount = simplexIndex;
 
         // Apply radii if requested
         if (input.useRadii && output.distance > 0.1f * b2_polygonRadius) {

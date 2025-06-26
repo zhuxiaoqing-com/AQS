@@ -6,8 +6,12 @@ box2d 两个都子弹的物体是不会进行ccd检测的；
     CCD检测有两个条件
        if ( body->type == b2_dynamicBody && enableContinuous && maxVelocity * timeStep > 0.5f * sim->minExtent )
        标记为子弹 或者 移动速度超过多少;
-       CCD查询AABB动态树比较特殊 是用上上帧 和上一帧的数据构成一个AABB进行查询
+       CCD查询AABB动态树比较特殊 是用上上帧 和上一帧的数据构成一个AABB进行查询, 但是在AABB树里面的物体是真实的AABB大小,
+            所以如果两个物体都移动特别快CCD也检测不到;
+            (比如A物体虽然用上上帧和上一帧的移动构成一个AABB执行，但是B物体在AABB树里面却只是上一帧的AABB盒子，如果B物体也移动的特别快，那两个物体就会穿透);
+
        然后再更新位置。
+       如果两个都被标记为子弹的物体不会进行CCD;
 
 因为Box2d的帧特别快  所以全部用上一帧的数据没问题;
 
@@ -15,8 +19,30 @@ box2d 两个都子弹的物体是不会进行ccd检测的；
 // Task that can be done in parallel with the narrow-phase
 	// - rebuild the collision tree for dynamic and kinematic bodies to keep their query performance good
 	// todo_erin move this to start when contacts are being created
-
 “可与窄相位（碰撞检测阶段）并行执行的任务”
  ‌“为动态刚体和运动学刚体重建碰撞树，以维持其查询性能”
 “待办（由Erin处理）：将此任务移至接触点生成阶段开始时执行”
+
+因为rebuildAABB动态树 和细筛是一起并行运行的;
+
+
+
+碰撞物理在服务器使用 因为服务器帧率都比较慢 50 100 200ms才一帧;
+
+首先什么样的物体可以标记为bullet;可以在创建的时候，根据其盒子的aabb大小和移动速度确定;
+如果移动速度*一帧 > aabb短边,就会跳过子弹, 可以先*2来确定可以标记为bullet;
+
+然后CCD 如果有移动速度就是比较快的战斗物体，
+比如：二战里的怪物跑步移动速度 4m/s, 走路为2m/s;和盒子大小为0.62;0.49 一帧200ms的话,就是200ms1米,已经超过其盒子大小了;
+        当然这个最好就是将帧率调整为100ms;这样就能勉强覆盖盒子了;
+
+        首先树有3颗;静态物体不用fatAABB,普通动态物体普通fatAABB,移动速度快的物体上一帧和本帧的fatAABB(这个在初期可以不需要);
+        tick 1.先处理怪物移动 里面直接调用 EnlargeProxy,
+             2.rebuildTree
+             3.处理怪物释放技能等数据;
+             4.处理子弹物体
+
+        移动速度快的物体上一帧和本帧的fatAABB,这个如果后面需要的话 可以加上;
+
+
 
