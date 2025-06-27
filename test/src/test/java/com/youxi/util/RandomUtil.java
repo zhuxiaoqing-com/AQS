@@ -305,9 +305,9 @@ public class RandomUtil {
 	 * @param num 个数
 	 * @return
 	 */
-	public static java.util.List<Integer> getRandomValues(int min, int max, int num) {
+	public static List<Integer> getRandomValues(int min, int max, int num) {
 
-		final java.util.List<Integer> list = new java.util.LinkedList<Integer>();
+		final List<Integer> list = new LinkedList<Integer>();
 		if (max < 0)
 			return list;
 		if (num <= 0)
