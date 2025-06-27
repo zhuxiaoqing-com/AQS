@@ -11,7 +11,6 @@
     <packaging>jar</packaging>
     <artifactId>game-agent</artifactId>
 
-
     <dependencies>
         <dependency>
             <groupId>javassist</groupId>
@@ -30,7 +29,8 @@
                     <archive>
                         <manifestEntries>
                             <!-- premain 使用-->
-                            <Premain-Class>com.test.preAgent.PreAgent</Premain-Class>
+                            <!--<Premain-Class>com.test.preAgent.PreAgent</Premain-Class>-->
+                            <Premain-Class>com.test.preAgent.PreMainAgent</Premain-Class>
                             <Agent-Class>com.test.mainAgent.MainAgent</Agent-Class>
                             <Can-Redefine-Classes>true</Can-Redefine-Classes>
                             <Can-Retransform-Classes>true</Can-Retransform-Classes>
