@@ -54,6 +54,9 @@ public class MainAgentTestServer {
     }
 
     private static void reloadAgent() throws IOException, AttachNotSupportedException, AgentLoadException, AgentInitializationException {
+        PreMainAgent
+    }
+  private static void reloadAgent1() throws IOException, AttachNotSupportedException, AgentLoadException, AgentInitializationException {
         VirtualMachine attach = VirtualMachine.attach(getPID());
         attach.loadAgent(agentPath);
         attach.detach();

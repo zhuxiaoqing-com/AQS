@@ -19,7 +19,8 @@ public class MainAgentTestClient {
         try {
             // 要连接的服务端IP地址和端口
             String host = "127.0.0.1";
-            int port = 9528;
+            //int port = 9528;
+            int port = 12333;
             // 与服务端建立连接
             Socket socket = new Socket(host, port);
             int index = 100;
@@ -31,7 +32,7 @@ public class MainAgentTestClient {
                 outputStream.flush();
             }
         } catch (Exception e) {
-            e.getMessage();
+            e.printStackTrace();
         }
     }
 }

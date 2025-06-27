@@ -44,9 +44,9 @@ public class MainAgent {
     private static final String PACKAGE_START = "com.agentTest.preAgentTest.";
 
     public static void agentmain(String args, Instrumentation inst) throws UnmodifiableClassException {
-        AopAgentTransformer aopAgentTransformer = new AopAgentTransformer();
+        /*AopAgentTransformer aopAgentTransformer = new AopAgentTransformer();
         inst.addTransformer(aopAgentTransformer);
-        inst.removeTransformer(aopAgentTransformer);
+        inst.removeTransformer(aopAgentTransformer);*/
         //inst.removeTransformer();
         hotswap(inst);
         //retransformClasses(inst, "Test1");
