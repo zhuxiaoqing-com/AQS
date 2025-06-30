@@ -13,6 +13,7 @@ public class PreMainAgent {
     public static void premain(String agentArgs, Instrumentation inst) {
         System.out.println("AopAgentTest.premain() was called.");
         PreMainAgent.inst = inst;
+        System.out.println("PreMainAgent 类加载器 "+ PreMainAgent.class.getClassLoader());
     }
 
     /**
