@@ -11,6 +11,7 @@
         <module>game-agent-test</module>
         <module>test</module>
         <module>jmx</module>
+        <module>mdb</module>
     </modules>
     <packaging>pom</packaging>
 
@@ -31,7 +32,26 @@
     </properties>
 
 
+    <dependencies>
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.2.71</version>
+        </dependency>
 
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>31.0.1-jre</version> <!-- 请使用最新版本 -->
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.ben-manes.caffeine</groupId>
+            <artifactId>caffeine</artifactId>
+            <version>3.1.8</version> <!-- 建议使用最新稳定版 -->
+        </dependency>
+
+    </dependencies>
 
 
     <build>
