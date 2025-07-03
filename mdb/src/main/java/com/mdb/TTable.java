@@ -3,40 +3,38 @@ package com.mdb;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.mdb.utils.Lock;
-import com.mdb.utils.LockKey;
 import com.mdb.utils.Lockeys11;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class TTable<K, V> {
-    //private TTableCache<K, V> cache;
-    private Map<K, V> cache = new ConcurrentHashMap<K, V>();
-
     public static final Object defaultValue = new Object();
 
+
+    private boolean supportFlush;
+
+
+
+    //private TTableCache<K, V> cache;
+    private final Map<K, TRecord<K, V>> cache = new ConcurrentHashMap<>();
     Cache<Object, Object> findFailCache = Caffeine.newBuilder().maximumSize(200).softValues().build();
 
-
-    public void add(K key, V value) {
-        Lock lockey = Lockeys11.getLockey(getName(), key);
-        lockey.getWriteLock().lock();
-        try {
-            cache.put(key, value);
-            findFailCache.invalidate(key);
-        } finally {
-            lockey.getWriteLock().unlock();
-        }
-    }
+    private final AtomicLong countGetMiss = new AtomicLong();
+    private long allCountGetMiss = 0;
 
     public V get(K key) {
         Lock lockey = Lockeys11.getLockey(getName(), key);
         lockey.getReadLock().lock();
         try {
-            V value = cache.get(key);
-            if (value != null) {
-                return value;
+            TRecord<K, V> tRecord = cache.get(key);
+            if (tRecord != null) {
+                if (tRecord.getState() == TRecord.REMOVE) {
+                    return null;
+                }
+                return tRecord.get();
             }
         } finally {
             lockey.getReadLock().unlock();
@@ -46,21 +44,45 @@ public class TTable<K, V> {
         lockey.getWriteLock().lock();
         try {
             // 找到了 返回
-            V value = cache.get(key);
-            if (value != null) {
-                return value;
+            TRecord<K, V> tRecord = cache.get(key);
+            if (tRecord != null) {
+                if (tRecord.getState() == TRecord.REMOVE) {
+                    return null;
+                }
+                return tRecord.get();
             }
 
             // 没找到查数据库
-            value = _find(key);
+            V value = _find(key);
             if (value != null) {
-                cache.put(key, value);
-            }else {
-                findFailCache.put(key,defaultValue);
+                cache.put(key, new TRecord<>(this, key, value, TRecord.GET));
+            } else {
+                findFailCache.put(key, defaultValue);
+                // getMiss
+                countGetMiss.incrementAndGet();
             }
 
             return value;
-        }finally {
+        } finally {
+            lockey.getWriteLock().unlock();
+        }
+    }
+
+
+    public void add(K key, V value) {
+        Lock lockey = Lockeys11.getLockey(getName(), key);
+        lockey.getWriteLock().lock();
+        try {
+            TRecord<K, V> tRecord = cache.get(key);
+            if (tRecord != null) {
+                tRecord.add(value);
+            } else {
+                tRecord = new TRecord<>(this, key, value, TRecord.ADD);
+                cache.put(key, tRecord);
+                findFailCache.invalidate(key);
+            }
+
+        } finally {
             lockey.getWriteLock().unlock();
         }
     }
@@ -69,12 +91,18 @@ public class TTable<K, V> {
         Lock lockey = Lockeys11.getLockey(getName(), key);
         lockey.getWriteLock().lock();
         try {
-            cache.remove(key);
-            findFailCache.invalidate(key);
+            TRecord<K, V> tRecord = cache.get(key);
+            if(tRecord == null) {
+                return;
+            }
+            tRecord.remove();
         } finally {
             lockey.getWriteLock().unlock();
         }
     }
+
+
+
 
     /**
      * 查找数据库 等地方
@@ -83,8 +111,48 @@ public class TTable<K, V> {
         return null;
     }
 
+    /**
+     * 保存到数据库
+     */
+    private void store(TRecord<K, V> tRecord) {
+
+    }
+
+    /**
+     * 从数据库删除
+     */
+    private void remove(TRecord<K, V> tRecord) {
+
+    }
+
     public String getName() {
         return null;
+    }
+
+    public boolean supportFlush() {
+        return supportFlush;
+    }
+
+    public void setSupportFlush(boolean supportFlush) {
+        this.supportFlush = supportFlush;
+    }
+
+    public void tick(long time) {
+        long count = countGetMiss.getAndSet(0);
+        if (count > 0) {
+            allCountGetMiss += count;
+            //Set<Object> failKeySet = findFailCache.asMap().keySet();
+            Mdb.logger.info(" tableName {}  allCountGetMiss {} countGetMiss {} ",
+                    getName(), allCountGetMiss, count);
+        }
+    }
+
+    /**
+     * 将单个key保存到数据库  玩家离线时调用;
+     * 应该还有个判断 该表是否属于玩家 属于玩家才在玩家离线时调用;
+     */
+    public void flush(K key) {
+
     }
 
 }
