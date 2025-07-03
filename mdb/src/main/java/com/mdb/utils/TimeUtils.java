@@ -3,12 +3,12 @@ package com.mdb.utils;
 public class TimeUtils {
 
     // 一毫秒(单位：纳秒)
-    private static final long millsNano = 1_000_000;
-    private static final long secondMills = 1000;
-    private static final long minuteMills = 1000 * 60L;
-    private static final long hourMills = 1000 * 60 * 60L;
-    private static final long dayMills = hourMills * 24L;
-    private static final long weekMills = dayMills * 7L;
+    public static final long millsNano = 1_000_000;
+    public static final long secondMills = 1000;
+    public static final long minuteMills = 1000 * 60L;
+    public static final long hourMills = 1000 * 60 * 60L;
+    public static final long dayMills = hourMills * 24L;
+    public static final long weekMills = dayMills * 7L;
 
     public static long jvmStartTick;
 
