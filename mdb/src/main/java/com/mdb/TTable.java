@@ -3,6 +3,7 @@ package com.mdb;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.mdb.utils.Lock;
+import com.mdb.utils.Lockeys;
 import com.mdb.utils.Lockeys11;
 
 import java.util.Map;
@@ -152,7 +153,17 @@ public class TTable<K, V> {
      * 应该还有个判断 该表是否属于玩家 属于玩家才在玩家离线时调用;
      */
     public void flush(K key) {
+        TRecord<K, V> kvtRecord = _flush(key);
+    }
 
+    public TRecord<K, V>  _flush(K key) {
+        Lock lockey = Lockeys.getLockey(this.getName(), key);
+        lockey.getWriteLock().lock();
+        try {
+            return cache.remove(key);
+        }finally {
+            lockey.getWriteLock().unlock();
+        }
     }
 
 }
