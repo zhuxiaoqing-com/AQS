@@ -1,0 +1,2 @@
+modify 在set出设置, 但是如果是把list里面的对象get出来然后修改呢？
+应该在list的add方法里面判断 如果是MdbBean 要将父对象设置给他;

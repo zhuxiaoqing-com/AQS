@@ -12,6 +12,7 @@
         <module>test</module>
         <module>jmx</module>
         <module>mdb</module>
+        <module>rpc</module>
     </modules>
     <packaging>pom</packaging>
 
