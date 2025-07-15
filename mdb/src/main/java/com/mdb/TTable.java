@@ -7,11 +7,10 @@ import com.mdb.utils.Lockeys;
 import com.mdb.utils.Lockeys11;
 
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
-public class TTable<K, V> {
+public abstract class TTable<K, V> {
     public static final Object defaultValue = new Object();
 
 
@@ -148,12 +147,29 @@ public class TTable<K, V> {
         }
     }
 
+
+    protected abstract V newValue();
+
+    protected abstract String marshalKey(K key);
+
+    protected abstract String marshalValue(V value);
+
+    protected abstract V deepCopy(V value);
+
+    protected abstract K unmarshalKey(String os) throws Exception;
+
+    protected abstract V unmarshalValue(String os) throws Exception;
+
+
     /**
      * 将单个key保存到数据库  玩家离线时调用;
      * 应该还有个判断 该表是否属于玩家 属于玩家才在玩家离线时调用;
      */
     public void flush(K key) {
         TRecord<K, V> kvtRecord = _flush(key);
+        if(kvtRecord != null && kvtRecord.isModified()) {
+
+        }
     }
 
     public TRecord<K, V>  _flush(K key) {

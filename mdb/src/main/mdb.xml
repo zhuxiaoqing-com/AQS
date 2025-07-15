@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mdb name="logic" defaultTableCache="warrior.mdb.TTableCacheLRU" snapshotFatalTime="200" checkpointPeriod="60000" supportFlush="true" xmlns:xi="http://www.w3.org/2001/XInclude">
+	<xbean name="Player"> 玩家
+		<variable name="playerId" type="long" alias="1"/>  上一次登录的角色
+		<variable name="level" type="int" alias="2"/>  等级
+		<variable name="playerName" type="string" alias="3"/>  玩家昵称
+	</xbean>
+	<table name="player" key="long" value="Player" cacheCapacity="21" />
+
+
+	<xbean name="Bag"> 玩家
+		<variable name="playerId" type="long" alias="1"/> 
+		<variable name="bagtest" type="int" alias="2"/>  
+	</xbean>
+	<table name="bag" key="long" value="Bag" cacheCapacity="21" />
+
+
+	<xbean name="Bag1"> 玩家
+		<variable name="playerId" type="long" alias="1"/> 
+		<variable name="bagtest" type="int" alias="2"/>  
+	</xbean>
+	<table name="bag1" key="long" value="Bag1" cacheCapacity="21" />
+
+
+	<xbean name="Bag2"> 玩家
+		<variable name="playerId" type="long" alias="1"/> 
+		<variable name="bagtest" type="int" alias="2"/>  
+	</xbean>
+	<table name="bag2" key="long" value="Bag2" cacheCapacity="21" />
+
+
+	<xbean name="Bag3"> 玩家
+		<variable name="playerId" type="long" alias="1"/> 
+		<variable name="bagtest" type="int" alias="2"/>  
+	</xbean>
+	<table name="bag3" key="long" value="Bag3" cacheCapacity="21" />
+	
+	<!-- 数据源配置 -->
+	<xi:include href="datasource-local.xml" />
+</mdb>
+

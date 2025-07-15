@@ -2,8 +2,6 @@ package com.mdb;
 
 import com.mdb.utils.TimeUtils;
 
-import java.sql.Time;
-
 public class TRecord<K, V> {
     public static final int ADD = 1;
     public static final int REMOVE = 2;
@@ -70,6 +68,51 @@ public class TRecord<K, V> {
      * todo 可能对比json  可能直接在有修改的时候弄个标记传播上来 然后直接判断那个标记
      */
     public boolean isModified() {
-        return modified;
+        switch (state) {
+            case ADD:
+                return true;
+            case REMOVE:
+                return true;
+        }
+        if (value == null) {
+            return false;
+        }
+        if(value instanceof XBean) {
+            return ((XBean) value).isModify();
+        }
+        return false;
+    }
+    public String marshalKey() {
+        return table.marshalKey(getKey());
+    }
+
+    public String marshalValue() {
+        return table.marshalValue(value);
+    }
+
+    boolean flush(TTable<K, V> storage) {
+        try {
+            switch (state) {
+                case ADD:
+                    Mdb.getInstance().getStorage().insert(marshalKey(), marshalValue());
+                    return true;
+                case REMOVE:
+                    Mdb.getInstance().getStorage().remove(marshalKey());
+                    return true;
+                case GET:
+                    if (isModified()) {
+                        Mdb.getInstance().getStorage().replace(marshalKey(), marshalValue());
+                        return true;
+                    }
+            }
+
+        } catch (Exception e) {
+            // 如果flush时候报错，则清除标识，下次会继续同步
+            Mdb.logger.error("TRecord flush error ", e);
+            return false;
+        } finally {
+
+        }
+        return true;
     }
 }

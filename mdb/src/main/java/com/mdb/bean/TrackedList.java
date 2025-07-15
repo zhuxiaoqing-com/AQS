@@ -1,12 +1,14 @@
 package com.mdb.bean;
 
 
-import com.mdb.MdbBean;
+import com.mdb.Mdb;
+import com.mdb.XBean;
+import com.mdb.exception.MdbException;
 
 import java.util.*;
 import java.util.function.UnaryOperator;
 
-public class TrackedList<E> extends MdbBean implements List<E> {
+public class TrackedList<E> extends XBean implements List<E> {
     private final List<E> delegate;
 
     public TrackedList(List<E> delegate) {
@@ -19,21 +21,44 @@ public class TrackedList<E> extends MdbBean implements List<E> {
     public void clearModified() { modifications.clear(); }
     public void clearModified(ModifyType type) { modifications.remove(type); }*/
 
+    @Override
+    public boolean fieldAnyModify() {
+        if(only_isModify()) {
+            return true;
+        }
+        if (delegate.isEmpty()) {
+            return false;
+        }
+        E e1 = delegate.get(0);
+        if (!(e1 instanceof XBean)) {
+            return false;
+        }
+        for (E e : delegate) {
+            if (((XBean) e).only_isModify()) {
+                Mdb.logger.error("fieldAnyModify selfModify false fieldModify true class {} ", getClass().getName(), new RuntimeException());
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+
     /**
      * @param type  type
      * @param value value有个准则就是如果是外面传入进来的，或者需要传出去的需要显示调用setParent; 原本就在里面的可以不调用
      */
     private void markModified(ModifyType type, Object value) {
         makeModify();
-        if (value instanceof MdbBean) {
+        if (value instanceof XBean) {
             switch (type) {
                 case ADD:
-                    ((MdbBean) value).setParent(this);
+                    ((XBean) value).setParent(this);
                     break;
                 case REMOVE:
-                    ((MdbBean) value).setParent(null);
+                    ((XBean) value).setParent(null);
                     break;
-                case REORDER:
+                case CHANGE:
                     break;
             }
         }
@@ -122,13 +147,13 @@ public class TrackedList<E> extends MdbBean implements List<E> {
     @Override
     public void replaceAll(UnaryOperator<E> operator) {
         delegate.replaceAll(operator);
-        markModified(ModifyType.REORDER, null);
+        markModified(ModifyType.CHANGE, null);
     }
 
     @Override
     public void sort(Comparator<? super E> c) {
         delegate.sort(c);
-        markModified(ModifyType.REORDER, null);
+        markModified(ModifyType.CHANGE, null);
     }
 
 
@@ -210,7 +235,7 @@ public class TrackedList<E> extends MdbBean implements List<E> {
 
     @Override
     public Spliterator<E> spliterator() {
-        return delegate.spliterator();
+       throw new MdbException("Not implemented spliterator");
     }
 
     private class TrackedIterator implements Iterator<E> {
@@ -287,8 +312,8 @@ public class TrackedList<E> extends MdbBean implements List<E> {
             E old = lastReturned;
             it.set(e);
             if (!Objects.equals(old, e)) {
-                markModified(ModifyType.ADD, e);
                 markModified(ModifyType.REMOVE, old);
+                markModified(ModifyType.ADD, e);
             }
         }
 

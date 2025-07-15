@@ -1,2 +1,13 @@
 modify 在set出设置, 但是如果是把list里面的对象get出来然后修改呢？
 应该在list的add方法里面判断 如果是MdbBean 要将父对象设置给他;
+
+这里有个问题  我一个 对象,给了这个map 然后又加入了另外一个map;
+这个时候我的parent应该是谁呢？
+解决方法  直接在setParent的时候 如果有oldParent 直接报错;
+
+如果多线程运行的时候我的parent不对怎么办?? 比如同时把我加入了 aMap 和bMap 我的parent是aMap的, 我实际在bMap;
+有一种方法就是 遍历parent下所有的mdbBean,而不选择向上传染modify;
+其实一般不会有这种情况,因为当有parent的时候再设置就会报错了; 而且业务场景一般也不会有这种情况;
+
+用了modify以后感觉虽然性能提升了 但是各方面都不能完美兼容以前,用json对比的话怎么做都可以,用modify的话 感觉总有各种小问题;
+其实遍历 遍历parent下所有的mdbBean来判断是否修改过也行;
