@@ -11,3 +11,75 @@ modify 在set出设置, 但是如果是把list里面的对象get出来然后修�
 
 用了modify以后感觉虽然性能提升了 但是各方面都不能完美兼容以前,用json对比的话怎么做都可以,用modify的话 感觉总有各种小问题;
 其实遍历 遍历parent下所有的mdbBean来判断是否修改过也行;
+
+
+有没有可能吧modify改成版本号;
+就不用清理modify了;而是只要每次将版本号+1;版本号相等的就是修改过的;
+每次checkpoint将版本号+1; 版本号怎么弄呢? checkpoint可以统一共用每次开始的时候将 版本号+1;
+然后sleep(1000) 将等待异步全部修改完成,防止我再执行清理的时候,有线程异步版本号还没设置进去导致出问题;
+然后对比版本号 版本号>=之前的就设置,防止有数据很久没同步,如果就==的时候设置的话,会有数据每次都在checkpoint临界值的时候修改,
+    导致一直没有同步到数据库;
+
+
+双版本号：
+    奇数版本号:
+    偶数版本号:
+   根据checkpoint 是奇数还是偶数来判断 对哪个版本号赋值,
+   查询的时候根据checkpoint来判断 和奇数版本号 还是偶数版本号做对比;
+
+ 双版本号的唯一作用就是可以像双modify一样 可以递归查询所有child看有没有child变化了没有传播上来;
+    单版本号做这个child传播检测  不好做;
+
+
+这个加锁 到底哪些地方需要加 怎么加;
+首先是 查询的时候; flush的时候; checkpoint的时候;
+查询的时候按mysql的思想来说 加行级读和写锁就可以了;
+flush的时候按mysql的思想了来说, 其实也是加行级写锁就可以了;
+checkpoint的时候按道理也是加行级读锁就好了; 然后有锁表的时候吗;应该有加行级读锁的地方
+
+查询  表读锁; 行读锁, add remove 表读锁;加行写锁;
+flush 表读锁; 行写锁;
+checkpoint 表读锁;行读锁;
+checkpoint 可能在batch 批量执行的时候需要加表写锁; 将表锁住 不能让其他人操作;
+
+只有两个地方会往数据库里面写入;一个是flush 一个是 checkpoint;
+如果checkpoint 还不能加行写锁 他要加了行写锁 那查询的时候会卡;会很影响查询;
+
+假设现在什么锁都不加; 查询的地方 get add remove; 会有什么问题;
+会多次重复运行 get add remove; 导致超查 超删 超写; 所以得加行锁控制住;
+
+flush的时候不加锁会怎么样;
+flush 其实应该默认不会有get add remove 过来了; 当然过来也有可能;为了get add remove的时候判断玩家不在线不能加载;所以flush某个玩家的时候;
+其玩家的所有操作应该都不能操作; 不然 我这边刚flush掉 你这边开始加 查 删; 但是这样也会导致业务线程卡主;
+应该是 我那边先标记为 flush 然后 get add remove 直接就判断不能操作了;
+标记为flush 然后再延迟1秒以后flush (防止get add remove刚好判断完 但是后面的逻辑还没执行;); flushfinish以后再将logic的mdbplayeronline删除掉;再通知 lb删除; 删除的时候和再上线这个先不管 反正能处理;
+flush行锁留着用也可以;
+防止出现我cache刚删掉;get对象就被return出去,变成游离对象了;但是其实我加了也没用;因为有可能已经返回给业务层使用了;
+所以还是不要行锁了;
+
+
+那问题来了 flush还需要加锁吗???
+如果不考虑flush是离线使用;但是不考虑的话还要flush干嘛?
+所以如果不考虑checkpoint的情况下 flush不需要加锁;现在来考虑有checkpoint的情况;
+checkpoint 和 flush 都会同时访问写入mysql;两边写入都是为了保存数据到数据库;
+但是checkpoint只写入数据库 不对urlcache做操作; flush的话会对urlcache做操作;
+两边并发写入好像也不影响什么额 那就先都不加锁吧;
+这里有个问题，就是flush先flush结束;key删了，回调flushback, 但是checkpoint又往数据库里再刷了一次数据;正好这个时候新玩家在另外的logic上线了,正好数据还刚改过,就有脏数据了;
+    其实也没问题;因为我flushback 虽然是同步直接就回调了;但是还要回调回玩家线程,然后还要在回调到Lobby;然后才能删除;
+    当然也可以解决; 就是加表锁;表锁 只有flush和 checkpoint用;checkpoint在遍历table的时候线先获取锁;如果checkpoint先;那就会等checkpoint同步到数据库先,然后flush在运行;
+    如果flush先的话,checkpoint在遍历table的时候因为在flush的时候该key已经被删了,就不会有问题了;
+    所以最终flush和chckpoint两个之间还是需要一个表锁;
+    flush的行锁根据上面flush和查询的分析 不需要行锁;
+
+
+淘汰策略放在lruccache里面;
+
+
+
+
+
+
+
+
+
+

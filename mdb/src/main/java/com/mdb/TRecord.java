@@ -64,10 +64,13 @@ public class TRecord<K, V> {
     }
 
 
+    public boolean isModified() {
+        return isModified(Mdb.getInstance().getCheckPointCount());
+    }
     /**
      * todo 可能对比json  可能直接在有修改的时候弄个标记传播上来 然后直接判断那个标记
      */
-    public boolean isModified() {
+    public boolean isModified(long version) {
         switch (state) {
             case ADD:
                 return true;
@@ -78,7 +81,7 @@ public class TRecord<K, V> {
             return false;
         }
         if(value instanceof XBean) {
-            return ((XBean) value).isModify();
+            return ((XBean) value).isModify(version);
         }
         return false;
     }

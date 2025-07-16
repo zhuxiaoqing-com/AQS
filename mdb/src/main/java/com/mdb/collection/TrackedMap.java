@@ -1,4 +1,4 @@
-package com.mdb.bean;
+package com.mdb.collection;
 
 import com.mdb.Mdb;
 import com.mdb.XBean;
@@ -16,8 +16,11 @@ public class TrackedMap<K,V> extends XBean implements Map<K,V> {
         this.delegate = Objects.requireNonNull(delegate);
     }
 
-    @Override
+  /*  @Override
     public boolean fieldAnyModify() {
+      if(only_isModify()) {
+            return true;
+        }
         if (delegate.isEmpty()) {
             return false;
         }
@@ -28,6 +31,31 @@ public class TrackedMap<K,V> extends XBean implements Map<K,V> {
         for (V e : delegate.values()) {
             if (((XBean) e).only_isModify()) {
                 Mdb.logger.error("fieldAnyModify selfModify false fieldModify true class {} ", getClass().getName(), new RuntimeException());
+                return true;
+            }
+        }
+        return false;
+    }*/
+
+    public boolean checkFieldVersion(long checkPointCount) {
+        if (delegate.isEmpty()) {
+            return false;
+        }
+        V e1 = delegate.values().iterator().next();
+        if (!(e1 instanceof XBean)) {
+            return false;
+        }
+
+        for (V e : delegate.values()) {
+            if (((XBean) e).checkVersion(checkPointCount)) {
+                Mdb.logger.error("checkFieldVersion checkVersion true checkPointCount {} currVersion {} class {} ",
+                        checkPointCount, getVersion(checkPointCount), getClass().getName(), new RuntimeException());
+                return true;
+            }
+        }
+
+        for (V e : delegate.values()) {
+            if (((XBean) e).checkFieldVersion(checkPointCount)) {
                 return true;
             }
         }

@@ -1,4 +1,4 @@
-package com.mdb.bean;
+package com.mdb.collection;
 
 public enum ModifyType {
     ADD(Object.class),

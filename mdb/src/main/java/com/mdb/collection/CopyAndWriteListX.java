@@ -1,4 +1,4 @@
-package com.mdb.bean;
+package com.mdb.collection;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 

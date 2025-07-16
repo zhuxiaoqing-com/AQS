@@ -41,7 +41,46 @@ public abstract class TTable<K, V> {
     private long allCountGetMiss = 0;
 
     public V get(K key) {
-        return null;
+        Lock lockey = Lockeys11.getLockey(getName(), key);
+        lockey.getReadLock().lock();
+        try {
+            TRecord<K, V> tRecord = cache.get(key);
+            if (tRecord != null) {
+                if (tRecord.getState() == TRecord.REMOVE) {
+                    return null;
+                }
+                return tRecord.get();
+            }
+        } finally {
+            lockey.getReadLock().unlock();
+        }
+
+        // 不存在在数据库找个新的 然后返回
+        lockey.getWriteLock().lock();
+        try {
+            // 找到了 返回
+            TRecord<K, V> tRecord = cache.get(key);
+            if (tRecord != null) {
+                if (tRecord.getState() == TRecord.REMOVE) {
+                    return null;
+                }
+                return tRecord.get();
+            }
+
+            // 没找到查数据库
+            V value = _find(key);
+            if (value != null) {
+                cache.put(key, new TRecord<>(this, key, value, TRecord.GET));
+            } else {
+                findFailCache.put(key, defaultValue);
+                // getMiss
+                countGetMiss.incrementAndGet();
+            }
+
+            return value;
+        } finally {
+            lockey.getWriteLock().unlock();
+        }
     }
 
 
@@ -114,8 +153,8 @@ public abstract class TTable<K, V> {
     }*/
 
     public boolean flush(K key) {
-        Lock lockey = Lockeys.getLockey(this.getName(), key);
-        lockey.getWriteLock().lock();
+        //Lock lockey = Lockeys.getLockey(this.getName(), key);
+        //lockey.getWriteLock().lock();
         try {
             TRecord<K, V> kvtRecord = cache.remove(key);
             if (kvtRecord != null) {
@@ -128,7 +167,7 @@ public abstract class TTable<K, V> {
                 }
             }
         }finally {
-            lockey.getWriteLock().unlock();
+            //lockey.getWriteLock().unlock();
         }
         return true;
     }

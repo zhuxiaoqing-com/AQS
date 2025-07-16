@@ -24,7 +24,7 @@ public class Mdb {
     // xBean 是否开启全量检测
     private boolean xBeanDetailCheck = false;
     // checkPoint前+1
-    private volatile int checkPointCount = 0;
+    private volatile long checkPointCount = 0;
 
 
     public synchronized void start(MdbMetadata mdbMetadata) {
@@ -70,7 +70,7 @@ public class Mdb {
         this.xBeanDetailCheck = xBeanDetailCheck;
     }
 
-    public int getCheckPointCount() {
+    public long getCheckPointCount() {
         return checkPointCount;
     }
 
@@ -81,8 +81,8 @@ public class Mdb {
         return false;
     }
 
-    public void setCheckPointCount(int checkPointCount) {
-        this.checkPointCount = checkPointCount;
+    public void incrCheckPointCount() {
+        this.checkPointCount = checkPointCount + 1;
     }
 
     public StorageEngine getStorage() {

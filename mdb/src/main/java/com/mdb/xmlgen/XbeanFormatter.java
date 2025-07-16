@@ -9,10 +9,7 @@ import java.util.List;
 class XbeanFormatter {
 	public static void make(Xbean xbean) {
 		try (PrintStream ps = Mdbgen.openXBeanFile(xbean.getName())) {
-			// 如果文件已经存在就不再次生成了 (为了处理一些所有xml共用的xbean)
-			if (ps != null) {
-				new XbeanFormatter(xbean, ps).make();
-			}
+			new XbeanFormatter(xbean, ps).make();
 		}
 	}
 
@@ -77,8 +74,9 @@ class XbeanFormatter {
 		// getter setter
 		variables.forEach(var -> Declare.makeGetter(var, ps, "	"));
 		variables.forEach(var -> Declare.makeSetter(var, ps, "	"));
-		Declare.makeFieldAnyModify(xbean.getVariables(), ps, "	");
-		Declare.makeClearModify(xbean.getVariables(), ps, "	");
+		//Declare.makeFieldAnyModify(xbean.getVariables(), ps, "	");
+		//Declare.makeClearModify(xbean.getVariables(), ps, "	");
+		Declare.makeCheckFieldVersion(xbean.getVariables(), ps, "	");
 		// equals
 		Declare.makeEquals(variables, cls, ps, "	");
 		Declare.makeHashCode(xbean.getVariables(), ps, "	");
