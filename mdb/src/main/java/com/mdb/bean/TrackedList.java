@@ -3,7 +3,7 @@ package com.mdb.bean;
 
 import com.mdb.Mdb;
 import com.mdb.XBean;
-import com.mdb.exception.MdbException;
+import com.mdb.exception.MdbError;
 
 import java.util.*;
 import java.util.function.UnaryOperator;
@@ -235,7 +235,7 @@ public class TrackedList<E> extends XBean implements List<E> {
 
     @Override
     public Spliterator<E> spliterator() {
-       throw new MdbException("Not implemented spliterator");
+       throw new MdbError("Not implemented spliterator");
     }
 
     private class TrackedIterator implements Iterator<E> {

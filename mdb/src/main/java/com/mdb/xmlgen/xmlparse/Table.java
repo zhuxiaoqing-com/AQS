@@ -27,11 +27,15 @@ public class Table extends Naming {
 
 	private boolean supportFlush;
 
+	private MdbMetadata mdbMetadata;
+
+
 	public Table() {
 	}
 
-	public Table(Element self, boolean supportFlush) {
+	public Table(MdbMetadata mdbMetadata, Element self, boolean supportFlush) {
 		super(self);
+		this.mdbMetadata = mdbMetadata;
 		String name = getName();
 		if (name.isEmpty())
 			throw new RuntimeException("table name MUST NOT empty");
@@ -47,8 +51,8 @@ public class Table extends Naming {
 			throw new RuntimeException("Table name \"" + getName() + "\" is not permitted.");
 		if (getName().equalsIgnoreCase("_Tables_"))
 			throw new RuntimeException("Table name \"" + getName() + "\" is not permitted.");
-		keyType = TypeName.parseType(key, "", "");
-		valueType = TypeName.parseType(value, "", "");
+		keyType = TypeName.parseType(mdbMetadata, key, "", "");
+		valueType = TypeName.parseType(mdbMetadata, value, "", "");
 		String ssf = eh.getString("supportFlush");
 		if(ssf != null && ssf.length() > 0) {
 			// 优先使用table上配置的，如果没有才用mdb上面配置的
@@ -72,7 +76,7 @@ public class Table extends Naming {
 	}
 
 	public String getFirstName() {
-		return "xtable." + Mdb.getInstance().getName();
+		return "xtable." + mdbMetadata.getName();
 	}
 
 	public String getFullName() {

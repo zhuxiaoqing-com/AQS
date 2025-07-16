@@ -1,6 +1,6 @@
 package com.mdb.xmlgen.utils;
 
-import com.mdb.xmlgen.xmlparse.Mdb;
+import com.mdb.xmlgen.xmlparse.MdbMetadata;
 import com.mdb.xmlgen.xmlparse.Table;
 import com.mdb.xmlgen.Variable;
 
@@ -9,17 +9,17 @@ import java.util.*;
 
 class ForeignCircle {
 
-	static void verify(Mdb zdb) {
+	static void verify(MdbMetadata zdb) {
 		for (Table t : zdb.getTables().values())
 			new ForeignCircle(zdb, t).detect(t);
 	}
 
-	private Mdb mdb;
+	private MdbMetadata mdb;
 	private Table origin;
 	// order by add
 	private Map<String, Set<String>> detected = new LinkedHashMap<String, Set<String>>();
 
-	ForeignCircle(Mdb mdb, Table origin) {
+	ForeignCircle(MdbMetadata mdb, Table origin) {
 		this.mdb = mdb;
 		this.origin = origin;
 	}

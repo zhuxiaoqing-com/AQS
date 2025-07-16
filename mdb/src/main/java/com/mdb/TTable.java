@@ -5,18 +5,33 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import com.mdb.utils.Lock;
 import com.mdb.utils.Lockeys;
 import com.mdb.utils.Lockeys11;
+import com.mdb.xmlgen.xmlparse.Table;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public abstract class TTable<K, V> {
     public static final Object defaultValue = new Object();
+    private static final Logger log = LoggerFactory.getLogger(TTable.class);
 
 
-    private boolean supportFlush;
+    private Table meta;
+
+    private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
+
+    protected ReentrantReadWriteLock.WriteLock writelock = lock.writeLock();
+    protected ReentrantReadWriteLock.ReadLock readlock = lock.readLock();
+
+    private Mdb mdb;
 
 
+    public TTable(Mdb mdb) {
+        this.mdb = mdb;
+    }
 
     //private TTableCache<K, V> cache;
     private final Map<K, TRecord<K, V>> cache = new ConcurrentHashMap<>();
@@ -26,46 +41,7 @@ public abstract class TTable<K, V> {
     private long allCountGetMiss = 0;
 
     public V get(K key) {
-        Lock lockey = Lockeys11.getLockey(getName(), key);
-        lockey.getReadLock().lock();
-        try {
-            TRecord<K, V> tRecord = cache.get(key);
-            if (tRecord != null) {
-                if (tRecord.getState() == TRecord.REMOVE) {
-                    return null;
-                }
-                return tRecord.get();
-            }
-        } finally {
-            lockey.getReadLock().unlock();
-        }
-
-        // 不存在在数据库找个新的 然后返回
-        lockey.getWriteLock().lock();
-        try {
-            // 找到了 返回
-            TRecord<K, V> tRecord = cache.get(key);
-            if (tRecord != null) {
-                if (tRecord.getState() == TRecord.REMOVE) {
-                    return null;
-                }
-                return tRecord.get();
-            }
-
-            // 没找到查数据库
-            V value = _find(key);
-            if (value != null) {
-                cache.put(key, new TRecord<>(this, key, value, TRecord.GET));
-            } else {
-                findFailCache.put(key, defaultValue);
-                // getMiss
-                countGetMiss.incrementAndGet();
-            }
-
-            return value;
-        } finally {
-            lockey.getWriteLock().unlock();
-        }
+        return null;
     }
 
 
@@ -125,16 +101,51 @@ public abstract class TTable<K, V> {
 
     }
 
-    public String getName() {
-        return null;
+
+    /**
+     * 将单个key保存到数据库  玩家离线时调用;
+     * 应该还有个判断 该表是否属于玩家 属于玩家才在玩家离线时调用;
+     */
+    /*public void flush(K key) {
+        TRecord<K, V> kvtRecord = _flush(key);
+        if (kvtRecord != null) {
+            kvtRecord.flush();
+        }
+    }*/
+
+    public boolean flush(K key) {
+        Lock lockey = Lockeys.getLockey(this.getName(), key);
+        lockey.getWriteLock().lock();
+        try {
+            TRecord<K, V> kvtRecord = cache.remove(key);
+            if (kvtRecord != null) {
+                boolean flush = kvtRecord.flush();
+                if(!flush) {
+                    log.error("flush fail table {} key {} ", this.getName(), key);
+                    // flush失败重新加入cache等待下一次同步flush
+                    cache.put(key, kvtRecord);
+                    return false;
+                }
+            }
+        }finally {
+            lockey.getWriteLock().unlock();
+        }
+        return true;
     }
 
-    public boolean supportFlush() {
-        return supportFlush;
+
+    public Mdb getMdb() {
+        return mdb;
     }
 
-    public void setSupportFlush(boolean supportFlush) {
-        this.supportFlush = supportFlush;
+    public void close() {
+    }
+
+
+    public abstract String getName();
+
+    public boolean isSupportFlush() {
+        return meta.isSupportFlush();
     }
 
     public void tick(long time) {
@@ -159,27 +170,5 @@ public abstract class TTable<K, V> {
     protected abstract K unmarshalKey(String os) throws Exception;
 
     protected abstract V unmarshalValue(String os) throws Exception;
-
-
-    /**
-     * 将单个key保存到数据库  玩家离线时调用;
-     * 应该还有个判断 该表是否属于玩家 属于玩家才在玩家离线时调用;
-     */
-    public void flush(K key) {
-        TRecord<K, V> kvtRecord = _flush(key);
-        if(kvtRecord != null && kvtRecord.isModified()) {
-
-        }
-    }
-
-    public TRecord<K, V>  _flush(K key) {
-        Lock lockey = Lockeys.getLockey(this.getName(), key);
-        lockey.getWriteLock().lock();
-        try {
-            return cache.remove(key);
-        }finally {
-            lockey.getWriteLock().unlock();
-        }
-    }
 
 }

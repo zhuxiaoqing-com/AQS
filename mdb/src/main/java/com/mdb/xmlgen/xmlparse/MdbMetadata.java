@@ -14,17 +14,17 @@ import java.util.Map;
  * @author Eric.Ma
  *
  */
-public class Mdb {
+public class MdbMetadata {
 
-	private static Mdb instance = new Mdb();
+	/*private static MdbMetadata instance = new MdbMetadata();
 
-	public static Mdb getInstance() {
+	public static MdbMetadata getInstance() {
 		return instance;
 	}
 
-	private Mdb() {
+	private MdbMetadata() {
 	}
-
+*/
 	private Map<String, Xbean> beans = new HashMap<>();
 
 	private Map<String, Table> tables = new HashMap<>();
@@ -52,13 +52,13 @@ public class Mdb {
 		supportFlush = eh.getBoolean("supportFlush", supportFlush);
 		XMLUtils.getChildElements(element).forEach(e -> {
 			if (e.getNodeName().equals("xbean")) {
-				Xbean xbean = new Xbean(e);
+				Xbean xbean = new Xbean(this, e);
 				Xbean preB = beans.put(xbean.getName(), xbean);
 				if (preB != null) {
 					throw new RuntimeException("xbean 名字重复 : " + xbean.getName());
 				}
 			} else if (e.getNodeName().equals("table")) {
-				Table table = new Table(e, supportFlush);
+				Table table = new Table(this, e, supportFlush);
 				Table pre = tables.put(table.getName(), table);
 				if (pre != null) {
 					throw new RuntimeException("table 名字重复 : " + table.getName());
@@ -95,7 +95,7 @@ public class Mdb {
 	}
 
 	public DBType getDBType() {
-		String dbhome = instance.getDbHome();
+		String dbhome = getDbHome();
 		if (dbhome.startsWith("jdbc:mysql"))
 			return DBType.MYSQL;
 		else if (dbhome.startsWith("mongo"))

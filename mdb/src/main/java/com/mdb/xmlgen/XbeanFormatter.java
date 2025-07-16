@@ -1,7 +1,7 @@
 package com.mdb.xmlgen;
 
 import com.mdb.xmlgen.xmlparse.Enum;
-import com.mdb.xmlgen.xmlparse.Mdb;
+import com.mdb.xmlgen.xmlparse.MdbMetadata;
 
 import java.io.PrintStream;
 import java.util.List;
@@ -9,7 +9,10 @@ import java.util.List;
 class XbeanFormatter {
 	public static void make(Xbean xbean) {
 		try (PrintStream ps = Mdbgen.openXBeanFile(xbean.getName())) {
-			new XbeanFormatter(xbean, ps).make();
+			// 如果文件已经存在就不再次生成了 (为了处理一些所有xml共用的xbean)
+			if (ps != null) {
+				new XbeanFormatter(xbean, ps).make();
+			}
 		}
 	}
 
@@ -27,8 +30,8 @@ class XbeanFormatter {
 
 	private void make() {
 		String cls = xbean.getName();
-		
-		ps.println("package xbean." + Mdb.getInstance().getName() + ";");
+		MdbMetadata mdbMetadata = xbean.getMdbMetadata();
+		ps.println("package xbean." + mdbMetadata.getName() + ";");
 		ps.println("import com.alibaba.fastjson.annotation.JSONField;");
 		ps.println();
 		ps.println();

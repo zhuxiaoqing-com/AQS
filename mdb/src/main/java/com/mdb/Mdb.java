@@ -1,8 +1,11 @@
 package com.mdb;
 
 import com.mdb.stoarge.StorageEngine;
+import com.mdb.xmlgen.xmlparse.MdbMetadata;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Mdb {
     public static Logger logger = LoggerFactory.getLogger(Mdb.class.getName());
@@ -15,19 +18,56 @@ public class Mdb {
     private Mdb() {
     }
 
-
-    private boolean xBeanCheck = false;
-    // checkPointModify标识
-    private volatile int checkPointCount = 0;
     private StorageEngine storageEngine;
+    private volatile CopyOnWriteArrayList<Tables> allTables = new CopyOnWriteArrayList<>(); // 为了支持在一个进程中开启多个mdb
+
+    // xBean 是否开启全量检测
+    private boolean xBeanDetailCheck = false;
+    // checkPoint前+1
+    private volatile int checkPointCount = 0;
 
 
-    public boolean isXBeanCheck() {
-        return xBeanCheck;
+    public synchronized void start(MdbMetadata mdbMetadata) {
+
     }
 
-    public void setXBeanCheck(boolean xBeanCheck) {
-        this.xBeanCheck = xBeanCheck;
+
+
+    public boolean flush(Object key, MdbFlushCallback mdbFlushCallback) {
+        boolean allSuccess = true;
+        for (Tables allTable : allTables) {
+            for (TTable table : allTable.tables.values()) {
+                TTable tt = table;
+                if (tt.isSupportFlush()) {
+                    // 名义上增加只读锁，其实是flush操作，目的是为了和checkpoint的write锁互斥，同时又保证多玩家在没有checkpoint时flush自己数据能并发执行
+                    tt.readlock.lock();
+                    try {
+                        if(!tt.flush(key)) {
+                            allSuccess = false;
+                        }
+                    } finally {
+                        tt.readlock.unlock();
+                    }
+                }
+            }
+        }
+
+        if (mdbFlushCallback != null) {
+            mdbFlushCallback.onFlushOver(key);
+        }
+        return allSuccess;
+    }
+
+
+
+
+
+    public boolean isxBeanDetailCheck() {
+        return xBeanDetailCheck;
+    }
+
+    public void setxBeanDetailCheck(boolean xBeanDetailCheck) {
+        this.xBeanDetailCheck = xBeanDetailCheck;
     }
 
     public int getCheckPointCount() {
@@ -48,4 +88,5 @@ public class Mdb {
     public StorageEngine getStorage() {
         return storageEngine;
     }
+
 }

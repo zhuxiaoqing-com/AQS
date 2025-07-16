@@ -4,7 +4,7 @@ import com.mdb.utils.ElementHelper;
 import com.mdb.utils.XMLUtils;
 import com.mdb.xmlgen.type.Type;
 import com.mdb.xmlgen.xmlparse.Enum;
-import com.mdb.xmlgen.xmlparse.Mdb;
+import com.mdb.xmlgen.xmlparse.MdbMetadata;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -28,9 +28,11 @@ public class Xbean extends Type {
 	private Set<String> varNameChecker = new HashSet<>();
 
 	private Set<Integer> aliasSet = new HashSet<>();
+	private MdbMetadata mdbMetadata;
 	
-	public Xbean(Element self) {
+	public Xbean(MdbMetadata mdbMetadata, Element self) {
 		super(self);
+		this.mdbMetadata = mdbMetadata;
 		this.self = self;
 		ElementHelper eh = new ElementHelper(self);
 		this.name = eh.getString("name");
@@ -74,7 +76,7 @@ public class Xbean extends Type {
 	}
 
 	public String getFirstName() {
-		return "xbean." + Mdb.getInstance().getName();
+		return "xbean." + mdbMetadata.getName();
 	}
 
 	public String getFullName() {
@@ -97,6 +99,10 @@ public class Xbean extends Type {
 		return enums;
 	}
 
+	public MdbMetadata getMdbMetadata() {
+		return mdbMetadata;
+	}
+
 	@Override
 	public boolean isConstType() {
 		return false;
@@ -116,5 +122,6 @@ public class Xbean extends Type {
 	public String toCopy(Type type) {
 		return String.format("new %s(_o_.%s, this);", getName(), type.getName());
 	}
+
 
 }

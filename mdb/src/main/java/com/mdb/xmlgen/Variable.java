@@ -4,6 +4,7 @@ import com.mdb.utils.ElementHelper;
 import com.mdb.utils.StringUtils;
 import com.mdb.xmlgen.type.Type;
 import com.mdb.xmlgen.type.TypeName;
+import com.mdb.xmlgen.xmlparse.MdbMetadata;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -59,12 +60,13 @@ public class Variable extends Type {
 	private int alias = -1;
 
 	private Set<Integer> aliasSet;
-	
+	MdbMetadata mdbMetadata;
 	public Variable(Xbean xbean, Element self,Set<Integer> aliasSet) {
 		super(self);
 		this.xbean = xbean;
 		this.self = self;
 		this.aliasSet = aliasSet;
+		this.mdbMetadata = xbean.getMdbMetadata();
 		initialize(self);
 	}
 
@@ -81,7 +83,7 @@ public class Variable extends Type {
 		}
 		this.aliasSet.add(alias);
 		this.comment = extractComment(self);
-		this.varType = TypeName.parseType(type, key, value);
+		this.varType = TypeName.parseType(mdbMetadata, type, key, value);
 	}
 
 	public static String extractComment(Element self) {

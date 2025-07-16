@@ -16,7 +16,11 @@ public final class FileOperation {
 
 	public static PrintStream fopen(File path, String name) {
 		try {
-			return new PrintStream(new CachedFileOutputStream(toFile(path, name)), false, Main.outputEncoding);
+			File file = toFile(path, name);
+			if (file.exists()) {
+				return null;
+			}
+			return new PrintStream(new CachedFileOutputStream(file), false, Main.outputEncoding);
 		} catch (java.io.IOException e) {
 			throw new RuntimeException(e);
 		}

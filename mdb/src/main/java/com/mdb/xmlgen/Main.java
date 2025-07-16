@@ -1,7 +1,7 @@
 package com.mdb.xmlgen;
 
 import com.mdb.utils.XMLUtils;
-import com.mdb.xmlgen.xmlparse.Mdb;
+import com.mdb.xmlgen.xmlparse.MdbMetadata;
 import org.w3c.dom.Element;
 
 
@@ -30,7 +30,7 @@ public class Main {
 				usage();
 		}
 		Element element = XMLUtils.getRootElement(new File(inputXml));
-		Mdb mdb = Mdb.getInstance();
+		MdbMetadata mdb = new MdbMetadata();
 		mdb.initialize(element);
 		Mdbgen.make(mdb, new File(outputPath));
 		if(sqlPath == null || sqlPath.length() == 0)

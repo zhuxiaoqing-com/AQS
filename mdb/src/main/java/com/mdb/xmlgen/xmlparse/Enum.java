@@ -35,7 +35,7 @@ public final class Enum extends Naming {
 			throw new RuntimeException("invalid enum type in bean : " + xbean.getName());
 		}
 		comment = Variable.extractComment(self);
-		valueType = TypeName.parseType(strtype, "", "");
+		valueType = TypeName.parseType(xbean.getMdbMetadata(), strtype, "", "");
 	}
 
 	public String toVariable() {

@@ -2,7 +2,7 @@ package com.mdb.xmlgen;
 
 import com.mdb.xmlgen.utils.CachedFileOutputStream;
 import com.mdb.xmlgen.utils.FileOperation;
-import com.mdb.xmlgen.xmlparse.Mdb;
+import com.mdb.xmlgen.xmlparse.MdbMetadata;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -25,19 +25,19 @@ public class Mdbgen {
 		return FileOperation.fopen(tableDir, classname + ".java");
 	}
 
-	public static void make(Mdb mdb, File genDir) {
+	public static void make(MdbMetadata mdb, File genDir) {
 		tableDir = new File(new File(genDir, "table"), mdb.getName());
 		xbeanDir = new File(new File(genDir, "xbean"), mdb.getName());
 		CachedFileOutputStream.removeOtherFiles(genDir);
 //		ForeignCircle.verify(zdb);
 		mdb.getBeans().values().forEach(XbeanFormatter::make);
 
-		mdb.getTables().values().forEach(TableShortcut::make);
+		mdb.getTables().values().forEach(a->TableShortcut.make(mdb, a));
 		TableTables.make(mdb, mdb.getTables().values());
 //		TableMeta.make(zdb);
 	}
 	
-	public static void genSql(Mdb mdb, File sqlDir) throws Exception {
+	public static void genSql(MdbMetadata mdb, File sqlDir) throws Exception {
 		if(!sqlDir.isDirectory())
 			return;
 		

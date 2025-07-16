@@ -2,15 +2,15 @@ package com.mdb.xmlgen;
 
 
 import com.mdb.utils.StringUtils;
-import com.mdb.xmlgen.xmlparse.Mdb;
+import com.mdb.xmlgen.xmlparse.MdbMetadata;
 import com.mdb.xmlgen.xmlparse.Table;
 
 import java.io.PrintStream;
 
 class TableShortcut {
 
-	static void make(Table table) {
-		new TableShortcut(table).make();
+	static void make(MdbMetadata mdbMetadata, Table table) {
+		new TableShortcut(table).make(mdbMetadata);
 	}
 
 	private Table table;
@@ -19,7 +19,7 @@ class TableShortcut {
 		this.table = table;
 	}
 
-	void make() {
+	void make(MdbMetadata mdbMetadata) {
 		String name = table.getName();
 		String classname = StringUtils.upper1(name);
 		try (PrintStream ps = Mdbgen.openTableFile(classname)) {
@@ -28,7 +28,7 @@ class TableShortcut {
 			String V = table.getValueType().isXbean() ? table.getValueType().toVarType() : table.getValueType().box();
 			String KV = "<" + K + ", " + V + ">";
 
-			ps.println("package table." + Mdb.getInstance().getName() + ";");
+			ps.println("package table." + mdbMetadata.getName() + ";");
 			ps.println();
 			ps.println("public class " + classname + " {");
 			ps.println("	private " + classname + "() {");
@@ -36,19 +36,19 @@ class TableShortcut {
 			ps.println();
 
 			ps.println("	public static boolean add(" + K + " key, " + V + " value) {");
-			makeFind(Mdb.getInstance().getName(),ps, V,"add",false);
+			makeFind(mdbMetadata.getName(),ps, V,"add",false);
 			ps.println("		return _Tables_.instance." + name + ".insert(key, value) != null;");
 			ps.println("	}");
 			ps.println();
 
 			ps.println("	public static boolean add(" + K + " key, " + V + " value, boolean immediately) {");
-			makeFind(Mdb.getInstance().getName(),ps, V,"add immediately ",true);
+			makeFind(mdbMetadata.getName(),ps, V,"add immediately ",true);
 			ps.println("		return _Tables_.instance." + name + ".insert(key, value, immediately) != null;");
 			ps.println("	}");
 			ps.println();
 
 			ps.println("	public static " + V + " get(" + K + " key) {");
-			makeFind(Mdb.getInstance().getName(),ps, V,"get",false);
+			makeFind(mdbMetadata.getName(),ps, V,"get",false);
 			ps.println("		return _Tables_.instance." + name + ".get(key);");
 			ps.println("	}");
 			ps.println();
@@ -60,7 +60,7 @@ class TableShortcut {
 			ps.println();
 
 			ps.println("	public static boolean remove(" + K + " key) {");
-			makeFind(Mdb.getInstance().getName(),ps, V,"remove",false);
+			makeFind(mdbMetadata.getName(),ps, V,"remove",false);
 			ps.println("		return _Tables_.instance." + name + ".delete(key);");
 			ps.println("	}");
 			ps.println();

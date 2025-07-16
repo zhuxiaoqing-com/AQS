@@ -1,6 +1,6 @@
 package com.mdb.xmlgen.type;
 
-import com.mdb.xmlgen.xmlparse.Mdb;
+import com.mdb.xmlgen.xmlparse.MdbMetadata;
 
 import java.lang.reflect.Constructor;
 import java.util.Arrays;
@@ -48,11 +48,11 @@ public class TypeName {
 	}
 
 	// 是否是xbean
-	public static boolean isXbean(String type) {
-		return Mdb.getInstance().getBeans().containsKey(type);
+	public static boolean isXbean(MdbMetadata mdbMetadata, String type) {
+		return mdbMetadata.getBeans().containsKey(type);
 	}
 
-	public static Type parseType(String type, String key, String value) {
+	public static Type parseType(MdbMetadata mdbMetadata, String type, String key, String value) {
 		try {
 			if (isBaseType(type)) {
 				Class<? extends Type> baseClass = typeMap.get(type);
@@ -61,19 +61,19 @@ public class TypeName {
 			if (isComplexType(type)) {
 				Class<? extends Type> complexClass = typeMap.get(type);
 				if (type.equals("map")) {
-					Type keyType = parseType(key, "", "");
-					Type valueType = parseType(value, "", "");
+					Type keyType = parseType(mdbMetadata, key, "", "");
+					Type valueType = parseType(mdbMetadata, value, "", "");
 					Constructor<? extends Type> constructor = complexClass.getDeclaredConstructor(Type.class,
 							Type.class);
 					return constructor.newInstance(keyType, valueType);
 				} else {
-					Type valueType = parseType(value, "", "");
+					Type valueType = parseType(mdbMetadata, value, "", "");
 					Constructor<? extends Type> constructor = complexClass.getDeclaredConstructor(Type.class);
 					return constructor.newInstance(valueType);
 				}
 			}
-			if (isXbean(type)) {
-				return Mdb.getInstance().getBeans().get(type);
+			if (isXbean(mdbMetadata, type)) {
+				return mdbMetadata.getBeans().get(type);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

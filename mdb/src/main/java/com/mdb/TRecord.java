@@ -83,25 +83,25 @@ public class TRecord<K, V> {
         return false;
     }
     public String marshalKey() {
-        return table.marshalKey(getKey());
+        return table.marshalKey(key);
     }
 
     public String marshalValue() {
         return table.marshalValue(value);
     }
 
-    boolean flush(TTable<K, V> storage) {
+    boolean flush() {
         try {
             switch (state) {
                 case ADD:
-                    Mdb.getInstance().getStorage().insert(marshalKey(), marshalValue());
+                    table.getMdb().getStorage().insert(table.getName(), marshalKey(), marshalValue());
                     return true;
                 case REMOVE:
-                    Mdb.getInstance().getStorage().remove(marshalKey());
+                    table.getMdb().getStorage().remove(table.getName(), marshalKey());
                     return true;
                 case GET:
                     if (isModified()) {
-                        Mdb.getInstance().getStorage().replace(marshalKey(), marshalValue());
+                        table.getMdb().getStorage().replace(table.getName(), marshalKey(), marshalValue());
                         return true;
                     }
             }

@@ -2,7 +2,7 @@ package com.mdb.xmlgen;
 
 
 import com.mdb.utils.StringUtils;
-import com.mdb.xmlgen.xmlparse.Mdb;
+import com.mdb.xmlgen.xmlparse.MdbMetadata;
 import com.mdb.xmlgen.xmlparse.Table;
 
 import java.io.PrintStream;
@@ -10,7 +10,7 @@ import java.util.Collection;
 
 class TableTables {
 
-	static void make(Mdb mdb, Collection<Table> tables) {
+	static void make(MdbMetadata mdb, Collection<Table> tables) {
 		String classname = "_Tables_";
 		try (PrintStream ps = Mdbgen.openTableFile(classname)) {
 

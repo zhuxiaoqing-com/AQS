@@ -1,6 +1,6 @@
 package com.mdb;
 
-import com.mdb.exception.MdbException;
+import com.mdb.exception.MdbError;
 
 public abstract class XBean {
     private boolean modifyTrue;// 自己以及子类变化
@@ -95,7 +95,7 @@ public abstract class XBean {
         if(only_isModify()) {
             return true;
         }
-        if(Mdb.getInstance().isXBeanCheck()) {
+        if(Mdb.getInstance().isxBeanDetailCheck()) {
             boolean fieldAndModify = fieldAnyModify();
             if (fieldAndModify) {
                 Mdb.logger.error("parentModify false fieldModify true class {} ", getClass().getName());
@@ -129,7 +129,7 @@ public abstract class XBean {
 
     public void setParent(XBean parent) {
         if (_parent != null && _parent != parent) {
-            throw new MdbException("MdbBean already has a parent _oldParentName : " + _parent.getClass().getName() + "newParentName : " + parent.getClass().getName());
+            throw new MdbError("MdbBean already has a parent _oldParentName : " + _parent.getClass().getName() + "newParentName : " + parent.getClass().getName());
         }
         this._parent = parent;
     }
