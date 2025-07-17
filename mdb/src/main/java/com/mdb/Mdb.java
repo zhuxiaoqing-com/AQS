@@ -5,6 +5,7 @@ import com.mdb.xmlgen.xmlparse.MdbMetadata;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Mdb {
@@ -18,7 +19,6 @@ public class Mdb {
     private Mdb() {
     }
 
-    private StorageEngine storageEngine;
     private volatile CopyOnWriteArrayList<Tables> allTables = new CopyOnWriteArrayList<>(); // 为了支持在一个进程中开启多个mdb
 
     // xBean 是否开启全量检测
@@ -35,6 +35,7 @@ public class Mdb {
 
     public boolean flush(Object key, MdbFlushCallback mdbFlushCallback) {
         boolean allSuccess = true;
+        long startTime = System.currentTimeMillis();
         for (Tables allTable : allTables) {
             for (TTable table : allTable.tables.values()) {
                 TTable tt = table;
@@ -51,7 +52,7 @@ public class Mdb {
                 }
             }
         }
-
+        logger.info("Flush all tables in key {} {} ms", key, System.currentTimeMillis() - startTime);
         if (mdbFlushCallback != null) {
             mdbFlushCallback.onFlushOver(key);
         }
@@ -85,8 +86,7 @@ public class Mdb {
         this.checkPointCount = checkPointCount + 1;
     }
 
-    public StorageEngine getStorage() {
-        return storageEngine;
+    public List<Tables> getAllTables() {
+        return allTables;
     }
-
 }

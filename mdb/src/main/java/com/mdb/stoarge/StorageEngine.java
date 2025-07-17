@@ -1,5 +1,6 @@
 package com.mdb.stoarge;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -30,7 +31,7 @@ public interface StorageEngine {
 
     void remove(String table, String key);
 
-    default void removeBatch(String table, List<String> keys) {
+    default void removeBatch(String table, Collection<String> keys) {
         for (String key : keys) {
             remove(table, key);
         }

@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -21,6 +22,8 @@ public class StorageMysql implements StorageEngine {
 	private int THRESHOLD = Integer.getInteger("mysql.batch.threshold", 30);
 	// 批量操作每批的数量
 	private int BATCH_PER_COUNT = Integer.getInteger("mysql.batch.per", 500);
+
+	public static final int COST_MS_WARN = 100;
 
 	public StorageMysql(LoggerMysql logger) {
 		this.logger = logger;
@@ -70,8 +73,12 @@ public class StorageMysql implements StorageEngine {
 			throw new MdbError(e);
 		} finally {
 			LoggerMysql.release(stmt, conn);
-			log.debug("{} replace key : {} value: {}  cost: {} ms", tableName, key, value,
-					(System.nanoTime() - begin) * 1e-6);
+
+			long costMs = (long) ((System.nanoTime() - begin) * 1e-6);
+			if (costMs > COST_MS_WARN) {
+				log.warn("{} replace key : {} value: {}  cost: {} ms", tableName, key, value,
+						costMs);
+			}
 		}
 	}
 
@@ -109,17 +116,21 @@ public class StorageMysql implements StorageEngine {
 				log.debug("{} execute batch ", tableName);
 				stmt.clearBatch();
 			}
-			log.debug("{} batch replace cost: {} ms", tableName, (System.nanoTime() - begin) * 1e-6);
+
 		} catch (Exception e) {
 			log.error("replace batch error", e);
 			throw new MdbError(e);
 		} finally {
 			LoggerMysql.release(stmt, conn);
+			long costMs = (long) ((System.nanoTime() - begin) * 1e-6);
+			if (costMs > COST_MS_WARN) {
+				log.warn("{} batch replace cost: {} ms", tableName, (System.nanoTime() - begin) * 1e-6);
+			}
 		}
 	}
 
 	@Override
-	public void removeBatch(String tableName, List<String> keys) {
+	public void removeBatch(String tableName, Collection<String> keys) {
 		// 单个
 		if (keys.size() < THRESHOLD) {
 			keys.forEach(k -> remove(tableName, k));
@@ -149,12 +160,17 @@ public class StorageMysql implements StorageEngine {
 				log.debug("{} execute batch ", tableName);
 				stmt.clearBatch();
 			}
-			log.debug("{} batch remove keys cost : {} ms", tableName, (System.nanoTime() - begin) * 1e-6);
+
 		} catch (Exception e) {
 			log.error("remove batch", e);
 			throw new MdbError(e);
 		} finally {
 			LoggerMysql.release(stmt, conn);
+
+			long costMs = (long) ((System.nanoTime() - begin) * 1e-6);
+			if (costMs > COST_MS_WARN) {
+				log.warn("{} batch remove keys cost : {} ms", tableName, (System.nanoTime() - begin) * 1e-6);
+			}
 		}
 	}
 
@@ -174,7 +190,12 @@ public class StorageMysql implements StorageEngine {
 			return false;
 		} finally {
 			LoggerMysql.release(stmt, conn);
-			log.debug("{} insert key : {}  cost : {} ms", tableName, key, (System.nanoTime() - begin) * 1e-6);
+
+			long costMs = (long) ((System.nanoTime() - begin) * 1e-6);
+			if (costMs > COST_MS_WARN) {
+				log.warn("{} batch remove keys cost : {} ms", tableName, (System.nanoTime() - begin) * 1e-6);
+			}
+			log.info("{} insert key : {}  cost : {} ms", tableName, key, (System.nanoTime() - begin) * 1e-6);
 		}
 		return true;
 	}
@@ -194,7 +215,11 @@ public class StorageMysql implements StorageEngine {
 			throw new MdbError(e);
 		} finally {
 			LoggerMysql.release(stmt, conn);
-			log.debug("{} remove key : {} cost : {} ms", tableName, key, (System.nanoTime() - begin) * 1e-6);
+
+			long costMs = (long) ((System.nanoTime() - begin) * 1e-6);
+			if (costMs > COST_MS_WARN) {
+				log.warn("{} remove key : {} cost : {} ms", tableName, key, (System.nanoTime() - begin) * 1e-6);
+			}
 		}
 	}
 
@@ -215,7 +240,10 @@ public class StorageMysql implements StorageEngine {
 			throw new MdbError(e);
 		} finally {
 			LoggerMysql.release(rs, stmt, conn);
-			log.debug("{} exist key : {} cost : {} ms", tableName, key.replace("\"", ""), (System.nanoTime() - begin) * 1e-6);
+			long costMs = (long) ((System.nanoTime() - begin) * 1e-6);
+			if (costMs > COST_MS_WARN) {
+				log.warn("{} exist key : {} cost : {} ms", tableName, key.replace("\"", ""), (System.nanoTime() - begin) * 1e-6);
+			}
 		}
 	}
 
@@ -236,7 +264,10 @@ public class StorageMysql implements StorageEngine {
 			throw new MdbError(e);
 		} finally {
 			LoggerMysql.release(rs, stmt, conn);
-			log.info("{} find key : {} cost : {} ms", tableName, key.replace("\"", ""), (System.nanoTime() - begin) * 1e-6);
+			long costMs = (long) ((System.nanoTime() - begin) * 1e-6);
+			if (costMs > COST_MS_WARN) {
+				log.warn("{} find key : {} cost : {} ms", tableName, key.replace("\"", ""), (System.nanoTime() - begin) * 1e-6);
+			}
 		}
 	}
 

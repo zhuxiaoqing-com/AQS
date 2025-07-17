@@ -75,6 +75,19 @@ checkpoint 和 flush 都会同时访问写入mysql;两边写入都是为了保�
 淘汰策略放在lruccache里面;
 
 
+remove 的数据 到底应该在什么地方给他删了;要么就是lru弄个定时删;
+    在checkpoint里面删有点问题; 如果正好又有个add进来吧remove的变成add那数据就乱了;除非加锁;
+    还有add又应该在什么地方给刷成get; 这个可以吧state变成atomic;就可以了;
+    remove不能使用atomic 因为他要把cache里面的数据删除;
+
+
+add 和checkpoint这里有点问题;
+比如我先new了一个对象 获取了其checkpointcount保存起来; 然后我进入了checkpoint将checkpointCount+1;然后将数据存入数据库;
+这个时候业务线程将新对象存入cache,并且将其标记为add; 然后checkpoint将add修改为get;这个时候get保存的版本号其实是旧的;
+就算checkpoint sleep(1000) 也有可能;因为可能正好sleep(1000)进入以后 就开始1s的大GC;
+
+有个多版本version的方法--、 比如有10个版本号,检测变化的时候, 把除了下一个版本号的,前9个版本号都检测一遍,这样就算出现上面的情况也不会有问题了
+
 
 
 

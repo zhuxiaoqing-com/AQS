@@ -84,4 +84,8 @@ public class Tables {
             readlock.unlock();
         }
     }
+
+    public StorageEngine getStorage() {
+        return storage;
+    }
 }

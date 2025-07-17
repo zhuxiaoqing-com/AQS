@@ -2,12 +2,15 @@ package com.mdb;
 
 import com.mdb.utils.TimeUtils;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 public class TRecord<K, V> {
     public static final int ADD = 1;
     public static final int REMOVE = 2;
     public static final int GET = 3;
+    public static final int REMOVE_SYNC_DB = 4;// 删除已经存入数据库了
 
-    private int state;
+    private AtomicInteger state = new AtomicInteger(0);
     private TTable<K, V> table;
     private K key;
     private V value;
@@ -17,13 +20,12 @@ public class TRecord<K, V> {
      */
     private volatile long lastAccessTime;
 
-    private boolean modified;
 
     public TRecord(TTable<K, V> table, K key, V value, int state) {
         this.table = table;
         this.key = key;
         this.value = value;
-        this.state = state;
+        this.state.set(state);
         access();
     }
 
@@ -31,22 +33,28 @@ public class TRecord<K, V> {
 
     public void add(V newValue) {
         access();
-        value = newValue;
-        state = ADD;
-        /*switch (state) {
+        state.set(ADD);
+        /*switch (getState()) {
+            case REMOVE:
+                state.set(ADD);
             case ADD:
-                value = newValue;
+            case GET:// get为什么不变add; 因为不需要变,get已经有modify判断了;不需要在变成add了;
                 break;
-            case GET:
-                value = newValue;
-                state = ADD;
         }*/
+        value = newValue;
     }
 
     public void remove() {
         access();
         value = null;
-        state = REMOVE;
+        state.getAndUpdate(a -> {
+            // 如果已经是REMOVE_SYNC_DB 就不再变成remove状态了;
+            if (a == REMOVE_SYNC_DB) {
+                return a;
+            } else {
+                return REMOVE;
+            }
+        });
     }
 
     public V get() {
@@ -60,7 +68,14 @@ public class TRecord<K, V> {
     }
 
     public int getState() {
+        return state.get();
+    }
+    public AtomicInteger getStateAtomic() {
         return state;
+    }
+
+    public boolean isRemoveState(){
+        return state.get() == REMOVE || state.get() == REMOVE_SYNC_DB;
     }
 
 
@@ -71,7 +86,7 @@ public class TRecord<K, V> {
      * todo 可能对比json  可能直接在有修改的时候弄个标记传播上来 然后直接判断那个标记
      */
     public boolean isModified(long version) {
-        switch (state) {
+        switch (getState()) {
             case ADD:
                 return true;
             case REMOVE:
@@ -95,16 +110,16 @@ public class TRecord<K, V> {
 
     boolean flush() {
         try {
-            switch (state) {
+            switch (getState()) {
                 case ADD:
-                    table.getMdb().getStorage().insert(table.getName(), marshalKey(), marshalValue());
+                    table.getTables().getStorage().insert(table.getName(), marshalKey(), marshalValue());
                     return true;
                 case REMOVE:
-                    table.getMdb().getStorage().remove(table.getName(), marshalKey());
+                    table.getTables().getStorage().remove(table.getName(), marshalKey());
                     return true;
                 case GET:
                     if (isModified()) {
-                        table.getMdb().getStorage().replace(table.getName(), marshalKey(), marshalValue());
+                        table.getTables().getStorage().replace(table.getName(), marshalKey(), marshalValue());
                         return true;
                     }
             }

@@ -3,12 +3,14 @@ package com.mdb;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.mdb.utils.Lock;
-import com.mdb.utils.Lockeys;
 import com.mdb.utils.Lockeys11;
 import com.mdb.xmlgen.xmlparse.Table;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
@@ -26,11 +28,11 @@ public abstract class TTable<K, V> {
     protected ReentrantReadWriteLock.WriteLock writelock = lock.writeLock();
     protected ReentrantReadWriteLock.ReadLock readlock = lock.readLock();
 
-    private Mdb mdb;
+    private Tables tables;
 
 
-    public TTable(Mdb mdb) {
-        this.mdb = mdb;
+    public TTable(Tables tables) {
+        this.tables = tables;
     }
 
     //private TTableCache<K, V> cache;
@@ -46,7 +48,7 @@ public abstract class TTable<K, V> {
         try {
             TRecord<K, V> tRecord = cache.get(key);
             if (tRecord != null) {
-                if (tRecord.getState() == TRecord.REMOVE) {
+                if (tRecord.isRemoveState()) {
                     return null;
                 }
                 return tRecord.get();
@@ -61,7 +63,7 @@ public abstract class TTable<K, V> {
             // 找到了 返回
             TRecord<K, V> tRecord = cache.get(key);
             if (tRecord != null) {
-                if (tRecord.getState() == TRecord.REMOVE) {
+                if (tRecord.isRemoveState()) {
                     return null;
                 }
                 return tRecord.get();
@@ -173,8 +175,67 @@ public abstract class TTable<K, V> {
     }
 
 
-    public Mdb getMdb() {
-        return mdb;
+    public void checkpoint(long checkPointCount,
+                           HashMap<String, String> addCache, HashMap<String, String> modifyCache, HashMap<String, String> removeCache,
+                           List<TRecord> addTRecordCache, List<TRecord> modifyTRecordCache, List<TRecord> removeTRecordCache
+    ) {
+        long startMs = System.currentTimeMillis();
+        try {
+            try {
+                for (TRecord<K, V> kvtRecord : getCacheList()) {
+                    if (!kvtRecord.isModified(checkPointCount)) {
+                        continue;
+                    }
+                    switch (kvtRecord.getState()) {
+                        case TRecord.ADD:
+                            addCache.put(kvtRecord.marshalKey(), kvtRecord.marshalValue());
+                            addTRecordCache.add(kvtRecord);
+                            break;
+                        case TRecord.GET:
+                            modifyCache.put(kvtRecord.marshalKey(), kvtRecord.marshalValue());
+                            modifyTRecordCache.add(kvtRecord);
+                            break;
+                        case TRecord.REMOVE:
+                            removeCache.put(kvtRecord.marshalKey(), "");
+                            removeTRecordCache.add(kvtRecord);
+                            break;
+                    }
+                }
+            } catch (Exception e) {
+                log.error("checkpoint marshal fail table {} ", this.getName(), e);
+            }
+            try {
+                boolean addSuccess=true;
+                try {
+                    // 执行数据库操作
+                    getTables().getStorage().replaceBatch(getName(), addCache);
+                    for (TRecord tRecord : addTRecordCache) {
+                        // 如果设置失败就不管了 只有可能变成
+                        tRecord.getStateAtomic().compareAndSet(TRecord.ADD, TRecord.GET);
+                    }
+                } catch (Exception e) {
+                    log.error("checkpoint addCache fail table {} ", this.getName(), e);
+                    // 执行失败;不处理
+                    addSuccess = false;
+                }
+                // 将所有的add修改为get 就算这里出现了aba的情况;也就是又add了一次也没关系,add被改成get 也还会通过版本号判断的;
+                if (addSuccess) {
+                    for (TRecord tRecord : addTRecordCache) {
+                        tRecord.getStateAtomic().compareAndSet(TRecord.ADD, TRecord.GET);
+                    }
+                }
+                getTables().getStorage().replaceBatch(getName(), modifyCache);
+                getTables().getStorage().removeBatch(getName(), removeCache.keySet());
+            } catch (Exception e) {
+
+            }
+        }  finally {
+            long endMs = System.currentTimeMillis();
+        }
+    }
+
+    public Tables getTables() {
+        return tables;
     }
 
     public void close() {
@@ -197,6 +258,10 @@ public abstract class TTable<K, V> {
         }
     }
 
+
+    public Collection<TRecord<K, V>> getCacheList() {
+        return cache.values();
+    }
 
     protected abstract V newValue();
 
