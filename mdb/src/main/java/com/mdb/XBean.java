@@ -2,6 +2,9 @@ package com.mdb;
 
 import com.mdb.exception.MdbError;
 
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
+
 public abstract class XBean {
     /**
      * 版本号 用来替代modify
@@ -13,6 +16,7 @@ public abstract class XBean {
      */
     private long version0;
     private long version1;
+    private AtomicLong version; // 来个Long 省的每次checkpoint的时候都有变化,导致没法重置为0,integer溢出；
 
     private XBean _parent;
 
@@ -31,10 +35,15 @@ public abstract class XBean {
      */
     public void makeModify() {
         long checkPointCount = Mdb.getInstance().getCheckPointCount();
-        setVersion(checkPointCount);
+        parentMakeModify(checkPointCount);
+      /*  setVersion(checkPointCount);
         if (_parent != null && _parent != this) {
             _parent.parentMakeModify(checkPointCount);
         }
+        if (_parent == null) {
+            // 设置新版本号
+            version.set(version.get() + 1);
+        }*/
 
     }
 
@@ -42,6 +51,10 @@ public abstract class XBean {
         setVersion(checkPointCount);
         if (_parent != null && _parent != this) {
             _parent.parentMakeModify(checkPointCount);
+        }
+        if(_parent == null) {
+            // 设置新版本号
+            version.set(version.get() + 1);
         }
     }
 
@@ -78,9 +91,12 @@ public abstract class XBean {
 
 
     public boolean isModify(long checkVersion) {
-        if (checkVersion(checkVersion)) {
+        if (version.get() > 0) {
             return true;
         }
+        /*if (checkVersion(checkVersion)) {
+            return true;
+        }*/
         if(Mdb.getInstance().isxBeanDetailCheck()) {
             boolean fieldAndModify = checkFieldVersion(checkVersion);
             if (fieldAndModify) {
@@ -125,8 +141,7 @@ public abstract class XBean {
     }
 
 
-
-
-
-
+    public AtomicLong getVersion() {
+        return version;
+    }
 }

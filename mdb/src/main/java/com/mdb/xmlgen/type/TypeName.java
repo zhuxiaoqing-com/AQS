@@ -76,7 +76,6 @@ public class TypeName {
 				return mdbMetadata.getBeans().get(type);
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
 			throw new RuntimeException("parseType error ...", e);
 		}
 		try {

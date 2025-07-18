@@ -53,6 +53,10 @@ public class Table extends Naming {
 			throw new RuntimeException("Table name \"" + getName() + "\" is not permitted.");
 		keyType = TypeName.parseType(mdbMetadata, key, "", "");
 		valueType = TypeName.parseType(mdbMetadata, value, "", "");
+		// table value必须是xbean
+		if (!valueType.isXbean()) {
+			throw new RuntimeException("Table name \"" + getName() + "\"  value must be Xbean");
+		}
 		String ssf = eh.getString("supportFlush");
 		if(ssf != null && ssf.length() > 0) {
 			// 优先使用table上配置的，如果没有才用mdb上面配置的

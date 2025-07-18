@@ -39,7 +39,7 @@ public class StorageMongo implements StorageEngine {
 	}
 
 	@Override
-	public void detect(String tableName) {
+	public void initTable(String tableName) {
 		// 創建集合
 		database = this.logger.getMongoClient().getDatabase(logger.getDataBase());
 		boolean firstCreate = false;
@@ -122,6 +122,11 @@ public class StorageMongo implements StorageEngine {
 		} finally {
 			log.debug("{} remove key : {} cost : {} ms", tableName, key, (System.nanoTime() - begin) * 1e-6);
 		}
+	}
+
+	@Override
+	public boolean detect() {
+
 	}
 
 	@Override

@@ -1,17 +1,30 @@
 package com.mdb;
 
+import com.mdb.utils.ConcurrentEnvironment;
+import com.mdb.utils.TimeCostPrint;
+import com.mdb.xmlgen.xmlparse.MdbMetadata;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class Checkpoint implements Runnable {
     public static Logger logger = LoggerFactory.getLogger(Checkpoint.class);
     private ReentrantLock checkpointMutex = new ReentrantLock();
 
+    ScheduledThreadPoolExecutor scheduled;
+
+    public Checkpoint(MdbMetadata mdbMetadata, ScheduledThreadPoolExecutor scheduled) {
+        this.scheduled = scheduled;
+
+        // 启动checkpoint
+        scheduled.scheduleWithFixedDelay(this, 0, mdbMetadata.getCheckPointPeriod(), TimeUnit.MILLISECONDS);
+    }
 
     @Override
     public void run() {
@@ -39,14 +52,21 @@ public class Checkpoint implements Runnable {
         try {
             long checkPointCount = Mdb.getInstance().getCheckPointCount();
             Mdb.getInstance().incrCheckPointCount();
+            logger.info("checkpoint_all Start count: {}", Mdb.getInstance().getCheckPointCount());
             if (!close) {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    logger.error("", e);
+                // 开启了才进行暂停;不然不需要暂停
+                if (Mdb.getInstance().isxBeanDetailCheck()) {
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        logger.error("", e);
+                    }
                 }
             }
-
+            TimeCostPrint timeCostPrint = new TimeCostPrint(logger, 5 * 60, "checkpoint_all");
+            int addCount = 0;
+            int modifyCount = 0;
+            int removeCount = 0;
             for (Tables allTable : Mdb.getInstance().getAllTables()) {
                 for (TTable value : allTable.tables.values()) {
                     addCache.clear();
@@ -55,10 +75,14 @@ public class Checkpoint implements Runnable {
                     addTRecordCache.clear();
                     modifyTRecordCache.clear();
                     removeTRecordCache.clear();
-                    value.checkpoint(checkPointCount, addCache, modifyCache, removeCache);
+                    value.checkpoint(checkPointCount, addCache, modifyCache, removeCache, addTRecordCache, modifyTRecordCache, removeTRecordCache);
+                    addCount = addCount + addCache.size();
+                    modifyCount = modifyCount + modifyCache.size();
+                    removeCount = removeCount + removeCache.size();
                 }
             }
-
+            timeCostPrint.print();
+            logger.info("checkpoint_all End checkPointCount {}  addCount {} modifyCount {} removeCount {} ", checkPointCount, addCount, modifyCount, removeCount);
 
         } finally {
             checkpointMutex.unlock();

@@ -29,8 +29,10 @@ public class StorageMysql implements StorageEngine {
 		this.logger = logger;
 	}
 
+
+
 	@Override
-	public void detect(String tableName) {
+	public void initTable(String tableName) {
 		Connection conn = null;
 		PreparedStatement stat = null;
 		ResultSet rs = null;
@@ -272,8 +274,26 @@ public class StorageMysql implements StorageEngine {
 	}
 
 	@Override
+	public boolean detect() {
+		Connection writeConnection = null;
+		try {
+			writeConnection = logger.getWriteConnection();
+			if(writeConnection == null) {
+				return false;
+			}
+			return writeConnection.isValid(2000);
+		} catch (Exception e) {
+			log.error("detect error", e);
+			return false;
+		} finally {
+			LoggerMysql.release(writeConnection);
+		}
+	}
+
+	@Override
 	public void close() {
 		logger.close();
 	}
+
 
 }

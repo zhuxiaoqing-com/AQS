@@ -1,7 +1,6 @@
 package com.mdb.stoarge;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -37,7 +36,9 @@ public interface StorageEngine {
         }
     }
 
-    void detect(String tableName);
+    boolean detect();
+
+    void initTable(String tableName);
 
     void close();
 }

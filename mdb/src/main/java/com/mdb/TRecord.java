@@ -3,12 +3,12 @@ package com.mdb;
 import com.mdb.utils.TimeUtils;
 
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class TRecord<K, V> {
     public static final int ADD = 1;
     public static final int REMOVE = 2;
     public static final int GET = 3;
-    public static final int REMOVE_SYNC_DB = 4;// 删除已经存入数据库了
 
     private AtomicInteger state = new AtomicInteger(0);
     private TTable<K, V> table;
@@ -34,27 +34,14 @@ public class TRecord<K, V> {
     public void add(V newValue) {
         access();
         state.set(ADD);
-        /*switch (getState()) {
-            case REMOVE:
-                state.set(ADD);
-            case ADD:
-            case GET:// get为什么不变add; 因为不需要变,get已经有modify判断了;不需要在变成add了;
-                break;
-        }*/
         value = newValue;
     }
 
     public void remove() {
         access();
-        value = null;
-        state.getAndUpdate(a -> {
-            // 如果已经是REMOVE_SYNC_DB 就不再变成remove状态了;
-            if (a == REMOVE_SYNC_DB) {
-                return a;
-            } else {
-                return REMOVE;
-            }
-        });
+        state.set(REMOVE);
+        // 将旧的释放掉;但是由于需要version 所以又new一个新的来保存version
+        value = table.newValue();
     }
 
     public V get() {
@@ -62,9 +49,22 @@ public class TRecord<K, V> {
         return value;
     }
 
+    public void checkpointRefreshState() {
+        switch (state.get()) {
+            case ADD:
+                state.set(GET);
+                break;
+        }
+    }
+
+
 
     public void access() {
-        lastAccessTime = TimeUtils.getTime();
+        lastAccessTime = System.nanoTime();
+    }
+
+    public long getLastAccessTime() {
+        return lastAccessTime;
     }
 
     public int getState() {
@@ -75,7 +75,19 @@ public class TRecord<K, V> {
     }
 
     public boolean isRemoveState(){
-        return state.get() == REMOVE || state.get() == REMOVE_SYNC_DB;
+        return state.get() == REMOVE;
+    }
+
+    public K getKey() {
+        return key;
+    }
+
+    public V getValue() {
+        return value;
+    }
+
+    public AtomicLong getValueVersion() {
+        return ((XBean) value).getVersion();
     }
 
 
@@ -86,16 +98,14 @@ public class TRecord<K, V> {
      * todo 可能对比json  可能直接在有修改的时候弄个标记传播上来 然后直接判断那个标记
      */
     public boolean isModified(long version) {
-        switch (getState()) {
+      /*  switch (getState()) {
             case ADD:
                 return true;
             case REMOVE:
                 return true;
-        }
-        if (value == null) {
-            return false;
-        }
-        if(value instanceof XBean) {
+        }*/
+        // 在解析xml的时候已经规定了 table vaule必须是xbean 所以这里一定成立
+        if (value instanceof XBean) {
             return ((XBean) value).isModify(version);
         }
         return false;
@@ -108,7 +118,7 @@ public class TRecord<K, V> {
         return table.marshalValue(value);
     }
 
-    boolean flush() {
+    boolean flush(String reason) {
         try {
             switch (getState()) {
                 case ADD:
@@ -118,15 +128,13 @@ public class TRecord<K, V> {
                     table.getTables().getStorage().remove(table.getName(), marshalKey());
                     return true;
                 case GET:
-                    if (isModified()) {
-                        table.getTables().getStorage().replace(table.getName(), marshalKey(), marshalValue());
-                        return true;
-                    }
+                    table.getTables().getStorage().replace(table.getName(), marshalKey(), marshalValue());
+                    return true;
             }
 
         } catch (Exception e) {
             // 如果flush时候报错，则清除标识，下次会继续同步
-            Mdb.logger.error("TRecord flush error ", e);
+            Mdb.logger.error("TRecord flush error reason： {} ", reason, e);
             return false;
         } finally {
 

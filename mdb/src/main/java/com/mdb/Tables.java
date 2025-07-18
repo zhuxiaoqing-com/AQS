@@ -6,6 +6,7 @@ import com.mdb.xmlgen.xmlparse.MdbMetadata;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -48,6 +49,8 @@ public class Tables {
         }
 
         fillStorage();
+//        // 检测建表
+        tables.values().forEach(a -> storage.initTable(a.getName()));
     }
 
     public void fillStorage() {
@@ -87,5 +90,9 @@ public class Tables {
 
     public StorageEngine getStorage() {
         return storage;
+    }
+
+    public Collection<TTable> getTables() {
+        return tables.values();
     }
 }

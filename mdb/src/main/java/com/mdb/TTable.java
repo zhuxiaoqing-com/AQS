@@ -3,22 +3,21 @@ package com.mdb;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.mdb.utils.Lock;
+import com.mdb.utils.Lockkeys;
 import com.mdb.utils.Lockeys11;
+import com.mdb.utils.TimeCostPrint;
 import com.mdb.xmlgen.xmlparse.Table;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public abstract class TTable<K, V> {
     public static final Object defaultValue = new Object();
-    private static final Logger log = LoggerFactory.getLogger(TTable.class);
+    private static final Logger logger = LoggerFactory.getLogger(TTable.class);
 
 
     private Table meta;
@@ -87,6 +86,9 @@ public abstract class TTable<K, V> {
 
 
     public void add(K key, V value) {
+        if (value == null) {
+            throw new NullPointerException("value is null");
+        }
         Lock lockey = Lockeys11.getLockey(getName(), key);
         lockey.getWriteLock().lock();
         try {
@@ -109,7 +111,7 @@ public abstract class TTable<K, V> {
         lockey.getWriteLock().lock();
         try {
             TRecord<K, V> tRecord = cache.get(key);
-            if(tRecord == null) {
+            if (tRecord == null) {
                 return;
             }
             tRecord.remove();
@@ -117,8 +119,6 @@ public abstract class TTable<K, V> {
             lockey.getWriteLock().unlock();
         }
     }
-
-
 
 
     /**
@@ -153,23 +153,24 @@ public abstract class TTable<K, V> {
             kvtRecord.flush();
         }
     }*/
-
     public boolean flush(K key) {
-        //Lock lockey = Lockeys.getLockey(this.getName(), key);
-        //lockey.getWriteLock().lock();
+        // 这里还是把锁加上吧 毕竟从cache里删除;保证顺序
+        Lock lockey = Lockkeys.getLockey(this.getName(), key);
+        lockey.getWriteLock().lock();
         try {
             TRecord<K, V> kvtRecord = cache.remove(key);
-            if (kvtRecord != null) {
-                boolean flush = kvtRecord.flush();
-                if(!flush) {
-                    log.error("flush fail table {} key {} ", this.getName(), key);
+            // !=null 并且修改过
+            if (kvtRecord != null && kvtRecord.isModified()) {
+                boolean flush = kvtRecord.flush("flush");
+                if (!flush) {
+                    logger.error("flush fail table {} key {} ", this.getName(), key);
                     // flush失败重新加入cache等待下一次同步flush
                     cache.put(key, kvtRecord);
                     return false;
                 }
             }
-        }finally {
-            //lockey.getWriteLock().unlock();
+        } finally {
+            lockey.getWriteLock().unlock();
         }
         return true;
     }
@@ -179,60 +180,164 @@ public abstract class TTable<K, V> {
                            HashMap<String, String> addCache, HashMap<String, String> modifyCache, HashMap<String, String> removeCache,
                            List<TRecord> addTRecordCache, List<TRecord> modifyTRecordCache, List<TRecord> removeTRecordCache
     ) {
-        long startMs = System.currentTimeMillis();
-        try {
-            try {
-                for (TRecord<K, V> kvtRecord : getCacheList()) {
-                    if (!kvtRecord.isModified(checkPointCount)) {
-                        continue;
-                    }
-                    switch (kvtRecord.getState()) {
-                        case TRecord.ADD:
-                            addCache.put(kvtRecord.marshalKey(), kvtRecord.marshalValue());
-                            addTRecordCache.add(kvtRecord);
-                            break;
-                        case TRecord.GET:
-                            modifyCache.put(kvtRecord.marshalKey(), kvtRecord.marshalValue());
-                            modifyTRecordCache.add(kvtRecord);
-                            break;
-                        case TRecord.REMOVE:
-                            removeCache.put(kvtRecord.marshalKey(), "");
-                            removeTRecordCache.add(kvtRecord);
-                            break;
-                    }
-                }
-            } catch (Exception e) {
-                log.error("checkpoint marshal fail table {} ", this.getName(), e);
-            }
-            try {
-                boolean addSuccess=true;
-                try {
-                    // 执行数据库操作
-                    getTables().getStorage().replaceBatch(getName(), addCache);
-                    for (TRecord tRecord : addTRecordCache) {
-                        // 如果设置失败就不管了 只有可能变成
-                        tRecord.getStateAtomic().compareAndSet(TRecord.ADD, TRecord.GET);
-                    }
-                } catch (Exception e) {
-                    log.error("checkpoint addCache fail table {} ", this.getName(), e);
-                    // 执行失败;不处理
-                    addSuccess = false;
-                }
-                // 将所有的add修改为get 就算这里出现了aba的情况;也就是又add了一次也没关系,add被改成get 也还会通过版本号判断的;
-                if (addSuccess) {
-                    for (TRecord tRecord : addTRecordCache) {
-                        tRecord.getStateAtomic().compareAndSet(TRecord.ADD, TRecord.GET);
-                    }
-                }
-                getTables().getStorage().replaceBatch(getName(), modifyCache);
-                getTables().getStorage().removeBatch(getName(), removeCache.keySet());
-            } catch (Exception e) {
+        TimeCostPrint timeCostPrint = new TimeCostPrint(logger, 60, "checkpoint_table" + getName());
+        checkpointMarshal(checkPointCount, addCache, modifyCache, removeCache, addTRecordCache, modifyTRecordCache, removeTRecordCache);
 
+        TimeCostPrint saveDBTime = new TimeCostPrint(logger, 30, "checkpoint_table_saveDBTime" + getName());
+        checkpointSaveDB(addCache, modifyCache, removeCache, addTRecordCache, modifyTRecordCache, removeTRecordCache);
+        saveDBTime.print();
+
+        timeCostPrint.print();
+        logger.info("checkpoint_table addCount {} modifyCount {} removeCount {} ", addCache.size(), modifyCache.size(), removeCache.size());
+    }
+
+
+    private void checkpointMarshal(long checkPointCount,
+                                   HashMap<String, String> addCache,
+                                   HashMap<String, String> modifyCache,
+                                   HashMap<String, String> removeCache,
+                                   List<TRecord> addTRecordCache,
+                                   List<TRecord> modifyTRecordCache,
+                                   List<TRecord> removeTRecordCache) {
+        try {
+            for (TRecord<K, V> kvtRecord : getCacheList()) {
+                if (!kvtRecord.isModified(checkPointCount)) {
+                    continue;
+                }
+                AtomicLong valueVersion = kvtRecord.getValueVersion();
+                long old = valueVersion.get();
+                switch (kvtRecord.getState()) {
+                    case TRecord.ADD:
+                        addCache.put(kvtRecord.marshalKey(), kvtRecord.marshalValue());
+                        addTRecordCache.add(kvtRecord);
+                        break;
+                    case TRecord.GET:
+                        modifyCache.put(kvtRecord.marshalKey(), kvtRecord.marshalValue());
+                        modifyTRecordCache.add(kvtRecord);
+                        break;
+                    case TRecord.REMOVE:
+                        removeCache.put(kvtRecord.marshalKey(), "");
+                        removeTRecordCache.add(kvtRecord);
+                        break;
+                }
+                valueVersion.compareAndSet(old, 0);// 修改失败就不管了;说明又有修改了
+                // 将add状态刷新成get状态
+                kvtRecord.checkpointRefreshState();
             }
-        }  finally {
-            long endMs = System.currentTimeMillis();
+        } catch (Exception e) {
+            logger.error("checkpoint marshal fail table {} ", this.getName(), e);
         }
     }
+
+    private void checkpointSaveDB(HashMap<String, String> addCache,
+                                  HashMap<String, String> modifyCache,
+                                  HashMap<String, String> removeCache,
+                                  List<TRecord> addTRecordCache,
+                                  List<TRecord> modifyTRecordCache,
+                                  List<TRecord> removeTRecordCache) {
+        try {
+            getTables().getStorage().replaceBatch(getName(), addCache);
+        } catch (Exception e) {
+            logger.error("checkpoint addCache fail table {} ", this.getName(), e);
+            // 执行失败
+            for (TRecord tRecord : addTRecordCache) {
+                // 将其重新设置为修改状态
+                tRecord.getValueVersion().set(1);
+            }
+        }
+
+        try {
+            getTables().getStorage().replaceBatch(getName(), modifyCache);
+        } catch (Exception e) {
+            logger.error("checkpoint modifyCache fail table {} ", this.getName(), e);
+            // 执行失败
+            for (TRecord tRecord : modifyTRecordCache) {
+                // 将其重新设置为修改状态
+                tRecord.getValueVersion().set(1);
+            }
+        }
+        try {
+            getTables().getStorage().removeBatch(getName(), removeCache.keySet());
+        } catch (Exception e) {
+            logger.error("checkpoint removeCache fail table {} ", this.getName(), e);
+            // 执行失败
+            for (TRecord tRecord : removeTRecordCache) {
+                // 将其重新设置为修改状态
+                tRecord.getValueVersion().set(1);
+            }
+        }
+    }
+
+
+    public void tick(long time) {
+        long count = countGetMiss.getAndSet(0);
+        if (count > 0) {
+            allCountGetMiss += count;
+            //Set<Object> failKeySet = findFailCache.asMap().keySet();
+            Mdb.logger.info(" tableName {}  allCountGetMiss {} countGetMiss {} ",
+                    getName(), allCountGetMiss, count);
+        }
+    }
+
+    /**
+     * 定时把30分钟还没有访问的数据清理
+     */
+    public void tickClearCache(long tick) {
+        long curNano = System.nanoTime();
+        long expairNano = TimeCostPrint.millsNano * TimeCostPrint.minuteMills * 30;
+        // 支持flush 说明是玩家个人数据; 不清理让玩家手动调用flush清理
+        if (isSupportFlush()) {
+            return;
+        }
+        writelock.lock();// 和 checkpoint 互斥
+        try {
+            ArrayList<TRecord<K, V>> expireList = new ArrayList<>();
+            for (TRecord<K, V> value : cache.values()) {
+                // 30分钟没访问删除
+                if (curNano - value.getLastAccessTime() > expairNano) {
+                    expireList.add(value);
+                }
+            }
+
+            //这里还没法批量执行;不然如果remove的时候我先remove批量执行,然后我先从cache里吧key删了;
+            // 这个时候刚好这个Key又get了,那这个Key的数据就是有问题的了;
+            new ArrayList<>(expireList);
+            for (TRecord<K, V> kvtRecord : expireList) {
+                Lock lockey = Lockkeys.getLockey(getName(), kvtRecord.getKey());
+                // 需要排他 所以要写锁 和 get add remove 互斥;
+                lockey.getWriteLock().lock();
+                try {
+                    TRecord<K, V> mapTRecord = cache.get(kvtRecord.getKey());
+                    // 不是一个对象了
+                    if (mapTRecord != kvtRecord) {
+                        continue;
+                    }
+                    // 30分钟没访问删除
+                    if (curNano - kvtRecord.getLastAccessTime() < expairNano) {
+                        continue;
+                    }
+                    cache.remove(kvtRecord.getKey());
+                    // 没有修改过就不用同步到数据库
+                    if (!kvtRecord.isModified()) {
+                        continue;
+                    }
+                    // 刷新失败了 基本是数据库出问题了
+                    if (!kvtRecord.flush("tickClearCache")) {
+                        //将对象加回去 等待下次同步
+                        cache.put(kvtRecord.getKey(), kvtRecord);
+                    }
+                } finally {
+                    lockey.getWriteLock().unlock();
+                }
+            }
+
+        } finally {
+            writelock.unlock();
+        }
+
+
+    }
+
 
     public Tables getTables() {
         return tables;
@@ -246,16 +351,6 @@ public abstract class TTable<K, V> {
 
     public boolean isSupportFlush() {
         return meta.isSupportFlush();
-    }
-
-    public void tick(long time) {
-        long count = countGetMiss.getAndSet(0);
-        if (count > 0) {
-            allCountGetMiss += count;
-            //Set<Object> failKeySet = findFailCache.asMap().keySet();
-            Mdb.logger.info(" tableName {}  allCountGetMiss {} countGetMiss {} ",
-                    getName(), allCountGetMiss, count);
-        }
     }
 
 

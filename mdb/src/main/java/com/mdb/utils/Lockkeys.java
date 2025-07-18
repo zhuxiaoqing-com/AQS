@@ -4,21 +4,18 @@ package com.mdb.utils;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
-public class Lockeys {
+public class Lockkeys {
     private static final long GET_EXPIRE_TIME = TimeUtils.getMinuteConst() * 4;
     private static final long TICK_EXPIRE_TIME = TimeUtils.getMinuteConst() * 5;
 
-    private Lockeys() {
+    private Lockkeys() {
     }
 
-    private static Lockeys instance = new Lockeys();
+    private static Lockkeys instance = new Lockkeys();
 
-    private static Lockeys getInstance() {
+    private static Lockkeys getInstance() {
         return instance;
     }
 
