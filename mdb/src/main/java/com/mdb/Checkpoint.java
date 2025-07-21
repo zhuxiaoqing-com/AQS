@@ -28,7 +28,7 @@ public class Checkpoint implements Runnable {
 
     @Override
     public void run() {
-
+        checkpoint(System.currentTimeMillis(), false);
     }
 
 

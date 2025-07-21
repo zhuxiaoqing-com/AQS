@@ -8,6 +8,7 @@ import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.IndexOptions;
 import com.mongodb.client.model.UpdateOptions;
 import com.mongodb.util.JSON;
+import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -126,7 +127,15 @@ public class StorageMongo implements StorageEngine {
 
 	@Override
 	public boolean detect() {
-
+		try {
+			// 执行 ping 命令并检查响应
+			Document pingResult = database.runCommand(new Document("ping", 1));
+			return pingResult.getDouble("ok") == 1.0;
+		} catch (Exception e) {
+			// 连接失败时捕获异常
+			log.error("", e);
+			return false;
+		}
 	}
 
 	@Override

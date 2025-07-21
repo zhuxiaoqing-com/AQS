@@ -49,7 +49,7 @@ public class Tables {
         }
 
         fillStorage();
-//        // 检测建表
+        // 检测建表
         tables.values().forEach(a -> storage.initTable(a.getName()));
     }
 
@@ -94,5 +94,9 @@ public class Tables {
 
     public Collection<TTable> getTables() {
         return tables.values();
+    }
+
+    public String getName() {
+        return mdbMetadata.getName();
     }
 }

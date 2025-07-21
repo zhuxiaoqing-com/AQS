@@ -281,7 +281,7 @@ public class StorageMysql implements StorageEngine {
 			if(writeConnection == null) {
 				return false;
 			}
-			return writeConnection.isValid(2000);
+			return writeConnection.isValid(3000);
 		} catch (Exception e) {
 			log.error("detect error", e);
 			return false;

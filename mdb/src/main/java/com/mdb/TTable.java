@@ -35,7 +35,7 @@ public abstract class TTable<K, V> {
     }
 
     //private TTableCache<K, V> cache;
-    private final Map<K, TRecord<K, V>> cache = new ConcurrentHashMap<>();
+    private final Map<K, TRecord<K, V>> cache = new ConcurrentHashMap<>(10000);
     Cache<Object, Object> findFailCache = Caffeine.newBuilder().maximumSize(200).softValues().build();
 
     private final AtomicLong countGetMiss = new AtomicLong();
@@ -125,21 +125,18 @@ public abstract class TTable<K, V> {
      * 查找数据库 等地方
      */
     private V _find(K key) {
-        return null;
-    }
+        V value = null;
+        try {
+            String s = tables.getStorage().find(getName(), marshalKey(key));
+            if (s != null && !s.isEmpty()) {
+                value = unmarshalValue(s);
+            }
+        } catch (Exception e) {
+            logger.error("find error tableName {} key {}", getName(), key, e);
+            throw new RuntimeException(e);
+        }
 
-    /**
-     * 保存到数据库
-     */
-    private void store(TRecord<K, V> tRecord) {
-
-    }
-
-    /**
-     * 从数据库删除
-     */
-    private void remove(TRecord<K, V> tRecord) {
-
+        return value;
     }
 
 
@@ -269,26 +266,43 @@ public abstract class TTable<K, V> {
     }
 
 
-    public void tick(long time) {
+    public static final int TICK_INTERVAL = 1000 * 60;
+    public int nextTickTime;
+
+    public void tick(long currTime) {
+        if (currTime < nextTickTime) {
+            return;
+        }
+        nextTickTime += TICK_INTERVAL;
         long count = countGetMiss.getAndSet(0);
         if (count > 0) {
             allCountGetMiss += count;
             //Set<Object> failKeySet = findFailCache.asMap().keySet();
-            Mdb.logger.info(" tableName {}  allCountGetMiss {} countGetMiss {} ",
-                    getName(), allCountGetMiss, count);
+            Mdb.logger.info(" tableName {}  allCountGetMiss {} countGetMiss {} TICK_INTERVAL {}",
+                    getName(), allCountGetMiss, count, TICK_INTERVAL);
         }
     }
 
     /**
      * 定时把30分钟还没有访问的数据清理
      */
-    public void tickClearCache(long tick) {
+    public void tickClearCache() {
         long curNano = System.nanoTime();
         long expairNano = TimeCostPrint.millsNano * TimeCostPrint.minuteMills * 30;
         // 支持flush 说明是玩家个人数据; 不清理让玩家手动调用flush清理
-        if (isSupportFlush()) {
+     /*   if (isSupportFlush()) {
+            return;
+        }*/
+
+        logger.info("tickClearCache start tableName {}  ", this.getName());
+        boolean detect = tables.getStorage().detect();
+        if (!detect) {
+            logger.error("tickClearCache 和数据库的连接已经的断开！！！ tablesName {} tableName {} ", tables.getName(), getName());
             return;
         }
+
+        TimeCostPrint timeCostPrint = new TimeCostPrint(logger, 30, "tickClearCache");
+
         writelock.lock();// 和 checkpoint 互斥
         try {
             ArrayList<TRecord<K, V>> expireList = new ArrayList<>();
@@ -330,12 +344,10 @@ public abstract class TTable<K, V> {
                     lockey.getWriteLock().unlock();
                 }
             }
-
         } finally {
             writelock.unlock();
+            timeCostPrint.print();
         }
-
-
     }
 
 
@@ -344,6 +356,7 @@ public abstract class TTable<K, V> {
     }
 
     public void close() {
+
     }
 
 

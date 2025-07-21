@@ -12,6 +12,8 @@ import java.lang.reflect.Field;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.TimeUnit;
 
 public class Mdb {
     public static Logger logger = LoggerFactory.getLogger(Mdb.class.getName());
@@ -32,10 +34,11 @@ public class Mdb {
     private volatile long checkPointCount = 0;
 
     public boolean running = false;
-    public boolean close = false;
 
     private Checkpoint checkpoint = null;
     ScheduledThreadPoolExecutor scheduled_checkPoint;
+    ScheduledThreadPoolExecutor scheduled_common;
+    ScheduledThreadPoolExecutor scheduled_clearCache;
 
     public synchronized void start(MdbMetadata mdbMetadata) throws Exception {
         logger.warn("@@@@@@@@@@@@@@@@ mdb start begin @@@@@@@@@@@@@@@@ mdb metadata = " + mdbMetadata.getName());
@@ -61,6 +64,9 @@ public class Mdb {
             if (checkpoint == null) {
                 scheduled_checkPoint = ConcurrentEnvironment.getInstance().newScheduledThreadPool("mdb.scheduler.checkpoint", 1);
                 checkpoint = new Checkpoint(mdbMetadata, scheduled_checkPoint);
+                scheduled_common =  ConcurrentEnvironment.getInstance().newScheduledThreadPool("mdb.scheduler.common", 1);
+                scheduled_common.scheduleWithFixedDelay(this::tick, 1, 1, TimeUnit.SECONDS);
+                scheduled_clearCache = ConcurrentEnvironment.getInstance().newScheduledThreadPool("mdb.scheduler.clearcache", 1);
             }
 
             logger.warn("@@@@@@@@@@@@@@@@  mdb start end  @@@@@@@@@@@@@@@@");
@@ -75,12 +81,41 @@ public class Mdb {
 
 
     /**
+     * 加载玩家的所有table到内存
+     * 可以在玩家登录的时候异步调用
+     */
+    public void loadPlayerAllTableToMemory(Object key) {
+        logger.info("loadPlayerAllTableToMemory key {}", key);
+        try {
+            for (Tables allTable : allTables) {
+                for (TTable table : allTable.getTables()) {
+                    if (!table.isSupportFlush()) {
+                        return;
+                    }
+                    table.get(key);
+                }
+            }
+        } catch (Exception e) {
+            logger.error("Mdb loadPlayerAllTableToMemory error key {} ", key, e);
+        }
+    }
+
+    /**
      * flush 失败以后 需要业务层找机会再次调用
+     *
+     * 业务层必须有重试功能;
      */
     public boolean flush(Object key, MdbFlushCallback mdbFlushCallback) {
         boolean allSuccess = true;
+        logger.info("flush start key {}" ,key);
         TimeCostPrint timeCostPrint = new TimeCostPrint(logger, 20, "flush");
         for (Tables allTable : allTables) {
+            boolean detect = allTable.getStorage().detect();
+            if (!detect) {
+                logger.error("flush 和数据库的连接已经的断开！！！ tablesName {} ", allTable.getName());
+                allSuccess = false;
+                continue;
+            }
             for (TTable table : allTable.tables.values()) {
                 TTable tt = table;
                 if (tt.isSupportFlush()) {
@@ -106,15 +141,57 @@ public class Mdb {
 
 
     public void tick() {
+        long currTime = System.currentTimeMillis();
         for (Tables allTable : allTables) {
             for (TTable table : allTable.getTables()) {
-                table.tick();
+                table.tick(currTime);
+            }
+        }
+
+        long minSecond = 5 * TimeCostPrint.minuteMills / 1000;
+        long maxSecond = 15 * TimeCostPrint.minuteMills / 1000;
+        int size = scheduled_clearCache.getQueue().size();
+        int activeCount = scheduled_clearCache.getActiveCount();
+        if (size + activeCount <= 0) {
+            // 里面没任务了 抛clearCache任务进去
+            //5-15 分钟随机检测
+            for (Tables allTable : allTables) {
+                for (TTable table : allTable.getTables()) {
+                    // 支持flush 说明是玩家个人数据; 不清理让玩家手动调用flush清理
+                    if (!table.isSupportFlush()) {
+                        long l = ThreadLocalRandom.current().nextLong(minSecond, maxSecond);
+                        scheduled_clearCache.schedule(table::tickClearCache, l, TimeUnit.SECONDS);
+                    }
+                }
             }
         }
     }
 
-    public void close() {
+    public synchronized void close() {
+        if(!running) {
+            return;
+        }
+        logger.info("@@@@@@@@@@@@@@@@  mdb stop begin   @@@@@@@@@@@@@@@@");
+        if (checkpoint != null) {
+            checkpoint.checkpoint(System.currentTimeMillis(), true);
+            checkpoint = null;
+            scheduled_checkPoint.shutdown();
+            scheduled_checkPoint = null;
+            scheduled_common.shutdown();
+            scheduled_common = null;
+            scheduled_clearCache.shutdown();
+            scheduled_clearCache = null;
+        }
 
+        if (allTables.size() > 0) {
+            for (Tables tables : allTables) {
+                tables.close();
+            }
+            allTables.clear();
+        }
+
+        running = false;
+        logger.info("@@@@@@@@@@@@@@@@  mdb stop end   @@@@@@@@@@@@@@@@");
     }
 
 
