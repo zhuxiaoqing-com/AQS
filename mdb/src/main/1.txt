@@ -91,6 +91,13 @@ AtomicInteger 可以解决;modify autointr(); checkpoint的时候,将其compareA
 这样双版本什么的也不用了; 但是双版本不要就没法做child变化的检测了;
 而且这个atomicInteger 应该在什么时候弄呢; 应该只管顶级父类;  至于双版本检测的话,可以按开关来;开关开了 就进行检测;为了检测child传递是否有问题;
 
+
+// 除了version 还有个时间戳方法,但是为了防止频繁获取时间戳;可以在mdb启动一个50ms定时器,定时更新时间;然后每次变化只获取那个时间;
+对比是否有变化只要用上次checkpoint时间和变化时间做对比;这种其实也会有多线程的问题,就比如我刚好modify获取时间还没赋值给顶级父类,然后就进行checkpoint了;
+        那这次checkpoint就不会同步我了,但是当我赋值过以后下一次checkpoint一看modify时间在上次checkpoint时间之前,就认为已经同步过了;
+        其实就是checkpoint还需要一个策略,怎么判断ismoidfy, 最简单就是和上次checkpoint的时间做对比看有没有变化,但是这样不能防止我上面说的问题,可能会造成数据丢失同步;
+        所以还是version最好;
+
 // table value必须是xbean,不然双add的时候会有问题; 之前比较json没问题,但是现在通过版本号对比,因为只有xbean有版本号,所有value必须是xbean
 
 // 目前数据同步到mysql 是在集中的时候同步; 能不能将其放到队列里面 分散同步;
