@@ -246,6 +246,11 @@ public abstract class KcpServer implements Output, KcpListerner {
     public class UdpHandler extends ChannelInboundHandlerAdapter {
 
         @Override
+        public void channelActive(ChannelHandlerContext ctx) throws Exception {
+            super.channelActive(ctx);
+        }
+
+        @Override
         public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
             DatagramPacket dp = (DatagramPacket) msg;
             KcpServer.this.onReceive(dp);

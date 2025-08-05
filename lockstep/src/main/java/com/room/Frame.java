@@ -1,12 +1,13 @@
 package com.room;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class Frame {
     int frameId;
-    List<Input> input = new ArrayList<Input>();
+    Map<Long, List<Input>> inputMap = new HashMap<Long, List<Input>>();
 
     public Frame(int frameId) {
         this.frameId = frameId;
@@ -20,11 +21,11 @@ public class Frame {
         this.frameId = frameId;
     }
 
-    public List<Input> getInput() {
-        return input;
+    public Map<Long, List<Input>> getInputMap() {
+        return inputMap;
     }
 
-    public void setInput(List<Input> input) {
-        this.input = input;
+    public void setInputMap(Map<Long, List<Input>> inputMap) {
+        this.inputMap = inputMap;
     }
 }
