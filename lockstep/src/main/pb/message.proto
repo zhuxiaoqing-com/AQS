@@ -78,7 +78,7 @@ message C2S_InputMsg  {
 }
 
 //上一帧客户端没有输入 重复输入
-message PBInput{
+message PBInput{//
   optional int32 sid                = 1;    //操作id
 }
 
