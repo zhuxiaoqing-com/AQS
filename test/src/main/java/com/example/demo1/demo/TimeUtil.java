@@ -822,7 +822,7 @@ public class TimeUtil {
     /**
      * millSecond转LocalDateTime
      */
-    public static LocalDateTime toLocalDate(long time) {
+    public static LocalDateTime toLocalDateTime(long time) {
         return LocalDateTime.ofInstant(Instant.ofEpochMilli(time), ZoneId.systemDefault());
     }
 

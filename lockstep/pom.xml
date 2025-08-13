@@ -38,5 +38,13 @@
             <version>1.6</version>
         </dependency>
 
+
+        <dependency>
+            <groupId>com.google.protobuf</groupId>
+            <artifactId>protobuf-java</artifactId>
+            <version>4.31.1</version> <!-- 版本自己可选，建议和 protoc 一致 -->
+        </dependency>
+
+
     </dependencies>
 </project>

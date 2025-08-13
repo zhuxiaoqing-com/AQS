@@ -66,6 +66,11 @@
             <version>2.4.7</version>  <!-- 当前推荐版本 -->
         </dependency>
 
+        <dependency>
+            <groupId>net.java.dev.jna</groupId>
+            <artifactId>jna</artifactId>
+            <version>5.13.0</version>
+        </dependency>
 
     </dependencies>
 

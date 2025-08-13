@@ -18,6 +18,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.concurrent.locks.LockSupport;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -264,5 +265,22 @@ public class Test18 {
     public void test011() throws InterruptedException {
         System.out.println(29233416L*1000*60);
     }
+
+
+    @Test
+    public void test012() throws InterruptedException {
+        System.out.println(29233416L*1000*60);
+    }
+
+        public static void main(String[] args) {
+            long last = System.nanoTime();
+            for (int i = 0; i < 100; i++) {
+                LockSupport.parkNanos(1_000_000); // 1ms
+                long now = System.nanoTime();
+                System.out.println((now - last) / 1_000_000.0 + " ms");
+                last = now;
+            }
+        }
+
 }
 
