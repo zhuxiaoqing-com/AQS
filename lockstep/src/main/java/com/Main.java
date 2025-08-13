@@ -30,7 +30,7 @@ public class Main {
     }
 
 
-    // http://localhost/create?room=1&member=1,2 1
+    // http://localhost/create?room=1&member=1,2
     public static void createHttpServer() throws IOException {
         int port = 80;
         HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
