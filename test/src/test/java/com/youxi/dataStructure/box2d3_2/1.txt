@@ -1,3 +1,5 @@
+SAP算法全称Sweep And Prune，又称扫掠算法  如果只有碰撞的话 可以用这个算法
+
 box2d 两个都子弹的物体是不会进行ccd检测的；
 粗筛（Broad-Phase）和细筛（Narrow-Phase）
 默认流程是  粗筛，rebuildAABB动态树，细筛，CCD，EnlargeProxy;
