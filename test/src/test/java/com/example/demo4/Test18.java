@@ -270,6 +270,7 @@ public class Test18 {
     @Test
     public void test012() throws InterruptedException {
         System.out.println(29233416L*1000*60);
+        throw new NullPointerException();
     }
 
         public static void main(String[] args) {
@@ -281,6 +282,30 @@ public class Test18 {
                 last = now;
             }
         }
+
+
+   /* ArrayDeque<Integer> queue = new ArrayDeque<>();
+
+    boolean running = false;
+    ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor() {
+        @Override
+        protected void afterExecute(Runnable r, Throwable t) {
+            super.afterExecute(r, t);
+            if(!queue.isEmpty()) {
+                Integer poll = queue.poll();
+                threadPoolExecutor.execute(()->poll);
+            }
+        }
+    };
+
+    // 接收消息
+    public void receive(Integer message) {
+        if(running) {
+            queue.add(message);
+        }else {
+            threadPoolExecutor.execute(()->message);
+        }
+    }*/
 
 }
 

@@ -14,6 +14,7 @@
         <module>mdb</module>
         <module>rpc</module>
         <module>lockstep</module>
+        <module>JMHBenchmark</module>
     </modules>
     <packaging>pom</packaging>
 
