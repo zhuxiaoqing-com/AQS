@@ -109,3 +109,12 @@ AtomicInteger 可以解决;modify autointr(); checkpoint的时候,将其compareA
 
 
 
+
+
+
+
+
+
+
+
+

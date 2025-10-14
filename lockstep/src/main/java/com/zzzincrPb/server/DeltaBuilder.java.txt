@@ -1,0 +1,119 @@
+package com.zzzincrPb;
+
+import com.google.protobuf.ByteString;
+import com.pb.*;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+/**
+ * @author zhuxiaoqing
+ * @Description: DeltaBuilder
+ * @Date 2025/10/10 20:14
+ **/
+public class DeltaBuilder {
+
+    private FieldNode rootNode;
+
+    private DeltaBuilder() {
+        // 私有构造
+    }
+
+    public static DeltaBuilder set() {
+        DeltaBuilder builder = new DeltaBuilder();
+        builder.rootNode = new FieldNode(null);
+        return builder;
+    }
+
+    // 链式 field
+    public DeltaBuilder field(int fieldIndex) {
+        FieldNode node = new FieldNode(fieldIndex);
+        node.parent = this.rootNode;
+        this.rootNode.children.add(node);
+        this.rootNode = node; // 移动当前节点
+        return this;
+    }
+
+    // 链式 list index
+    public DeltaBuilder listIndex(int idx) {
+        this.rootNode.listIndex.add(idx);
+        return this;
+    }
+
+    // 链式 map key
+    public DeltaBuilder mapKey(String key) {
+        this.rootNode.mapKey.add(key);
+        return this;
+    }
+
+    // 构建 DeltaField
+    public DeltaField build(int msgId, Object value, int op) {
+        DeltaField.Builder delta = DeltaField.newBuilder();
+        delta.setMsgId(msgId);
+        delta.setOp(op);
+        // 生成 fieldPath
+        List<PBFieldModify> path = buildPath(this.rootNode);
+        delta.addAllFieldPath(path);
+
+        // 设置值
+        PBFieldValue.Builder v = PBFieldValue.newBuilder();
+        if (value instanceof Integer) {
+            v.setIntValue((Integer) value);
+        } else if (value instanceof Double) {
+            v.setDoubleValue((Double) value);
+        } else if (value instanceof String) {
+            v.setStringValue((String) value);
+        } else if (value instanceof byte[]) {
+            v.setBytesValue(ByteString.copyFrom((byte[]) value));
+        }
+        delta.setValue(v);
+        return delta.build();
+    }
+
+    // 从叶子向上构建 fieldPath
+    private List<PBFieldModify> buildPath(FieldNode leaf) {
+        List<FieldNode> nodes = new ArrayList<>();
+        FieldNode current = leaf;
+        while (current != null && current.fieldIndex != null) {
+            nodes.add(current);
+            current = current.parent;
+        }
+        Collections.reverse(nodes);
+
+        List<PBFieldModify> path = new ArrayList<>();
+        for (FieldNode n : nodes) {
+            PBFieldModify.Builder pb = PBFieldModify.newBuilder();
+            pb.setFieldIndex(n.fieldIndex);
+            if (!n.listIndex.isEmpty()) pb.addAllListIndex(n.listIndex);
+            if (!n.mapKey.isEmpty()) pb.addAllMapKey(n.mapKey);
+            path.add(pb.build());
+        }
+        return path;
+    }
+
+    // 内部节点类
+    private static class FieldNode {
+        Integer fieldIndex;          // protobuf 字段号
+        List<Integer> listIndex = new ArrayList<>();
+        List<String> mapKey = new ArrayList<>();
+        FieldNode parent;
+        List<FieldNode> children = new ArrayList<>();
+
+        FieldNode(Integer fieldIndex) {
+            this.fieldIndex = fieldIndex;
+        }
+    }
+
+    // 使用示例
+    public static void main(String[] args) {
+        // 构建 Bag.items[0].attr.hp = 80
+        DeltaField delta = DeltaBuilder.set()
+                .field(FrameData.INPUT_FIELD_NUMBER)       // index 0
+                .field(InputData.INPUT_FIELD_NUMBER)           // attr
+                .field(PBInput.SID_FIELD_NUMBER)           // hp
+                .build(ID.MSG_Close_VALUE, 80, 0);    // msgId=1001, op=SET (假设0=SET)
+
+        System.out.println(delta);
+    }
+}

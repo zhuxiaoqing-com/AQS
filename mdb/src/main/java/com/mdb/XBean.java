@@ -16,7 +16,7 @@ public abstract class XBean {
      */
     private long version0;
     private long version1;
-    private AtomicLong version; // 来个Long 省的每次checkpoint的时候都有变化,导致没法重置为0,integer溢出；
+    private final AtomicLong version = new AtomicLong(0); // 来个Long 省的每次checkpoint的时候都有变化,导致没法重置为0,integer溢出；
 
     private XBean _parent;
 

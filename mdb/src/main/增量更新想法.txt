@@ -1,0 +1,62 @@
+
+
+增量更新想法;
+我的数据结构
+class User {
+    Map<Integer, Item> map;
+}
+
+class Item {
+    int ID;
+    String name;
+    Map<Integer,Integer> attr;
+}
+
+monogodb
+{
+  "_id": "user123",
+  "map": {
+    "1001": {
+      "ID": 1001,
+      "name": "itemA",
+      "attr": {
+        "1": 10,
+        "2": 20
+      }
+    },
+    "1002": { ... }
+  }
+}
+
+修改/增加 key
+db.users.updateOne(
+  { _id: "user123" },
+  {
+    $set: {
+      "map.1001.attr.2": 25,   // 修改 key 2
+      "map.1001.attr.3": 15    // 新增 key 3
+    }
+  }
+)
+
+删除 key
+db.users.updateOne(
+  { _id: "user123" },
+  { $unset: { "map.1001.attr.1": "" } }  // 删除 key 1
+)
+
+Map<Integer,Integer> updated = ...;  // 修改和新增
+List<Integer> deleted = ...;         // 删除的 key
+
+
+
+首先最好把map 和list封装起来，不准get;set; 只能add;remove;clear; 当然遍历 感觉必须得有 那就也留一个get?get封装成unmodify 返回出去;
+
+mbean 留一个操作日志;用数组当数据 boolean[] 标记每个字段是否有修改, 如果是嵌套字段，那从嵌套字段里获取就好了;
+如果是map呢?
+这样 一层一层,在checkpoint的时候很容易出问题; 除非最终只改那个值;
+map 其实也弄一个map的 记录这个值是否修改过;
+list的也一样;弄一个list的;
+算了 因为有多线程,所以还是都用concurrent吧;
+
+有了这个 version 就不需要了;现在的问题和之前的version一样,我业务线程运行到add了，但是线程切换了,然后很久没切换回去就完了;

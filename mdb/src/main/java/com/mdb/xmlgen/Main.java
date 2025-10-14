@@ -12,8 +12,8 @@ public class Main {
 	public static String outputEncoding = "UTF-8";
 	public static String inputEncoding = "UTF-8";
 
-	public static String inputXml = "mdb.xml";
-	public static String outputPath = "beans";
+	public static String inputXml = "mdb\\src\\main\\mdb.xml";
+	public static String outputPath = "mdb\\src\\main\\beans";
 	public static String sqlPath = "";
 	
 

@@ -3,3 +3,4 @@ target/
 /lockstep/src/main/resources/protoc.exe
 /lockstep/src/main/java/com/pb/
 /lockstep/src/main/pb/protoc.exe
+/mdb/src/main/beans/

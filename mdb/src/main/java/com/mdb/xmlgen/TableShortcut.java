@@ -23,7 +23,9 @@ class TableShortcut {
 		String name = table.getName();
 		String classname = StringUtils.upper1(name);
 		try (PrintStream ps = Mdbgen.openTableFile(classname)) {
-
+			if(ps == null) {
+				return;
+			}
 			String K = table.getKeyType().box();
 			String V = table.getValueType().isXbean() ? table.getValueType().toVarType() : table.getValueType().box();
 			String KV = "<" + K + ", " + V + ">";

@@ -9,6 +9,9 @@ import java.util.List;
 class XbeanFormatter {
 	public static void make(Xbean xbean) {
 		try (PrintStream ps = Mdbgen.openXBeanFile(xbean.getName())) {
+			if (ps == null) {
+				return;
+			}
 			new XbeanFormatter(xbean, ps).make();
 		}
 	}

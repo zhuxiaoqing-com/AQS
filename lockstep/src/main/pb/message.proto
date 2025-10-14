@@ -1,6 +1,7 @@
 syntax = "proto3";
 
 option java_multiple_files = true;
+option java_package = "com.pb";
 
 
 //消息ID
@@ -111,4 +112,194 @@ message S2C_FrameMsg {
 message C2S_ResultMsg {
     optional uint64 winnerID          = 1; //胜利者ID
 }
+
+/**
+客户端可以这样监听 Bag.Item.attr 这样只要attr变化了 就会触发,可以 数组可以 removeIndex changeIndex addIndex 这样
+服务器同步应该是
+Bag.Item[1132].attr[333]=33
+Bag.Item[1132].attr=[]
+Bag = xxxx
+字段的话 好更新 直接写就好了;直接.class 然后 new FieldDesc(fieldIndex)|new FieldListDesc(fieldIndex,int index)|new FieldMapDesc(fieldIndex, key);
+再讲值写进去就行了;然后更新枚举,set add remove
+字段服务器就这么弄,
+客户端就也这么监听;
+
+最终修改的是list list分为 直接替换list,清空list，删除值,增加值,list感觉可以直接替换;不行,因为有些map是用list的方式推的，但是有些List又是确实是list;
+比如 槽位 int[]{1,2,3} index代表槽位;
+比如 技能等级 SkillInfo[]{new SkillInfo(1001,1),new SkillInfo(1002,1)}
+这个不需要知道下标，其实我可以直接同步操作,比如同步remove index,同步直接覆盖数组,
+
+map的话 就最简单 同步覆盖 和同步删除指定的key，其实就和数组一样;数组添加的话就是添加 (index,data), map的话就是 (key,data)
+
+opt 类型默认的应该只有set;bytes是空的话就是清空;
+
+set的话就是
+new FieldDesc(fieldIndex)|new FieldListDesc(fieldIndex,int index)|new FieldDesc(fieldIndex, key);
+
+add;remove的话就是
+new FieldDesc(fieldIndex)|new FieldListDesc(fieldIndex,int index)|new FieldMapDesc(fieldIndex, key);
+
+
+value应该是怎么样的呢?,set的话 其实也有各种基础类型 或者复杂类型;基础类型怎么进行通知客户端呢,
+
+我想的应该是 addlisten(“Bag.Item.Num”) addlisten(“Bag.Item”) 这样的 问题的关键就是 变化了 以后我是跨语言的 其实只是把最里面的变化的值给了，我该怎么应用
+
+我懂了，其实我可以在监听变化后 因为DeltaField协议还在，我只需要将我的需要应用的协议类传入然后应用上，我就可以在指定的监听的地方使用了;
+或者我需要两步分别是静态的注册监听，还有一步就是get协议类的注册,这必须是两个注册，一个是用路径注册，一个是直接用class注册进去;
+只有这样我才能实现addlisten(“Bag.Item.Num”) addlisten(“Bag.Item”)，然后自己获取当前的数据进行触发相应的UI刷新;
+
+但是如果ddlisten(“Bag.Item.Num”) addlisten(“Bag.Item”) 同时存在呢?;
+或者其实我就不应该让其能这样都可以匹配上;保证每个只能触发一个,
+ */
+/*message DeltaField {
+  int32 msgId = 1;         // 消息号id
+  repeated PBFieldModify fieldPath = 2; // 每层字段 index，普通字段 / 嵌套对象
+  PBFieldValue value = 3;
+  PBFieldListMapValue listValue = 4;
+  int32 op = 10;           // SET / ADD / REMOVE
+}
+
+// list map 可以一次性同步多个过去;
+message PBFieldListMapValue {
+  int32 listMapOp = 1; // set/remove
+  PBFieldValue key = 2;
+  PBFieldValue value = 3;
+}
+
+message PBFieldValue {
+  enum PBFieldType {
+    PB_INT64 = 0;
+    PB_DOUBLE = 1;
+    PB_STRING = 2;
+    PB_BYTES = 3;
+    PB_BOOL = 4;
+    PB_MESSAGE = 5; // 嵌套 message，用 bytesValue
+  }
+  optional PBFieldType type = 1;
+  int64 intValue = 2;
+  double doubleValue = 3;
+  string stringValue = 4;
+  bytes bytesValue = 5;
+}
+
+message PBFieldModify {
+  optional int32 type = 1; // 0:fieldIndex 1:list 2:map
+  optional int32 fieldIndex = 2;
+  repeated int32 listIndex = 3; // 对应每层 list 的 index，如果字段是 list
+  repeated string mapKey = 4;   // 对应每层 map 的 key，如果字段是 map
+}*/
+
+// 如果需要将小协议整合起来发送 可以弄个 MsgGroup的通用功能; 但是这样的话客户端监听可能会触发很多遍，所以最好还是包装一层;
+// 客户端解析应该可以用字典树来进行根节点触发事件;
+
+// ------------------- 主体 -------------------
+
+message MsgDeltaField {
+  int32 msgId = 1;                      // 对象类型ID
+  repeated DeltaField delta = 2; // 对应字段路径
+}
+
+message DeltaField {
+  repeated PBFieldPath fieldPath = 1; // 对应字段路径
+  PBFieldModify modify = 2;  // 该路径下所有操作
+}
+
+// ------------------- 每个路径下的操作实体 -------------------
+message PBFieldModify {
+  enum ModifyType {
+    FIELD = 0;     // 普通字段
+    LIST = 1;      // 列表操作
+    MAP = 2;       // Map操作
+  }
+  ModifyType type = 1;
+  PBFieldValue value = 2;                 // FIELD 类型时有效
+  repeated PBListOperation listOps = 3;   // LIST 类型时有效
+  repeated PBMapOperation mapOps = 4;     // MAP 类型时有效
+}
+
+// ------------------- List 操作 -------------------
+message PBListOperation {
+  enum ListOpType {
+    ADD = 0;
+    REMOVE = 1;
+    SET = 2;
+    CLEAR = 3;
+  }
+
+  ListOpType op = 1;
+  int32 index = 2;                    // 对应位置（ADD/REMOVE/SET 用）
+  PBFieldValue value = 3;             // ADD/SET 用
+}
+
+// ------------------- Map 操作 -------------------
+message PBMapOperation {
+  enum MapOpType {
+    PUT = 0;
+    REMOVE = 1;
+    CLEAR = 2;
+  }
+
+  MapOpType op = 1;
+  PBFieldValue key = 2;
+  PBFieldValue value = 3;
+}
+
+// ------------------- 基础字段类型 -------------------
+message PBFieldValue {
+  enum PBFieldType {
+    PB_INT32 = 0;
+    PB_INT64 = 1;
+    PB_FLOAT = 2;
+    PB_DOUBLE = 3;
+    PB_STRING = 4;
+    PB_BYTES = 5;
+    PB_BOOL = 6;
+    PB_MESSAGE = 7;
+  }
+
+  PBFieldType type = 1;
+  int32 int32Value = 2;
+  int64 int64Value = 3;
+  float floatValue = 4;
+  double doubleValue = 5;
+  string stringValue = 6;
+  bool boolValue = 7;
+  bytes bytesValue = 8;  // PB_MESSAGE 类型用
+}
+
+// ------------------- 字段路径 -------------------
+message PBFieldPath {
+  optional int32 fieldIndex = 1;
+  repeated int32 listIndex = 2; // 如果嵌套 list
+  repeated string mapKey = 3;   // 如果嵌套 map
+  optional FieldType type = 4;  // 可选，LIST/MAP/FIELD
+  enum FieldType {
+    FIELD = 0;
+    LIST = 1;
+    MAP = 2;
+  }
+}
+
+message PBTestMapValue2{
+  int32 a1 = 1;
+  int32 a2 = 2;
+}
+
+message PBTestMapValue{
+  PBTestMapValue2 v = 1;
+  int32 a2 = 2;
+}
+message PBTest1 {
+  map<int32, PBTestMapValue> mapInt32Obj = 1;
+  map<string, PBTestMapValue> mapStrObj = 2;
+  map<int64, PBTestMapValue> mapInt64Obj = 3;
+  map<int32, int32> mapInt32Int = 4;
+  map<string, int64> mapStrInt = 5;
+  map<int64, string> mapInt64Int = 6;
+
+  repeated   int32 list = 7;
+  repeated   PBTestMapValue v = 8;
+  string string = 9;
+}
+
 
