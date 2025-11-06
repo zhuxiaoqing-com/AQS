@@ -21,12 +21,12 @@
     <name>demo1</name>
     <description>Demo project for Spring Boot</description>
 
-    <parent>
+   <!-- <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>2.0.4.RELEASE</version>
-        <relativePath/> <!-- lookup parent from repository -->
-    </parent>
+        <relativePath/> &lt;!&ndash; lookup parent from repository &ndash;&gt;
+    </parent>-->
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -78,7 +78,7 @@
 
     <build>
         <plugins>
-            <plugin>
+           <!-- <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
@@ -92,14 +92,14 @@
                     <swaggerInput>file:///D://swagger.json</swaggerInput>
                     <outputFile>src/docs/asciidoc/generated/v2-api-doc</outputFile>
                     <config>
-                        <!--指定返回的数据格式-->
+                        &lt;!&ndash;指定返回的数据格式&ndash;&gt;
                         <swagger2markup.markupLanguage>ASCIIDOC</swagger2markup.markupLanguage>
                     </config>
                 </configuration>
             </plugin>
 
-            <!--第二步:生成html页面 -->
-            <!--mvn asciidoctor:process-asciidoc-->
+            &lt;!&ndash;第二步:生成html页面 &ndash;&gt;
+            &lt;!&ndash;mvn asciidoctor:process-asciidoc&ndash;&gt;
             <plugin>
                 <groupId>org.asciidoctor</groupId>
                 <artifactId>asciidoctor-maven-plugin</artifactId>
@@ -118,18 +118,18 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <!-- 指定该Main Class为全局的唯一入口 -->
+                    &lt;!&ndash; 指定该Main Class为全局的唯一入口 &ndash;&gt;
                     <mainClass>cn.hetaoxk.noonday.AndromedaApplication</mainClass>
                     <layout>ZIP</layout>
                 </configuration>
                 <executions>
                     <execution>
                         <goals>
-                            <goal>repackage</goal><!--可以把依赖的包都打包到生成的Jar包中-->
+                            <goal>repackage</goal>&lt;!&ndash;可以把依赖的包都打包到生成的Jar包中&ndash;&gt;
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin>-->
         </plugins>
     </build>
 

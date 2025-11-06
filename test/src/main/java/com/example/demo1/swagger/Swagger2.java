@@ -1,3 +1,4 @@
+/*
 package com.example.demo1.swagger;
 
 import org.springframework.context.annotation.Bean;
@@ -34,3 +35,4 @@ public class Swagger2 {
                 .build();
     }
 }
+*/

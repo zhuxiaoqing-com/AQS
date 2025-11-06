@@ -1,3 +1,8 @@
+阿里 sls
+
+* | where message like '%Exception%'  模糊查询Exception
+* | where thrown is not null and thrown != ''   查询字段不为空的
+
 怪物不能用玩家Pk模式;
 为什么呢？ 看起来怪物应该是可以用玩家的Pk模式的  比如：如果是公会怪物就把怪物Pk模式设置成公会就好了;这样怪物和玩家就是同一个公会的了;
 但是要是玩家是其他pk模式的话  比如是全体敌人; 那玩家就能打怪物了;但是其实正常来说 玩家是不能打怪物的;pk模式只针对于玩家; 不管玩家什么模式;工会怪物都应该是玩家的友方;
@@ -91,6 +96,20 @@
         我这几天想了下 感觉其实把那个 battlemonitor 改成集群的 然后吧里面场景和battle服务器对应的数据 放到redis里面
         然后所有的游戏服务器 和战斗服务器都和 battlemonitor直连 ，
         消息也通过battlemonitor转发(可以根据battleid hash 到一个battlemonitor上  保证消息先后顺序)  应该就可以
+
+对于bm和Bt 会定时销毁的工会副本的问题，
+工会副本销毁以后，需要再去创建，但是创建副本要bm->bt->bm才能创建完成;
+创建副本的时候现在是先分配thread，然后再进行创建,而且必须这样，因为scene创建完了以后就直接设置给thread了,其实也可以不这样
+有两种方法：
+    1.将创建副本用随机线程 用dungeonId来进行hash; 进入地图的话如果标识的是创建中，就优先用dungeonId来进行hash随机线程，然后再抛到指定的线程保证线性执行;
+    2.在分配thread的时候将其用redisKey为map的key，执行的线程id为value保存起来,然后在进行抛到线程里面创建;当前在分配thread的时候也需要用dungeonId来进行hash随机;
+            或者直接用netty read线程来进行执行分配thread的逻辑;
+    如果battle线程模型改成和sh一样的话，就也是如果找不到场景就先用dungeonId hash 到指定线程，还有个问题就是为什么我之前要用playerId来进行hash呢？应该是为了进入和退出地图的线性关系;
+    3.就给那两个协议单独开个队列;保证线性;
+   这个后面可以再想，
+    用dungeonId来进行hash的 其实主要是为了在bm能进入创建中的副本;保证Bm-bt的线性关系;
+    那用playerId做hash是为了什么呢？进入地图退出地图其实是在Lg弄了锁的.如果流程没完成 就不能进行,所以不是这个原因;
+    感觉没啥用 可以考虑去掉用 dungeonId; 能用dungeonId的用这个，不能用的默认还是用playerId;毕竟dungeonId需要特殊处理过;
 
 
 同步RPC调用死锁

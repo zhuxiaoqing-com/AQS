@@ -1,11 +1,6 @@
 package com.example.misc;
 
 
-import com.example.代码优化.design_mode.factory.Product;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import javax.annotation.PostConstruct;
 import java.awt.*;
 import java.awt.print.*;
 import java.lang.reflect.Field;

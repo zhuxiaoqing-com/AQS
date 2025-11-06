@@ -10,7 +10,7 @@ import com.youxi.dataStructure.quadTree.Collision2D;
 import com.youxi.entity.CMath;
 import com.youxi.entity.Dir;
 import com.youxi.entity.Position;
-import io.swagger.models.auth.In;
+
 import org.junit.Test;
 import org.web3j.abi.datatypes.Int;
 

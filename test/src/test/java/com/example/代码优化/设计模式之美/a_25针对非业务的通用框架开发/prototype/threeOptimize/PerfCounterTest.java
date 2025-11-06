@@ -5,7 +5,6 @@ import com.example.代码优化.设计模式之美.a_25针对非业务的通用�
 import com.example.代码优化.设计模式之美.a_25针对非业务的通用框架开发.prototype.secondOptimize.RedisMetricsStorage;
 import com.example.代码优化.设计模式之美.a_25针对非业务的通用框架开发.prototype.secondOptimize.entity.RequestInfo;
 
-import javax.validation.constraints.Email;
 
 /**
  * @Auther: zhuxiaoqing

@@ -84,7 +84,7 @@ public class AopAgentTransformer implements ClassFileTransformer {
         return transformed;
     }
 
-    private void AOPInsertMethod(CtMethod method) throws NotFoundException, CannotCompileException {
+    private void AOPInsertMethod(final CtMethod method) throws NotFoundException, CannotCompileException {
         //situation 1:添加监控时间
         method.instrument(new ExprEditor() {
             public void edit(MethodCall m) throws CannotCompileException {

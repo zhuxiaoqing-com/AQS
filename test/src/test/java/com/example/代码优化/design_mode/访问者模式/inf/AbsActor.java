@@ -1,6 +1,5 @@
 package com.example.代码优化.design_mode.访问者模式.inf;
 
-import com.example.demo1.hah.Role;
 import com.example.代码优化.design_mode.访问者模式.impl.KungFuRole;
 
 public class AbsActor {

@@ -12,7 +12,7 @@ import java.nio.file.Paths;
 
 public class SwaggerTest {
     public static void main(String[] args) {
-        //    输出Ascii格式
+       /* //    输出Ascii格式
         Swagger2MarkupConfig config = new Swagger2MarkupConfigBuilder()
                 .withMarkupLanguage(MarkupLanguage.MARKDOWN)
                 .withOutputLanguage(Language.ZH)
@@ -26,6 +26,6 @@ public class SwaggerTest {
                 .withConfig(config)
                 .build()
                 //.toFolder(Paths.get("src/docs/asciidoc/generated/all"));
-                .toFile(Paths.get("src/docs/asciidoc/generated/all"));
+                .toFile(Paths.get("src/docs/asciidoc/generated/all"));*/
     }
 }

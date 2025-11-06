@@ -3,7 +3,6 @@ package com.example.redis.jedis;
 import com.alibaba.fastjson.JSON;
 import com.example.demo4.testObj1.ReportLog;
 import org.junit.Test;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import redis.clients.jedis.*;
 
 import java.io.IOException;

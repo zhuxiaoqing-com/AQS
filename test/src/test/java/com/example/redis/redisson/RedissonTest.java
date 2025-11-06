@@ -1,8 +1,5 @@
 package com.example.redis.redisson;
 
-import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.joran.JoranConfigurator;
-import ch.qos.logback.core.joran.spi.JoranException;
 import com.example.redis.entity.RUser;
 import org.junit.Test;
 import org.redisson.Redisson;
@@ -11,8 +8,6 @@ import org.redisson.api.RedissonClient;
 import org.redisson.config.Config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.File;
 
 /**
  * @Auther: zhuxiaoqing

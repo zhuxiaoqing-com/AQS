@@ -1,11 +1,11 @@
 package com.youxi.math.GJK2.GJK;
 
 import com.youxi.dataStructure.collisionTree.AABB;
-import com.youxi.entity.*;
-import com.youxi.match.game.match.Pair;
+import com.youxi.entity.Dir;
+import com.youxi.entity.OBB2D;
+import com.youxi.entity.Position;
+import com.youxi.entity.Shape;
 import com.youxi.util.MathExt;
-import io.protostuff.ListAdapter;
-import io.swagger.models.auth.In;
 import org.junit.Test;
 
 import java.util.ArrayList;

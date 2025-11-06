@@ -12,7 +12,7 @@ import com.youxi.building.Misc;
 import com.youxi.entity.Position;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.PooledByteBufAllocator;
-import io.swagger.models.auth.In;
+
 import org.junit.Test;
 
 import java.io.UnsupportedEncodingException;

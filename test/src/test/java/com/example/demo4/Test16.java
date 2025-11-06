@@ -8,6 +8,7 @@ import com.example.demo4.testObj1.Temp;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.youxi.IdFactory;
+import com.youxi.building.Misc;
 import com.youxi.entity.Position;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.PooledByteBufAllocator;
@@ -1138,6 +1139,11 @@ public class Test16 {
 		System.out.println("testSlow = " + (System.currentTimeMillis() - startTime));
 	}
 
+	@Test
+	public void Test17() {
+		System.out.println(Misc.getLongLow(4295547327L));
+
+	}
 }
 
 /*

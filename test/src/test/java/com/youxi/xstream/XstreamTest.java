@@ -2,7 +2,6 @@ package com.youxi.xstream;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
-import io.swagger.models.auth.In;
 
 import java.util.Collections;
 import java.util.Map;

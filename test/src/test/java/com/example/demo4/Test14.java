@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.youxi.building.Misc;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
-import io.swagger.models.auth.In;
+
 import org.junit.Test;
 import org.omg.SendingContext.RunTime;
 

@@ -19,6 +19,20 @@
 
     <dependencies>
 
+            <!-- SLF4J API -->
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>2.0.17</version> <!-- 使用适当版本 -->
+            </dependency>
+
+            <!-- 选择 Logback 作为日志实现 -->
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-classic</artifactId>
+                <version>1.2.3</version> <!-- 使用适当版本 -->
+            </dependency>
+
         <!--  <dependency>
               <groupId>com.sh.engine</groupId>
               <artifactId>engine-all</artifactId>
@@ -44,22 +58,15 @@
             </exclusions>
         </dependency>
 
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-mongodb</artifactId>
-            <exclusions>
-                <exclusion>
-                    <artifactId>slf4j-api</artifactId>
-                    <groupId>org.slf4j</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
 
-        <!-- <dependency>
-             <groupId>org.springframework.boot</groupId>
-             <artifactId>spring-boot-starter-data-mongodb-reactive</artifactId>
-         </dependency>
- -->
+
+            <!-- MongoDB Java Driver -->
+            <dependency>
+                <groupId>org.mongodb</groupId>
+                <artifactId>mongodb-driver-sync</artifactId>
+                <version>3.12.10</version> <!-- 使用适合你的版本 -->
+            </dependency>
+
 
 
         <!-- <dependency>
@@ -184,7 +191,7 @@
             <version>1.16.20</version>
             <scope>provided</scope>
         </dependency>
-        <dependency>
+        <!--<dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger2</artifactId>
             <version>2.7.0</version>
@@ -203,7 +210,7 @@
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger-ui</artifactId>
             <version>2.7.0</version>
-        </dependency>
+        </dependency>-->
 
         <!-- https://mvnrepository.com/artifact/io.github.swagger2markup/swagger2markup -->
         <dependency>
@@ -289,6 +296,7 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
+            <version>5.7.0</version> <!-- 使用适合的版本 -->
         </dependency>
 
 
@@ -390,12 +398,12 @@
             <classifier>linux-x86_64</classifier>
         </dependency>
 
-        <dependency>
+     <!--   <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-transport-native-epoll</artifactId>
             <version>4.1.43.Final</version>
             <classifier>linux-x86_64</classifier>
-        </dependency>
+        </dependency>-->
 
         <dependency>
             <groupId>com.thoughtworks.xstream</groupId>
@@ -411,7 +419,7 @@
             <version>1.3.1</version>
             <!--<version>1.4.9</version>-->
         </dependency>
-        <dependency>
+       <!-- <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>RELEASE</version>
@@ -421,7 +429,7 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>
-        </dependency>
+        </dependency>-->
         <!--   <dependency>
                <groupId>org.codehaus.jettison</groupId>
                <artifactId>jettison</artifactId>

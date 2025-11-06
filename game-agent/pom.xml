@@ -21,17 +21,17 @@
 
     <build>
         <plugins>
-            <plugin>
+            <!--<plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>2.2</version>
                 <configuration>
                     <archive>
                         <manifestEntries>
-                            <!-- premain 使用-->
-                            <!--<Premain-Class>com.test.preAgent.PreAgent</Premain-Class>-->
-                            <Premain-Class>com.test.preAgent.PreMainAgent</Premain-Class>
-                            <Agent-Class>com.test.mainAgent.MainAgent</Agent-Class>
+                            &lt;!&ndash; premain 使用&ndash;&gt;
+                            &lt;!&ndash;<Premain-Class>com.test.preAgent.PreAgent</Premain-Class>&ndash;&gt;
+                            <Premain-Class>com.test.commandAgentMain.AgentMain</Premain-Class>
+                           &lt;!&ndash; <Agent-Class>com.test.mainAgent.MainAgent</Agent-Class>&ndash;&gt;
                             <Can-Redefine-Classes>true</Can-Redefine-Classes>
                             <Can-Retransform-Classes>true</Can-Retransform-Classes>
                         </manifestEntries>
@@ -45,7 +45,51 @@
                     <source>1.8</source>
                     <target>1.8</target>
                 </configuration>
+            </plugin>-->
+
+
+
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.5.0</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <!-- 给生成的 fat JAR 设置 classifier，避免覆盖主 JAR -->
+                            <shadedArtifactAttached>true</shadedArtifactAttached>
+                            <shadedClassifierName>all</shadedClassifierName>
+
+                            <!-- 生成 Agent manifest -->
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>com.test.commandAgentMain.AgentMain</mainClass>
+                                    <manifestEntries>
+                                        <Premain-Class>com.test.commandAgentMain.AgentMain</Premain-Class>
+                                        <Can-Redefine-Classes>true</Can-Redefine-Classes>
+                                        <Can-Retransform-Classes>true</Can-Retransform-Classes>
+                                    </manifestEntries>
+                                </transformer>
+                            </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>6</source>
+                    <target>6</target>
+                </configuration>
+            </plugin>
+
+
         </plugins>
     </build>
 </project>
