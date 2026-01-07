@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <parent>
+    <artifactId>demo1</artifactId>
+    <groupId>com.example</groupId>
+    <version>0.0.1-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>game-agent</artifactId>
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>3.5.0</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <shadedArtifactAttached>true</shadedArtifactAttached>
+              <shadedClassifierName>all</shadedClassifierName>
+              <transformers>
+                <transformer>
+                  <mainClass>com.test.commandAgentMain.AgentMain</mainClass>
+                  <manifestEntries>
+                    <Premain-Class>com.test.commandAgentMain.AgentMain</Premain-Class>
+                    <Can-Redefine-Classes>true</Can-Redefine-Classes>
+                    <Can-Retransform-Classes>true</Can-Retransform-Classes>
+                  </manifestEntries>
+                </transformer>
+              </transformers>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>6</source>
+          <target>6</target>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

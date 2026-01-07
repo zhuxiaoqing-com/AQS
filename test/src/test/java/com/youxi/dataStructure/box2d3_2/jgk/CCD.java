@@ -15,6 +15,12 @@ public class CCD {
     public static B2CCDOutput ccd(B2CCDInput input) {
         B2CCDOutput b2CCDOutput = new B2CCDOutput();
         // 得到相对移动
+        /**
+         * 我这里其实还有一个问题,我相减以后获取的dir 包含移动速度,但是并不是两者任何一者的速度,只要他们最终能碰撞到肯定hit = true;
+         * 我这个算法没有问题; 比如A B相差15米;他们分别朝着x轴向对方移动; Apostion(0,0,0),Adir(5,0,0)  Bposition(15,0,0),Bdir(-5,0,0);
+         * 他们的相对向量=(-5,0,0)-(5,0,0) = (-10,0,0); 然后就相当于b朝着A移动(-10,0,0) 是不会碰撞到的 没问题的;
+         *
+         */
         B2Vec2 relativeBDir = B2Math.sub(input.proxyBDir, input.proxyADir);
 
         B2ShapeCastPairInput b2ShapeCastPairInput = new B2ShapeCastPairInput(input.proxyA, input.proxyB, relativeBDir);
