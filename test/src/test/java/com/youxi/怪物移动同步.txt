@@ -1,0 +1,64 @@
+之前公司的怪物移动同步一开始使用同步服务器时间的，但是后面我接手以后因为怪物会有瞬移各种问题,
+所以后面给改成了，服务器下发怪物开始移动，怪物就开始移动，服务器发怪物结束移动就结束移动,这个做法如果服务器波动不大的话其实是没有任何问题的;
+
+我这里还有一个移动做法：显示怎么同步服务器时间?
+    ping:发送客户端当前时间, pong:ping里面的客户段时间，服务器当前时间;
+    玩家收到pong以后，(clientCurrTime - pong.客户端时间)/2 就是RTT, 然后取服务器和客户端当前时间的差距;
+
+客户端
+C2SPing ping = new C2SPing();
+ping.clientTime = TimeUtil.getCurrMill();
+sendMessage(ping);
+
+服务器：
+S2CPong pong = new S2CPong()
+pong.clientTime = ping.clientTime;
+pong.serverTime = TimeUtil.getCurrMill();
+
+客户端:
+    currClientTime = TimeUtil.getCurrMill();
+    RTT = currClientTime - pong.clientTime; RTT = 一个网络包从客户端发出去 → 到服务器 → 再回到客户端的总耗时
+
+    保存客户端和服务器的差距时间 = pong.serverTime + RTT/2 - currClientTime;
+
+      long time1 = TimeInfo.Instance.ClientNow();
+                        C2G_Ping c2GPing = C2G_Ping.Create(true);
+                        using G2C_Ping response = await session.Call(c2GPing) as G2C_Ping;
+
+                        if (self.InstanceId != instanceId)
+                        {
+                            return;
+                        }
+
+                        long time2 = TimeInfo.Instance.ClientNow();
+                        self.Ping = time2 - time1;
+
+                        TimeInfo.Instance.ServerMinusClientTime = response.Time + (time2 - time1) / 2 - time2;
+
+
+最近一直问AI，发现了一种更稳的方式,就是服务器怪物开始移动的时候还是发送怪物的开始移动时间,然后客户端有个固定延迟时间的全局参数,比如固定比服务器慢100ms;
+const float interpolationDelay = 0.05f; // 50ms
+void Update()
+{
+    float renderTime = serverNowTime - interpolationDelay;
+
+    // 找到 renderTime 前后的两个快照
+    MonsterSnapshot lhs, rhs;
+    FindSnapshots(renderTime, out lhs, out rhs);
+
+    float t = (renderTime - lhs.serverTime) /
+              (rhs.serverTime - lhs.serverTime);
+
+    Vector3 pos = Vector3.Lerp(lhs.position, rhs.position, t);
+    transform.position = pos;
+}
+这样的话 比如开始移动的时候延迟是100ms,结束移动的时候延迟是50ms,按我老的方式的话，怪物就会多移动50ms，但是如果有固定延迟的话,只要服务器和客户端不超过固定延迟的情况下,
+    就不会有怪物多移动的问题;
+
+这个算是一个优化吧;
+
+如果要接入RVO的话，之前是同步移动路径点,现在要改成同步 当前位置+朝向(带长度)+移动时候的服务器时间戳了;可以移动朝向不变的情况下不用同步;
+
+其实现在我是急需一个可以运行的客户端，把服务器的这些新东西子在客户端上能调式看到;
+
+

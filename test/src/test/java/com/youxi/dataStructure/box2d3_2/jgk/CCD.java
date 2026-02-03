@@ -23,6 +23,12 @@ public class CCD {
          */
         B2Vec2 relativeBDir = B2Math.sub(input.proxyBDir, input.proxyADir);
 
+        // 方向一致
+        if (relativeBDir.length() <= 0) {
+            b2CCDOutput.hit = false;
+            return b2CCDOutput;
+        }
+
         B2ShapeCastPairInput b2ShapeCastPairInput = new B2ShapeCastPairInput(input.proxyA, input.proxyB, relativeBDir);
         B2CastOutput b2CastOutput = Distance.b2ShapeCast(b2ShapeCastPairInput);
 
