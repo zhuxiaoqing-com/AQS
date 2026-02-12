@@ -3,7 +3,7 @@ package com.mdb;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.mdb.utils.Lock;
-import com.mdb.utils.Lockeys11;
+import com.mdb.utils.Lockkeys;
 import com.mdb.utils.TimeCostPrint;
 import com.mdb.xmlgen.xmlparse.Table;
 import org.slf4j.Logger;
@@ -41,7 +41,7 @@ public abstract class TTable<K, V> {
     private long allCountGetMiss = 0;
 
     public V get(K key) {
-        Lock lockey = Lockeys11.getLockey(getName(), key);
+        Lock lockey = Lockkeys.getLockey(getName(), key);
         lockey.getReadLock().lock();
         try {
             TRecord<K, V> tRecord = cache.get(key);
@@ -89,7 +89,7 @@ public abstract class TTable<K, V> {
         if (value == null) {
             throw new NullPointerException("value is null");
         }
-        Lock lockey = Lockeys11.getLockey(getName(), key);
+        Lock lockey = Lockkeys.getLockey(getName(), key);
         lockey.getWriteLock().lock();
         try {
             TRecord<K, V> tRecord = cache.get(key);
@@ -107,7 +107,7 @@ public abstract class TTable<K, V> {
     }
 
     public void delete(K key) {
-        Lock lockey = Lockeys11.getLockey(getName(), key);
+        Lock lockey = Lockkeys.getLockey(getName(), key);
         lockey.getWriteLock().lock();
         try {
             TRecord<K, V> tRecord = cache.get(key);
@@ -159,7 +159,7 @@ public abstract class TTable<K, V> {
      */
     public boolean flush(K key) {
         // 这里还是把锁加上吧 毕竟从cache里删除;保证顺序
-        Lock lockey = Lockeys11.getLockey(this.getName(), key);
+        Lock lockey = Lockkeys.getLockey(this.getName(), key);
         lockey.getWriteLock().lock();
         try {
             TRecord<K, V> kvtRecord = cache.remove(key);
@@ -332,7 +332,7 @@ public abstract class TTable<K, V> {
             //这里还没法批量执行;不然如果remove的时候我先remove批量执行,然后我先从cache里吧key删了;
             // 这个时候刚好这个Key又get了,那这个Key的数据就是有问题的了;
             for (TRecord<K, V> kvtRecord : expireList) {
-                Lock lockey = Lockeys11.getLockey(getName(), kvtRecord.getKey());
+                Lock lockey = Lockkeys.getLockey(getName(), kvtRecord.getKey());
                 // 需要排他 所以要写锁 和 get add remove 互斥;
                 lockey.getWriteLock().lock();
                 try {
