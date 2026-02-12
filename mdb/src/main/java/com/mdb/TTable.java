@@ -215,7 +215,8 @@ public abstract class TTable<K, V> {
                 }
                 AtomicLong valueVersion = kvtRecord.getValueVersion();
                 long old = valueVersion.get();
-                switch (kvtRecord.getState()) {
+                int state = kvtRecord.getState();
+                switch (state) {
                     case TRecord.ADD:
                         addCache.put(kvtRecord.marshalKey(), kvtRecord.marshalValue());
                         addTRecordCache.add(kvtRecord);
@@ -231,7 +232,7 @@ public abstract class TTable<K, V> {
                 }
                 valueVersion.compareAndSet(old, 0);// 修改失败就不管了;说明又有修改了
                 // 将add状态刷新成get状态
-                kvtRecord.checkpointRefreshState();
+                kvtRecord.checkpointRefreshState(state);
             }
         } catch (Exception e) {
             logger.error("checkpoint marshal fail table {} ", this.getName(), e);

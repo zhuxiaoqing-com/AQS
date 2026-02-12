@@ -49,10 +49,11 @@ public class TRecord<K, V> {
         return value;
     }
 
-    public void checkpointRefreshState() {
-        switch (state.get()) {
+
+    public void checkpointRefreshState(int _state) {
+        switch (_state) {
             case ADD:
-                state.set(GET);
+                state.compareAndSet(ADD, GET);
                 break;
         }
     }
