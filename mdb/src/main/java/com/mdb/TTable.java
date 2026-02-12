@@ -3,7 +3,6 @@ package com.mdb;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.mdb.utils.Lock;
-import com.mdb.utils.Lockkeys;
 import com.mdb.utils.Lockeys11;
 import com.mdb.utils.TimeCostPrint;
 import com.mdb.xmlgen.xmlparse.Table;
@@ -67,8 +66,9 @@ public abstract class TTable<K, V> {
                 }
                 return tRecord.get();
             }
-
-            // 没找到查数据库
+            if (findFailCache.getIfPresent(key) != null) {
+                return null;
+            }
             V value = _find(key);
             if (value != null) {
                 cache.put(key, new TRecord<>(this, key, value, TRecord.GET));
@@ -150,9 +150,16 @@ public abstract class TTable<K, V> {
             kvtRecord.flush();
         }
     }*/
+
+    /**
+     *  你把 writelock 去掉后，flush 和 checkpointSaveDB 会并发，典型问题是：
+     *   2. flush 写入新值
+     *   3. checkpoint 随后把旧值再写回库（覆盖新值）
+     *   这里得注意这个问题,flush把checkPoint的覆盖掉了;
+     */
     public boolean flush(K key) {
         // 这里还是把锁加上吧 毕竟从cache里删除;保证顺序
-        Lock lockey = Lockkeys.getLockey(this.getName(), key);
+        Lock lockey = Lockeys11.getLockey(this.getName(), key);
         lockey.getWriteLock().lock();
         try {
             TRecord<K, V> kvtRecord = cache.remove(key);
@@ -177,15 +184,20 @@ public abstract class TTable<K, V> {
                            HashMap<String, String> addCache, HashMap<String, String> modifyCache, HashMap<String, String> removeCache,
                            List<TRecord> addTRecordCache, List<TRecord> modifyTRecordCache, List<TRecord> removeTRecordCache
     ) {
-        TimeCostPrint timeCostPrint = new TimeCostPrint(logger, 60, "checkpoint_table" + getName());
-        checkpointMarshal(checkPointCount, addCache, modifyCache, removeCache, addTRecordCache, modifyTRecordCache, removeTRecordCache);
+        writelock.lock();
+        try {
+            TimeCostPrint timeCostPrint = new TimeCostPrint(logger, 60, "checkpoint_table" + getName());
+            checkpointMarshal(checkPointCount, addCache, modifyCache, removeCache, addTRecordCache, modifyTRecordCache, removeTRecordCache);
 
-        TimeCostPrint saveDBTime = new TimeCostPrint(logger, 30, "checkpoint_table_saveDBTime" + getName());
-        checkpointSaveDB(addCache, modifyCache, removeCache, addTRecordCache, modifyTRecordCache, removeTRecordCache);
-        saveDBTime.print();
+            TimeCostPrint saveDBTime = new TimeCostPrint(logger, 30, "checkpoint_table_saveDBTime" + getName());
+            checkpointSaveDB(addCache, modifyCache, removeCache, addTRecordCache, modifyTRecordCache, removeTRecordCache);
+            saveDBTime.print();
 
-        timeCostPrint.print();
-        logger.info("checkpoint_table addCount {} modifyCount {} removeCount {} ", addCache.size(), modifyCache.size(), removeCache.size());
+            timeCostPrint.print();
+            logger.info("checkpoint_table addCount {} modifyCount {} removeCount {} ", addCache.size(), modifyCache.size(), removeCache.size());
+        } finally {
+            writelock.unlock();
+        }
     }
 
 
@@ -267,13 +279,17 @@ public abstract class TTable<K, V> {
 
 
     public static final int TICK_INTERVAL = 1000 * 60;
-    public int nextTickTime;
+    public long nextTickTime;
 
     public void tick(long currTime) {
+        if (nextTickTime <= 0) {
+            nextTickTime = currTime + TICK_INTERVAL;
+            return;
+        }
         if (currTime < nextTickTime) {
             return;
         }
-        nextTickTime += TICK_INTERVAL;
+        nextTickTime = currTime + TICK_INTERVAL;
         long count = countGetMiss.getAndSet(0);
         if (count > 0) {
             allCountGetMiss += count;
@@ -315,9 +331,8 @@ public abstract class TTable<K, V> {
 
             //这里还没法批量执行;不然如果remove的时候我先remove批量执行,然后我先从cache里吧key删了;
             // 这个时候刚好这个Key又get了,那这个Key的数据就是有问题的了;
-            new ArrayList<>(expireList);
             for (TRecord<K, V> kvtRecord : expireList) {
-                Lock lockey = Lockkeys.getLockey(getName(), kvtRecord.getKey());
+                Lock lockey = Lockeys11.getLockey(getName(), kvtRecord.getKey());
                 // 需要排他 所以要写锁 和 get add remove 互斥;
                 lockey.getWriteLock().lock();
                 try {
@@ -363,7 +378,15 @@ public abstract class TTable<K, V> {
     public abstract String getName();
 
     public boolean isSupportFlush() {
-        return meta.isSupportFlush();
+        return meta != null && meta.isSupportFlush();
+    }
+
+    void setMeta(Table meta) {
+        this.meta = meta;
+    }
+
+    Table getMeta() {
+        return meta;
     }
 
 

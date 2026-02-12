@@ -29,6 +29,7 @@ public final class ConcurrentEnvironment {
 			throw new IllegalStateException("duplicate ExecutorService " + name);
 		ThreadPoolExecutor executor = new ThreadPoolExecutor(corePoolSize, Integer.MAX_VALUE, 60, TimeUnit.SECONDS,
 				new SynchronousQueue<Runnable>(), Worker.newFactory(name, daemon));
+		map.put(name, executor);
 		return executor;
 	}
 
@@ -41,6 +42,7 @@ public final class ConcurrentEnvironment {
 			throw new IllegalStateException("duplicate ExecutorService " + name);
 		ThreadPoolExecutor executor = new ThreadPoolExecutor(size, size, 0L, TimeUnit.SECONDS,
 				new LinkedBlockingQueue<Runnable>(), Worker.newFactory(name, daemon));
+		map.put(name, executor);
 		return executor;
 	}
 
@@ -54,6 +56,7 @@ public final class ConcurrentEnvironment {
 			throw new IllegalStateException("duplicate ExecutorService " + name);
 		ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(corePoolSize,
 				Worker.newFactory(name, daemon));
+		map.put(name, executor);
 		return executor;
 	}
 

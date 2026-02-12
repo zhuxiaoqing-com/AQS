@@ -3,6 +3,7 @@ package com.mdb;
 import com.mdb.exception.MdbError;
 import com.mdb.stoarge.*;
 import com.mdb.xmlgen.xmlparse.MdbMetadata;
+import com.mdb.xmlgen.xmlparse.Table;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,6 +47,14 @@ public class Tables {
                 LoggerMongo loggerMongo = new LoggerMongo(mdb);
                 storage = new StorageMongo(loggerMongo);
                 break;
+        }
+
+        for (TTable table : tables.values()) {
+            Table tableMeta = mdb.getTable(table.getName());
+            if (tableMeta == null) {
+                throw new MdbError("table metadata not found: " + table.getName());
+            }
+            table.setMeta(tableMeta);
         }
 
         fillStorage();

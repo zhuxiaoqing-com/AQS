@@ -33,8 +33,6 @@ public class StorageMongo implements StorageEngine {
 
 	private MongoDatabase database;
 
-	private MongoCollection<DBObject> table;
-
 	public StorageMongo(LoggerMongo logger) {
 		this.logger = logger;
 	}
@@ -48,17 +46,22 @@ public class StorageMongo implements StorageEngine {
 			database.createCollection(tableName);
 			firstCreate = true;
 		}
-		table = database.getCollection(tableName, DBObject.class);
+		MongoCollection<DBObject> table = database.getCollection(tableName, DBObject.class);
 		if (firstCreate) {
 			BasicDBObject index = new BasicDBObject("key", 1);
 			table.createIndex(index, new IndexOptions().unique(true).name("key_index"));
 		}
 	}
 
+	private MongoCollection<DBObject> getTable(String tableName) {
+		return database.getCollection(tableName, DBObject.class);
+	}
+
 	@Override
 	public String find(String tableName, String key) {
 		long begin = System.nanoTime();
 		try {
+			MongoCollection<DBObject> table = getTable(tableName);
 			BasicDBObject query = new BasicDBObject(KEY, key);
 			FindIterable<DBObject> cursor = table.find(query);
 			DBObject doc = cursor.first();
@@ -75,6 +78,7 @@ public class StorageMongo implements StorageEngine {
 	public boolean exist(String tableName, String key) {
 		long begin = System.nanoTime();
 		try {
+			MongoCollection<DBObject> table = getTable(tableName);
 			BasicDBObject query = new BasicDBObject(KEY, key);
 			FindIterable<DBObject> cursor = table.find(query);
 			DBObject doc = cursor.first();
@@ -88,6 +92,7 @@ public class StorageMongo implements StorageEngine {
 	public boolean insert(String tableName, String key, String value) {
 		long begin = System.nanoTime();
 		try {
+			MongoCollection<DBObject> table = getTable(tableName);
 			BasicDBObject doc = new BasicDBObject();
 			doc.append(KEY, key).append(VALUE, JSON.parse(value));
 			table.insertOne(doc);
@@ -101,6 +106,7 @@ public class StorageMongo implements StorageEngine {
 	public void replace(String tableName, String key, String value) {
 		long begin = System.nanoTime();
 		try {
+			MongoCollection<DBObject> table = getTable(tableName);
 			BasicDBObject keyQuery = new BasicDBObject(KEY, key);
 			BasicDBObject doc = new BasicDBObject();
 			doc.append(KEY, key);
@@ -117,6 +123,7 @@ public class StorageMongo implements StorageEngine {
 	public void remove(String tableName, String key) {
 		long begin = System.nanoTime();
 		try {
+			MongoCollection<DBObject> table = getTable(tableName);
 			BasicDBObject searchQuery = new BasicDBObject();
 			searchQuery.put(KEY, key);
 			table.deleteOne(searchQuery);
@@ -128,8 +135,12 @@ public class StorageMongo implements StorageEngine {
 	@Override
 	public boolean detect() {
 		try {
+			if (database == null) {
+				return false;
+			}
 			// 执行 ping 命令并检查响应
-			Document pingResult = database.runCommand(new Document("ping", 1));
+            // execute ping command and check response
+            Document pingResult = database.runCommand(new Document("ping", 1));
 			return pingResult.getDouble("ok") == 1.0;
 		} catch (Exception e) {
 			// 连接失败时捕获异常

@@ -44,7 +44,7 @@ public class Mdb {
         logger.warn("@@@@@@@@@@@@@@@@ mdb start begin @@@@@@@@@@@@@@@@ mdb metadata = " + mdbMetadata.getName());
 
         try {
-            Class.forName("warrior.mdb.XBean");
+            Class.forName(XBean.class.getName());
             Class<?> tableClass = Class.forName("table." + mdbMetadata.getName() + "._Tables_");
             Constructor<?> constructor = tableClass.getDeclaredConstructor();
             constructor.setAccessible(true);
@@ -73,7 +73,7 @@ public class Mdb {
             running = true;
         } catch (Throwable e) {
             logger.error("Mdb start error", e);
-            close();
+            closeInternal(true, false);
             throw e;
         }
 
@@ -90,7 +90,7 @@ public class Mdb {
             for (Tables allTable : allTables) {
                 for (TTable table : allTable.getTables()) {
                     if (!table.isSupportFlush()) {
-                        return;
+                        continue;
                     }
                     table.get(key);
                 }
@@ -168,20 +168,29 @@ public class Mdb {
     }
 
     public synchronized void close() {
-        if(!running) {
+        closeInternal(false, true);
+    }
+
+    private void closeInternal(boolean force, boolean runCheckpoint) {
+        if (!force && !running) {
             return;
         }
         logger.info("@@@@@@@@@@@@@@@@  mdb stop begin   @@@@@@@@@@@@@@@@");
-        if (checkpoint != null) {
-            checkpoint.checkpoint(System.currentTimeMillis(), true);
-            checkpoint = null;
-            scheduled_checkPoint.shutdown();
-            scheduled_checkPoint = null;
-            scheduled_common.shutdown();
-            scheduled_common = null;
-            scheduled_clearCache.shutdown();
-            scheduled_clearCache = null;
+        if (checkpoint != null && runCheckpoint) {
+            try {
+                checkpoint.checkpoint(System.currentTimeMillis(), true);
+            } catch (Throwable e) {
+                logger.error("checkpoint on close error", e);
+            }
         }
+        checkpoint = null;
+
+        shutdownScheduler(scheduled_checkPoint);
+        scheduled_checkPoint = null;
+        shutdownScheduler(scheduled_common);
+        scheduled_common = null;
+        shutdownScheduler(scheduled_clearCache);
+        scheduled_clearCache = null;
 
         if (allTables.size() > 0) {
             for (Tables tables : allTables) {
@@ -192,6 +201,17 @@ public class Mdb {
 
         running = false;
         logger.info("@@@@@@@@@@@@@@@@  mdb stop end   @@@@@@@@@@@@@@@@");
+    }
+
+    private void shutdownScheduler(ScheduledThreadPoolExecutor executor) {
+        if (executor == null) {
+            return;
+        }
+        try {
+            executor.shutdown();
+        } catch (Throwable e) {
+            logger.error("shutdown scheduler error", e);
+        }
     }
 
 
