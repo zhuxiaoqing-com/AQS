@@ -99,6 +99,7 @@ public class TRecord<K, V> {
      * todo 可能对比json  可能直接在有修改的时候弄个标记传播上来 然后直接判断那个标记
      */
     public boolean isModified(long version) {
+        // 这里不用单独在判断 add remove; 因为在new对象的时候已经将version自增了
       /*  switch (getState()) {
             case ADD:
                 return true;
