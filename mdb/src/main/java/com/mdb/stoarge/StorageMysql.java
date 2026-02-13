@@ -8,7 +8,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
 public class StorageMysql implements StorageEngine {
@@ -32,19 +31,20 @@ public class StorageMysql implements StorageEngine {
 
 
 	@Override
-	public void initTable(String tableName) {
+	public void initTable(String _tableName) {
+		String dataBaseTableName = logger.getTableName(_tableName);
 		Connection conn = null;
 		PreparedStatement stat = null;
 		ResultSet rs = null;
 		try {
 			conn = logger.getWriteConnection();
 			if(logger.isAutoCreate()) {
-				stat = conn.prepareStatement("CREATE TABLE IF NOT EXISTS " + tableName
+				stat = conn.prepareStatement("CREATE TABLE IF NOT EXISTS " + dataBaseTableName
 						+ "(k VARCHAR(128) NOT NULL PRIMARY KEY, v JSON NOT NULL) ENGINE=INNODB DEFAULT CHARSET=UTF8MB4 COLLATE=UTF8MB4_GENERAL_CI");
 				stat.execute();
 			}else {
 				stat = conn.prepareStatement("SHOW TABLES LIKE ?");
-				stat.setString(1, tableName);
+				stat.setString(1, dataBaseTableName);
 				rs = stat.executeQuery();
 				if (!rs.next()) {
 					throw new MdbError("table is not inited, please execute initTable.sql into mysql.");
@@ -60,13 +60,14 @@ public class StorageMysql implements StorageEngine {
 	}
 
 	@Override
-	public void replace(String tableName, String key, String value) {
+	public void replace(String _tableName, String key, String value) {
+		String dataBaseTableName = logger.getTableName(_tableName);
 		long begin = System.nanoTime();
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		try {
 			conn = logger.getWriteConnection();
-			stmt = conn.prepareStatement("REPLACE INTO " + tableName + " VALUES(?, ?)");
+			stmt = conn.prepareStatement("REPLACE INTO " + dataBaseTableName + " VALUES(?, ?)");
 			stmt.setString(1, key);
 			stmt.setString(2, value);
 			stmt.executeUpdate();
@@ -78,17 +79,18 @@ public class StorageMysql implements StorageEngine {
 
 			long costMs = (long) ((System.nanoTime() - begin) * 1e-6);
 			if (costMs > COST_MS_WARN) {
-				log.warn("{} replace key : {} value: {}  cost: {} ms", tableName, key, value,
+				log.warn("{} replace key : {} value: {}  cost: {} ms", dataBaseTableName, key, value,
 						costMs);
 			}
 		}
 	}
 
 	@Override
-	public void replaceBatch(String tableName, Map<String, String> kvs) {
+	public void replaceBatch(String _tableName, Map<String, String> kvs) {
+		String dataBaseTableName = logger.getTableName(_tableName);
 		// 单个
 		if (kvs.size() < THRESHOLD) {
-			kvs.forEach((k, v) -> replace(tableName, k, v));
+			kvs.forEach((k, v) -> replace(_tableName, k, v));
 			return;
 		}
 		long begin = System.nanoTime();
@@ -96,7 +98,7 @@ public class StorageMysql implements StorageEngine {
 		PreparedStatement stmt = null;
 		try {
 			conn = logger.getWriteConnection();
-			stmt = conn.prepareStatement("REPLACE INTO " + tableName + " VALUES(?, ?)");
+			stmt = conn.prepareStatement("REPLACE INTO " + dataBaseTableName + " VALUES(?, ?)");
 			int idx = 0;
 			for (Map.Entry<String, String> entry : kvs.entrySet()) {
 				String key = entry.getKey();
@@ -105,17 +107,17 @@ public class StorageMysql implements StorageEngine {
 				stmt.setString(2, value);
 				stmt.addBatch();
 				idx++;
-				log.debug("{} replace key : {} value: {} ", tableName, key, value);
+				log.debug("{} replace key : {} value: {} ", dataBaseTableName, key, value);
 				if (idx == BATCH_PER_COUNT) {
 					stmt.executeBatch();
-					log.debug("{} execute batch ", tableName);
+					log.debug("{} execute batch ", dataBaseTableName);
 					stmt.clearBatch();
 					idx = 0;
 				}
 			}
 			if (idx != 0) {
 				stmt.executeBatch();
-				log.debug("{} execute batch ", tableName);
+				log.debug("{} execute batch ", dataBaseTableName);
 				stmt.clearBatch();
 			}
 
@@ -126,16 +128,18 @@ public class StorageMysql implements StorageEngine {
 			LoggerMysql.release(stmt, conn);
 			long costMs = (long) ((System.nanoTime() - begin) * 1e-6);
 			if (costMs > COST_MS_WARN) {
-				log.warn("{} batch replace cost: {} ms", tableName, (System.nanoTime() - begin) * 1e-6);
+				log.warn("{} batch replace cost: {} ms", dataBaseTableName, (System.nanoTime() - begin) * 1e-6);
 			}
 		}
 	}
 
 	@Override
-	public void removeBatch(String tableName, Collection<String> keys) {
+	public void removeBatch(String _tableName, Collection<String> keys) {
+		String dataBaseTableName = logger.getTableName(_tableName);
 		// 单个
 		if (keys.size() < THRESHOLD) {
-			keys.forEach(k -> remove(tableName, k));
+			String finalTableName = dataBaseTableName;
+			keys.forEach(k -> remove(finalTableName, k));
 			return;
 		}
 		long begin = System.nanoTime();
@@ -143,23 +147,23 @@ public class StorageMysql implements StorageEngine {
 		PreparedStatement stmt = null;
 		try {
 			conn = logger.getWriteConnection();
-			stmt = conn.prepareStatement("DELETE FROM " + tableName + " WHERE k = ?");
+			stmt = conn.prepareStatement("DELETE FROM " + dataBaseTableName + " WHERE k = ?");
 			int idx = 0;
 			for (String key : keys) {
 				stmt.setString(1, key);
 				stmt.addBatch();
 				idx++;
-				log.debug("{} batch remove key : {} ", tableName, key);
+				log.debug("{} batch remove key : {} ", dataBaseTableName, key);
 				if (idx == BATCH_PER_COUNT) {
 					stmt.executeBatch();
-					log.debug("{} execute batch", tableName);
+					log.debug("{} execute batch", dataBaseTableName);
 					stmt.clearBatch();
 					idx = 0;
 				}
 			}
 			if (idx != 0) {
 				stmt.executeBatch();
-				log.debug("{} execute batch ", tableName);
+				log.debug("{} execute batch ", dataBaseTableName);
 				stmt.clearBatch();
 			}
 
@@ -171,19 +175,20 @@ public class StorageMysql implements StorageEngine {
 
 			long costMs = (long) ((System.nanoTime() - begin) * 1e-6);
 			if (costMs > COST_MS_WARN) {
-				log.warn("{} batch remove keys cost : {} ms", tableName, (System.nanoTime() - begin) * 1e-6);
+				log.warn("{} batch remove keys cost : {} ms", dataBaseTableName, (System.nanoTime() - begin) * 1e-6);
 			}
 		}
 	}
 
 	@Override
-	public boolean insert(String tableName, String key, String value) {
+	public boolean insert(String _tableName, String key, String value) {
+		String dataBaseTableName = logger.getTableName(_tableName);
 		long begin = System.nanoTime();
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		try {
 			conn = logger.getWriteConnection();
-			stmt = conn.prepareStatement("INSERT INTO " + tableName + " VALUES(?, ?)");
+			stmt = conn.prepareStatement("INSERT INTO " + dataBaseTableName + " VALUES(?, ?)");
 			stmt.setString(1, key);
 			stmt.setString(2, value);
 			stmt.executeUpdate();
@@ -195,21 +200,22 @@ public class StorageMysql implements StorageEngine {
 
 			long costMs = (long) ((System.nanoTime() - begin) * 1e-6);
 			if (costMs > COST_MS_WARN) {
-				log.warn("{} batch remove keys cost : {} ms", tableName, (System.nanoTime() - begin) * 1e-6);
+				log.warn("{} batch remove keys cost : {} ms", dataBaseTableName, (System.nanoTime() - begin) * 1e-6);
 			}
-			log.info("{} insert key : {}  cost : {} ms", tableName, key, (System.nanoTime() - begin) * 1e-6);
+			log.info("{} insert key : {}  cost : {} ms", dataBaseTableName, key, (System.nanoTime() - begin) * 1e-6);
 		}
 		return true;
 	}
 
 	@Override
-	public void remove(String tableName, String key) {
+	public void remove(String _tableName, String key) {
+		String dataBaseTableName = logger.getTableName(_tableName);
 		long begin = System.nanoTime();
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		try {
 			conn = logger.getWriteConnection();
-			stmt = conn.prepareStatement("DELETE FROM " + tableName + " WHERE k = ?");
+			stmt = conn.prepareStatement("DELETE FROM " + dataBaseTableName + " WHERE k = ?");
 			stmt.setString(1, key);
 			stmt.executeUpdate();
 		} catch (Exception e) {
@@ -220,20 +226,21 @@ public class StorageMysql implements StorageEngine {
 
 			long costMs = (long) ((System.nanoTime() - begin) * 1e-6);
 			if (costMs > COST_MS_WARN) {
-				log.warn("{} remove key : {} cost : {} ms", tableName, key, (System.nanoTime() - begin) * 1e-6);
+				log.warn("{} remove key : {} cost : {} ms", dataBaseTableName, key, (System.nanoTime() - begin) * 1e-6);
 			}
 		}
 	}
 
 	@Override
-	public boolean exist(String tableName, String key) {
+	public boolean exist(String _tableName, String key) {
+		String dataBaseTableName = logger.getTableName(_tableName);
 		long begin = System.nanoTime();
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		try {
 			conn = logger.getReadConnection();
-			stmt = conn.prepareStatement("SELECT 1 FROM " + tableName + " WHERE k = ?");
+			stmt = conn.prepareStatement("SELECT 1 FROM " + dataBaseTableName + " WHERE k = ?");
 			stmt.setString(1, key);
 			rs = stmt.executeQuery();
 			return rs.next();
@@ -244,20 +251,21 @@ public class StorageMysql implements StorageEngine {
 			LoggerMysql.release(rs, stmt, conn);
 			long costMs = (long) ((System.nanoTime() - begin) * 1e-6);
 			if (costMs > COST_MS_WARN) {
-				log.warn("{} exist key : {} cost : {} ms", tableName, key.replace("\"", ""), (System.nanoTime() - begin) * 1e-6);
+				log.warn("{} exist key : {} cost : {} ms", dataBaseTableName, key.replace("\"", ""), (System.nanoTime() - begin) * 1e-6);
 			}
 		}
 	}
 
 	@Override
-	public String find(String tableName, String key) {
+	public String find(String _tableName, String key) {
+		String dataBaseTableName = logger.getTableName(_tableName);
 		long begin = System.nanoTime();
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		try {
 			conn = logger.getReadConnection();
-			stmt = conn.prepareStatement("SELECT v FROM " + tableName + " WHERE k=?");
+			stmt = conn.prepareStatement("SELECT v FROM " + dataBaseTableName + " WHERE k=?");
 			stmt.setString(1, key);
 			rs = stmt.executeQuery();
 			return rs.next() ? rs.getString(1) : null;
@@ -268,7 +276,7 @@ public class StorageMysql implements StorageEngine {
 			LoggerMysql.release(rs, stmt, conn);
 			long costMs = (long) ((System.nanoTime() - begin) * 1e-6);
 			if (costMs > COST_MS_WARN) {
-				log.warn("{} find key : {} cost : {} ms", tableName, key.replace("\"", ""), (System.nanoTime() - begin) * 1e-6);
+				log.warn("{} find key : {} cost : {} ms", dataBaseTableName, key.replace("\"", ""), (System.nanoTime() - begin) * 1e-6);
 			}
 		}
 	}

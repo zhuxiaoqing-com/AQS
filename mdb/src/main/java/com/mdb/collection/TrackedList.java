@@ -1,4 +1,4 @@
-﻿package com.mdb.collection;
+package com.mdb.collection;
 
 
 import com.mdb.Mdb;

@@ -31,13 +31,13 @@ public final class TypeMap extends Type {
 	@Override
 	public String toVarType() {
 		//return String.format("java.util.concurrent.ConcurrentHashMap<%s, %s>", keyType.box(), valueType.box());
-		return String.format("com.mdb.bean.ConcurrentHashMapX<%s, %s>", keyType.box(), valueType.box());
+		return String.format("com.mdb.collection.ConcurrentHashMapX<%s, %s>", keyType.box(), valueType.box());
 	}
 
 	@Override
 	public String toInitVal() {
 		//return String.format("new java.util.concurrent.ConcurrentHashMap<%s, %s>();", keyType.box(), valueType.box());
-		return String.format("new com.mdb.bean.ConcurrentHashMapX<%s, %s>();", keyType.box(), valueType.box());
+		return String.format("new com.mdb.collection.ConcurrentHashMapX<%s, %s>();", keyType.box(), valueType.box());
 	}
 
 	@Override

@@ -2,9 +2,9 @@ package com.mdb;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
-import com.mdb.utils.Lock;
-import com.mdb.utils.Lockkeys;
-import com.mdb.utils.TimeCostPrint;
+import com.mdb.util.Lock;
+import com.mdb.util.Lockkeys;
+import com.mdb.util.TimeCostPrint;
 import com.mdb.xmlgen.xmlparse.Table;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,10 +28,6 @@ public abstract class TTable<K, V> {
 
     private Tables tables;
 
-
-    public TTable(Tables tables) {
-        this.tables = tables;
-    }
 
     //private TTableCache<K, V> cache;
     private final Map<K, TRecord<K, V>> cache = new ConcurrentHashMap<>(10000);
@@ -84,8 +80,11 @@ public abstract class TTable<K, V> {
         }
     }
 
+    public boolean add(K key, V value) {
+      return  add(key, value, false);
+    }
 
-    public void add(K key, V value) {
+    public boolean add(K key, V value, boolean immediately) {
         if (value == null) {
             throw new NullPointerException("value is null");
         }
@@ -104,9 +103,10 @@ public abstract class TTable<K, V> {
         } finally {
             lockey.getWriteLock().unlock();
         }
+        return true;
     }
 
-    public void delete(K key) {
+    public void remove(K key) {
         Lock lockey = Lockkeys.getLockey(getName(), key);
         lockey.getWriteLock().lock();
         try {
@@ -390,6 +390,9 @@ public abstract class TTable<K, V> {
         return meta;
     }
 
+    public void setTables(Tables tables) {
+        this.tables = tables;
+    }
 
     public Collection<TRecord<K, V>> getCacheList() {
         return cache.values();

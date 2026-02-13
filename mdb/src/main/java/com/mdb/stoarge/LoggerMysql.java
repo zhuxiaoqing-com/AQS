@@ -48,7 +48,7 @@ public class LoggerMysql implements LoggerEngine {
 			throw new MdbError(e);
 		}
 	}
-	
+
 	public boolean isAutoCreate() {
 		return autoCreate;
 	}
@@ -65,13 +65,22 @@ public class LoggerMysql implements LoggerEngine {
 			if (!rs.next()) {
 				if(autoCreate) {
 					try (Statement st = conn.createStatement()) {
-						st.execute("create database " + dataBase);
+						//st.execute("create database " + dataBase);
+						st.execute(
+								"CREATE DATABASE IF NOT EXISTS `" + dataBase + "` " +
+										"CHARACTER SET utf8mb4 " +
+										"COLLATE utf8mb4_general_ci"
+						);
 						logger.info("database {} not exsits, created successfully", dataBase);
 					}
 				}else {
 					throw new MdbError("database is not inited, please execute initDB.sql into mysql.");
 				}
 			}
+
+          /*  try (Statement st = conn.createStatement()) {
+                st.execute("USE " + dataBase);
+            }*/
 
 		} catch (SQLException e) {
 			throw new MdbError(e);

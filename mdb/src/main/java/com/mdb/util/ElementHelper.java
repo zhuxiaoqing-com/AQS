@@ -1,4 +1,4 @@
-package com.mdb.utils;
+package com.mdb.util;
 
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;

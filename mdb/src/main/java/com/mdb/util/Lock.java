@@ -1,4 +1,4 @@
-package com.mdb.utils;
+package com.mdb.util;
 
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 

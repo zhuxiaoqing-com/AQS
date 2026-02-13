@@ -1,6 +1,6 @@
 package com.mdb.xmlgen;
 
-import com.mdb.utils.XMLUtils;
+import com.mdb.util.XMLUtils;
 import com.mdb.xmlgen.xmlparse.MdbMetadata;
 import org.w3c.dom.Element;
 
@@ -40,7 +40,7 @@ public class Main {
 	}
 
 	static void usage() {
-		System.out.println("Usage: java -cp mdb.jar warrior.mdb.xmlgen.Main");
+		System.out.println("Usage: java -cp mdb.jar com.mdb.xmlgen.Main");
 		System.out.println("    -inputPath     mdb.xml path");
 		System.out.println("    -outputpath    gen java code");
 		System.out.println("    -sqlpath       gen sql script");

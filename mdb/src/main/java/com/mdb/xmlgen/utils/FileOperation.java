@@ -18,7 +18,7 @@ public final class FileOperation {
 		try {
 			File file = toFile(path, name);
 			if (file.exists()) {
-				return null;
+				file.delete();
 			}
 			return new PrintStream(new CachedFileOutputStream(file), false, Main.outputEncoding);
 		} catch (java.io.IOException e) {

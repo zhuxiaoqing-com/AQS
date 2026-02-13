@@ -1,6 +1,6 @@
 package com.mdb.xmlgen.xmlparse;
 
-import com.mdb.utils.ElementHelper;
+import com.mdb.util.ElementHelper;
 import com.mdb.xmlgen.Naming;
 import com.mdb.xmlgen.Variable;
 import com.mdb.xmlgen.Xbean;

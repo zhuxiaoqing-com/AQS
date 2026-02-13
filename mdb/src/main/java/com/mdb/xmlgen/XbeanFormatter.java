@@ -33,22 +33,23 @@ class XbeanFormatter {
 		MdbMetadata mdbMetadata = xbean.getMdbMetadata();
 		ps.println("package xbean." + mdbMetadata.getName() + ";");
 		ps.println("import com.alibaba.fastjson.annotation.JSONField;");
+		ps.println("import com.mdb.Mdb;");
 		ps.println();
 		ps.println();
-		ps.println("public final class " + cls + " extends warrior.mdb.XBean {");
+		ps.println("public final class " + cls + " extends com.mdb.XBean {");
 		List<Enum> enums = xbean.getEnums();
 		enums.forEach(e -> Declare.makeEnum(e, ps, "    "));
 		if (!enums.isEmpty())
 			ps.println();
 		variables.forEach(var -> Declare.makeVar(var, ps, "    "));
 		ps.println();
-		ps.println("    " + cls + "(warrior.mdb.XBean _xp_) {");
+		ps.println("    " + cls + "(com.mdb.XBean _xp_) {");
 		ps.println("        super(_xp_);");
 		variables.forEach(var -> Declare.makeConstruct(var, ps, "\t\t"));
 		ps.println("	}");
 		ps.println();
 		ps.println("	public " + cls + "() {");
-		ps.println("		this((warrior.mdb.XBean)null);");
+		ps.println("		this((com.mdb.XBean)null);");
 		ps.println("	}");
 		ps.println();
 
@@ -56,7 +57,7 @@ class XbeanFormatter {
 		ps.println("		this(_o_, null);");
 		ps.println("	}");
 		ps.println();
-		ps.println("	" + cls + "(" + cls + " _o_, warrior.mdb.XBean _xp_) {");
+		ps.println("	" + cls + "(" + cls + " _o_, com.mdb.XBean _xp_) {");
 		ps.println("		super(_xp_);");
 		variables.forEach(var -> Declare.makeDeepCopy(var, ps, "		"));
 		ps.println("	}");

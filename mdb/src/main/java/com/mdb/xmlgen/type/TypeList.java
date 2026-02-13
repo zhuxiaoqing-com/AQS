@@ -26,12 +26,12 @@ public final class TypeList extends Type {
 
 	@Override
 	public String toVarType() {
-		return String.format("java.util.concurrent.CopyOnWriteArrayList<%s>", valueType.box());
+		return String.format("com.mdb.collection.ConcurrentCopyAndWriteListX<%s>", valueType.box());
 	}
 
 	@Override
 	public String toInitVal() {
-		return String.format("new java.util.concurrent.CopyOnWriteArrayList<%s>();", valueType.box());
+		return String.format("new com.mdb.collection.ConcurrentCopyAndWriteListX<%s>();", valueType.box());
 	}
 
 	@Override

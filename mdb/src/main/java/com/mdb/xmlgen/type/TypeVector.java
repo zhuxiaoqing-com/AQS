@@ -20,13 +20,13 @@ public final class TypeVector extends Type {
 	@Override
 	public String toVarType() {
 		//return String.format("java.util.concurrent.CopyOnWriteArrayList<%s>", valueType.box());
-		return String.format("new com.mdb.bean.CopyOnWriteArrayListX<%s>", valueType.box());
+		return String.format("new com.mdb.collection.ConcurrentCopyAndWriteListX<%s>", valueType.box());
 	}
 
 	@Override
 	public String toInitVal() {
 		//return String.format("new java.util.concurrent.CopyOnWriteArrayList<%s>();", valueType.box());
-		return String.format("new new com.mdb.bean.CopyOnWriteArrayListX<%s>();", valueType.box());
+		return String.format("new new com.mdb.collection.ConcurrentCopyAndWriteListX<%s>();", valueType.box());
 	}
 
 	@Override

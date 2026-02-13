@@ -1,6 +1,6 @@
 package com.mdb.xmlgen.type;
 
-import com.mdb.utils.StringUtils;
+import com.mdb.util.StringUtils;
 import com.mdb.xmlgen.Naming;
 import com.mdb.xmlgen.Xbean;
 import org.w3c.dom.Element;

@@ -55,6 +55,7 @@ public class Tables {
                 throw new MdbError("table metadata not found: " + table.getName());
             }
             table.setMeta(tableMeta);
+            table.setTables(this);
         }
 
         fillStorage();

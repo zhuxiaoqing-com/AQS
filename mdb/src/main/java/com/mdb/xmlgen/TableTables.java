@@ -1,7 +1,7 @@
 package com.mdb.xmlgen;
 
 
-import com.mdb.utils.StringUtils;
+import com.mdb.util.StringUtils;
 import com.mdb.xmlgen.xmlparse.MdbMetadata;
 import com.mdb.xmlgen.xmlparse.Table;
 
@@ -17,7 +17,7 @@ class TableTables {
 			ps.println("package table." + mdb.getName() + ";");
 			ps.println();
 			if (!tables.isEmpty()) {
-				ps.println("import warrior.mdb.util.FastJson;");
+				ps.println("import com.mdb.util.FastJson;");
 			}
 			ps.println();
 			ps.println("final class _Tables_ {");
@@ -39,7 +39,7 @@ class TableTables {
 		String name = table.getName();
 		String k = table.getKeyType().box();
 		String v = table.getValueType().isXbean() ? table.getValueType().toVarType() : table.getValueType().box();
-		String t = "warrior.mdb.TTable<" + k + ", " + v + ">";
+		String t = "com.mdb.TTable<" + k + ", " + v + ">";
 
 		ps.println("	class " + StringUtils.upper1(name) + " extends " + t + " {");
 		ps.println("		@Override");
@@ -78,7 +78,7 @@ class TableTables {
 
 
 		ps.println("		boolean delete(" + k + " key) {");
-		ps.println("			return remove(key);");
+		ps.println("			return delete(key);");
 		ps.println("		}");
 		ps.println();
 

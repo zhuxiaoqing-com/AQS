@@ -1,7 +1,6 @@
 package com.mdb;
 
-import com.mdb.utils.ConcurrentEnvironment;
-import com.mdb.utils.TimeCostPrint;
+import com.mdb.util.TimeCostPrint;
 import com.mdb.xmlgen.xmlparse.MdbMetadata;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,6 +46,10 @@ public class Checkpoint implements Runnable {
         //checkpoint可以统一共用每次开始的时候将 版本号+1;
         //然后sleep(1000) 将等待异步全部修改完成
 
+        // 关闭的时候进行全量检测;可以顺便检测我这个 version 透传问题大不大
+        if(close) {
+            Mdb.getInstance().setxBeanDetailCheck(true);
+        }
         // 防止同时运行多个checkpoint
         checkpointMutex.lock();
         try {

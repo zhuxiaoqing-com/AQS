@@ -1,11 +1,15 @@
 package com.mdb;
 
-import com.mdb.utils.ConcurrentEnvironment;
-import com.mdb.utils.TimeCostPrint;
+import com.mdb.util.ConcurrentEnvironment;
+import com.mdb.util.TimeCostPrint;
 import com.mdb.xmlgen.xmlparse.MdbMetadata;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.LoggerContext;
+
+import java.io.File;
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -42,6 +46,13 @@ public class Mdb {
     ScheduledThreadPoolExecutor scheduled_checkPoint;
     ScheduledThreadPoolExecutor scheduled_common;
     ScheduledThreadPoolExecutor scheduled_clearCache;
+
+    public static void configLog() {
+        LoggerContext logContext = (LoggerContext) LogManager.getContext(false);
+        File conFile = new File("mdb\\src\\main\\log4j2.xml");
+        logContext.setConfigLocation(conFile.toURI());
+        logContext.reconfigure();
+    }
 
     public synchronized void start(MdbMetadata mdbMetadata) throws Exception {
         logger.warn("@@@@@@@@@@@@@@@@ mdb start begin @@@@@@@@@@@@@@@@ mdb metadata = " + mdbMetadata.getName());
@@ -248,4 +259,17 @@ public class Mdb {
     }
 
 
+    // 自定义注入校验器
+    private OperationChecker checker;
+
+    public void register(OperationChecker checker) {
+        this.checker = checker;
+    }
+
+    public boolean canOperate(Object key) {
+        if(this.checker != null) {
+            return this.checker.canOperate(key);
+        }
+        return true;
+    }
 }

@@ -1,7 +1,7 @@
 package com.mdb.xmlgen;
 
 
-import com.mdb.utils.StringUtils;
+import com.mdb.util.StringUtils;
 import com.mdb.xmlgen.xmlparse.MdbMetadata;
 import com.mdb.xmlgen.xmlparse.Table;
 
@@ -55,11 +55,11 @@ class TableShortcut {
 			ps.println("	}");
 			ps.println();
 
-			ps.println("	// 只读模式查询");
+			/*ps.println("	// 只读模式查询");
 			ps.println("	public static " + V + " select(" + K + " key) {");
 			ps.println("		return _Tables_.instance." + name + ".select(key);");
 			ps.println("	}");
-			ps.println();
+			ps.println();*/
 
 			ps.println("	public static boolean remove(" + K + " key) {");
 			makeFind(mdbMetadata.getName(),ps, V,"remove",false);
@@ -67,7 +67,7 @@ class TableShortcut {
 			ps.println("	}");
 			ps.println();
 
-			ps.println("	public static warrior.mdb.TTable" + KV + " getTable() {");
+			ps.println("	public static com.mdb.TTable" + KV + " getTable() {");
 			ps.println("		return _Tables_.instance." + name + ";");
 			ps.println("	}");
 			ps.println();
@@ -79,9 +79,9 @@ class TableShortcut {
 	void makeFind(String mdbName,PrintStream ps,String V, String function,boolean immediately){
 		if(mdbName.indexOf("logic") != -1){
 			if(immediately == true){
-				ps.println("		if (!warrior.mdb.Mdb.getInstance().canOperate(key) && immediately == false)");
+				ps.println("		if (!com.mdb.Mdb.getInstance().canOperate(key) && immediately == false)");
 			}else{
-				ps.println("		if (!warrior.mdb.Mdb.getInstance().canOperate(key))");
+				ps.println("		if (!com.mdb.Mdb.getInstance().canOperate(key))");
 			}
 			ps.println("			throw new RuntimeException(\"Invalid Operation " + V + " "+function+" key:\" + key);");
 		}

@@ -1,6 +1,6 @@
 package com.mdb.xmlgen.xmlparse;
 
-import com.mdb.utils.ElementHelper;
+import com.mdb.util.ElementHelper;
 import org.w3c.dom.Element;
 
 /**

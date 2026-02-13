@@ -11,6 +11,10 @@
 	<xbean name="Bag"> 玩家
 		<variable name="playerId" type="long" alias="1"/> 
 		<variable name="bagtest" type="int" alias="2"/>  
+		<variable name="player" type="Player" alias="3"/>
+		<variable name="playerList" type="list" value="Player" alias="4"/>
+		<variable name="playerSet" type="set" value="Player" alias="5"/>
+		<variable name="playerMap" type="map" key="long" value="Player" alias="6"/>
 	</xbean>
 	<table name="bag" key="long" value="Bag" cacheCapacity="21" />
 

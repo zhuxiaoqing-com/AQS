@@ -2,7 +2,7 @@ package com.mdb.xmlgen;
 
 
 
-import com.mdb.utils.StringUtils;
+import com.mdb.util.StringUtils;
 import com.mdb.xmlgen.type.*;
 import com.mdb.xmlgen.xmlparse.Enum;
 
@@ -48,10 +48,10 @@ public class Declare {
 		ps.println(String.format("%s@JSONField(name = \"%s\")",prefix,e.getAlias()));
 		ps.println(String.format("%spublic void set%s(%s _v_){", prefix, StringUtils.upper1(e.getName()), e.getVarType().toVarType()));
 		ps.println(String.format("%s%sthis.%s = _v_;", prefix, prefix, e.getName()));
-		if(e.getVarType().isXbean()){
-			ps.println(String.format("_v_.setParent(this);", prefix, prefix, e.getName()));
+		if(!e.getVarType().isConstType()) {
+			ps.println(prefix + prefix + String.format("_v_.setParent(this);", prefix, prefix, e.getName()));
 		}
-		ps.println("makeModify();");
+		ps.println(prefix + prefix + "makeModify();");
 		ps.println(prefix + "}");
 		ps.println();
 //		if (e.getVarType().isConstType()) {
@@ -84,7 +84,7 @@ public class Declare {
 		}*/
 
 		variables.forEach(var -> {
-			if(var.isXbean()) {
+			if(!var.isConstType()) {
 				ps.println(prefix + "\tif(" + var.getName() + ".fieldAnyModify()) {");
 				ps.println(prefix + "\t\tMdb.logger.error(\"makeFieldAnyModify false fieldModify true class {}\",getClass(), new RuntimeException());");
 				ps.println(prefix + "\treturn true;");
@@ -123,18 +123,18 @@ public class Declare {
 		}*/
 
 		variables.forEach(var -> {
-			if(var.isXbean()) {
+			if(!var.getVarType().isConstType()) {
 				ps.println(prefix + "\tif(" + var.getName() + ".checkVersion(checkPointCount)) {");
 				//ps.println(prefix + "\t\tMdb.logger.error(\"checkFieldVersion checkVersion true checkPointCount {} currVersion {} class {} \", checkPointCount, getVersion(checkPointCount), getClass().getName(), new RuntimeException());");
 				ps.println(prefix + "\t\tMdb.logger.error(\"checkFieldVersion checkVersion true checkPointCount {} currVersion {} class {} \",");
-				ps.println(prefix + "\t\t\t“checkPointCount, getVersion(checkPointCount), getClass().getName(), new RuntimeException());");
+				ps.println(prefix + "\t\t\tcheckPointCount, getVersion(checkPointCount), getClass().getName(), new RuntimeException());");
 				ps.println(prefix + "\t\treturn true;");
 				ps.println(prefix + "\t}");
 			}
 		});
 
 		variables.forEach(var -> {
-			if(var.isXbean()) {
+			if(!var.getVarType().isConstType()) {
 				ps.println(prefix + "\tif(" + var.getName() + ".checkFieldVersion(checkPointCount)) {");
 				ps.println(prefix + "\t\treturn true;");
 				ps.println(prefix + "\t}");

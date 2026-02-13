@@ -1,7 +1,7 @@
 package com.mdb.xmlgen;
 
-import com.mdb.utils.ElementHelper;
-import com.mdb.utils.StringUtils;
+import com.mdb.util.ElementHelper;
+import com.mdb.util.StringUtils;
 import com.mdb.xmlgen.type.Type;
 import com.mdb.xmlgen.type.TypeName;
 import com.mdb.xmlgen.xmlparse.MdbMetadata;

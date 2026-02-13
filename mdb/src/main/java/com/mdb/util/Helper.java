@@ -1,6 +1,5 @@
-package com.mdb.utils;
+package com.mdb.util;
 
-import java.math.BigInteger;
 import java.security.SecureRandom;
 
 public final class Helper {

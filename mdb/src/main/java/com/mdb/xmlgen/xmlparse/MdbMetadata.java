@@ -1,7 +1,7 @@
 package com.mdb.xmlgen.xmlparse;
 
-import com.mdb.utils.ElementHelper;
-import com.mdb.utils.XMLUtils;
+import com.mdb.util.ElementHelper;
+import com.mdb.util.XMLUtils;
 import com.mdb.xmlgen.Xbean;
 import org.w3c.dom.Element;
 
@@ -30,7 +30,7 @@ public class MdbMetadata {
 	private Map<String, Table> tables = new HashMap<>();
 
 	// cache策略
-	private String defaultCache = "warrior.mdb.TTableCacheLRU";
+	private String defaultCache = "com.mdb.TTableCacheLRU";
 
 	private int checkPointPeriod = 60000;
 

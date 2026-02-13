@@ -104,10 +104,10 @@ AtomicInteger 可以解决;modify autointr(); checkpoint的时候,将其compareA
 // 以及玩家上线时候能不能把玩家数据一次性全部加载到内存里;
 
 
-
-
-
-
+想flush和close的时候弄全量version对比;
+但是我发现想那个全量vesion01，想只在flush和close的时候弄，没用，因为他只在这一次checkpoint有用;
+还有一种办法，应该就是查询的时候 和入库的时候将json计算md5,将其记录下来，然后flush和close的时候直接对比md5;感觉这样子是可以的;也不会漏东西;
+改一下试试;
 
 
 
