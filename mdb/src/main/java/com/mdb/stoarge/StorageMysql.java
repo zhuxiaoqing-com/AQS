@@ -138,8 +138,7 @@ public class StorageMysql implements StorageEngine {
 		String dataBaseTableName = logger.getTableName(_tableName);
 		// 单个
 		if (keys.size() < THRESHOLD) {
-			String finalTableName = dataBaseTableName;
-			keys.forEach(k -> remove(finalTableName, k));
+			keys.forEach(k -> remove(_tableName, k));
 			return;
 		}
 		long begin = System.nanoTime();

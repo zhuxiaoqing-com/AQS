@@ -1,15 +1,41 @@
 package com.mdb.util;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.JSONSerializer;
+import com.alibaba.fastjson.serializer.ObjectSerializer;
 import com.alibaba.fastjson.serializer.PropertyFilter;
+import com.alibaba.fastjson.serializer.SerializeConfig;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.mdb.collection.TrackedList;
 
 import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.io.IOException;
+import java.lang.reflect.Type;
 
 public class FastJson {
+
+	private static final ObjectSerializer TRACKED_LIST_SNAPSHOT_SERIALIZER = new ObjectSerializer() {
+		@Override
+		public void write(JSONSerializer serializer, Object object, Object fieldName, Type fieldType, int features) throws IOException {
+			if (object == null) {
+				serializer.writeNull();
+				return;
+			}
+			TrackedList<?> trackedList = (TrackedList<?>) object;
+			// 用 forEach 快照，避免并发下 size/get(i) 访问窗口导致越界
+			List<Object> snapshot = new ArrayList<>();
+			trackedList.getDelegate().forEach(snapshot::add);
+			serializer.write(snapshot);
+		}
+	};
+
+	static {
+		SerializeConfig.getGlobalInstance().put(TrackedList.class, TRACKED_LIST_SNAPSHOT_SERIALIZER);
+	}
 
 	public static <T> T parseObject(Object text, Class<T> clazz) {
 		if (text == null) {

@@ -22,6 +22,8 @@ public class TRecord<K, V> {
 
     private long[] hashArray = new long[]{0L,0L};
 
+    private String jsonDebug;
+
     /**
      * 上一次访问时间
      */
@@ -108,13 +110,6 @@ public class TRecord<K, V> {
         return table.marshalValue(value);
     }
 
-    public String marshalValueOnSave() {
-        String s = marshalValue();
-        hashArray = hash(s);
-        return s;
-    }
-
-
     public boolean onSelect(String valueStr) {
         try {
             value = table.unmarshalValue(valueStr);
@@ -123,7 +118,8 @@ public class TRecord<K, V> {
                 return false;
             }
             ((XBean)value).findVersionAtomic().set(0);
-            hashArray = hash(valueStr);
+            // 规范化后再计算 hash，避免 DB 中 JSON 空格/格式差异触发 strictCheck 误报
+            setHash(marshalValue());
             return true;
         } catch (Exception e) {
             Mdb.logger.error("find error tableName {} key {}", table.getName(), key, e);
@@ -166,7 +162,7 @@ public class TRecord<K, V> {
         // ① 版本脏检查（快速路径）
         if (bean.checkModify(version)) {
             String json = marshalValue();
-            hashArray = hash(json);
+            setHash(json);
             return json;
         }
 
@@ -181,11 +177,18 @@ public class TRecord<K, V> {
 
         if (!checkHashEquals(hashArray, newHash)) {
             hashArray = newHash;
-            log.warn("strictCheck not equals tableName {} key {}", table.getName(), key);
+            if (getValueVersion().get() == 0) {
+                log.warn("strictCheck not equals tableName {} key {}", table.getName(), key);
+            }
             return json;
         }
 
         return null;
+    }
+
+    private void setHash(String json) {
+        hashArray = hash(json);
+        jsonDebug = json;
     }
 
 
