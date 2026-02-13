@@ -157,7 +157,9 @@ public class TrackedList<E> extends XBean implements List<E> {
     @Override
     public boolean remove(Object o) {
         boolean changed = delegate.remove(o);
-        if (changed) markModified(ModifyType.REMOVE, o);
+        if (changed) {
+            markModified(ModifyType.REMOVE, o);
+        }
         return changed;
     }
 
@@ -171,8 +173,12 @@ public class TrackedList<E> extends XBean implements List<E> {
 
     @Override
     public boolean retainAll(Collection<?> c) {
+        boolean changed = delegate.retainAll(c);
+        if (!changed) {
+            return false;
+        }
         markModified(ModifyType.REMOVE, null);
-        return delegate.retainAll(c);
+        return true;
     }
 
     @Override

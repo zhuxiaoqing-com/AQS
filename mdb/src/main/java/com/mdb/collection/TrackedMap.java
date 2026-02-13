@@ -83,13 +83,27 @@ public class TrackedMap<K, V> extends XBean implements Map<K, V> {
         }
     }
 
+    private void markChanged() {
+        markModified(ModifyType.CHANGE, null);
+    }
+
+    private void rebindValue(V oldValue, V newValue) {
+        if (oldValue != newValue) {
+            if (oldValue != null) {
+                markModified(ModifyType.REMOVE, oldValue);
+            }
+            if (newValue != null) {
+                markModified(ModifyType.ADD, newValue);
+            }
+        } else {
+            markChanged();
+        }
+    }
+
     @Override
     public V put(K key, V value) {
         V old = delegate.put(key, value);
-        if (old != null) {
-            markModified(ModifyType.REMOVE, old);
-        }
-        markModified(ModifyType.ADD, value);
+        rebindValue(old, value);
         return old;
     }
 
@@ -118,28 +132,35 @@ public class TrackedMap<K, V> extends XBean implements Map<K, V> {
             }
             delegate.clear();
         }
-        delegate.clear();
     }
 
     @Override
     public V putIfAbsent(K key, V value) {
-        markModified(ModifyType.ADD, value);
-        return delegate.putIfAbsent(key, value);
+        V old = delegate.putIfAbsent(key, value);
+        if (old == null) {
+            markModified(ModifyType.ADD, value);
+        } else {
+            markChanged();
+        }
+        return old;
     }
 
     @Override
     public boolean remove(Object key, Object value) {
+        V old = delegate.get(key);
         boolean changed = delegate.remove(key, value);
-        if (changed) markModified(ModifyType.REMOVE, value);
+        if (changed) {
+            markModified(ModifyType.REMOVE, old != null ? old : value);
+        }
         return changed;
     }
 
     @Override
     public boolean replace(K key, V oldValue, V newValue) {
+        V current = delegate.get(key);
         boolean changed = delegate.replace(key, oldValue, newValue);
         if (changed) {
-            markModified(ModifyType.REMOVE, oldValue);
-            markModified(ModifyType.ADD, newValue);
+            rebindValue(current != null ? current : oldValue, newValue);
         }
         return changed;
     }
@@ -148,10 +169,7 @@ public class TrackedMap<K, V> extends XBean implements Map<K, V> {
     public V replace(K key, V value) {
         if (containsKey(key)) {
             V old = delegate.replace(key, value);
-            if (!Objects.equals(old, value)) {
-                markModified(ModifyType.REMOVE, old);
-                markModified(ModifyType.ADD, value);
-            }
+            rebindValue(old, value);
             return old;
         }
         return null;
@@ -159,10 +177,9 @@ public class TrackedMap<K, V> extends XBean implements Map<K, V> {
 
     @Override
     public V compute(K key, BiFunction<? super K, ? super V, ? extends V> remapping) {
+        V oldValue = delegate.get(key);
         V newValue = delegate.compute(key, remapping);
-        if (newValue != null) {
-            markModified(ModifyType.ADD, newValue);
-        }
+        rebindValue(oldValue, newValue);
         return newValue;
     }
 
@@ -170,29 +187,39 @@ public class TrackedMap<K, V> extends XBean implements Map<K, V> {
     public V computeIfAbsent(K key, Function<? super K, ? extends V> mapping) {
         V oldValue = delegate.get(key);
         V value = delegate.computeIfAbsent(key, mapping);
-        if (value != null && value != oldValue) {
+        if (oldValue == null && value != null) {
             markModified(ModifyType.ADD, value);
+        } else {
+            markChanged();
         }
         return value;
     }
 
     @Override
     public V computeIfPresent(K key, BiFunction<? super K, ? super V, ? extends V> remapping) {
+        V oldValue = delegate.get(key);
         V newValue = delegate.computeIfPresent(key, remapping);
-        markModified(ModifyType.ADD, null);
+        if (oldValue != null) {
+            rebindValue(oldValue, newValue);
+        }
         return newValue;
     }
 
     @Override
     public V merge(K key, V value, BiFunction<? super V, ? super V, ? extends V> remapping) {
-        markModified(ModifyType.ADD, value);
-        return delegate.merge(key, value, remapping);
+        V oldValue = delegate.get(key);
+        V newValue = delegate.merge(key, value, remapping);
+        rebindValue(oldValue, newValue);
+        return newValue;
     }
 
     @Override
     public void replaceAll(BiFunction<? super K, ? super V, ? extends V> function) {
+        Map<K, V> oldSnapshot = new HashMap<>(delegate);
         delegate.replaceAll(function);
-        markModified(ModifyType.ADD, null);
+        for (Entry<K, V> entry : oldSnapshot.entrySet()) {
+            rebindValue(entry.getValue(), delegate.get(entry.getKey()));
+        }
     }
 
     // 只读方法委托

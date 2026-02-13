@@ -69,8 +69,11 @@ public abstract class TTable<K, V> {
             String valueStr = _find(key);
             if (valueStr != null) {
                 tRecord = new TRecord<>(this, key, null, TRecord.GET);
-                tRecord.onSelect(valueStr);
-                cache.put(key, tRecord);
+                if (tRecord.onSelect(valueStr)) {
+                    cache.put(key, tRecord);
+                } else {
+                    return null;
+                }
             } else {
                 findFailCache.put(key, defaultValue);
                 // getMiss

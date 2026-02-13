@@ -42,7 +42,7 @@ public class Mdb {
 
     public boolean running = false;
 
-    private Checkpoint checkpoint = null;
+    public Checkpoint checkpoint = null;
     ScheduledThreadPoolExecutor scheduled_checkPoint;
     ScheduledThreadPoolExecutor scheduled_common;
     ScheduledThreadPoolExecutor scheduled_clearCache;

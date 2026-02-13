@@ -2,6 +2,8 @@ package com.mdb;
 
 import net.jpountz.xxhash.XXHash64;
 import net.jpountz.xxhash.XXHashFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -11,6 +13,7 @@ public class TRecord<K, V> {
     public static final int ADD = 1;
     public static final int REMOVE = 2;
     public static final int GET = 3;
+    private static final Logger log = LoggerFactory.getLogger(TRecord.class);
 
     private AtomicInteger state = new AtomicInteger(0);
     private TTable<K, V> table;
@@ -112,14 +115,19 @@ public class TRecord<K, V> {
     }
 
 
-    public void onSelect(String valueStr) {
+    public boolean onSelect(String valueStr) {
         try {
             value = table.unmarshalValue(valueStr);
-            // 可能再反序列化的时候会触发version变化，反序列化成功以后将其set成(0);
+            if (value == null) {
+                Mdb.logger.error("find error tableName {} key {} unmarshal value is null", table.getName(), key);
+                return false;
+            }
             ((XBean)value).findVersionAtomic().set(0);
             hashArray = hash(valueStr);
+            return true;
         } catch (Exception e) {
             Mdb.logger.error("find error tableName {} key {}", table.getName(), key, e);
+            return false;
         }
     }
 
@@ -173,6 +181,7 @@ public class TRecord<K, V> {
 
         if (!checkHashEquals(hashArray, newHash)) {
             hashArray = newHash;
+            log.warn("strictCheck not equals tableName {} key {}", table.getName(), key);
             return json;
         }
 
@@ -210,7 +219,7 @@ public class TRecord<K, V> {
 
         } catch (Exception e) {
             // 如果flush时候报错，则清除标识，下次会继续同步
-            Mdb.logger.error("TRecord flush error reason： {} ", reason, e);
+            Mdb.logger.error("TRecord flush error reason {} ", reason, e);
             // 也设置一个同步失败;
             checkPointFail();
             return false;

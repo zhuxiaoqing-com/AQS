@@ -27,13 +27,13 @@ public class TestFlush {
 		}
 
 		int i = ThreadLocalRandom.current().nextInt(100000);
-		bag.setPlayerId(i);
-		bag.setBagtest(i);
+		/*bag.setPlayerId(i);
+		bag.setBagtest(i);*/
 		Player player = new Player();
 		player.setLevel(i);
 		player.setPlayerId(i);
 		player.setPlayerName(i+"");
-		bag.setPlayer(player);
+		//bag.setPlayer(player);
 
 		bag.getPlayerList().clear();
 		bag.getPlayerList().add(new Player(player));
@@ -52,7 +52,8 @@ public class TestFlush {
 
 
 		Thread.sleep(1000L);
-		Mdb.getInstance().flush(key, null);
+		Mdb.getInstance().checkpoint.checkpoint(System.currentTimeMillis(), false);
+		//Mdb.getInstance().flush(key, null);
 
 		System.err.println("回车退出 random : " + i);
 		System.in.read();
