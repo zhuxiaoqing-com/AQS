@@ -15,6 +15,9 @@ public final class TypeList extends Type {
 	public boolean isConstType() {
 		return false;
 	}
+	public  boolean isCollection(){
+		return true;
+	}
 
 	public Type getValueType() {
 		return valueType;
@@ -31,7 +34,7 @@ public final class TypeList extends Type {
 
 	@Override
 	public String toInitVal() {
-		return String.format("new com.mdb.collection.ConcurrentCopyAndWriteListX<%s>();", valueType.box());
+		return String.format("new com.mdb.collection.ConcurrentCopyAndWriteListX<%s>(this);", valueType.box());
 	}
 
 	@Override

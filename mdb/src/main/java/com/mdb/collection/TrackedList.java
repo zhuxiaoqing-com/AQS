@@ -9,10 +9,22 @@ import java.util.*;
 import java.util.function.UnaryOperator;
 
 public class TrackedList<E> extends XBean implements List<E> {
-    private final List<E> delegate;
+    private List<E> delegate;
 
-    public TrackedList(List<E> delegate) {
+    public TrackedList() {
+    }
+
+    public List<E> getDelegate() {
+        return delegate;
+    }
+
+    public void setDelegate(List<E> delegate) {
+        this.delegate = delegate;
+    }
+
+    public TrackedList(List<E> delegate, com.mdb.XBean _xp_) {
         this.delegate = Objects.requireNonNull(delegate);
+        setParent(_xp_);
     }
 
 /*    public boolean isModified() { return !modifications.isEmpty(); }

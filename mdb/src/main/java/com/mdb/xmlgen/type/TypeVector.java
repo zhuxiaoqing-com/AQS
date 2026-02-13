@@ -12,6 +12,9 @@ public final class TypeVector extends Type {
 	public boolean isConstType() {
 		return false;
 	}
+	public  boolean isCollection(){
+		return true;
+	}
 
 	public Type getValueType() {
 		return valueType;
@@ -20,13 +23,13 @@ public final class TypeVector extends Type {
 	@Override
 	public String toVarType() {
 		//return String.format("java.util.concurrent.CopyOnWriteArrayList<%s>", valueType.box());
-		return String.format("new com.mdb.collection.ConcurrentCopyAndWriteListX<%s>", valueType.box());
+		return String.format("com.mdb.collection.ConcurrentCopyAndWriteListX<%s>", valueType.box());
 	}
 
 	@Override
 	public String toInitVal() {
 		//return String.format("new java.util.concurrent.CopyOnWriteArrayList<%s>();", valueType.box());
-		return String.format("new new com.mdb.collection.ConcurrentCopyAndWriteListX<%s>();", valueType.box());
+		return String.format("new com.mdb.collection.ConcurrentCopyAndWriteListX<%s>(this);", valueType.box());
 	}
 
 	@Override

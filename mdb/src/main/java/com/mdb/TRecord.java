@@ -169,12 +169,12 @@ public class TRecord<K, V> {
         String json = marshalValue();
         long[] newHash = hash(json);
 
-        if (!checkHash(hashArray, newHash)) {
-            return null;
+        if (!checkHashEquals(hashArray, newHash)) {
+            hashArray = newHash;
+            return json;
         }
 
-        hashArray = newHash;
-        return json;
+        return null;
     }
 
 
@@ -228,7 +228,7 @@ public class TRecord<K, V> {
         return new long[]{h1, h2};
     }
 
-    public boolean checkHash(long[] hashArray1, long[] hashArray2) {
+    public boolean checkHashEquals(long[] hashArray1, long[] hashArray2) {
         if(hashArray1 == null || hashArray2 == null) {
             return false;
         }

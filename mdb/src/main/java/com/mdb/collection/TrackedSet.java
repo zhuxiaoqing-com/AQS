@@ -9,8 +9,9 @@ import java.util.*;
 public class TrackedSet <E> extends XBean implements Set<E> {
     private final Set<E> delegate;
 
-    public TrackedSet(Set<E> delegate) {
+    public TrackedSet(Set<E> delegate, com.mdb.XBean _xp_) {
         this.delegate = Objects.requireNonNull(delegate);
+        setParent(_xp_);
     }
 /*
 

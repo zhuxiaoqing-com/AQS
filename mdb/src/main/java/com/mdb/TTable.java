@@ -109,18 +109,19 @@ public abstract class TTable<K, V> {
         return true;
     }
 
-    public void remove(K key) {
+    public boolean remove(K key) {
         Lock lockey = Lockkeys.getLockey(getName(), key);
         lockey.getWriteLock().lock();
         try {
             TRecord<K, V> tRecord = cache.get(key);
             if (tRecord == null) {
-                return;
+                return false;
             }
             tRecord.remove();
         } finally {
             lockey.getWriteLock().unlock();
         }
+        return true;
     }
 
 

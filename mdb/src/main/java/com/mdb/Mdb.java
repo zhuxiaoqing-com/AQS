@@ -200,11 +200,8 @@ public class Mdb {
         checkpoint = null;
 
         shutdownScheduler(SCHEDULER_CHECKPOINT_NAME, scheduled_checkPoint);
-        scheduled_checkPoint = null;
         shutdownScheduler(SCHEDULER_COMMON_NAME, scheduled_common);
-        scheduled_common = null;
         shutdownScheduler(SCHEDULER_CLEARCACHE_NAME, scheduled_clearCache);
-        scheduled_clearCache = null;
 
         if (allTables.size() > 0) {
             for (Tables tables : allTables) {

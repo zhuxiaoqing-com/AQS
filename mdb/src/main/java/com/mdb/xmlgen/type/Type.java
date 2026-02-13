@@ -5,6 +5,8 @@ import com.mdb.xmlgen.Naming;
 import com.mdb.xmlgen.Xbean;
 import org.w3c.dom.Element;
 
+import java.util.Collections;
+
 public abstract class Type extends Naming {
 
 	Type(Element self, String key) {
@@ -29,6 +31,9 @@ public abstract class Type extends Naming {
 	}
 
 	public abstract boolean isConstType();
+	public  boolean isCollection(){
+		return false;
+	}
 
 	// 自动封箱，int需要的单独处理
 	public String box() {

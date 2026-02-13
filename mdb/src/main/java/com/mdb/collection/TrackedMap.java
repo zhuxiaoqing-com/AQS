@@ -12,8 +12,9 @@ public class TrackedMap<K, V> extends XBean implements Map<K, V> {
     private final Map<K, V> delegate;
 
 
-    public TrackedMap(Map<K, V> delegate) {
+    public TrackedMap(Map<K, V> delegate, com.mdb.XBean _xp_) {
         this.delegate = Objects.requireNonNull(delegate);
+        setParent(_xp_);
     }
 
   /*  @Override

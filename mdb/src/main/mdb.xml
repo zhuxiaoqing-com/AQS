@@ -15,6 +15,10 @@
 		<variable name="playerList" type="list" value="Player" alias="4"/>
 		<variable name="playerSet" type="set" value="Player" alias="5"/>
 		<variable name="playerMap" type="map" key="long" value="Player" alias="6"/>
+
+		<variable name="longList" type="list" value="long" alias="7"/>
+		<variable name="longSet" type="set" value="long" alias="8"/>
+		<variable name="longMap" type="map" key="long" value="long" alias="9"/>
 	</xbean>
 	<table name="bag" key="long" value="Bag" cacheCapacity="21" />
 

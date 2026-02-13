@@ -16,6 +16,10 @@ public final class TypeMap extends Type {
 		return false;
 	}
 
+	public  boolean isCollection(){
+		return true;
+	}
+
 	public Type getValueType() {
 		return valueType;
 	}
@@ -37,8 +41,9 @@ public final class TypeMap extends Type {
 	@Override
 	public String toInitVal() {
 		//return String.format("new java.util.concurrent.ConcurrentHashMap<%s, %s>();", keyType.box(), valueType.box());
-		return String.format("new com.mdb.collection.ConcurrentHashMapX<%s, %s>();", keyType.box(), valueType.box());
+		return String.format("new com.mdb.collection.ConcurrentHashMapX<%s, %s>(this);", keyType.box(), valueType.box());
 	}
+
 
 	@Override
 	public String toCopy(Type type) {

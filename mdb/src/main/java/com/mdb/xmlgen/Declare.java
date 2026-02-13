@@ -44,6 +44,10 @@ public class Declare {
 	}
 
 	public static void makeSetter(Variable e, PrintStream ps, String prefix) {
+		// 集合不能有set方法;
+		if(e.getVarType().isCollection()) {
+			return;
+		}
 		//所有字段都必须要SET
 		ps.println(String.format("%s@JSONField(name = \"%s\")",prefix,e.getAlias()));
 		ps.println(String.format("%spublic void set%s(%s _v_){", prefix, StringUtils.upper1(e.getName()), e.getVarType().toVarType()));
@@ -84,7 +88,7 @@ public class Declare {
 		}*/
 
 		variables.forEach(var -> {
-			if(!var.isConstType()) {
+			if(!var.getVarType().isConstType()) {
 				ps.println(prefix + "\tif(" + var.getName() + ".fieldAnyModify()) {");
 				ps.println(prefix + "\t\tMdb.logger.error(\"makeFieldAnyModify false fieldModify true class {}\",getClass(), new RuntimeException());");
 				ps.println(prefix + "\treturn true;");
@@ -105,7 +109,7 @@ public class Declare {
 		ps.println(prefix + "\tsetModifyValue(isModifyTrue, false);");
 
 		variables.forEach(var -> {
-			if(var.isXbean()) {
+			if(var.getVarType().isXbean()) {
 				ps.println(prefix + "\t" + var.getName() + ".setModifyValue(isModifyTrue, false);");
 			}
 		});

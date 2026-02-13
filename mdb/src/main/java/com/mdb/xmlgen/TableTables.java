@@ -78,7 +78,7 @@ class TableTables {
 
 
 		ps.println("		boolean delete(" + k + " key) {");
-		ps.println("			return delete(key);");
+		ps.println("			return remove(key);");
 		ps.println("		}");
 		ps.println();
 
