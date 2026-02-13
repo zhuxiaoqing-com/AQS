@@ -78,7 +78,7 @@ public class Checkpoint implements Runnable {
                     addTRecordCache.clear();
                     modifyTRecordCache.clear();
                     removeTRecordCache.clear();
-                    value.checkpoint(checkPointCount, addCache, modifyCache, removeCache, addTRecordCache, modifyTRecordCache, removeTRecordCache);
+                    value.checkpoint(checkPointCount, addCache, modifyCache, removeCache, addTRecordCache, modifyTRecordCache, removeTRecordCache, close);
                     addCount = addCount + addCache.size();
                     modifyCount = modifyCount + modifyCache.size();
                     removeCount = removeCount + removeCache.size();

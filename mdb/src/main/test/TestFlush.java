@@ -15,15 +15,15 @@ public class TestFlush {
 		Mdb.getInstance().start(mdb);
 		Thread.sleep(3000L);
 
-		xbean.logic.Player p = table.logic.Player.get(2L);
+		xbean.logic.Player p = table.logic.Player.get(10000L);
 		if (p == null) {
 			p = new xbean.logic.Player();
-			table.logic.Player.add(2L, p);
+			table.logic.Player.add(10000L, p);
 		}
-		p.setLevel(1);
+		p.setLevel(3);
 		p.setPlayerId(111L);
 		Thread.sleep(1000L);
-		Mdb.getInstance().flush(2L, null);
+		Mdb.getInstance().flush(1000L, null);
 
 		System.err.println("回车退出");
 		System.in.read();

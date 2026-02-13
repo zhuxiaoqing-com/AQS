@@ -80,7 +80,7 @@ class XbeanFormatter {
 		variables.forEach(var -> Declare.makeSetter(var, ps, "	"));
 		//Declare.makeFieldAnyModify(xbean.getVariables(), ps, "	");
 		//Declare.makeClearModify(xbean.getVariables(), ps, "	");
-		Declare.makeCheckFieldVersion(xbean.getVariables(), ps, "	");
+		//Declare.makeCheckFieldVersion(xbean.getVariables(), ps, "	"); //Xbean_2 使用
 		// equals
 		Declare.makeEquals(variables, cls, ps, "	");
 		Declare.makeHashCode(xbean.getVariables(), ps, "	");

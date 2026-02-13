@@ -268,6 +268,7 @@ public class StorageMysql implements StorageEngine {
 			stmt = conn.prepareStatement("SELECT v FROM " + dataBaseTableName + " WHERE k=?");
 			stmt.setString(1, key);
 			rs = stmt.executeQuery();
+			// 如果是prototuff的话;应该是这样rs.getBytes(1) ;
 			return rs.next() ? rs.getString(1) : null;
 		} catch (Exception e) {
 			log.error("find error", e);

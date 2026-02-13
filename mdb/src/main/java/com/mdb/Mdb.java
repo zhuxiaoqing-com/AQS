@@ -134,15 +134,20 @@ public class Mdb {
                 TTable tt = table;
                 if (tt.isSupportFlush()) {
                     // 名义上增加只读锁，其实是flush操作，目的是为了和checkpoint的write锁互斥，同时又保证多玩家在没有checkpoint时flush自己数据能并发执行
-                    if(!tt.flush(key)) {
-                        allSuccess = false;
+                    tt.readlock.lock();
+                    try {
+                        if(!tt.flush(key)) {
+                            allSuccess = false;
+                        }
+                    } finally {
+                        tt.readlock.unlock();
                     }
                 }
             }
         }
         timeCostPrint.print();
         if (mdbFlushCallback != null) {
-            mdbFlushCallback.onFlushOver(key);
+            mdbFlushCallback.onFlushOver(key, allSuccess);
         }
         return allSuccess;
     }

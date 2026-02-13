@@ -20,7 +20,7 @@ public class Lockkeys {
     }
 
 
-    Cache<LockKey, Lock> cache = Caffeine.newBuilder().expireAfterAccess(5, TimeUnit.MINUTES).build();
+    Cache<LockKey, Lock> cache = Caffeine.newBuilder().expireAfterAccess(30, TimeUnit.MINUTES).build();
 
     public static Lock getLockey(String name, Object key) {
         return instance.cache.get(new LockKey(name, key), a -> new Lock(name, key));

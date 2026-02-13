@@ -49,7 +49,7 @@ public class TrackedMap<K, V> extends XBean implements Map<K, V> {
         for (V e : delegate.values()) {
             if (((XBean) e).checkVersion(checkPointCount)) {
                 Mdb.logger.error("checkFieldVersion checkVersion true checkPointCount {} currVersion {} class {} ",
-                        checkPointCount, getVersion(checkPointCount), getClass().getName(), new RuntimeException());
+                        checkPointCount, findVersion(checkPointCount), getClass().getName(), new RuntimeException());
                 return true;
             }
         }

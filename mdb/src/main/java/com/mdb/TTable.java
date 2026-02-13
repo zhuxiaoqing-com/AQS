@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -31,7 +32,7 @@ public abstract class TTable<K, V> {
 
     //private TTableCache<K, V> cache;
     private final Map<K, TRecord<K, V>> cache = new ConcurrentHashMap<>(10000);
-    Cache<Object, Object> findFailCache = Caffeine.newBuilder().maximumSize(200).softValues().build();
+    Cache<Object, Object> findFailCache = Caffeine.newBuilder().maximumSize(1000).expireAfterAccess(30,TimeUnit.MINUTES).softValues().build();
 
     private final AtomicLong countGetMiss = new AtomicLong();
     private long allCountGetMiss = 0;
@@ -65,16 +66,18 @@ public abstract class TTable<K, V> {
             if (findFailCache.getIfPresent(key) != null) {
                 return null;
             }
-            V value = _find(key);
-            if (value != null) {
-                cache.put(key, new TRecord<>(this, key, value, TRecord.GET));
+            String valueStr = _find(key);
+            if (valueStr != null) {
+                tRecord = new TRecord<>(this, key, null, TRecord.GET);
+                tRecord.onSelect(valueStr);
+                cache.put(key, tRecord);
             } else {
                 findFailCache.put(key, defaultValue);
                 // getMiss
                 countGetMiss.incrementAndGet();
             }
 
-            return value;
+            return tRecord == null ? null : tRecord.getValue();
         } finally {
             lockey.getWriteLock().unlock();
         }
@@ -124,7 +127,7 @@ public abstract class TTable<K, V> {
     /**
      * 查找数据库 等地方
      */
-    private V _find(K key) {
+    private V _findByObj(K key) {
         V value = null;
         try {
             String s = tables.getStorage().find(getName(), marshalKey(key));
@@ -137,6 +140,13 @@ public abstract class TTable<K, V> {
         }
 
         return value;
+    }
+
+    /**
+     * 查找数据库 等地方
+     */
+    private String _find(K key) {
+        return tables.getStorage().find(getName(), marshalKey(key));
     }
 
 
@@ -162,15 +172,19 @@ public abstract class TTable<K, V> {
         Lock lockey = Lockkeys.getLockey(this.getName(), key);
         lockey.getWriteLock().lock();
         try {
+            findFailCache.invalidate(key);
             TRecord<K, V> kvtRecord = cache.remove(key);
             // !=null 并且修改过
-            if (kvtRecord != null && kvtRecord.isModified()) {
-                boolean flush = kvtRecord.flush("flush");
-                if (!flush) {
-                    logger.error("flush fail table {} key {} ", this.getName(), key);
-                    // flush失败重新加入cache等待下一次同步flush
-                    cache.put(key, kvtRecord);
-                    return false;
+            if (kvtRecord != null) {
+                String valueJson = kvtRecord.isModified(true);
+                if (valueJson != null) {
+                    boolean flush = kvtRecord.flush("flush", valueJson);
+                    if (!flush) {
+                        logger.error("flush fail table {} key {} ", this.getName(), key);
+                        // flush失败重新加入cache等待下一次同步flush
+                        cache.put(key, kvtRecord);
+                        return false;
+                    }
                 }
             }
         } finally {
@@ -182,12 +196,12 @@ public abstract class TTable<K, V> {
 
     public void checkpoint(long checkPointCount,
                            HashMap<String, String> addCache, HashMap<String, String> modifyCache, HashMap<String, String> removeCache,
-                           List<TRecord> addTRecordCache, List<TRecord> modifyTRecordCache, List<TRecord> removeTRecordCache
+                           List<TRecord> addTRecordCache, List<TRecord> modifyTRecordCache, List<TRecord> removeTRecordCache,boolean strictCheck
     ) {
         writelock.lock();
         try {
             TimeCostPrint timeCostPrint = new TimeCostPrint(logger, 60, "checkpoint_table" + getName());
-            checkpointMarshal(checkPointCount, addCache, modifyCache, removeCache, addTRecordCache, modifyTRecordCache, removeTRecordCache);
+            checkpointMarshal(checkPointCount, addCache, modifyCache, removeCache, addTRecordCache, modifyTRecordCache, removeTRecordCache, strictCheck);
 
             TimeCostPrint saveDBTime = new TimeCostPrint(logger, 30, "checkpoint_table_saveDBTime" + getName());
             checkpointSaveDB(addCache, modifyCache, removeCache, addTRecordCache, modifyTRecordCache, removeTRecordCache);
@@ -207,22 +221,45 @@ public abstract class TTable<K, V> {
                                    HashMap<String, String> removeCache,
                                    List<TRecord> addTRecordCache,
                                    List<TRecord> modifyTRecordCache,
-                                   List<TRecord> removeTRecordCache) {
+                                   List<TRecord> removeTRecordCache
+                                   ,boolean strictCheck
+    ) {
         try {
             for (TRecord<K, V> kvtRecord : getCacheList()) {
-                if (!kvtRecord.isModified(checkPointCount)) {
-                    continue;
-                }
                 AtomicLong valueVersion = kvtRecord.getValueVersion();
+                /**
+                 * 这里的old比如是1; 然后state是REMOVE;
+                 * 并发state变为ADD; version还是1;这个时候明明是添加，我却将其变成了remove存入了;
+                 * 这里是因为我没有继承version;继承了以后version就会变成2;
+                 * 然后我要把state变成GET;但是version被清空了;
+                 *
+                 * 如果我REMOVE和ADD的时候继承旧的类的version呢？;
+                 * 虽然state错了,不过没事version没问题就行了;
+                 * 我获取old;然后state变化了;这个时候因为state进行增加删除更新;
+                 * 然后old自增了;因为version不一样，所以下一次还是可以继续存储;
+                 *
+                 * 我再addremove里先设置version, 再设置state;可能state变化了，但是old没变化导致state变化了，
+                 * 比如我add设置version;然后checkpoint#getOld(),getState(remove); 然后add里设置state(add);
+                 * 这个时候add就不会再更新到数据库了;
+                 *
+                 * 我再addremove里先设置state, 再设置version;的话就不会有这个问题了;因为version有compareAndSet保证;
+                 *
+                 *
+                 * 下面这里必须先old再state;old保底，这样中途state和json如果变化了;都无所谓，下次再操作就好了,和锁的含义差不多
+                 */
                 long old = valueVersion.get();
                 int state = kvtRecord.getState();
+                String valueJson = kvtRecord.isModified(checkPointCount, strictCheck);
+                if (valueJson == null) {
+                    continue;
+                }
                 switch (state) {
                     case TRecord.ADD:
-                        addCache.put(kvtRecord.marshalKey(), kvtRecord.marshalValue());
+                        addCache.put(kvtRecord.marshalKey(), valueJson);
                         addTRecordCache.add(kvtRecord);
                         break;
                     case TRecord.GET:
-                        modifyCache.put(kvtRecord.marshalKey(), kvtRecord.marshalValue());
+                        modifyCache.put(kvtRecord.marshalKey(), valueJson);
                         modifyTRecordCache.add(kvtRecord);
                         break;
                     case TRecord.REMOVE:
@@ -252,7 +289,7 @@ public abstract class TTable<K, V> {
             // 执行失败
             for (TRecord tRecord : addTRecordCache) {
                 // 将其重新设置为修改状态
-                tRecord.getValueVersion().set(1);
+                tRecord.checkPointFail();
             }
         }
 
@@ -263,7 +300,8 @@ public abstract class TTable<K, V> {
             // 执行失败
             for (TRecord tRecord : modifyTRecordCache) {
                 // 将其重新设置为修改状态
-                tRecord.getValueVersion().set(1);
+                tRecord.checkPointFail();
+
             }
         }
         try {
@@ -273,7 +311,7 @@ public abstract class TTable<K, V> {
             // 执行失败
             for (TRecord tRecord : removeTRecordCache) {
                 // 将其重新设置为修改状态
-                tRecord.getValueVersion().set(1);
+                tRecord.checkPointFail();
             }
         }
     }
@@ -348,11 +386,12 @@ public abstract class TTable<K, V> {
                     }
                     cache.remove(kvtRecord.getKey());
                     // 没有修改过就不用同步到数据库
-                    if (!kvtRecord.isModified()) {
+                    String valueJson = kvtRecord.isModified(true);
+                    if (valueJson == null) {
                         continue;
                     }
                     // 刷新失败了 基本是数据库出问题了
-                    if (!kvtRecord.flush("tickClearCache")) {
+                    if (!kvtRecord.flush("tickClearCache", valueJson)) {
                         //将对象加回去 等待下次同步
                         cache.put(kvtRecord.getKey(), kvtRecord);
                     }

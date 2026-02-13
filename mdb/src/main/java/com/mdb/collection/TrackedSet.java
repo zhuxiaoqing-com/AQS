@@ -55,7 +55,7 @@ public class TrackedSet <E> extends XBean implements Set<E> {
         for (E e : delegate) {
             if (((XBean) e).checkVersion(checkPointCount)) {
                 Mdb.logger.error("checkFieldVersion checkVersion true checkPointCount {} currVersion {} class {} ",
-                        checkPointCount, getVersion(checkPointCount), getClass().getName(), new RuntimeException());
+                        checkPointCount, findVersion(checkPointCount), getClass().getName(), new RuntimeException());
                 return true;
             }
         }
