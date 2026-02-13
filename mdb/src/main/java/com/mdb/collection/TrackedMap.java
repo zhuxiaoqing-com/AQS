@@ -8,11 +8,11 @@ import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-public class TrackedMap<K,V> extends XBean implements Map<K,V> {
-    private final Map<K,V> delegate;
+public class TrackedMap<K, V> extends XBean implements Map<K, V> {
+    private final Map<K, V> delegate;
 
 
-    public TrackedMap(Map<K,V> delegate) {
+    public TrackedMap(Map<K, V> delegate) {
         this.delegate = Objects.requireNonNull(delegate);
     }
 
@@ -82,7 +82,8 @@ public class TrackedMap<K,V> extends XBean implements Map<K,V> {
         }
     }
 
-    @Override public V put(K key, V value) {
+    @Override
+    public V put(K key, V value) {
         V old = delegate.put(key, value);
         if (old != null) {
             markModified(ModifyType.REMOVE, old);
@@ -91,50 +92,57 @@ public class TrackedMap<K,V> extends XBean implements Map<K,V> {
         return old;
     }
 
-    @Override public void putAll(Map<? extends K, ? extends V> m) {
+    @Override
+    public void putAll(Map<? extends K, ? extends V> m) {
         delegate.putAll(m);
         for (V value : m.values()) {
             markModified(ModifyType.ADD, value);
         }
     }
 
-    @Override public V remove(Object key) {
+    @Override
+    public V remove(Object key) {
         V remove = delegate.remove(key);
         if (remove != null) {
             markModified(ModifyType.REMOVE, remove);
         }
-        return null;
+        return remove;
     }
 
-    @Override public void clear() {
+    @Override
+    public void clear() {
         delegate.clear();
         markModified(ModifyType.REMOVE, null);
     }
 
-    @Override public V putIfAbsent(K key, V value) {
+    @Override
+    public V putIfAbsent(K key, V value) {
         markModified(ModifyType.ADD, value);
         return delegate.putIfAbsent(key, value);
     }
 
-    @Override public boolean remove(Object key, Object value) {
+    @Override
+    public boolean remove(Object key, Object value) {
         boolean changed = delegate.remove(key, value);
         if (changed) markModified(ModifyType.REMOVE, value);
         return changed;
     }
 
-    @Override public boolean replace(K key, V oldValue, V newValue) {
+    @Override
+    public boolean replace(K key, V oldValue, V newValue) {
         boolean changed = delegate.replace(key, oldValue, newValue);
-        if(changed) {
+        if (changed) {
             markModified(ModifyType.REMOVE, oldValue);
             markModified(ModifyType.ADD, newValue);
         }
         return changed;
     }
 
-    @Override public V replace(K key, V value) {
-        if(containsKey(key)) {
+    @Override
+    public V replace(K key, V value) {
+        if (containsKey(key)) {
             V old = delegate.replace(key, value);
-            if(!Objects.equals(old, value)) {
+            if (!Objects.equals(old, value)) {
                 markModified(ModifyType.REMOVE, old);
                 markModified(ModifyType.ADD, value);
             }
@@ -143,7 +151,8 @@ public class TrackedMap<K,V> extends XBean implements Map<K,V> {
         return null;
     }
 
-    @Override public V compute(K key, BiFunction<? super K, ? super V, ? extends V> remapping) {
+    @Override
+    public V compute(K key, BiFunction<? super K, ? super V, ? extends V> remapping) {
         V newValue = delegate.compute(key, remapping);
         if (newValue != null) {
             markModified(ModifyType.ADD, newValue);
@@ -151,24 +160,25 @@ public class TrackedMap<K,V> extends XBean implements Map<K,V> {
         return newValue;
     }
 
-    @Override public V computeIfAbsent(K key, Function<? super K, ? extends V> mapping) {
+    @Override
+    public V computeIfAbsent(K key, Function<? super K, ? extends V> mapping) {
         V oldValue = delegate.get(key);
-
         V value = delegate.computeIfAbsent(key, mapping);
         if (value != null && value != oldValue) {
             markModified(ModifyType.ADD, value);
         }
-
-       return value;
+        return value;
     }
 
-    @Override public V computeIfPresent(K key, BiFunction<? super K, ? super V, ? extends V> remapping) {
+    @Override
+    public V computeIfPresent(K key, BiFunction<? super K, ? super V, ? extends V> remapping) {
         V newValue = delegate.computeIfPresent(key, remapping);
         markModified(ModifyType.ADD, null);
         return newValue;
     }
 
-    @Override public V merge(K key, V value, BiFunction<? super V, ? super V, ? extends V> remapping) {
+    @Override
+    public V merge(K key, V value, BiFunction<? super V, ? super V, ? extends V> remapping) {
         markModified(ModifyType.CHANGE, value);
         return delegate.merge(key, value, remapping);
     }
@@ -180,21 +190,43 @@ public class TrackedMap<K,V> extends XBean implements Map<K,V> {
     }
 
     // 只读方法委托
-    @Override public int size() { return delegate.size(); }
-    @Override public boolean isEmpty() { return delegate.isEmpty(); }
-    @Override public boolean containsKey(Object key) { return delegate.containsKey(key); }
-    @Override public boolean containsValue(Object value) { return delegate.containsValue(value); }
-    @Override public V get(Object key) { return delegate.get(key); }
+    @Override
+    public int size() {
+        return delegate.size();
+    }
 
-    @Override public Set<K> keySet() {
+    @Override
+    public boolean isEmpty() {
+        return delegate.isEmpty();
+    }
+
+    @Override
+    public boolean containsKey(Object key) {
+        return delegate.containsKey(key);
+    }
+
+    @Override
+    public boolean containsValue(Object value) {
+        return delegate.containsValue(value);
+    }
+
+    @Override
+    public V get(Object key) {
+        return delegate.get(key);
+    }
+
+    @Override
+    public Set<K> keySet() {
         return new TrackedKeySet();
     }
 
-    @Override public Collection<V> values() {
+    @Override
+    public Collection<V> values() {
         return new TrackedValues();
     }
 
-    @Override public Set<Entry<K,V>> entrySet() {
+    @Override
+    public Set<Entry<K, V>> entrySet() {
         return new TrackedEntrySet();
     }
 
@@ -220,84 +252,202 @@ public class TrackedMap<K,V> extends XBean implements Map<K,V> {
 
 
     private class TrackedKeySet extends AbstractSet<K> {
-        @Override public Iterator<K> iterator() {
+        @Override
+        public Iterator<K> iterator() {
             return new TrackedKeyIterator(delegate.keySet().iterator());
         }
-        @Override public int size() { return delegate.size(); }
-        @Override public boolean contains(Object o) { return delegate.containsKey(o); }
-        @Override public boolean remove(Object o) {
-            markModified(ModifyType.REMOVE, null);
-            V value = delegate.remove(o);
-            return value != null;
+
+        @Override
+        public int size() {
+            return delegate.size();
         }
-        @Override public void clear() {
-            delegate.clear();
-            markModified(ModifyType.REMOVE, null);
+
+        @Override
+        public boolean contains(Object o) {
+            return delegate.containsKey(o);
+        }
+
+        @Override
+        public boolean remove(Object o) {
+            return TrackedMap.this.remove(o) != null;
+        }
+
+        @Override
+        public void clear() {
+            TrackedMap.this.clear();
         }
     }
 
     private class TrackedValues extends AbstractCollection<V> {
-        @Override public Iterator<V> iterator() {
+        @Override
+        public Iterator<V> iterator() {
             return new TrackedValueIterator(delegate.values().iterator());
         }
-        @Override public int size() { return delegate.size(); }
-        @Override public boolean contains(Object o) { return delegate.containsValue(o); }
-        @Override public void clear() {
-            delegate.clear();
-            markModified(ModifyType.REMOVE, null);
+
+        @Override
+        public int size() {
+            return delegate.size();
         }
-    }
-    private class TrackedEntrySet extends AbstractSet<Entry<K,V>> {
-        @Override public Iterator<Entry<K,V>> iterator() {
-            return new TrackedEntryIterator(delegate.entrySet().iterator());
+
+        @Override
+        public boolean contains(Object o) {
+            return delegate.containsValue(o);
         }
-        @Override public int size() { return delegate.size(); }
-        @Override public boolean contains(Object o) { return delegate.entrySet().contains(o); }
-        @Override public boolean remove(Object o) {
-            boolean changed = delegate.entrySet().remove(o);
-            markModified(ModifyType.REMOVE, null);
-            return changed;
-        }
-        @Override public void clear() {
-            if (!isEmpty()) {
-                delegate.clear();
-                markModified(ModifyType.REMOVE, null);
-            }
+
+        @Override
+        public void clear() {
+            TrackedMap.this.clear();
         }
     }
 
+    private class TrackedEntrySet extends AbstractSet<Entry<K, V>> {
+        @Override
+        public Iterator<Entry<K, V>> iterator() {
+            return new TrackedEntryIterator(delegate.entrySet().iterator());
+        }
+
+        @Override
+        public int size() {
+            return delegate.size();
+        }
+
+        @Override
+        public boolean contains(Object o) {
+            return delegate.entrySet().contains(o);
+        }
+
+        @Override
+        public boolean remove(Object o) {
+            if (!(o instanceof Entry)) {
+                return false;
+            }
+            Entry<?, ?> entry = (Entry<?, ?>) o;
+            Object key = entry.getKey();
+            Object value = entry.getValue();
+            return TrackedMap.this.remove(key, value);
+        }
+
+        @Override
+        public void clear() {
+            TrackedMap.this.clear();
+        }
+    }
 
 
     private class TrackedKeyIterator implements Iterator<K> {
         private final Iterator<K> it;
         private K lastKey;
-        TrackedKeyIterator(Iterator<K> it) { this.it = it; }
-        @Override public boolean hasNext() { return it.hasNext(); }
-        @Override public K next() { return lastKey = it.next(); }
-        @Override public void remove() {
+        private V lastValue;
+
+        TrackedKeyIterator(Iterator<K> it) {
+            this.it = it;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return it.hasNext();
+        }
+
+        @Override
+        public K next() {
+            lastKey = it.next();
+            lastValue = delegate.get(lastKey);
+            return lastKey;
+        }
+
+        @Override
+        public void remove() {
             it.remove();
-            markModified(ModifyType.REMOVE, null);
+            markModified(ModifyType.REMOVE, lastValue);
         }
     }
 
     private class TrackedValueIterator implements Iterator<V> {
         private final Iterator<V> it;
-        TrackedValueIterator(Iterator<V> it) { this.it = it; }
-        @Override public boolean hasNext() { return it.hasNext(); }
-        @Override public V next() { return it.next(); }
-        @Override public void remove() { throw new UnsupportedOperationException(); }
+        private V lastReturned;
+
+        TrackedValueIterator(Iterator<V> it) {
+            this.it = it;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return it.hasNext();
+        }
+
+        @Override
+        public V next() {
+            return lastReturned = it.next();
+        }
+
+        @Override
+        public void remove() {
+            it.remove();
+            markModified(ModifyType.REMOVE, lastReturned);
+        }
     }
 
 
-    private class TrackedEntryIterator implements Iterator<Entry<K,V>> {
-        private final Iterator<Entry<K,V>> it;
-        private Entry<K,V> lastReturned;
-        TrackedEntryIterator(Iterator<Entry<K,V>> it) { this.it = it; }
-        @Override public boolean hasNext() { return it.hasNext(); }
-        @Override public Entry<K,V> next() { return lastReturned = it.next(); }
-        @Override public void remove() {
+    private class TrackedEntryIterator implements Iterator<Entry<K, V>> {
+        private final Iterator<Entry<K, V>> it;
+        private Entry<K, V> lastReturned;
+
+        TrackedEntryIterator(Iterator<Entry<K, V>> it) {
+            this.it = it;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return it.hasNext();
+        }
+
+        @Override
+        public Entry<K, V> next() {
+            lastReturned = it.next();
+            return new TrackedMapEntry(lastReturned);
+        }
+
+        @Override
+        public void remove() {
             it.remove();
-            markModified(ModifyType.REMOVE, lastReturned);
+            markModified(ModifyType.REMOVE, lastReturned.getValue());
+        }
+    }
+
+    private class TrackedMapEntry implements Entry<K, V> {
+        private final Entry<K, V> entry;
+
+        TrackedMapEntry(Entry<K, V> entry) {
+            this.entry = entry;
+        }
+
+        @Override
+        public K getKey() {
+            return entry.getKey();
+        }
+
+        @Override
+        public V getValue() {
+            return entry.getValue();
+        }
+
+        @Override
+        public V setValue(V value) {
+            V old = entry.setValue(value);
+
+            markModified(ModifyType.REMOVE, old);
+            markModified(ModifyType.ADD, value);
+            return old;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            return entry.equals(o);
+        }
+
+        @Override
+        public int hashCode() {
+            return entry.hashCode();
         }
     }
 }

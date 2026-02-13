@@ -66,8 +66,10 @@ public final class ConcurrentEnvironment {
 
 	private void shutdown(String name) {
 		ThreadPoolExecutor executor = map.remove(name);
-		if (executor == null)
-			throw new RuntimeException("miss executor name = " + name);
+		if (executor == null) {
+			logger.warn("miss executor name = {}", name);
+			return;
+		}
 		executor.shutdown();
 	}
 

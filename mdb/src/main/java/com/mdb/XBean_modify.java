@@ -128,7 +128,7 @@ public abstract class XBean_modify {
     public abstract boolean fieldAnyModify();
 
     public void setParent(XBean_modify parent) {
-        if (_parent != null && _parent != parent) {
+        if (_parent != null && parent != null && _parent != parent) {
             throw new MdbError("MdbBean already has a parent _oldParentName : " + _parent.getClass().getName() + "newParentName : " + parent.getClass().getName());
         }
         this._parent = parent;

@@ -130,7 +130,7 @@ public abstract class XBean {
     public abstract boolean checkFieldVersion(long checkPointCount);
 
     public void setParent(XBean parent) {
-        if (_parent != null && _parent != parent) {
+        if (_parent != null && parent != null && _parent != parent) {
             throw new MdbError("MdbBean already has a parent _oldParentName : " + _parent.getClass().getName() + "newParentName : " + parent.getClass().getName());
         }
         this._parent = parent;

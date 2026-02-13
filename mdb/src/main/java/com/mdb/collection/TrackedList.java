@@ -1,4 +1,4 @@
-package com.mdb.collection;
+﻿package com.mdb.collection;
 
 
 import com.mdb.Mdb;
@@ -91,7 +91,9 @@ public class TrackedList<E> extends XBean implements List<E> {
     @Override
     public boolean add(E e) {
         boolean result = delegate.add(e);
-        markModified(ModifyType.ADD, e);
+        if (result) {
+            markModified(ModifyType.ADD, e);
+        }
         return result;
     }
 
@@ -104,8 +106,10 @@ public class TrackedList<E> extends XBean implements List<E> {
     @Override
     public boolean addAll(Collection<? extends E> c) {
         boolean result = delegate.addAll(c);
-        for (E e : c) {
-            markModified(ModifyType.ADD, e);
+        if (result) {
+            for (E e : c) {
+                markModified(ModifyType.ADD, e);
+            }
         }
         return result;
     }
@@ -113,8 +117,10 @@ public class TrackedList<E> extends XBean implements List<E> {
     @Override
     public boolean addAll(int index, Collection<? extends E> c) {
         boolean result = delegate.addAll(index, c);
-        for (E e : c) {
-            markModified(ModifyType.ADD, e);
+        if (result) {
+            for (E e : c) {
+                markModified(ModifyType.ADD, e);
+            }
         }
         return result;
     }
@@ -122,7 +128,9 @@ public class TrackedList<E> extends XBean implements List<E> {
     @Override
     public void clear() {
         if (!isEmpty()) {
-            markModified(ModifyType.REMOVE, null);
+            for (E e : delegate) {
+                markModified(ModifyType.REMOVE, e);
+            }
             delegate.clear();
         }
     }
@@ -130,9 +138,7 @@ public class TrackedList<E> extends XBean implements List<E> {
     @Override
     public E remove(int index) {
         E removed = delegate.remove(index);
-        if (removed != null) {
-            markModified(ModifyType.REMOVE, removed);
-        }
+        markModified(ModifyType.REMOVE, removed);
         return removed;
     }
 
@@ -253,7 +259,7 @@ public class TrackedList<E> extends XBean implements List<E> {
 
     @Override
     public List<E> subList(int fromIndex, int toIndex) {
-        return delegate.subList(fromIndex, toIndex);
+        return Collections.unmodifiableList(delegate.subList(fromIndex, toIndex));
     }
 
     @Override

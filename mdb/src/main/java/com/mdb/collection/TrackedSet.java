@@ -89,7 +89,9 @@ public class TrackedSet <E> extends XBean implements Set<E> {
 
     @Override public boolean add(E e) {
         boolean changed = delegate.add(e);
-        markModified(ModifyType.ADD, e);
+        if (changed) {
+            markModified(ModifyType.ADD, e);
+        }
         return changed;
     }
 
@@ -120,7 +122,9 @@ public class TrackedSet <E> extends XBean implements Set<E> {
 
     @Override public void clear() {
         if (!isEmpty()) {
-            markModified(ModifyType.REMOVE, null);
+            for (E e : delegate) {
+                markModified(ModifyType.REMOVE, e);
+            }
             delegate.clear();
         }
     }

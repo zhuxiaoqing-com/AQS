@@ -18,6 +18,9 @@ import java.util.concurrent.TimeUnit;
 public class Mdb {
     public static Logger logger = LoggerFactory.getLogger(Mdb.class.getName());
     private static Mdb instance = new Mdb();
+    private static final String SCHEDULER_CHECKPOINT_NAME = "mdb.scheduler.checkpoint";
+    private static final String SCHEDULER_COMMON_NAME = "mdb.scheduler.common";
+    private static final String SCHEDULER_CLEARCACHE_NAME = "mdb.scheduler.clearcache";
 
     public static Mdb getInstance() {
         return instance;
@@ -62,11 +65,11 @@ public class Mdb {
             logger.warn("{} has {} tables ......", mdbMetadata.getName(), tables.tables.size());
             // checkpoint
             if (checkpoint == null) {
-                scheduled_checkPoint = ConcurrentEnvironment.getInstance().newScheduledThreadPool("mdb.scheduler.checkpoint", 1);
+                scheduled_checkPoint = ConcurrentEnvironment.getInstance().newScheduledThreadPool(SCHEDULER_CHECKPOINT_NAME, 1);
                 checkpoint = new Checkpoint(mdbMetadata, scheduled_checkPoint);
-                scheduled_common =  ConcurrentEnvironment.getInstance().newScheduledThreadPool("mdb.scheduler.common", 1);
+                scheduled_common =  ConcurrentEnvironment.getInstance().newScheduledThreadPool(SCHEDULER_COMMON_NAME, 1);
                 scheduled_common.scheduleWithFixedDelay(this::tick, 1, 1, TimeUnit.SECONDS);
-                scheduled_clearCache = ConcurrentEnvironment.getInstance().newScheduledThreadPool("mdb.scheduler.clearcache", 1);
+                scheduled_clearCache = ConcurrentEnvironment.getInstance().newScheduledThreadPool(SCHEDULER_CLEARCACHE_NAME, 1);
             }
 
             logger.warn("@@@@@@@@@@@@@@@@  mdb start end  @@@@@@@@@@@@@@@@");
@@ -120,13 +123,8 @@ public class Mdb {
                 TTable tt = table;
                 if (tt.isSupportFlush()) {
                     // 名义上增加只读锁，其实是flush操作，目的是为了和checkpoint的write锁互斥，同时又保证多玩家在没有checkpoint时flush自己数据能并发执行
-                    tt.readlock.lock();
-                    try {
-                        if(!tt.flush(key)) {
-                            allSuccess = false;
-                        }
-                    } finally {
-                        tt.readlock.unlock();
+                    if(!tt.flush(key)) {
+                        allSuccess = false;
                     }
                 }
             }
@@ -185,11 +183,11 @@ public class Mdb {
         }
         checkpoint = null;
 
-        shutdownScheduler(scheduled_checkPoint);
+        shutdownScheduler(SCHEDULER_CHECKPOINT_NAME, scheduled_checkPoint);
         scheduled_checkPoint = null;
-        shutdownScheduler(scheduled_common);
+        shutdownScheduler(SCHEDULER_COMMON_NAME, scheduled_common);
         scheduled_common = null;
-        shutdownScheduler(scheduled_clearCache);
+        shutdownScheduler(SCHEDULER_CLEARCACHE_NAME, scheduled_clearCache);
         scheduled_clearCache = null;
 
         if (allTables.size() > 0) {
@@ -203,14 +201,19 @@ public class Mdb {
         logger.info("@@@@@@@@@@@@@@@@  mdb stop end   @@@@@@@@@@@@@@@@");
     }
 
-    private void shutdownScheduler(ScheduledThreadPoolExecutor executor) {
+    private void shutdownScheduler(String schedulerName, ScheduledThreadPoolExecutor executor) {
         if (executor == null) {
             return;
         }
         try {
-            executor.shutdown();
+            ConcurrentEnvironment.getInstance().shutdown(schedulerName);
         } catch (Throwable e) {
-            logger.error("shutdown scheduler error", e);
+            logger.error("shutdown scheduler error name {}", schedulerName, e);
+            try {
+                executor.shutdown();
+            } catch (Throwable ex) {
+                logger.error("fallback shutdown scheduler error name {}", schedulerName, ex);
+            }
         }
     }
 
