@@ -112,8 +112,13 @@ public class TrackedMap<K, V> extends XBean implements Map<K, V> {
 
     @Override
     public void clear() {
+        if (!isEmpty()) {
+            for (V e : delegate.values()) {
+                markModified(ModifyType.REMOVE, e);
+            }
+            delegate.clear();
+        }
         delegate.clear();
-        markModified(ModifyType.REMOVE, null);
     }
 
     @Override
@@ -180,7 +185,7 @@ public class TrackedMap<K, V> extends XBean implements Map<K, V> {
 
     @Override
     public V merge(K key, V value, BiFunction<? super V, ? super V, ? extends V> remapping) {
-        markModified(ModifyType.CHANGE, value);
+        markModified(ModifyType.ADD, value);
         return delegate.merge(key, value, remapping);
     }
 
@@ -239,6 +244,11 @@ public class TrackedMap<K, V> extends XBean implements Map<K, V> {
     @Override
     public int hashCode() {
         return delegate.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return delegate.toString();
     }
 
     @Override

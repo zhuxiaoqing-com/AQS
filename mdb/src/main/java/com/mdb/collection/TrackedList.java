@@ -260,6 +260,11 @@ public class TrackedList<E> extends XBean implements List<E> {
     }
 
     @Override
+    public String toString() {
+        return delegate.toString();
+    }
+
+    @Override
     public int indexOf(Object o) {
         return delegate.indexOf(o);
     }

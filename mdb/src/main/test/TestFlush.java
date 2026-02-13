@@ -20,6 +20,7 @@ public class TestFlush {
 
 		long key = 10000L;
 		Bag bag = table.logic.Bag.get(key);
+		System.out.println("查询出来的bag数据：  " + bag);
 		if(bag == null) {
 			bag = new Bag();
 			table.logic.Bag.add(key, bag);
@@ -51,7 +52,7 @@ public class TestFlush {
 
 
 		Thread.sleep(1000L);
-		Mdb.getInstance().flush(1000L, null);
+		Mdb.getInstance().flush(key, null);
 
 		System.err.println("回车退出 random : " + i);
 		System.in.read();

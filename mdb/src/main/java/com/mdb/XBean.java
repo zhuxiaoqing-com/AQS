@@ -5,17 +5,18 @@ import com.mdb.exception.MdbError;
 import java.util.concurrent.atomic.AtomicLong;
 
 public abstract class XBean {
-    private transient AtomicLong version = new AtomicLong(0); // 来个Long 省的每次checkpoint的时候都有变化,导致没法重置为0,integer溢出；
+    private transient AtomicLong version = new AtomicLong(1); // 来个Long 省的每次checkpoint的时候都有变化,导致没法重置为0,integer溢出；
 
     private transient XBean _parent;
 
     public XBean() {
-      makeModify();
+        // 直接初始化的时候就设置1算了;
+      //makeModify();
     }
 
     public XBean(XBean _parent) {
         this._parent = _parent;
-        makeModify();
+       // makeModify();
     }
 
 

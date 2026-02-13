@@ -5,6 +5,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class ConcurrentCopyAndWriteListX<E> extends TrackedList<E>{
 
     public ConcurrentCopyAndWriteListX() {
+        super(new CopyOnWriteArrayList<>(), null);
     }
 
     public ConcurrentCopyAndWriteListX(com.mdb.XBean _xp_) {

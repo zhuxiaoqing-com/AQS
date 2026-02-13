@@ -115,6 +115,8 @@ public class TRecord<K, V> {
     public void onSelect(String valueStr) {
         try {
             value = table.unmarshalValue(valueStr);
+            // 可能再反序列化的时候会触发version变化，反序列化成功以后将其set成(0);
+            ((XBean)value).findVersionAtomic().set(0);
             hashArray = hash(valueStr);
         } catch (Exception e) {
             Mdb.logger.error("find error tableName {} key {}", table.getName(), key, e);

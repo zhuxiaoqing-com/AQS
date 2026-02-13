@@ -44,10 +44,10 @@ public class Declare {
 	}
 
 	public static void makeSetter(Variable e, PrintStream ps, String prefix) {
-		// 集合不能有set方法;
-		if(e.getVarType().isCollection()) {
+		// 集合不能有set方法; 需要有不然没法反序列化
+		/*if(e.getVarType().isCollection()) {
 			return;
-		}
+		}*/
 		//所有字段都必须要SET
 		ps.println(String.format("%s@JSONField(name = \"%s\")",prefix,e.getAlias()));
 		ps.println(String.format("%spublic void set%s(%s _v_){", prefix, StringUtils.upper1(e.getName()), e.getVarType().toVarType()));

@@ -4,6 +4,10 @@ import java.util.Collections;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ConcurrentHashSetX<E> extends TrackedSet<E> {
+    public ConcurrentHashSetX() {
+        super(Collections.newSetFromMap(new ConcurrentHashMap<>()), null);
+    }
+
     public ConcurrentHashSetX(com.mdb.XBean _xp_) {
         super(Collections.newSetFromMap(new ConcurrentHashMap<>()), _xp_);
     }

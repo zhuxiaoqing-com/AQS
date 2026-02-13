@@ -162,6 +162,11 @@ public class TrackedSet <E> extends XBean implements Set<E> {
     }
 
     @Override
+    public String toString() {
+        return delegate.toString();
+    }
+
+    @Override
     public Spliterator<E> spliterator() {
         throw new MdbError("Not implemented spliterator");
     }
