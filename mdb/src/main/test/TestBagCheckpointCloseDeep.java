@@ -1,13 +1,17 @@
 import com.mdb.Mdb;
+import com.mdb.util.FastJson;
 import com.mdb.util.XMLUtils;
 import com.mdb.xmlgen.xmlparse.MdbMetadata;
 import xbean.logic.Bag;
 import xbean.logic.Player;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -23,7 +27,11 @@ public class TestBagCheckpointCloseDeep {
     private static final String INPUT_XML = "mdb\\src\\main\\mdb.xml";
     private static final int KEY_COUNT = 64;
     private static final int WORKER_COUNT = 6;
+    private static final int READER_COUNT = 3;
+    private static final int SERIALIZER_COUNT = 3;
     private static final int OPS_PER_WORKER = 1200;
+    private static final int OPS_PER_READER = 2400;
+    private static final int OPS_PER_SERIALIZER = 1800;
     private static final int MAX_MUTATE_PER_OP = 6;
     private static final long BASE_SEED = 20260213L;
 
@@ -96,12 +104,34 @@ public class TestBagCheckpointCloseDeep {
                     "bag-worker-" + workerIndex);
             workers.add(worker);
         }
+        List<Thread> readers = new ArrayList<>();
+        for (int i = 0; i < READER_COUNT; i++) {
+            final int readerIndex = i;
+            Thread reader = new Thread(() -> runReader(readerIndex, keys, asyncError),
+                    "bag-reader-" + readerIndex);
+            readers.add(reader);
+        }
+        List<Thread> serializers = new ArrayList<>();
+        for (int i = 0; i < SERIALIZER_COUNT; i++) {
+            final int serializerIndex = i;
+            Thread serializer = new Thread(() -> runSerializer(serializerIndex, keys, asyncError),
+                    "bag-serializer-" + serializerIndex);
+            serializers.add(serializer);
+        }
 
         checkpointThread.start();
         workers.forEach(Thread::start);
+        readers.forEach(Thread::start);
+        serializers.forEach(Thread::start);
 
         for (Thread worker : workers) {
             worker.join();
+        }
+        for (Thread reader : readers) {
+            reader.join();
+        }
+        for (Thread serializer : serializers) {
+            serializer.join();
         }
         stopCheckpoint.set(true);
         checkpointThread.join();
@@ -127,6 +157,47 @@ public class TestBagCheckpointCloseDeep {
                     randomOperateSingleKey(key, r, expected);
                 }
 
+            }
+        } catch (Throwable t) {
+            asyncError.compareAndSet(null, t);
+        }
+    }
+
+    private static void runReader(int readerIndex, List<Long> keys, AtomicReference<Throwable> asyncError) {
+        Random r = new Random(BASE_SEED ^ (0x77AA55CCL + readerIndex * 1315423911L));
+        try {
+            for (int i = 0; i < OPS_PER_READER; i++) {
+                long key = keys.get(r.nextInt(keys.size()));
+                Bag bag = table.logic.Bag.get(key);
+                if (bag != null) {
+                    touchBagReadOnly(bag, r);
+                }
+            }
+        } catch (Throwable t) {
+            asyncError.compareAndSet(null, t);
+        }
+    }
+
+    private static void runSerializer(int serializerIndex, List<Long> keys, AtomicReference<Throwable> asyncError) {
+        Random r = new Random(BASE_SEED ^ (0x13572468L + serializerIndex * 2654435761L));
+        try {
+            for (int i = 0; i < OPS_PER_SERIALIZER; i++) {
+                long key = keys.get(r.nextInt(keys.size()));
+                Bag bag = table.logic.Bag.get(key);
+                if (bag == null) {
+                    continue;
+                }
+                String json = FastJson.toJSONString(bag);
+                if (json == null || json.isEmpty()) {
+                    throw new IllegalStateException("serialize bag empty key=" + key);
+                }
+                if (r.nextInt(100) < 15) {
+                    Bag parsed = FastJson.parseObject(json, Bag.class);
+                    if (parsed == null) {
+                        throw new IllegalStateException("parse bag null key=" + key);
+                    }
+                    touchBagReadOnly(parsed, r);
+                }
             }
         } catch (Throwable t) {
             asyncError.compareAndSet(null, t);
@@ -240,7 +311,7 @@ public class TestBagCheckpointCloseDeep {
                 throw new IllegalStateException(stage + " mismatch key=" + key + " expected=" + bagSummary(expect) + " actual=null");
             }
 
-            if (!expect.equals(actual)) {
+            if (!bagEqualsForTest(expect, actual)) {
                 throw new IllegalStateException(stage + " mismatch key=" + key
                         + " expected=" + bagSummary(expect)
                         + " actual=" + bagSummary(actual));
@@ -253,6 +324,52 @@ public class TestBagCheckpointCloseDeep {
         System.out.println(stage + " verify ok present=" + present + " absent=" + absent + " fingerprint=" + fingerprint);
     }
 
+    private static boolean bagEqualsForTest(Bag a, Bag b) {
+        if (a == b) {
+            return true;
+        }
+        if (a == null || b == null) {
+            return false;
+        }
+
+        if (a.getPlayerId() != b.getPlayerId()) {
+            return false;
+        }
+        if (a.getBagtest() != b.getBagtest()) {
+            return false;
+        }
+        if (!Objects.equals(a.getPlayer(), b.getPlayer())) {
+            return false;
+        }
+
+        if (!Objects.equals(a.getPlayerList(), b.getPlayerList())) {
+            return false;
+        }
+        if (!Objects.equals(a.getPlayerSet(), b.getPlayerSet())) {
+            return false;
+        }
+        if (!Objects.equals(a.getPlayerMap(), b.getPlayerMap())) {
+            return false;
+        }
+
+        if (!Objects.equals(a.getLongList(), b.getLongList())) {
+            return false;
+        }
+        if (!Objects.equals(a.getLongListCow(), b.getLongListCow())) {
+            return false;
+        }
+        if (!Objects.equals(a.getLongListRw(), b.getLongListRw())) {
+            return false;
+        }
+        if (!Objects.equals(new ArrayList<>(a.getLongQueue()), new ArrayList<>(b.getLongQueue()))) {
+            return false;
+        }
+        if (!Objects.equals(a.getLongSet(), b.getLongSet())) {
+            return false;
+        }
+        return Objects.equals(a.getLongMap(), b.getLongMap());
+    }
+
     private static String bagSummary(Bag bag) {
         return "bagtest=" + bag.getBagtest()
                 + ",player=(" + bag.getPlayer().getPlayerId() + "," + bag.getPlayer().getLevel() + "," + bag.getPlayer().getPlayerName() + ")"
@@ -260,12 +377,74 @@ public class TestBagCheckpointCloseDeep {
                 + ",playerSet=" + bag.getPlayerSet().size()
                 + ",playerMap=" + bag.getPlayerMap().size()
                 + ",longList=" + bag.getLongList().size()
+                + ",longListCow=" + bag.getLongListCow().size()
+                + ",longListRw=" + bag.getLongListRw().size()
+                + ",longQueue=" + bag.getLongQueue().size()
                 + ",longSet=" + bag.getLongSet().size()
                 + ",longMap=" + bag.getLongMap().size();
     }
 
+    private static void touchBagReadOnly(Bag bag, Random r) {
+        bag.getBagtest();
+        bag.getPlayerId();
+        Player p = bag.getPlayer();
+        if (p != null) {
+            p.getPlayerId();
+            p.getLevel();
+            p.getPlayerName();
+        }
+
+        readOneFromListSnapshot(bag.getPlayerList(), r);
+        if (!bag.getPlayerSet().isEmpty()) {
+            Player one = readOneFromCollectionSnapshot(bag.getPlayerSet(), r);
+            if (one != null) {
+                one.getPlayerId();
+            }
+        }
+        Player playerFromMap = readOneFromMapValueSnapshot(bag.getPlayerMap(), r);
+        if (playerFromMap != null) {
+            playerFromMap.getLevel();
+        }
+
+        readOneFromListSnapshot(bag.getLongList(), r);
+        readOneFromListSnapshot(bag.getLongListCow(), r);
+        readOneFromListSnapshot(bag.getLongListRw(), r);
+        bag.getLongQueue().peek();
+        if (!bag.getLongSet().isEmpty()) {
+            readOneFromCollectionSnapshot(bag.getLongSet(), r);
+        }
+        readOneFromMapValueSnapshot(bag.getLongMap(), r);
+    }
+
+    private static <T> void readOneFromListSnapshot(List<T> list, Random r) {
+        List<T> snapshot = new ArrayList<>(list);
+        if (snapshot.isEmpty()) {
+            return;
+        }
+        snapshot.get(r.nextInt(snapshot.size()));
+    }
+
+    private static <T> T readOneFromCollectionSnapshot(Collection<T> c, Random r) {
+        List<T> snapshot = new ArrayList<>(c);
+        if (snapshot.isEmpty()) {
+            return null;
+        }
+        return snapshot.get(r.nextInt(snapshot.size()));
+    }
+
+    private static <K, V> V readOneFromMapValueSnapshot(Map<K, V> map, Random r) {
+        if (map.isEmpty()) {
+            return null;
+        }
+        List<V> values = new ArrayList<>(new HashMap<>(map).values());
+        if (values.isEmpty()) {
+            return null;
+        }
+        return values.get(r.nextInt(values.size()));
+    }
+
     private static void mutateBagRandom(long key, Bag bag, Random r) {
-        switch (r.nextInt(22)) {
+        switch (r.nextInt(31)) {
             case 0:
                 bag.setBagtest(r.nextInt(1_000_000));
                 break;
@@ -317,9 +496,9 @@ public class TestBagCheckpointCloseDeep {
                 break;
             }
             case 12:
-                if (!bag.getPlayerMap().isEmpty()) {
-                    Long removeKey = bag.getPlayerMap().keySet().iterator().next();
-                    bag.getPlayerMap().remove(removeKey);
+                Iterator<Long> playerMapKeyIt = bag.getPlayerMap().keySet().iterator();
+                if (playerMapKeyIt.hasNext()) {
+                    bag.getPlayerMap().remove(playerMapKeyIt.next());
                 }
                 break;
             case 13:
@@ -353,9 +532,48 @@ public class TestBagCheckpointCloseDeep {
                 break;
             }
             case 20:
-                if (!bag.getLongMap().isEmpty()) {
-                    Long removeKey = bag.getLongMap().keySet().iterator().next();
-                    bag.getLongMap().remove(removeKey);
+                Iterator<Long> longMapKeyIt = bag.getLongMap().keySet().iterator();
+                if (longMapKeyIt.hasNext()) {
+                    bag.getLongMap().remove(longMapKeyIt.next());
+                }
+                break;
+            case 21:
+                bag.getLongListCow().add(1L + r.nextInt(1_000_000));
+                break;
+            case 22:
+                if (!bag.getLongListCow().isEmpty()) {
+                    bag.getLongListCow().remove(r.nextInt(bag.getLongListCow().size()));
+                }
+                break;
+            case 23:
+                if (bag.getLongListCow().size() > 30) {
+                    bag.getLongListCow().clear();
+                }
+                break;
+            case 24:
+                bag.getLongListRw().add(1L + r.nextInt(1_000_000));
+                break;
+            case 25:
+                if (!bag.getLongListRw().isEmpty()) {
+                    bag.getLongListRw().remove(r.nextInt(bag.getLongListRw().size()));
+                }
+                break;
+            case 26:
+                if (bag.getLongListRw().size() > 30) {
+                    bag.getLongListRw().clear();
+                }
+                break;
+            case 27:
+                bag.getLongQueue().add(1L + r.nextInt(1_000_000));
+                break;
+            case 28:
+                if (!bag.getLongQueue().isEmpty()) {
+                    bag.getLongQueue().poll();
+                }
+                break;
+            case 29:
+                if (bag.getLongQueue().size() > 50) {
+                    bag.getLongQueue().clear();
                 }
                 break;
             default:
@@ -390,6 +608,21 @@ public class TestBagCheckpointCloseDeep {
         int longListCount = r.nextInt(4);
         for (int i = 0; i < longListCount; i++) {
             bag.getLongList().add(1L + r.nextInt(1_000_000));
+        }
+
+        int longListCowCount = r.nextInt(4);
+        for (int i = 0; i < longListCowCount; i++) {
+            bag.getLongListCow().add(1L + r.nextInt(1_000_000));
+        }
+
+        int longListRwCount = r.nextInt(4);
+        for (int i = 0; i < longListRwCount; i++) {
+            bag.getLongListRw().add(1L + r.nextInt(1_000_000));
+        }
+
+        int longQueueCount = r.nextInt(4);
+        for (int i = 0; i < longQueueCount; i++) {
+            bag.getLongQueue().add(1L + r.nextInt(1_000_000));
         }
 
         int longSetCount = r.nextInt(4);

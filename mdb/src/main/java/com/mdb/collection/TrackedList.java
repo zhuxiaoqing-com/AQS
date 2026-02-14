@@ -8,18 +8,10 @@ import com.mdb.exception.MdbError;
 import java.util.*;
 import java.util.function.UnaryOperator;
 
-public class TrackedList<E> extends XBean implements List<E> {
+public class TrackedList<E> extends XBean implements List<E>,RandomAccess {
     private List<E> delegate;
 
     public TrackedList() {
-    }
-
-    public List<E> getDelegate() {
-        return delegate;
-    }
-
-    public void setDelegate(List<E> delegate) {
-        this.delegate = delegate;
     }
 
     public TrackedList(List<E> delegate, com.mdb.XBean _xp_) {

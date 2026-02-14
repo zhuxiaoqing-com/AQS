@@ -207,9 +207,9 @@ public class Declare {
 		ps.println(prefix + "	_sb_.append(\"=(\");");
 		variables.forEach(var -> {
 			if(var.getVarType() instanceof TypeString) {
-				ps.println(prefix + "\t_sb_.append(\"T\").append(" + var.getName() + ".length()).append(\",\");");
+				ps.println(prefix + "\t_sb_.append(\"" + var.getName() + "=\").append(\"T\").append(" + var.getName() + ".length()).append(\",\");");
 			}else {
-				ps.println(prefix + "\t_sb_.append(" + var.getName() + ").append(\",\");");
+				ps.println(prefix + "\t_sb_.append(\"" + var.getName() + "=\").append(" + var.getName() + ").append(\",\");");
 			}
 			
 		});

@@ -16,11 +16,10 @@ public class TestFlush {
 		MdbMetadata mdb = new MdbMetadata();
 		mdb.initialize(XMLUtils.getRootElement(TestMdb.inputXml));
 		Mdb.getInstance().start(mdb);
-		Thread.sleep(3000L);
+		//Thread.sleep(3000L);
 
 		long key = 10000L;
 		Bag bag = table.logic.Bag.get(key);
-		System.out.println("查询出来的bag数据：  " + bag);
 		if(bag == null) {
 			bag = new Bag();
 			table.logic.Bag.add(key, bag);
@@ -49,6 +48,12 @@ public class TestFlush {
 		bag.getLongSet().add((long) i);
 		bag.getLongMap().clear();
 		bag.getLongMap().put((long) i,(long) i);
+		bag.getLongListCow().clear();
+		bag.getLongListCow().add((long) i);
+		bag.getLongListRw().clear();
+		bag.getLongListRw().add((long) i);
+		bag.getLongQueue().clear();
+		bag.getLongQueue().add((long) i);
 
 
 		Thread.sleep(1000L);

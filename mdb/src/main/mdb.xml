@@ -19,6 +19,9 @@
 		<variable name="longList" type="list" value="long" alias="7"/>
 		<variable name="longSet" type="set" value="long" alias="8"/>
 		<variable name="longMap" type="map" key="long" value="long" alias="9"/>
+		<variable name="longListCow" type="list_cow" value="long" alias="10"/>
+		<variable name="longListRw" type="list_rw" value="long" alias="11"/>
+		<variable name="longQueue" type="queue" value="long" alias="12"/>
 	</xbean>
 	<table name="bag" key="long" value="Bag" cacheCapacity="21" />
 

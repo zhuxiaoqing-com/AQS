@@ -188,7 +188,7 @@ public class TRecord<K, V> {
 
     private void setHash(String json) {
         hashArray = hash(json);
-        jsonDebug = json;
+        //jsonDebug = json;
     }
 
 

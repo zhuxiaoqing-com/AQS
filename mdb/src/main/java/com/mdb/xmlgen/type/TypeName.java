@@ -13,7 +13,7 @@ public class TypeName {
 	public static List<String> BASE_TYPE = Arrays.asList("int", "long", "short", "byte", "boolean", "float", "double",
 			"string");
 
-	public static List<String> COMPLEX_TYPE = Arrays.asList("map", "list", "set", "vector");
+	public static List<String> COMPLEX_TYPE = Arrays.asList("map", "list", "set", "queue", "list_rw", "list_cow", "cowlist", "rwlist");
 
 	private static Map<String, Class<? extends Type>> typeMap = new HashMap<>();
 
@@ -27,9 +27,13 @@ public class TypeName {
 		typeMap.put("double", TypeDouble.class);
 		typeMap.put("string", TypeString.class);
 		typeMap.put("map", TypeMap.class);
-		typeMap.put("list", TypeList.class);
+		typeMap.put("list", TypeListRw.class);
 		typeMap.put("set", TypeSet.class);
-		typeMap.put("vector", TypeVector.class);
+		typeMap.put("queue", TypeQueue.class);
+		typeMap.put("list_rw", TypeListRw.class);
+		typeMap.put("rwlist", TypeListRw.class);
+		typeMap.put("list_cow", TypeListCow.class);
+		typeMap.put("cowlist", TypeListCow.class);
 	}
 
 	// 是否基础类型

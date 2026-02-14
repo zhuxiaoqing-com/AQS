@@ -67,7 +67,7 @@ public abstract class TTable<K, V> {
                 return null;
             }
             String valueStr = _find(key);
-            if (valueStr != null) {
+            if (valueStr != null && !valueStr.isEmpty()) {
                 tRecord = new TRecord<>(this, key, null, TRecord.GET);
                 if (tRecord.onSelect(valueStr)) {
                     cache.put(key, tRecord);

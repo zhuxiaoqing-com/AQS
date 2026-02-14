@@ -2,12 +2,10 @@ package com.mdb.xmlgen.type;
 
 public final class TypeSet extends Type {
 	private final Type valueType;
-	private final TypeVector vectorType;
 
 	TypeSet(Type valueType) {
 		super();
 		this.valueType = valueType;
-		this.vectorType = new TypeVector(valueType);
 	}
 
 	@Override
@@ -19,10 +17,6 @@ public final class TypeSet extends Type {
 	}
 	public Type getValueType() {
 		return valueType;
-	}
-
-	public TypeVector asTypeVector() {
-		return vectorType;
 	}
 
 	@Override

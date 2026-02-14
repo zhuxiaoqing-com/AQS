@@ -3,7 +3,7 @@
 <!--status="WARN" :用于设置log4j2自身内部日志的信息输出级别，默认是OFF -->
 <!--monitorInterval="60" :间隔秒数,自动检测配置文件的变更和重新配置本身 -->
 <!--设置log4j2的自身log级别为warn -->
-<configuration status="WARN" monitorInterval="60">
+<configuration status="INFO" monitorInterval="60">
 	<Properties>
 	   
 	</Properties>
@@ -16,7 +16,7 @@
 	</appenders>
 
 	<loggers>
-		<Root level="TRACE" includeLocation="true">
+		<Root level="WARN" includeLocation="true">
 			<AppenderRef ref="Console" />
 		</Root>
 		
