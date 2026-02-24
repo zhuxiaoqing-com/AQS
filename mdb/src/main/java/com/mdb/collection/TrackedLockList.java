@@ -326,31 +326,6 @@ public class TrackedLockList<E> extends XBean implements List<E>, RandomAccess {
     }
 
     @Override
-    public boolean equals(Object o) {
-        readLock.lock();
-        try {
-            return delegate.equals(o);
-        } finally {
-            readLock.unlock();
-        }
-    }
-
-    @Override
-    public int hashCode() {
-        readLock.lock();
-        try {
-            return delegate.hashCode();
-        } finally {
-            readLock.unlock();
-        }
-    }
-
-    @Override
-    public String toString() {
-        return snapshot().toString();
-    }
-
-    @Override
     public int indexOf(Object o) {
         readLock.lock();
         try {
@@ -393,4 +368,47 @@ public class TrackedLockList<E> extends XBean implements List<E>, RandomAccess {
             readLock.unlock();
         }
     }
+
+    /***
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        List<?> target;
+        if (o instanceof TrackedLockList<?>) {
+            target = ((TrackedLockList<?>) o).snapshot();
+        } else if (o instanceof List<?>) {
+            target = (List<?>) o;
+        } else {
+            return false;
+        }
+        ArrayList<E> current = snapshot();
+        if (current.size() != target.size()) {
+            return false;
+        }
+        Iterator<E> currentIterator = current.iterator();
+        Iterator<?> targetIterator = target.iterator();
+        while (currentIterator.hasNext()) {
+            if (!Objects.equals(currentIterator.next(), targetIterator.next())) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hashCode = 1;
+        for (E e : snapshot()) {
+            hashCode = 31 * hashCode + Objects.hashCode(e);
+        }
+        return hashCode;
+    }
+
+    @Override
+    public String toString() {
+        return String.valueOf(snapshot());
+    }
+    ***/
 }

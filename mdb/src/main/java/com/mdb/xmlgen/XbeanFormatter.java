@@ -82,8 +82,11 @@ class XbeanFormatter {
 		//Declare.makeClearModify(xbean.getVariables(), ps, "	");
 		//Declare.makeCheckFieldVersion(xbean.getVariables(), ps, "	"); //Xbean_2 使用
 		// equals
-		Declare.makeEquals(variables, cls, ps, "	");
-		Declare.makeHashCode(xbean.getVariables(), ps, "	");
+
+		// 好像没用 暂时先注释掉
+		/*Declare.makeEquals(variables, cls, ps, "	");
+		Declare.makeHashCode(xbean.getVariables(), ps, "	");*/
+
 		Declare.makeToString(xbean.getVariables(), ps, "	");
 //		if (xbean.isConstType())
 //			CompareTo.make(xbean, ps, "	");

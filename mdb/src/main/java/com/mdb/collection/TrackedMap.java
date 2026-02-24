@@ -264,21 +264,6 @@ public class TrackedMap<K, V> extends XBean implements Map<K, V> {
     }
 
     @Override
-    public boolean equals(Object o) {
-        return delegate.equals(o);
-    }
-
-    @Override
-    public int hashCode() {
-        return delegate.hashCode();
-    }
-
-    @Override
-    public String toString() {
-        return delegate.toString();
-    }
-
-    @Override
     public V getOrDefault(Object key, V defaultValue) {
         return delegate.getOrDefault(key, defaultValue);
     }
@@ -488,4 +473,54 @@ public class TrackedMap<K, V> extends XBean implements Map<K, V> {
             return entry.hashCode();
         }
     }
+
+    /***
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        Map<?, ?> target;
+        if (o instanceof TrackedMap<?, ?>) {
+            target = ((TrackedMap<?, ?>) o).delegate;
+        } else if (o instanceof Map<?, ?>) {
+            target = (Map<?, ?>) o;
+        } else {
+            return false;
+        }
+        if (delegate.size() != target.size()) {
+            return false;
+        }
+        try {
+            for (Entry<K, V> entry : delegate.entrySet()) {
+                K key = entry.getKey();
+                V value = entry.getValue();
+                Object targetValue = target.get(key);
+                if (!Objects.equals(value, targetValue)) {
+                    return false;
+                }
+                if (value == null && !target.containsKey(key)) {
+                    return false;
+                }
+            }
+            return true;
+        } catch (ClassCastException | NullPointerException ignored) {
+            return false;
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        for (Entry<K, V> entry : delegate.entrySet()) {
+            hash += Objects.hashCode(entry);
+        }
+        return hash;
+    }
+
+    @Override
+    public String toString() {
+        return String.valueOf(delegate);
+    }
+    ***/
 }

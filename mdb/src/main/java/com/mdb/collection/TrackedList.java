@@ -248,21 +248,6 @@ public class TrackedList<E> extends XBean implements List<E>,RandomAccess {
     }
 
     @Override
-    public boolean equals(Object o) {
-        return delegate.equals(o);
-    }
-
-    @Override
-    public int hashCode() {
-        return delegate.hashCode();
-    }
-
-    @Override
-    public String toString() {
-        return delegate.toString();
-    }
-
-    @Override
     public int indexOf(Object o) {
         return delegate.indexOf(o);
     }
@@ -367,5 +352,47 @@ public class TrackedList<E> extends XBean implements List<E>,RandomAccess {
             markModified(ModifyType.ADD, e);
         }
     }
+
+    /***
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        List<?> target;
+        if (o instanceof TrackedList<?>) {
+            target = ((TrackedList<?>) o).delegate;
+        } else if (o instanceof List<?>) {
+            target = (List<?>) o;
+        } else {
+            return false;
+        }
+        if (delegate.size() != target.size()) {
+            return false;
+        }
+        Iterator<E> thisIterator = delegate.iterator();
+        Iterator<?> targetIterator = target.iterator();
+        while (thisIterator.hasNext()) {
+            if (!Objects.equals(thisIterator.next(), targetIterator.next())) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hashCode = 1;
+        for (E e : delegate) {
+            hashCode = 31 * hashCode + Objects.hashCode(e);
+        }
+        return hashCode;
+    }
+
+    @Override
+    public String toString() {
+        return String.valueOf(delegate);
+    }
+    ***/
 
 }

@@ -162,21 +162,6 @@ public class TrackedSet <E> extends XBean implements Set<E> {
     }
 
     @Override
-    public boolean equals(Object o) {
-        return delegate.equals(o);
-    }
-
-    @Override
-    public int hashCode() {
-        return delegate.hashCode();
-    }
-
-    @Override
-    public String toString() {
-        return delegate.toString();
-    }
-
-    @Override
     public Spliterator<E> spliterator() {
         throw new MdbError("Not implemented spliterator");
     }
@@ -192,4 +177,43 @@ public class TrackedSet <E> extends XBean implements Set<E> {
             markModified(ModifyType.REMOVE, lastReturned);
         }
     }
+
+    /***
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        Set<?> target;
+        if (o instanceof TrackedSet<?>) {
+            target = ((TrackedSet<?>) o).delegate;
+        } else if (o instanceof Set<?>) {
+            target = (Set<?>) o;
+        } else {
+            return false;
+        }
+        if (delegate.size() != target.size()) {
+            return false;
+        }
+        try {
+            return delegate.containsAll(target);
+        } catch (ClassCastException | NullPointerException ignored) {
+            return false;
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        for (E e : delegate) {
+            hash += Objects.hashCode(e);
+        }
+        return hash;
+    }
+
+    @Override
+    public String toString() {
+        return String.valueOf(delegate);
+    }
+    ***/
 }

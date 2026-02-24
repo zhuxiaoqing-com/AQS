@@ -291,31 +291,6 @@ public class TrackedQueue<E> extends XBean implements Queue<E> {
         throw new MdbError("Not implemented spliterator");
     }
 
-    @Override
-    public String toString() {
-        return snapshot().toString();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        readLock.lock();
-        try {
-            return delegate.equals(o);
-        } finally {
-            readLock.unlock();
-        }
-    }
-
-    @Override
-    public int hashCode() {
-        readLock.lock();
-        try {
-            return delegate.hashCode();
-        } finally {
-            readLock.unlock();
-        }
-    }
-
     private ArrayList<E> snapshot() {
         readLock.lock();
         try {
@@ -324,4 +299,47 @@ public class TrackedQueue<E> extends XBean implements Queue<E> {
             readLock.unlock();
         }
     }
+
+    /***
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        Collection<?> target;
+        if (o instanceof TrackedQueue<?>) {
+            target = ((TrackedQueue<?>) o).snapshot();
+        } else if (o instanceof Collection<?>) {
+            target = (Collection<?>) o;
+        } else {
+            return false;
+        }
+        ArrayList<E> current = snapshot();
+        if (current.size() != target.size()) {
+            return false;
+        }
+        Iterator<E> currentIterator = current.iterator();
+        Iterator<?> targetIterator = target.iterator();
+        while (currentIterator.hasNext()) {
+            if (!Objects.equals(currentIterator.next(), targetIterator.next())) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hashCode = 1;
+        for (E e : snapshot()) {
+            hashCode = 31 * hashCode + Objects.hashCode(e);
+        }
+        return hashCode;
+    }
+
+    @Override
+    public String toString() {
+        return String.valueOf(snapshot());
+    }
+    ***/
 }
