@@ -128,3 +128,88 @@ G1-Refine-activated worker 1, on threshold 204, current 224
 G1-Refine-deactivated worker 1, off threshold 177, current 177
 
 
+
+
+# ========================
+# OOM dump
+# ========================
+-XX:+HeapDumpOnOutOfMemoryError
+-XX:HeapDumpPath=/data/logs/
+
+# ========================
+# GC 日志
+# ========================
+-XX:+PrintGCDetails
+-XX:+PrintGCDateStamps
+-XX:+PrintGCTimeStamps
+-XX:+PrintGCApplicationStoppedTime
+-Xloggc:/data/logs/gc.log
+
+# ========================
+# Native Memory Tracking
+# ========================
+-XX:NativeMemoryTracking=summary
+-XX:+UnlockDiagnosticVMOptions
+
+-XX:OnOutOfMemoryError="jcmd %p VM.native_memory detail > /tmp/nmt_detail_%p.log"
+这个参数可以在oom的时候直接输出一份jvm内存占比;
+
+这两个jvm参数可以输出这种东西
+ Native Memory Tracking:
+
+ Total: reserved=2175MB, committed=682MB
+ -                 Java Heap (reserved=501MB, committed=463MB)
+                             (mmap: reserved=501MB, committed=463MB)
+
+ -                     Class (reserved=1070MB, committed=50MB)
+                             (classes #8801)
+                             (  instance classes #8204, array classes #597)
+                             (malloc=2MB #24660)
+                             (mmap: reserved=1068MB, committed=49MB)
+                             (  Metadata:   )
+                             (    reserved=44MB, committed=43MB)
+                             (    used=42MB)
+                             (    free=1MB)
+                             (    waste=0MB =0.00%)
+                             (  Class space:)
+                             (    reserved=1024MB, committed=6MB)
+                             (    used=5MB)
+                             (    free=0MB)
+                             (    waste=0MB =0.00%)
+
+ -                    Thread (reserved=228MB, committed=27MB)
+                             (thread #226)
+                             (stack: reserved=227MB, committed=26MB)
+                             (malloc=1MB #1139)
+
+ -                      Code (reserved=243MB, committed=17MB)
+                             (malloc=1MB #5509)
+                             (mmap: reserved=242MB, committed=16MB)
+
+ -                        GC (reserved=23MB, committed=15MB)
+                             (malloc=8MB #11446)
+                             (mmap: reserved=16MB, committed=7MB)
+
+ -                  Compiler (reserved=26MB, committed=26MB)
+                             (malloc=2MB #1951)
+                             (arena=24MB #13)
+
+ -                  Internal (reserved=5MB, committed=5MB)
+                             (malloc=3MB #9745)
+                             (mmap: reserved=2MB, committed=2MB)
+
+ -                     Other (reserved=2MB, committed=2MB)
+                             (malloc=2MB #202)
+
+ -                    Symbol (reserved=10MB, committed=10MB)
+                             (malloc=8MB #233939)
+                             (arena=3MB #1)
+
+ -    Native Memory Tracking (reserved=5MB, committed=5MB)
+                             (tracking overhead=5MB)
+
+ -               Arena Chunk (reserved=63MB, committed=63MB)
+                             (malloc=63MB)
+ ————————————————
+ 版权声明：本文为CSDN博主「深山猿」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。
+ 原文链接：https://blog.csdn.net/h2604396739/article/details/102732504
