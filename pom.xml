@@ -15,6 +15,7 @@
         <module>rpc</module>
         <module>lockstep</module>
         <module>JMHBenchmark</module>
+        <module>game-temp-agent</module>
     </modules>
     <packaging>pom</packaging>
 

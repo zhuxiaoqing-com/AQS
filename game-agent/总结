@@ -1,0 +1,25 @@
+VirtualMachine vm = VirtualMachine.attach(pid);
+vm.loadAgent(agentPath, classFile);
+vm.detach();
+
+👉 对应结论：
+
+✔ 业务进程：不需要 -javaagent
+✔ 热更进程：也不需要 -javaagent
+✔ 只要 agent.jar 配对了 Agent-Class + agentmain 就行
+
+
+-javaagent 的唯一作用，就是在 JVM 启动时触发 premain
+
+-javaagent
+JVM 启动 → 自动加载 agent → 调 premain()
+
+
+attach + loadAgent（你现在用的）
+JVM 已运行
+    ↓
+attach
+    ↓
+loadAgent
+    ↓
+JVM 调 agentmain()
