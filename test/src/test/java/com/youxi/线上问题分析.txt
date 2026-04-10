@@ -1,0 +1,39 @@
+运维每半小时备份数据库导致netty水位线满了 为什么？
+       对chatgpt和grop进行提问： mysql进行sql备份 用的是mysql自己的命令，从30分开始-40分结束磁盘被打满了99%，然后同一时期 netty消息发不出去了 水位线满了，jvm的gc那段时间内E区只有30mb，申请了8GJVM内存;平
+        常E区有1-2G，然后同一时间allocated/Promoted基本为零;
+       看了同一时间 cpu IOWait 11.6% total9.4% system 2.2% user7.2%
+
+       原因：简略
+        mysqldump 在疯狂写盘，造成磁盘完成事件非常多。
+        这些完成事件会在很多 CPU 上触发块设备相关的 softirq。
+        而每个 CPU 的 softirq 执行都是串行处理的。
+        所以磁盘 softirq 一多，网络收发 softirq 就会排队。
+        网络收包轮询慢了，发包出队慢了，最终就会表现成：
+        Netty 不是逻辑没跑，而是内核网络路径推进不动了。
+
+     AI原文：
+        而 Linux 内核里，BLOCK_SOFTIRQ（磁盘）与 NET_RX / NET_TX_SOFTIRQ（网络）是在同一个 per-CPU softirq 执行上下文里串行竞争的。这就是为什么你“网络 IO 断崖下跌”的直接触发器。
+        内核真实行为（有实际案例佐证）
+
+        mysqldump 狂写大文件 → 产生海量 dirty page + bio 请求 → 磁盘驱动在多个 CPU 上同时 raise BLOCK_SOFTIRQ（因为现代 NVMe 多队列会把 completion IRQ 散布到全核）。
+        softirq 是 per-CPU 严格串行的（kernel/softirq.c 中的 __do_softirq() 一次只能处理一个 pending 的 softirq vector，不能被其他 softirq 抢占）。
+        当 BLOCK_SOFTIRQ 占满 CPU 的 softirq 执行槽时，NET_RX / NET_TX_SOFTIRQ 就被排在后面，甚至 netdev_budget（默认 300 个包）被提前耗光 → NAPI 轮询变慢、TX qdisc 出队变慢 → 网络处理能力直接腰斩。
+
+        这不是理论，是真实用户报告和内核社区反复出现的现象：
+
+        重度磁盘拷贝时，网络包被延迟、CPU stall、网络 softirq 处理不及时，导致关键网络操作卡住。
+        BLOCK softirq 和 NET softirq 明确是竞争关系（BLOCK 用于块设备 IO，NET 用于网络收发）。
+
+        你有“那么多 CPU”，磁盘 IO 恰会把 BLOCK_SOFTIRQ 扩散到几乎所有核（irqbalance + 多队列），从而把 NET softirq 在全系统范围内“饿死”——这就解释了你看到的网络处理量整体断崖式下跌，而不是只是“EventLoop 稍微慢一点”。
+
+        对此我发现我还是得继续研究linux2.6的源码，读了linux2.6源码的网络栈学到了很多，还需要吧其他的也看完;
+
+ 如果是因为netty消息发不出去 oom了 是dump出来的堆是怎么样的;
+        里面会有很多netty相关的对象;
+
+ 如果是因为netty消息发不出去 oom了 是dump出来的堆是怎么样的; 我之前有过一个oom的情况，发现6G的内存 dump的oom文件只有4.9g jprofiler打开没有回收有4g,
+ 打开自动进行垃圾回收的话有2.5g，正常oom之前应该会进行fullGC的，FULLGC应该会将所有的应用线程暂停了，应该不会有dump出来 jprofiler打开只有2.5G 毕竟差距实在太大了；
+ 我发现使用jprofiler不自动进行垃圾打开oom快照的话，里面有很多int数组 然后这些int数组 没有挂载在任何引用链上 很奇怪，int数组里面的数字都很奇怪 有正的有负的 有的很大负的 很大正的 起码有1G多
+
+
+
