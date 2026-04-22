@@ -1,5 +1,6 @@
 package com.mdb;
 
+import com.mdb.exception.MdbError;
 import com.mdb.util.ConcurrentEnvironment;
 import com.mdb.util.TimeCostPrint;
 import com.mdb.xmlgen.xmlparse.MdbMetadata;
@@ -111,6 +112,7 @@ public class Mdb {
             }
         } catch (Exception e) {
             logger.error("Mdb loadPlayerAllTableToMemory error key {} ", key, e);
+            throw new MdbError(e);
         }
     }
 

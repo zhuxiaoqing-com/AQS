@@ -69,11 +69,9 @@ public abstract class TTable<K, V> {
             String valueStr = _find(key);
             if (valueStr != null && !valueStr.isEmpty()) {
                 tRecord = new TRecord<>(this, key, null, TRecord.GET);
-                if (tRecord.onSelect(valueStr)) {
-                    cache.put(key, tRecord);
-                } else {
-                    return null;
-                }
+                tRecord.onSelect(valueStr);
+                cache.put(key, tRecord);
+
             } else {
                 findFailCache.put(key, defaultValue);
                 // getMiss
@@ -117,10 +115,19 @@ public abstract class TTable<K, V> {
         lockey.getWriteLock().lock();
         try {
             TRecord<K, V> tRecord = cache.get(key);
-            if (tRecord == null) {
-                return false;
+            if (tRecord != null) {
+                tRecord.remove();
+                return true;
             }
-            tRecord.remove();
+            // 没有找到就直接新建一个
+            tRecord = new TRecord<K, V>(this, key, newValue(), TRecord.REMOVE);
+            cache.put(key, tRecord);
+            /**
+             * 未加载 remove 现在能正常留下删除标记了，但这里没有清理 findFailCache。
+             * 如果这个 key 之前查库未命中过，之后又经历 remove -> add -> tickClearCache 写回 DB，旧的未命中缓存可能在 cache 被清掉后继续让 get 返回 null。
+             * 这个窗口比较绕，但清掉 findFailCache 成本很低。
+             */
+            findFailCache.invalidate(key);
         } finally {
             lockey.getWriteLock().unlock();
         }

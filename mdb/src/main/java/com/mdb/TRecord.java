@@ -1,5 +1,6 @@
 package com.mdb;
 
+import com.mdb.exception.MdbError;
 import net.jpountz.xxhash.XXHash64;
 import net.jpountz.xxhash.XXHashFactory;
 import org.slf4j.Logger;
@@ -110,20 +111,22 @@ public class TRecord<K, V> {
         return table.marshalValue(value);
     }
 
-    public boolean onSelect(String valueStr) {
+    public void onSelect(String valueStr) {
         try {
             value = table.unmarshalValue(valueStr);
             if (value == null) {
                 Mdb.logger.error("find error tableName {} key {} unmarshal value is null", table.getName(), key);
-                return false;
+                // 直接抛异常 因为这个玩家数据坏掉了
+                throw new MdbError("unmarshal value is null tableName " + table.getName() + " key " + key);
+               // return false;
             }
             ((XBean)value).findVersionAtomic().set(0);
             // 规范化后再计算 hash，避免 DB 中 JSON 空格/格式差异触发 strictCheck 误报
             setHash(marshalValue());
-            return true;
         } catch (Exception e) {
             Mdb.logger.error("find error tableName {} key {}", table.getName(), key, e);
-            return false;
+            throw new MdbError("unmarshal db value failed tableName " + table.getName() + " key " + key, e);
+            //return false;
         }
     }
 
@@ -210,7 +213,7 @@ public class TRecord<K, V> {
         try {
             switch (getState()) {
                 case ADD:
-                    table.getTables().getStorage().insert(table.getName(), marshalKey(), valueJson);
+                     table.getTables().getStorage().replace(table.getName(), marshalKey(), valueJson);
                     return true;
                 case REMOVE:
                     table.getTables().getStorage().remove(table.getName(), marshalKey());
