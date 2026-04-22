@@ -11,6 +11,7 @@ final class FakeStorageEngine implements StorageEngine {
     private final Map<String, Map<String, String>> data = new ConcurrentHashMap<>();
 
     private final AtomicInteger insertFailures = new AtomicInteger();
+    private final AtomicInteger replaceFailures = new AtomicInteger();
     private final AtomicInteger replaceBatchFailures = new AtomicInteger();
     private final AtomicInteger removeFailures = new AtomicInteger();
     private final AtomicInteger removeBatchFailures = new AtomicInteger();
@@ -19,6 +20,10 @@ final class FakeStorageEngine implements StorageEngine {
 
     void failNextInsert() {
         insertFailures.incrementAndGet();
+    }
+
+    void failNextReplace() {
+        replaceFailures.incrementAndGet();
     }
 
     void failNextReplaceBatch() {
@@ -66,6 +71,9 @@ final class FakeStorageEngine implements StorageEngine {
 
     @Override
     public void replace(String table, String key, String value) {
+        if (consume(replaceFailures)) {
+            throw new RuntimeException("fake replace failure");
+        }
         table(table).put(key, value);
     }
 

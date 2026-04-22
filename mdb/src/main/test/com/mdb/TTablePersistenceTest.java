@@ -26,11 +26,11 @@ public class TTablePersistenceTest {
     }
 
     @Test
-    public void flushInsertFailureKeepsRecordForRetry() {
+    public void flushReplaceFailureKeepsRecordForRetry() {
         Player player = player(1001L, 7, "first");
         assertTrue(table.add(1001L, player));
 
-        storage.failNextInsert();
+        storage.failNextReplace();
         assertFalse(table.flush(1001L));
         assertNull(storage.getStored("player", "1001"));
 
