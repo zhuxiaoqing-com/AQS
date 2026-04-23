@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mdb name="logic" defaultTableCache="warrior.mdb.TTableCacheLRU" serializeLogicThreadName="player" snapshotFatalTime="200" checkpointPeriod="60000" supportFlush="true" xmlns:xi="http://www.w3.org/2001/XInclude">
+	<xbean name="Player"> 玩家
+		<variable name="playerId" type="long" alias="1"/>  上一次登录的角色
+		<variable name="level" type="int" alias="2"/>  等级
+		<variable name="playerName" type="string" alias="3"/>  玩家昵称
+	</xbean>
+	<table name="player" key="long" value="Player" cacheCapacity="21" serializeLogicThreadName="player" />
+
+
+	<xbean name="Bag"> 玩家
+		<variable name="playerId" type="long" alias="1"/> 
+		<variable name="bagtest" type="int" alias="2"/>  
+		<variable name="player" type="Player" alias="3"/>
+		<variable name="playerList" type="list" value="Player" alias="4"/>
+		<variable name="playerSet" type="set" value="Player" alias="5"/>
+		<variable name="playerMap" type="map" key="long" value="Player" alias="6"/>
+
+		<variable name="longList" type="list" value="long" alias="7"/>
+		<variable name="longSet" type="set" value="long" alias="8"/>
+		<variable name="longMap" type="map" key="long" value="long" alias="9"/>
+		<variable name="longListCow" type="list_cow" value="long" alias="10"/>
+		<variable name="longListRw" type="list_rw" value="long" alias="11"/>
+		<variable name="longQueue" type="queue" value="long" alias="12"/>
+	</xbean>
+	<table name="bag" key="long" value="Bag" cacheCapacity="21" />
+
+
+	<xbean name="Bag1"> 玩家
+		<variable name="playerId" type="long" alias="1"/> 
+		<variable name="bagtest" type="int" alias="2"/>  
+	</xbean>
+	<table name="bag1" key="long" value="Bag1" cacheCapacity="21" />
+
+
+	<xbean name="Bag2"> 玩家
+		<variable name="playerId" type="long" alias="1"/> 
+		<variable name="bagtest" type="int" alias="2"/>  
+	</xbean>
+	<table name="bag2" key="long" value="Bag2" cacheCapacity="21" />
+
+
+	<xbean name="Bag3"> 玩家
+		<variable name="playerId" type="long" alias="1"/> 
+		<variable name="bagtest" type="int" alias="2"/>  
+	</xbean>
+	<table name="bag3" key="long" value="Bag3" cacheCapacity="21" />
+	
+	<!-- 数据源配置 -->
+	<xi:include href="datasource-local.xml" />
+</mdb>
+

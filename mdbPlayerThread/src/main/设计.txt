@@ -1,0 +1,12 @@
+再checkpoint或者clear或者flush的时候，将Cache交给业务线程;
+提供一个接口，抛给业务线程,然后业务线程返回一堆json，mdb线程再进行保存到mysql;
+这个不会有并发问题,因为我这个对象是在这个业务线程使用的，都是本线程并发;唯一的一个问题就是我在保存数据到mysql的时候,
+这个时候又取了数据 会有并发问题, 比如roleThread->get() checkpoint线程刚从玩家线程回调回来准备将数据存入Mysql;
+get()取的是老的Mysql数据，然后回调回来的线程才把数据存入,但是其实这个也有处理方案,
+就是因为我能存 肯定是因为cache里已经有这个数据了;我等回调回来 再看要不要删cache;而get肯定是getcache的数据 所以没问题;
+
+业务线程最好是就提供一个接口(String threadName, Map<K,TRecord>,  Map<K,String>  单个处理TRecord的方法(Map<K,TRecord>) ,处理完成的回调(Map<K,String> xxx));
+业务线程需要根据threadName 和Collection<String> 进行将其分类，分成n个 投入相关的线程,然后线程里执行 单个处理TRecord的方法 和 全部处理完成以后得回调;
+
+感觉就分类，然后投入，然后调用我的处理方法; 能不能把TRecord不污染上一层，但是不污染的话怎么弄呢，每次用threadName+K来确认吗;
+但是我现在只有玩家线程需要用K%，其他的话用threadName就可以确定;
