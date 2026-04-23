@@ -1,12 +1,9 @@
-
-
 import com.mdb.Mdb;
 import com.mdb.util.XMLUtils;
 import com.mdb.xmlgen.xmlparse.MdbMetadata;
 import xbean.logic.Bag;
 import xbean.logic.Player;
 
-import java.io.File;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class TestFlush {

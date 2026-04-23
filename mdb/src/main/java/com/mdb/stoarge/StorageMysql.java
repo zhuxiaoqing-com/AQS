@@ -22,7 +22,7 @@ public class StorageMysql implements StorageEngine {
 	// 批量操作每批的数量
 	private int BATCH_PER_COUNT = Integer.getInteger("mysql.batch.per", 500);
 
-	public static final int COST_MS_WARN = 100;
+	public static final int COST_MS_WARN = Integer.getInteger("mysql.costms.warn", 100);
 
 	public StorageMysql(LoggerMysql logger) {
 		this.logger = logger;

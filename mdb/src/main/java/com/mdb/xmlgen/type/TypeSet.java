@@ -25,6 +25,14 @@ public final class TypeSet extends Type {
 		return String.format("com.mdb.collection.ConcurrentHashSetX<%s>", valueType.box());
 	}
 
+	/**
+	 * 如果是集合 就返回最基础的接口
+	 */
+	@Override
+	public String toInterfaceVarType() {
+		return String.format("java.util.Set<%s>", valueType.box());
+	}
+
 	@Override
 	public String toInitVal() {
 		//return String.format("new java.util.concurrent.CopyOnWriteArraySet<%s>();", valueType.box());

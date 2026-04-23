@@ -37,7 +37,7 @@ public class Declare {
 
 	public static void makeGetter(Variable e, PrintStream ps, String prefix) {
 		ps.println(String.format("%s@JSONField(name = \"%s\")",prefix,e.getAlias()));
-		ps.println(String.format("%spublic %s get%s(){", prefix, e.getVarType().toVarType(), StringUtils.upper1(e.getName())));
+		ps.println(String.format("%spublic %s get%s(){", prefix, e.getVarType().toInterfaceVarType(), StringUtils.upper1(e.getName())));
 		ps.println(String.format("%s%sreturn this.%s;", prefix, prefix, e.getName()));
 		ps.println(prefix + "}");
 		ps.println();

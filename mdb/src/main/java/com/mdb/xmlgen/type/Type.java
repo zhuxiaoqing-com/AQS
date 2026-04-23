@@ -43,6 +43,13 @@ public abstract class Type extends Naming {
 	public String toVarType() {
 		return getName();
 	}
+
+	/**
+	 * 如果是集合 就返回最基础的接口
+	 */
+	public String toInterfaceVarType() {
+		return toVarType();
+	}
 	
 	public String toDefault(String v) {
 		return v;

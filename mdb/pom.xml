@@ -86,16 +86,13 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.13.2</version>
-            <scope>test</scope>
+            <!--<scope>test</scope>-->
         </dependency>
 
    </dependencies>
 
     <build>
-        <!--
-            生成代码目前放在 src/main/beans；把 src/main 作为源码根，
-            再用 include 明确只编译 java/beans，避免把旧的手工 main 测试编进主包。
-        -->
+
         <sourceDirectory>src/main</sourceDirectory>
         <testSourceDirectory>src/main/test</testSourceDirectory>
         <plugins>
@@ -112,6 +109,7 @@
                         <include>beans/**/*.java</include>
                     </includes>
                     <testIncludes>
+                        <testInclude>*.java</testInclude>
                         <testInclude>com/mdb/**/*.java</testInclude>
                     </testIncludes>
                 </configuration>

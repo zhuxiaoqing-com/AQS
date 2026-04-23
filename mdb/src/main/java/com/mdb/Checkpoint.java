@@ -1,48 +1,21 @@
 package com.mdb;
 
 import com.mdb.util.TimeCostPrint;
-import com.mdb.xmlgen.xmlparse.MdbMetadata;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class Checkpoint implements Runnable {
     public static Logger logger = LoggerFactory.getLogger(Checkpoint.class);
     private ReentrantLock checkpointMutex = new ReentrantLock();
 
-    private final ExecutorService dbExecutor;
-
-    public Checkpoint(MdbMetadata mdbMetadata, ScheduledThreadPoolExecutor scheduled, ExecutorService dbExecutor) {
-        this.dbExecutor = dbExecutor;
-
-        // 启动checkpoint
-        scheduled.scheduleWithFixedDelay(this::runInDbExecutor, 0, mdbMetadata.getCheckPointPeriod(), TimeUnit.MILLISECONDS);
-    }
-
     @Override
     public void run() {
         checkpoint(System.currentTimeMillis(), false);
-    }
-
-    private void runInDbExecutor() {
-        try {
-            Future<?> future = dbExecutor.submit(this);
-            future.get(); // 阻塞等待执行完成
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            logger.error("checkpoint schedule interrupted", e);
-        } catch (ExecutionException e) {
-            logger.error("checkpoint schedule error", e);
-        }
     }
 
 

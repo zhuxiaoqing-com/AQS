@@ -26,10 +26,19 @@ public final class TypeQueue extends Type {
         return String.format("com.mdb.collection.ConcurrentArrayDequeX<%s>", valueType.box());
     }
 
+    /**
+     * 如果是集合 就返回最基础的接口
+     */
+    @Override
+    public String toInterfaceVarType() {
+        return String.format("java.util.Queue<%s>", valueType.box());
+    }
+
     @Override
     public String toInitVal() {
         return String.format("new com.mdb.collection.ConcurrentArrayDequeX<%s>(this);", valueType.box());
     }
+
 
     @Override
     public String toCopy(Type type) {

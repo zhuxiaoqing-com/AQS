@@ -19,17 +19,16 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
 public class Mdb {
     public static Logger logger = LoggerFactory.getLogger(Mdb.class.getName());
     private static Mdb instance = new Mdb();
-    private static final String SCHEDULER_NAME = "mdb.scheduler";
-    private static final String DB_EXECUTOR_NAME = "mdb.db";
-    private static final int SCHEDULER_THREAD_COUNT = 2;
-    private static final int DB_EXECUTOR_THREAD_COUNT = Integer.getInteger("mdb.db.threads", 6);
+    private static final String EXECUTOR_NAME = "mdb.scheduler";
+    // 统一后的执行器同时承担定时任务和异步 DB 任务，线程数默认沿用原 dbExecutor 配置。
+    private static final int EXECUTOR_THREAD_COUNT =
+            Integer.getInteger("mdb.scheduler.threads", Integer.getInteger("mdb.db.threads", 6));
+    private static final long CLEAR_CACHE_DELAY_SECONDS = 10 * TimeCostPrint.minuteMills / 1000;
 
     public static Mdb getInstance() {
         return instance;
@@ -51,7 +50,6 @@ public class Mdb {
 
     public Checkpoint checkpoint = null;
     ScheduledThreadPoolExecutor scheduler;
-    ThreadPoolExecutor dbExecutor;
 
     public static void configLog() {
         LoggerContext logContext = (LoggerContext) LogManager.getContext(false);
@@ -82,17 +80,20 @@ public class Mdb {
             logger.warn("{} has {} tables ......", mdbMetadata.getName(), tables.tables.size());
             // checkpoint
             if (checkpoint == null) {
-                scheduler = ConcurrentEnvironment.getInstance().newScheduledThreadPool(SCHEDULER_NAME, SCHEDULER_THREAD_COUNT);
+                scheduler = ConcurrentEnvironment.getInstance().newScheduledThreadPool(EXECUTOR_NAME, EXECUTOR_THREAD_COUNT);
                 // 关闭后，不再执行“延迟任务”（delay/一次性定时）
                 scheduler.setExecuteExistingDelayedTasksAfterShutdownPolicy(false);
                 // 关闭后，不再继续执行“周期任务”（scheduleAtFixedRate / scheduleWithFixedDelay）
                 scheduler.setContinueExistingPeriodicTasksAfterShutdownPolicy(false);
                 // 任务 cancel 后，立即从队列移除
                 scheduler.setRemoveOnCancelPolicy(true);
-                dbExecutor = ConcurrentEnvironment.getInstance().newFixedThreadPool(DB_EXECUTOR_NAME, DB_EXECUTOR_THREAD_COUNT);
-                checkpoint = new Checkpoint(mdbMetadata, scheduler, dbExecutor);
+                checkpoint = new Checkpoint();
+                scheduler.scheduleWithFixedDelay(checkpoint, 0, mdbMetadata.getCheckPointPeriod(), TimeUnit.MILLISECONDS);
                 scheduler.scheduleWithFixedDelay(this::tick, 1, 1, TimeUnit.SECONDS);
-                scheduleNextClearCacheRound();
+                scheduler.scheduleWithFixedDelay(this::clearCacheRound,
+                        CLEAR_CACHE_DELAY_SECONDS,
+                        CLEAR_CACHE_DELAY_SECONDS,
+                        TimeUnit.SECONDS);
             }
 
             logger.warn("@@@@@@@@@@@@@@@@  mdb start end  @@@@@@@@@@@@@@@@");
@@ -139,7 +140,7 @@ public class Mdb {
             return;
         }
 
-        dbExecutor.execute(() -> _flush(key, callback));
+        scheduler.execute(() -> _flush(key, callback));
     }
 
     private boolean _flush(Object key, MdbFlushCallback callback) {
@@ -194,33 +195,6 @@ public class Mdb {
 
     }
 
-    private void scheduleNextClearCacheRound() {
-        ScheduledThreadPoolExecutor currentScheduler = scheduler;
-        if (currentScheduler == null || currentScheduler.isShutdown()) {
-            return;
-        }
-
-        long minSecond = 5 * TimeCostPrint.minuteMills / 1000;
-        long maxSecond = 15 * TimeCostPrint.minuteMills / 1000;
-        long delaySeconds = ThreadLocalRandom.current().nextLong(minSecond, maxSecond);
-        currentScheduler.schedule(this::submitClearCacheRound, delaySeconds, TimeUnit.SECONDS);
-    }
-
-    private void submitClearCacheRound() {
-        ThreadPoolExecutor executor = dbExecutor;
-        if (executor == null || executor.isShutdown()) {
-            return;
-        }
-
-        executor.execute(() -> {
-            try {
-                clearCacheRound();
-            } finally {
-                scheduleNextClearCacheRound();
-            }
-        });
-    }
-
     private void clearCacheRound() {
         for (Tables allTable : allTables) {
             for (TTable table : allTable.getTables()) {
@@ -243,17 +217,15 @@ public class Mdb {
         logger.info("@@@@@@@@@@@@@@@@  mdb stop begin   @@@@@@@@@@@@@@@@");
         if (checkpoint != null && runCheckpoint) {
             try {
-                checkpointInDbExecutor(System.currentTimeMillis(), true);
+                checkpointInScheduler(System.currentTimeMillis(), true);
             } catch (Throwable e) {
                 logger.error("checkpoint on close error", e);
             }
         }
         checkpoint = null;
 
-        shutdownExecutor(SCHEDULER_NAME, scheduler);
-        shutdownExecutor(DB_EXECUTOR_NAME, dbExecutor);
+        shutdownExecutor(EXECUTOR_NAME, scheduler);
         scheduler = null;
-        dbExecutor = null;
 
         if (allTables.size() > 0) {
             for (Tables tables : allTables) {
@@ -266,13 +238,13 @@ public class Mdb {
         logger.info("@@@@@@@@@@@@@@@@  mdb stop end   @@@@@@@@@@@@@@@@");
     }
 
-    private void checkpointInDbExecutor(long now, boolean close) throws Exception {
-        ExecutorService executor = dbExecutor;
-        if (executor == null) {
+    private void checkpointInScheduler(long now, boolean close) throws Exception {
+        ScheduledThreadPoolExecutor currentScheduler = scheduler;
+        if (currentScheduler == null) {
             checkpoint.checkpoint(now, close);
             return;
         }
-        Future<?> future = executor.submit(() -> checkpoint.checkpoint(now, close));
+        Future<?> future = currentScheduler.submit(() -> checkpoint.checkpoint(now, close));
         future.get();
     }
 
