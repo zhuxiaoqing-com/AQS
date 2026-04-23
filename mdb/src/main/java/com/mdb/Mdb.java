@@ -16,7 +16,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -217,7 +216,7 @@ public class Mdb {
         logger.info("@@@@@@@@@@@@@@@@  mdb stop begin   @@@@@@@@@@@@@@@@");
         if (checkpoint != null && runCheckpoint) {
             try {
-                checkpointInScheduler(System.currentTimeMillis(), true);
+                checkpoint.checkpoint(System.currentTimeMillis(), true);
             } catch (Throwable e) {
                 logger.error("checkpoint on close error", e);
             }
@@ -236,16 +235,6 @@ public class Mdb {
 
         running = false;
         logger.info("@@@@@@@@@@@@@@@@  mdb stop end   @@@@@@@@@@@@@@@@");
-    }
-
-    private void checkpointInScheduler(long now, boolean close) throws Exception {
-        ScheduledThreadPoolExecutor currentScheduler = scheduler;
-        if (currentScheduler == null) {
-            checkpoint.checkpoint(now, close);
-            return;
-        }
-        Future<?> future = currentScheduler.submit(() -> checkpoint.checkpoint(now, close));
-        future.get();
     }
 
     private void shutdownExecutor(String executorName, ExecutorService executor) {
