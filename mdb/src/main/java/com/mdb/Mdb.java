@@ -15,17 +15,21 @@ import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
 public class Mdb {
     public static Logger logger = LoggerFactory.getLogger(Mdb.class.getName());
     private static Mdb instance = new Mdb();
-    private static final String SCHEDULER_CHECKPOINT_NAME = "mdb.scheduler.checkpoint";
-    private static final String SCHEDULER_COMMON_NAME = "mdb.scheduler.common";
-    private static final String SCHEDULER_CLEARCACHE_NAME = "mdb.scheduler.clearcache";
+    private static final String SCHEDULER_NAME = "mdb.scheduler";
+    private static final String DB_EXECUTOR_NAME = "mdb.db";
+    private static final int SCHEDULER_THREAD_COUNT = 2;
+    private static final int DB_EXECUTOR_THREAD_COUNT = Integer.getInteger("mdb.db.threads", 6);
 
     public static Mdb getInstance() {
         return instance;
@@ -38,15 +42,16 @@ public class Mdb {
 
     // xBean 是否开启全量检测
     private boolean xBeanDetailCheck = false;
+    // xBean 是否开启严格检测
+    private boolean strictCheckOpen = true;
     // checkPoint前+1
     private volatile long checkPointCount = 0;
 
     public boolean running = false;
 
     public Checkpoint checkpoint = null;
-    ScheduledThreadPoolExecutor scheduled_checkPoint;
-    ScheduledThreadPoolExecutor scheduled_common;
-    ScheduledThreadPoolExecutor scheduled_clearCache;
+    ScheduledThreadPoolExecutor scheduler;
+    ThreadPoolExecutor dbExecutor;
 
     public static void configLog() {
         LoggerContext logContext = (LoggerContext) LogManager.getContext(false);
@@ -77,11 +82,17 @@ public class Mdb {
             logger.warn("{} has {} tables ......", mdbMetadata.getName(), tables.tables.size());
             // checkpoint
             if (checkpoint == null) {
-                scheduled_checkPoint = ConcurrentEnvironment.getInstance().newScheduledThreadPool(SCHEDULER_CHECKPOINT_NAME, 1);
-                checkpoint = new Checkpoint(mdbMetadata, scheduled_checkPoint);
-                scheduled_common =  ConcurrentEnvironment.getInstance().newScheduledThreadPool(SCHEDULER_COMMON_NAME, 1);
-                scheduled_common.scheduleWithFixedDelay(this::tick, 1, 1, TimeUnit.SECONDS);
-                scheduled_clearCache = ConcurrentEnvironment.getInstance().newScheduledThreadPool(SCHEDULER_CLEARCACHE_NAME, 1);
+                scheduler = ConcurrentEnvironment.getInstance().newScheduledThreadPool(SCHEDULER_NAME, SCHEDULER_THREAD_COUNT);
+                // 关闭后，不再执行“延迟任务”（delay/一次性定时）
+                scheduler.setExecuteExistingDelayedTasksAfterShutdownPolicy(false);
+                // 关闭后，不再继续执行“周期任务”（scheduleAtFixedRate / scheduleWithFixedDelay）
+                scheduler.setContinueExistingPeriodicTasksAfterShutdownPolicy(false);
+                // 任务 cancel 后，立即从队列移除
+                scheduler.setRemoveOnCancelPolicy(true);
+                dbExecutor = ConcurrentEnvironment.getInstance().newFixedThreadPool(DB_EXECUTOR_NAME, DB_EXECUTOR_THREAD_COUNT);
+                checkpoint = new Checkpoint(mdbMetadata, scheduler, dbExecutor);
+                scheduler.scheduleWithFixedDelay(this::tick, 1, 1, TimeUnit.SECONDS);
+                scheduleNextClearCacheRound();
             }
 
             logger.warn("@@@@@@@@@@@@@@@@  mdb start end  @@@@@@@@@@@@@@@@");
@@ -117,39 +128,56 @@ public class Mdb {
     }
 
     /**
-     * flush 失败以后 需要业务层找机会再次调用
+     * flush 失败以后 需要业务层找机会再次调用;
+     * 这里的flush按理来说应该是要一步的
      *
      * 业务层必须有重试功能;
      */
-    public boolean flush(Object key, MdbFlushCallback mdbFlushCallback) {
+    public void flush(Object key, boolean sync, MdbFlushCallback callback) {
+        if (sync) {
+            _flush(key, callback);
+            return;
+        }
+
+        dbExecutor.execute(() -> _flush(key, callback));
+    }
+
+    private boolean _flush(Object key, MdbFlushCallback callback) {
         boolean allSuccess = true;
-        logger.info("flush start key {}" ,key);
-        TimeCostPrint timeCostPrint = new TimeCostPrint(logger, 20, "flush");
-        for (Tables allTable : allTables) {
-            boolean detect = allTable.getStorage().detect();
-            if (!detect) {
-                logger.error("flush 和数据库的连接已经的断开！！！ tablesName {} ", allTable.getName());
-                allSuccess = false;
-                continue;
-            }
-            for (TTable table : allTable.tables.values()) {
-                TTable tt = table;
-                if (tt.isSupportFlush()) {
-                    // 名义上增加只读锁，其实是flush操作，目的是为了和checkpoint的write锁互斥，同时又保证多玩家在没有checkpoint时flush自己数据能并发执行
-                    tt.readlock.lock();
-                    try {
-                        if(!tt.flush(key)) {
-                            allSuccess = false;
+        try {
+            logger.info("flush start key {}", key);
+            TimeCostPrint timeCostPrint = new TimeCostPrint(logger, 20, "flush");
+            for (Tables allTable : allTables) {
+                boolean detect = allTable.getStorage().detect();
+                if (!detect) {
+                    logger.error("flush 和数据库的连接已经的断开！！！ tablesName {} ", allTable.getName());
+                    allSuccess = false;
+                    continue;
+                }
+                for (TTable table : allTable.tables.values()) {
+                    TTable tt = table;
+                    if (tt.isSupportFlush()) {
+                        // 名义上增加只读锁，其实是flush操作，目的是为了和checkpoint的write锁互斥，同时又保证多玩家在没有checkpoint时flush自己数据能并发执行
+                        tt.readlock.lock();
+                        try {
+                            if (!tt.flush(key)) {
+                                allSuccess = false;
+                            }
+                        } finally {
+                            tt.readlock.unlock();
                         }
-                    } finally {
-                        tt.readlock.unlock();
                     }
                 }
             }
-        }
-        timeCostPrint.print();
-        if (mdbFlushCallback != null) {
-            mdbFlushCallback.onFlushOver(key, allSuccess);
+            timeCostPrint.print();
+            if (callback != null) {
+                callback.onFlushOver(key, allSuccess, null);
+            }
+        } catch (Exception e) {
+            // 如果失败抛出异常，业务层应该下次还让玩家再次进入这个进程，不然会有脏数据的问题; 业务层也可以尝试进行重试
+            if (callback != null) {
+                callback.onFlushOver(key, false, e);
+            }
         }
         return allSuccess;
     }
@@ -164,20 +192,41 @@ public class Mdb {
             }
         }
 
+    }
+
+    private void scheduleNextClearCacheRound() {
+        ScheduledThreadPoolExecutor currentScheduler = scheduler;
+        if (currentScheduler == null || currentScheduler.isShutdown()) {
+            return;
+        }
+
         long minSecond = 5 * TimeCostPrint.minuteMills / 1000;
         long maxSecond = 15 * TimeCostPrint.minuteMills / 1000;
-        int size = scheduled_clearCache.getQueue().size();
-        int activeCount = scheduled_clearCache.getActiveCount();
-        if (size + activeCount <= 0) {
-            // 里面没任务了 抛clearCache任务进去
-            //5-15 分钟随机检测
-            for (Tables allTable : allTables) {
-                for (TTable table : allTable.getTables()) {
-                    // 支持flush 说明是玩家个人数据; 不清理让玩家手动调用flush清理
-                    if (!table.isSupportFlush()) {
-                        long l = ThreadLocalRandom.current().nextLong(minSecond, maxSecond);
-                        scheduled_clearCache.schedule(table::tickClearCache, l, TimeUnit.SECONDS);
-                    }
+        long delaySeconds = ThreadLocalRandom.current().nextLong(minSecond, maxSecond);
+        currentScheduler.schedule(this::submitClearCacheRound, delaySeconds, TimeUnit.SECONDS);
+    }
+
+    private void submitClearCacheRound() {
+        ThreadPoolExecutor executor = dbExecutor;
+        if (executor == null || executor.isShutdown()) {
+            return;
+        }
+
+        executor.execute(() -> {
+            try {
+                clearCacheRound();
+            } finally {
+                scheduleNextClearCacheRound();
+            }
+        });
+    }
+
+    private void clearCacheRound() {
+        for (Tables allTable : allTables) {
+            for (TTable table : allTable.getTables()) {
+                // 支持flush 说明是玩家个人数据; 不清理让玩家手动调用flush清理
+                if (!table.isSupportFlush()) {
+                    table.tickClearCache();
                 }
             }
         }
@@ -194,16 +243,17 @@ public class Mdb {
         logger.info("@@@@@@@@@@@@@@@@  mdb stop begin   @@@@@@@@@@@@@@@@");
         if (checkpoint != null && runCheckpoint) {
             try {
-                checkpoint.checkpoint(System.currentTimeMillis(), true);
+                checkpointInDbExecutor(System.currentTimeMillis(), true);
             } catch (Throwable e) {
                 logger.error("checkpoint on close error", e);
             }
         }
         checkpoint = null;
 
-        shutdownScheduler(SCHEDULER_CHECKPOINT_NAME, scheduled_checkPoint);
-        shutdownScheduler(SCHEDULER_COMMON_NAME, scheduled_common);
-        shutdownScheduler(SCHEDULER_CLEARCACHE_NAME, scheduled_clearCache);
+        shutdownExecutor(SCHEDULER_NAME, scheduler);
+        shutdownExecutor(DB_EXECUTOR_NAME, dbExecutor);
+        scheduler = null;
+        dbExecutor = null;
 
         if (allTables.size() > 0) {
             for (Tables tables : allTables) {
@@ -216,18 +266,28 @@ public class Mdb {
         logger.info("@@@@@@@@@@@@@@@@  mdb stop end   @@@@@@@@@@@@@@@@");
     }
 
-    private void shutdownScheduler(String schedulerName, ScheduledThreadPoolExecutor executor) {
+    private void checkpointInDbExecutor(long now, boolean close) throws Exception {
+        ExecutorService executor = dbExecutor;
+        if (executor == null) {
+            checkpoint.checkpoint(now, close);
+            return;
+        }
+        Future<?> future = executor.submit(() -> checkpoint.checkpoint(now, close));
+        future.get();
+    }
+
+    private void shutdownExecutor(String executorName, ExecutorService executor) {
         if (executor == null) {
             return;
         }
         try {
-            ConcurrentEnvironment.getInstance().shutdown(schedulerName);
+            ConcurrentEnvironment.getInstance().shutdown(executorName);
         } catch (Throwable e) {
-            logger.error("shutdown scheduler error name {}", schedulerName, e);
+            logger.error("shutdown executor error name {}", executorName, e);
             try {
                 executor.shutdown();
             } catch (Throwable ex) {
-                logger.error("fallback shutdown scheduler error name {}", schedulerName, ex);
+                logger.error("fallback shutdown executor error name {}", executorName, ex);
             }
         }
     }
@@ -244,6 +304,14 @@ public class Mdb {
 
     public long getCheckPointCount() {
         return checkPointCount;
+    }
+
+    public boolean isStrictCheckOpen() {
+        return strictCheckOpen;
+    }
+
+    public void setStrictCheckOpen(boolean strictCheckOpen) {
+        this.strictCheckOpen = strictCheckOpen;
     }
 
     @Deprecated

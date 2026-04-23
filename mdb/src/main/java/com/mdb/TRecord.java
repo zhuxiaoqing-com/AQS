@@ -169,6 +169,11 @@ public class TRecord<K, V> {
             return json;
         }
 
+        // 没有开启严格检测
+        if(!Mdb.getInstance().isStrictCheckOpen()) {
+            return null;
+        }
+
         // ② 非严格模式：到这里说明没变
         if (!strictCheck) {
             return null;

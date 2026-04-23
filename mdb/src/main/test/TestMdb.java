@@ -43,7 +43,7 @@ public class TestMdb {
 		
 		
 		for(int i=0;i<100;i++){
-			Mdb.getInstance().flush(new Random().nextInt(20), null);
+			Mdb.getInstance().flush(new Random().nextInt(20), true, null);
 		}
 		
 		
