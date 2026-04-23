@@ -16,6 +16,7 @@
         <module>lockstep</module>
         <module>JMHBenchmark</module>
         <module>game-temp-agent</module>
+        <module>mdbPlayerThread</module>
     </modules>
     <packaging>pom</packaging>
 

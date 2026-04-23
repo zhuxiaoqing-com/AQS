@@ -4,3 +4,4 @@ target/
 /lockstep/src/main/java/com/pb/
 /lockstep/src/main/pb/protoc.exe
 /mdb/src/main/beans/
+/mdbPlayerThread/src/main/beans/
