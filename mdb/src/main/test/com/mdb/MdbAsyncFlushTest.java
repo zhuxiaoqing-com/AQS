@@ -1,16 +1,23 @@
 package com.mdb;
 
 import com.mdb.entity.MdbPlayerInfo;
+import com.mdb.util.ConcurrentEnvironment;
 import com.mdb.util.FastJson;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import xbean.logic.Player;
 
+import java.lang.reflect.Field;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BooleanSupplier;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.ThreadPoolExecutor;
 
 import static org.junit.Assert.*;
 
@@ -24,6 +31,7 @@ public class MdbAsyncFlushTest {
         resetMdb();
         mdb = Mdb.getInstance();
         mdb.setPlayerFlushDelayMill(0L);
+        initPlayerExecutorsForTest();
         storage = new FakeStorageEngine();
 
         Tables tables = new Tables();
@@ -40,6 +48,29 @@ public class MdbAsyncFlushTest {
     @After
     public void tearDown() {
         resetMdb();
+    }
+
+    @Test
+    public void firstLoadShouldCreatePlayerInfoAndFinishLoad() {
+        long key = 2000L;
+        storage.replace("player", FastJson.toJSONString(key), FastJson.toJSONString(player(key, 10, "load")));
+
+        AtomicReference<MdbPlayerInfo> playerInfoRef = new AtomicReference<>();
+        AtomicBoolean success = new AtomicBoolean(false);
+        AtomicReference<Exception> error = new AtomicReference<>();
+
+        mdb.loadPlayerAllTableToMemory(key, true, (playerInfo, allSuccess, exception) -> {
+            playerInfoRef.set(playerInfo);
+            success.set(allSuccess);
+            error.set(exception);
+        });
+
+        waitUntil(() -> playerInfoRef.get() != null);
+        assertEquals(Long.valueOf(key), playerInfoRef.get().getPlayerId());
+        assertEquals(MdbPlayerInfo.load_finish, playerInfoRef.get().getState());
+        assertTrue(success.get());
+        assertNull(error.get());
+        assertEquals(1, table.getCacheList().size());
     }
 
     @Test
@@ -96,6 +127,41 @@ public class MdbAsyncFlushTest {
     }
 
     @Test
+    public void flushDuringLoadIngShouldWaitLoadFinishThenFlush() {
+        long key = 2003L;
+        storage.replace("player", FastJson.toJSONString(key), FastJson.toJSONString(player(key, 13, "loading")));
+
+        BlockingGetPlayerTable blockingTable = new BlockingGetPlayerTable();
+        useTable(blockingTable);
+
+        AtomicInteger loadCallbackCount = new AtomicInteger();
+        AtomicInteger flushCallbackCount = new AtomicInteger();
+        AtomicBoolean flushSuccess = new AtomicBoolean(false);
+
+        mdb.loadPlayerAllTableToMemory(key, true, (playerInfo, allSuccess, exception) -> {
+            assertTrue(allSuccess);
+            loadCallbackCount.incrementAndGet();
+        });
+
+        blockingTable.awaitGetStarted();
+        mdb.flush(key, (playerInfo, allSuccess, exception) -> {
+            flushCallbackCount.incrementAndGet();
+            flushSuccess.set(allSuccess);
+        }, System.currentTimeMillis());
+
+        assertEquals(0, flushCallbackCount.get());
+        blockingTable.releaseGet();
+        waitUntil(() -> loadCallbackCount.get() == 1);
+        tickUntil(() -> flushCallbackCount.get() == 1);
+
+        assertEquals(1, loadCallbackCount.get());
+        assertEquals(1, flushCallbackCount.get());
+        assertTrue(flushSuccess.get());
+        assertNotNull(storage.getStored("player", "2003"));
+        assertEquals(0, blockingTable.getCacheList().size());
+    }
+
+    @Test
     public void flushFailureShouldKeepDirtyRecordForRetry() {
         long key = 2004L;
         table.add(key, player(key, 14, "retry"));
@@ -133,6 +199,29 @@ public class MdbAsyncFlushTest {
         assertEquals(0, table.getCacheList().size());
     }
 
+    @Test
+    public void loadDuringFlushIngShouldReturnFlushingError() {
+        long key = 2005L;
+        AtomicReference<MdbPlayerInfo> loadPlayerInfo = new AtomicReference<>();
+        AtomicBoolean loadSuccess = new AtomicBoolean(true);
+        AtomicReference<Exception> loadError = new AtomicReference<>();
+
+        MdbPlayerInfo flushingInfo = new MdbPlayerInfo(key, true, MdbPlayerInfo.flush_ing);
+        putPlayerInfoForTest(key, flushingInfo);
+
+        mdb.loadPlayerAllTableToMemory(key, true, (playerInfo, allSuccess, exception) -> {
+            loadPlayerInfo.set(playerInfo);
+            loadSuccess.set(allSuccess);
+            loadError.set(exception);
+        });
+
+        waitUntil(() -> loadPlayerInfo.get() != null);
+        assertEquals(Long.valueOf(key), loadPlayerInfo.get().getPlayerId());
+        assertFalse(loadSuccess.get());
+        assertNotNull(loadError.get());
+        assertEquals("player is flushing", loadError.get().getMessage());
+    }
+
     private void loadPlayer(long key) {
         AtomicReference<MdbPlayerInfo> playerInfoRef = new AtomicReference<>();
         AtomicBoolean success = new AtomicBoolean(false);
@@ -148,6 +237,16 @@ public class MdbAsyncFlushTest {
         assertEquals(Long.valueOf(key), playerInfoRef.get().getPlayerId());
         assertTrue(success.get());
         assertNull(error.get());
+    }
+
+    private void useTable(PlayerTable newTable) {
+        Tables tables = new Tables();
+        tables.storage = storage;
+        newTable.setTables(tables);
+        tables.add(newTable);
+        mdb.getAllTables().clear();
+        mdb.getAllTables().add(tables);
+        table = newTable;
     }
 
     private void tickUntil(BooleanSupplier condition) {
@@ -188,7 +287,37 @@ public class MdbAsyncFlushTest {
         instance.close();
     }
 
-    private static final class PlayerTable extends TTable<Long, Player> {
+    @SuppressWarnings("unchecked")
+    private void initPlayerExecutorsForTest() {
+        try {
+            Field field = Mdb.class.getDeclaredField("playerExecutor");
+            field.setAccessible(true);
+            List<ThreadPoolExecutor> executors = (List<ThreadPoolExecutor>) field.get(null);
+            if (!executors.isEmpty()) {
+                return;
+            }
+            for (int i = 0; i < 2; i++) {
+                executors.add(ConcurrentEnvironment.getInstance()
+                        .newFixedThreadPool("mdb.player.executor." + i, 1));
+            }
+        } catch (Exception e) {
+            throw new AssertionError("init player executors for test failed", e);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private void putPlayerInfoForTest(Long key, MdbPlayerInfo playerInfo) {
+        try {
+            Field field = Mdb.class.getDeclaredField("mdbPlayerMap");
+            field.setAccessible(true);
+            Map<Long, MdbPlayerInfo> playerMap = (Map<Long, MdbPlayerInfo>) field.get(null);
+            playerMap.put(key, playerInfo);
+        } catch (Exception e) {
+            throw new AssertionError("put player info for test failed", e);
+        }
+    }
+
+    private static class PlayerTable extends TTable<Long, Player> {
         @Override
         public String getName() {
             return "player";
@@ -229,4 +358,39 @@ public class MdbAsyncFlushTest {
             return FastJson.parseObject(value, Player.class);
         }
     }
+
+    private static final class BlockingGetPlayerTable extends PlayerTable {
+        private final CountDownLatch getStarted = new CountDownLatch(1);
+        private final CountDownLatch releaseGet = new CountDownLatch(1);
+
+        @Override
+        public Player get(Long key) {
+            getStarted.countDown();
+            try {
+                if (!releaseGet.await(1, TimeUnit.SECONDS)) {
+                    throw new AssertionError("wait get release timeout");
+                }
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                throw new AssertionError(e);
+            }
+            return super.get(key);
+        }
+
+        void awaitGetStarted() {
+            try {
+                if (!getStarted.await(1, TimeUnit.SECONDS)) {
+                    throw new AssertionError("wait get start timeout");
+                }
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                throw new AssertionError(e);
+            }
+        }
+
+        void releaseGet() {
+            releaseGet.countDown();
+        }
+    }
+
 }

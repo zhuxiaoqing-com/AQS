@@ -16,6 +16,25 @@ public class MdbPlayerInfo {
     public static final int flush_ing = 5; // flush中
     public static final int flush_finish = 6; // flush完成
 
+    public static String stateName(int state) {
+        switch (state) {
+            case load_wait:
+                return "load_wait";
+            case load_ing:
+                return "load_ing";
+            case load_finish:
+                return "load_finish";
+            case flush_wait:
+                return "flush_wait";
+            case flush_ing:
+                return "flush_ing";
+            case flush_finish:
+                return "flush_finish";
+            default:
+                return "unknown(" + state + ")";
+        }
+    }
+
     private Long playerId;
     private long offlineTime; // 离线时间
     private long flushStartTime; // 开始时间

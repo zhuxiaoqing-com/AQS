@@ -1,51 +1,26 @@
-import com.mdb.Mdb;
+package com.mdb;
+
 import com.mdb.util.XMLUtils;
 import com.mdb.xmlgen.xmlparse.MdbMetadata;
 
 import java.util.Random;
 
-public class TestMdb {
-	public static String inputXml = "mdb\\src\\main\\mdb.xml";
+public class TestMdb3 {
+
 	public static void main(String[] args) throws Exception {
 		//Mdb.configLog();
 		Mdb.configLog();
 		MdbMetadata mdb = new MdbMetadata();
-		mdb.initialize(XMLUtils.getRootElement(inputXml));
+		mdb.initialize(XMLUtils.getRootElement(TestMdb.inputXml));
 		Mdb.getInstance().start(mdb);
 //		Thread.sleep(3000L);
 		
 		long max = 1000;
 
-		//主线程预先加载数据
 		for(long playerId = 1;playerId < max;playerId++){
 			getData(playerId);
 		}
 
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				Random random = new Random();
-				while (true) {
-					try {
-						Thread.sleep(1000);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-					//每秒修改1000 
-					for(int i=0;i<100;i++){
-						//随机，修改数据
-						long playerId = random.nextInt((int)max);
-						upData(playerId);
-					}
-				}
-			}
-		}).start();
-		
-		
-		for(int i=0;i<100;i++){
-			Mdb.getInstance().flush((long) new Random().nextInt(20), null, System.currentTimeMillis());
-		}
-		
 		
 		new Thread(new Runnable() {
 			@Override
@@ -81,10 +56,8 @@ public class TestMdb {
 			}
 		}).start();
 //		
-//		table.logic.Player.get(16L);
-//		table.logic.Player.get(17L);
-		
-		//Mdb.getInstance().flush(playerId);
+		table.logic.Player.get(16L);
+		table.logic.Player.get(17L);
 		
 
 		System.err.println("回车退出");

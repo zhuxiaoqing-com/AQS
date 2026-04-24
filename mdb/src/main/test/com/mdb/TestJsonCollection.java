@@ -1,9 +1,8 @@
-import com.mdb.collection.ConcurrentArrayListX;
+package com.mdb;
+
 import com.mdb.util.FastJson;
 import xbean.logic.Bag;
-import xbean.logic.Player;
 
-import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class TestJsonCollection {

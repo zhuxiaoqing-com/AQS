@@ -1,4 +1,5 @@
-import com.mdb.Mdb;
+package com.mdb;
+
 import com.mdb.util.FastJson;
 import com.mdb.util.XMLUtils;
 import com.mdb.xmlgen.xmlparse.MdbMetadata;

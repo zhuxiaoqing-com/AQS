@@ -131,44 +131,48 @@ public class Mdb {
             long currMs = System.currentTimeMillis();
             Long playerId = (Long) a.stream().findAny().get();
             MdbPlayerInfo mdbPlayerInfo = mdbPlayerMap.get(playerId);
+            logger.info("玩家mdb加载请求 playerId {} 是否已有状态 {} 参数 {}", playerId, mdbPlayerInfo != null, param);
             if (mdbPlayerInfo == null) {
                 mdbPlayerInfo = new MdbPlayerInfo(key, param, MdbPlayerInfo.load_ing);
-                mdbPlayerInfo.setMdbLoadCallback(callback);
+                setLoadCallback(mdbPlayerInfo, callback, "load_new");
                 mdbPlayerMap.put(key, mdbPlayerInfo);
+                logger.info("玩家mdb信息创建 playerId {} 状态 {} 参数 {}", playerId, MdbPlayerInfo.stateName(mdbPlayerInfo.getState()), param);
                 // 没有数据：设置为wait_load状态，异步进行load;异步Load开始设置load_ing状态;load_finish以后回调load_finish接口;
+                logger.info("玩家mdb提交异步加载 playerId {}", playerId);
                 executeAsync(()->_loadPlayerAllTableToMemory(key, loadFinishCallBack()));
                 return;
             }
-            mdbPlayerInfo.setMdbLoadCallback(callback);
+            setLoadCallback(mdbPlayerInfo, callback, "load_request");
 
             switch (mdbPlayerInfo.getState()) {
-                case MdbPlayerInfo.load_wait:
-                    // ;不处理;直接return;
-                    mdbPlayerInfo.setState(MdbPlayerInfo.flush_ing);
-                    break;
                 case MdbPlayerInfo.load_ing:
                     // 不处理;直接return;
+                    logger.info("玩家mdb忽略加载请求 playerId {} 状态 {}", playerId, MdbPlayerInfo.stateName(mdbPlayerInfo.getState()));
                     break;
                 case MdbPlayerInfo.load_finish:
                     // 再调用一次吧;业务线程会进行处理重复的,防止bug导致玩家永远也上不了线
+                    logger.info("玩家mdb再次触发加载回调 playerId {} 状态 {}", playerId, MdbPlayerInfo.stateName(mdbPlayerInfo.getState()));
                     loadFinishCallBack().callback(playerId,  true, null);
                     break;
                 case MdbPlayerInfo.flush_wait:
                     // 直接设置为load_finish;
-                    mdbPlayerInfo.setState(MdbPlayerInfo.load_finish);
-                    mdbPlayerInfo.setOfflineTime(0);// 清除离线时间状态;
+                    changePlayerState(mdbPlayerInfo, MdbPlayerInfo.load_finish, "load_cancel_flush_wait");
+                    setOfflineTime(mdbPlayerInfo, 0, "load_cancel_flush_wait");// 清除离线时间状态;
                     if (callback != null) {
+                        logger.info("玩家mdb加载回调 playerId {} 成功 true 原因 load_cancel_flush_wait", playerId);
                         callback.callback(mdbPlayerInfo, true, null);
                     }
                     break;
                 case MdbPlayerInfo.flush_ing:
                     // 错误码;进行像客户端提示说正在加载数据中请稍后重试;
                     if (callback != null) {
+                        logger.info("玩家mdb加载回调 playerId {} 成功 false 原因 flushing", playerId);
                         callback.callback(mdbPlayerInfo, false, new IllegalStateException("player is flushing"));
                     }
                     break;
                 case MdbPlayerInfo.flush_finish:
                     // 不会有这个状态;flush_ing结束后直接就删数据了;
+                    logger.info("玩家mdb忽略加载请求 playerId {} 状态 {}", playerId, MdbPlayerInfo.stateName(mdbPlayerInfo.getState()));
                     break;
             }
         });
@@ -185,13 +189,16 @@ public class Mdb {
                     if (!table.isSupportFlush()) {
                         continue;
                     }
+                    logger.info("玩家mdb加载表数据 playerId {} table {}", key, table.getName());
                     table.get(key);
                 }
             }
             timeCostPrint.print();
+            logger.info("玩家mdb异步加载完成 playerId {} 成功 true", key);
             putPlayerThread(Collections.singletonList(key), a -> callback.callback(key, true, null));
         } catch (Exception e) {
             logger.error("Mdb loadPlayerAllTableToMemory error key {} ", key, e);
+            logger.info("玩家mdb异步加载完成 playerId {} 成功 false", key);
             putPlayerThread(Collections.singletonList(key), a -> callback.callback(key, false, e));
         }
     }
@@ -211,6 +218,7 @@ public class Mdb {
             long currMs = System.currentTimeMillis();
             Long playerId = (Long) a.stream().findAny().get();
             MdbPlayerInfo mdbPlayerInfo = mdbPlayerMap.get(playerId);
+            logger.info("玩家mdb刷库请求 playerId {} 是否已有状态 {} 离线时间 {}", playerId, mdbPlayerInfo != null, offlineTime);
             if(mdbPlayerInfo == null) {
                 logger.error("mdb flush的时候没有MdbPlayerInfo数据");
                 if (callback != null) {
@@ -218,18 +226,19 @@ public class Mdb {
                 }
                 return;
             }
-            mdbPlayerInfo.setMdbFlushCallback(callback);
-            mdbPlayerInfo.setOfflineTime(offlineTime);
+            setFlushCallback(mdbPlayerInfo, callback, "flush_request");
+            setOfflineTime(mdbPlayerInfo, offlineTime, "flush_request");
 
             switch (mdbPlayerInfo.getState()) {
                 case MdbPlayerInfo.load_wait:
-                    mdbPlayerInfo.setState(MdbPlayerInfo.flush_ing);
+                    changePlayerState(mdbPlayerInfo, MdbPlayerInfo.flush_ing, "flush_when_load_wait");
                     // 回调flush_finish
                     flushFinishCallBack().callback(key, true, null);
                     break;
                 case MdbPlayerInfo.load_ing:
                     // 预约flush，在玩家数据里记录一个离线时间;load结束的时候如果有离线时间,就应该主动调用flush;
                     // 不处理 离线时间已经设置了;等load结束的时候检测离线时间就行了
+                    logger.info("玩家mdb预约刷库 playerId {} 状态 {} 离线时间 {}", playerId, MdbPlayerInfo.stateName(mdbPlayerInfo.getState()), offlineTime);
                     /*
                      直接抛到队列里;排队预约flush; 先抛到scheduler队列;等待load_ing结束;然后再抛到player队列进行flush预约;
                      上面的有点问题，scheduler并没有按线程id来进行处理;
@@ -248,17 +257,20 @@ public class Mdb {
                     break;
                 case MdbPlayerInfo.load_finish:
                     // 异步进行flush，将状态修改为wait_flush
-                    mdbPlayerInfo.setState(MdbPlayerInfo.flush_wait);
-                    mdbPlayerInfo.setFlushStartTime(currMs+ playerFlushDelayMill);
+                    changePlayerState(mdbPlayerInfo, MdbPlayerInfo.flush_wait, "flush_request");
+                    setFlushStartTime(mdbPlayerInfo, currMs + playerFlushDelayMill, "flush_request");
                     break;
                 case MdbPlayerInfo.flush_wait:
                     //直接不处理;修改离线时间;
+                    logger.info("玩家mdb更新等待刷库 playerId {} 离线时间 {}", playerId, offlineTime);
                     break;
                 case MdbPlayerInfo.flush_ing:
                     //直接不处理;修改离线时间;
+                    logger.info("玩家mdb忽略刷库请求 playerId {} 状态 {} 离线时间 {}", playerId, MdbPlayerInfo.stateName(mdbPlayerInfo.getState()), offlineTime);
                     break;
                 case MdbPlayerInfo.flush_finish:
                     //不处理;
+                    logger.info("玩家mdb忽略刷库请求 playerId {} 状态 {}", playerId, MdbPlayerInfo.stateName(mdbPlayerInfo.getState()));
                     break;
             }
         });
@@ -268,7 +280,7 @@ public class Mdb {
     private boolean _flush(Long key, MdbPlayerFinishCallback callback) {
         boolean allSuccess = true;
         try {
-            logger.info("flush start key {}", key);
+            logger.info("玩家mdb异步刷库开始 playerId {}", key);
             TimeCostPrint timeCostPrint = new TimeCostPrint(logger, 20, "flush");
             for (Tables allTable : allTables) {
                 boolean detect = allTable.getStorage().detect();
@@ -280,6 +292,7 @@ public class Mdb {
                 for (TTable table : allTable.tables.values()) {
                     TTable tt = table;
                     if (tt.isSupportFlush()) {
+                        logger.info("玩家mdb刷库表开始 playerId {} table {}", key, tt.getName());
                         // 名义上增加只读锁，其实是flush操作，目的是为了和checkpoint的write锁互斥，同时又保证多玩家在没有checkpoint时flush自己数据能并发执行
                         tt.readlock.lock();
                         try {
@@ -289,14 +302,17 @@ public class Mdb {
                         } finally {
                             tt.readlock.unlock();
                         }
+                        logger.info("玩家mdb刷库表完成 playerId {} table {} 当前是否全部成功 {}", key, tt.getName(), allSuccess);
                     }
                 }
             }
             timeCostPrint.print();
             boolean finalAllSuccess = allSuccess;
+            logger.info("玩家mdb异步刷库完成 playerId {} 成功 {}", key, finalAllSuccess);
             putPlayerThread(Collections.singletonList(key), a->callback.callback(key, finalAllSuccess, null));
         } catch (Exception e) {
             // 如果失败抛出异常，业务层应该下次还让玩家再次进入这个进程，不然会有脏数据的问题; 业务层也可以尝试进行重试
+            logger.info("玩家mdb异步刷库完成 playerId {} 成功 false 异常 {}", key, e.toString());
             putPlayerThread(Collections.singletonList(key), a->callback.callback(key, false, e));
         }
         return allSuccess;
@@ -470,6 +486,42 @@ public class Mdb {
         this.playerFlushDelayMill = playerFlushDelayMill;
     }
 
+    private void changePlayerState(MdbPlayerInfo mdbPlayerInfo, int newState, String reason) {
+        int oldState = mdbPlayerInfo.getState();
+        mdbPlayerInfo.setState(newState);
+        logger.info("玩家mdb状态变化 playerId {} {} -> {} 原因 {}",
+                mdbPlayerInfo.getPlayerId(),
+                MdbPlayerInfo.stateName(oldState),
+                MdbPlayerInfo.stateName(newState),
+                reason);
+    }
+
+    private void setOfflineTime(MdbPlayerInfo mdbPlayerInfo, long offlineTime, String reason) {
+        long oldOfflineTime = mdbPlayerInfo.getOfflineTime();
+        mdbPlayerInfo.setOfflineTime(offlineTime);
+        logger.info("玩家mdb离线时间变化 playerId {} {} -> {} 原因 {}",
+                mdbPlayerInfo.getPlayerId(), oldOfflineTime, offlineTime, reason);
+    }
+
+    private void setFlushStartTime(MdbPlayerInfo mdbPlayerInfo, long flushStartTime, String reason) {
+        long oldFlushStartTime = mdbPlayerInfo.getFlushStartTime();
+        mdbPlayerInfo.setFlushStartTime(flushStartTime);
+        logger.info("玩家mdb刷库开始时间变化 playerId {} {} -> {} 原因 {}",
+                mdbPlayerInfo.getPlayerId(), oldFlushStartTime, flushStartTime, reason);
+    }
+
+    private void setLoadCallback(MdbPlayerInfo mdbPlayerInfo, MdbLoadCallback callback, String reason) {
+        mdbPlayerInfo.setMdbLoadCallback(callback);
+        logger.info("玩家mdb设置加载回调 playerId {} 是否有回调 {} 原因 {}",
+                mdbPlayerInfo.getPlayerId(), callback != null, reason);
+    }
+
+    private void setFlushCallback(MdbPlayerInfo mdbPlayerInfo, MdbFlushCallback callback, String reason) {
+        mdbPlayerInfo.setMdbFlushCallback(callback);
+        logger.info("玩家mdb设置刷库回调 playerId {} 是否有回调 {} 原因 {}",
+                mdbPlayerInfo.getPlayerId(), callback != null, reason);
+    }
+
     private void putPlayerThread(Long playerId, Consumer<Collection> consumer) {
         putPlayerThread(Collections.singletonList(playerId), consumer);
     }
@@ -519,8 +571,10 @@ public class Mdb {
             if (currMill < mdbPlayerInfo.getFlushStartTime()) {
                 continue;
             }
-            mdbPlayerInfo.setState(MdbPlayerInfo.flush_ing);
+            logger.info("玩家mdb定时检测到期刷库 playerId {} 当前时间 {} 刷库开始时间 {}", l, currMill, mdbPlayerInfo.getFlushStartTime());
+            changePlayerState(mdbPlayerInfo, MdbPlayerInfo.flush_ing, "tick_flush_due");
             // 进行flush
+            logger.info("玩家mdb提交异步刷库 playerId {}", l);
             executeAsync(()->_flush(l, flushFinishCallBack()));
         }
     }
@@ -542,14 +596,16 @@ public class Mdb {
                 }
 
                 if (allSuccess) {
-                    mdbPlayerInfo.setState(MdbPlayerInfo.flush_finish);
+                    changePlayerState(mdbPlayerInfo, MdbPlayerInfo.flush_finish, "flush_finish_success");
                     mdbPlayerMap.remove(playerId);
+                    logger.info("玩家mdb移除玩家信息 playerId {} 原因 flush_finish_success", playerId);
                 } else {
-                    mdbPlayerInfo.setState(MdbPlayerInfo.flush_wait);
+                    changePlayerState(mdbPlayerInfo, MdbPlayerInfo.flush_wait, "flush_finish_fail");
                     // 延迟1.5倍，继续flush
-                    mdbPlayerInfo.setFlushStartTime(currMill + (long) (playerFlushDelayMill * 1.5d));
+                    setFlushStartTime(mdbPlayerInfo, currMill + (long) (playerFlushDelayMill * 1.5d), "flush_finish_fail");
                 }
                 if (mdbPlayerInfo.getMdbFlushCallback() != null) {
+                    logger.info("玩家mdb刷库回调 playerId {} 成功 {}", playerId, allSuccess);
                     mdbPlayerInfo.getMdbFlushCallback().onFlushOver(mdbPlayerInfo, allSuccess, exception);
                 }
             }
@@ -575,17 +631,18 @@ public class Mdb {
 
                 if (allSuccess) {
                     // 成功进入load_finish;检查是否有离线时间;有的话直接进入flush_wait;
-                    mdbPlayerInfo.setState(MdbPlayerInfo.load_finish);
+                    changePlayerState(mdbPlayerInfo, MdbPlayerInfo.load_finish, "load_finish_success");
                     if (mdbPlayerInfo.getOfflineTime() > 0) {
-                        mdbPlayerInfo.setState(MdbPlayerInfo.flush_wait);
-                        mdbPlayerInfo.setFlushStartTime(currMill + playerFlushDelayMill);
+                        changePlayerState(mdbPlayerInfo, MdbPlayerInfo.flush_wait, "load_finish_with_offline");
+                        setFlushStartTime(mdbPlayerInfo, currMill + playerFlushDelayMill, "load_finish_with_offline");
                     }
                 } else {
                     // 失败-进行flush操作;因为有可能加载了一半;
-                    mdbPlayerInfo.setState(MdbPlayerInfo.flush_wait);
-                    mdbPlayerInfo.setFlushStartTime(currMill + playerFlushDelayMill);
+                    changePlayerState(mdbPlayerInfo, MdbPlayerInfo.flush_wait, "load_finish_fail");
+                    setFlushStartTime(mdbPlayerInfo, currMill + playerFlushDelayMill, "load_finish_fail");
                 }
                 if (mdbPlayerInfo.getMdbLoadCallback() != null) {
+                    logger.info("玩家mdb加载回调 playerId {} 成功 {}", playerId, allSuccess);
                     mdbPlayerInfo.getMdbLoadCallback().callback(mdbPlayerInfo, allSuccess, exception);
                 }
             }

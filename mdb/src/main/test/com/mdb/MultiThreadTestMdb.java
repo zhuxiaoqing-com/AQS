@@ -1,8 +1,9 @@
+package com.mdb;
+
 import com.mdb.util.ConcurrentEnvironment;
 import com.mdb.xmlgen.xmlparse.MdbMetadata;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.mdb.Mdb;
 import com.mdb.util.XMLUtils;
 import xbean.logic.Player;
 

@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-final class FakeStorageEngine implements StorageEngine {
+public final class FakeStorageEngine implements StorageEngine {
     private final Map<String, Map<String, String>> data = new ConcurrentHashMap<>();
 
     private final AtomicInteger insertFailures = new AtomicInteger();
