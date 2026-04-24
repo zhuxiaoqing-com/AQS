@@ -86,7 +86,11 @@ public class Mdb {
             if (checkpoint == null) {
                 scheduler = ConcurrentEnvironment.getInstance().newScheduledThreadPool(EXECUTOR_NAME, EXECUTOR_THREAD_COUNT);
                 // 每次初始化一个线程
-                initPlayerExecutor();
+                if (playerExecutor.isEmpty()) {
+                    for (int i = 0; i < EXECUTOR_PLAYER_THREAD_COUNT; i++) {
+                        playerExecutor.add(ConcurrentEnvironment.getInstance().newFixedThreadPool("mdb.player.executor." + i, 1));
+                    }
+                }
                 // 关闭后，不再执行“延迟任务”（delay/一次性定时）
                 scheduler.setExecuteExistingDelayedTasksAfterShutdownPolicy(false);
                 // 关闭后，不再继续执行“周期任务”（scheduleAtFixedRate / scheduleWithFixedDelay）
@@ -153,11 +157,15 @@ public class Mdb {
                     // 直接设置为load_finish;
                     mdbPlayerInfo.setState(MdbPlayerInfo.load_finish);
                     mdbPlayerInfo.setOfflineTime(0);// 清除离线时间状态;
-                    callback.callback(mdbPlayerInfo, false, null);
+                    if (callback != null) {
+                        callback.callback(mdbPlayerInfo, true, null);
+                    }
                     break;
                 case MdbPlayerInfo.flush_ing:
                     // 错误码;进行像客户端提示说正在加载数据中请稍后重试;
-                    callback.callback(mdbPlayerInfo, false, null);
+                    if (callback != null) {
+                        callback.callback(mdbPlayerInfo, false, new IllegalStateException("player is flushing"));
+                    }
                     break;
                 case MdbPlayerInfo.flush_finish:
                     // 不会有这个状态;flush_ing结束后直接就删数据了;
@@ -377,15 +385,6 @@ public class Mdb {
         }
     }
 
-    private static synchronized void initPlayerExecutor() {
-        if (!playerExecutor.isEmpty()) {
-            return;
-        }
-        for (int i = 0; i < EXECUTOR_PLAYER_THREAD_COUNT; i++) {
-            playerExecutor.add(ConcurrentEnvironment.getInstance().newFixedThreadPool("mdb.player.executor." + i, 1));
-        }
-    }
-
     private static synchronized void shutdownPlayerExecutors() {
         for (int i = 0; i < playerExecutor.size(); i++) {
             ThreadPoolExecutor executor = playerExecutor.get(i);
@@ -478,7 +477,11 @@ public class Mdb {
         if (playerIds.size() <= 0) {
             return;
         }
-        initPlayerExecutor();
+        if (playerExecutor.isEmpty()) {
+            logger.warn("mdb player executor is empty, ignore player task {}", playerIds);
+            return;
+        }
+
         Object o = playerIds.stream().findAny().get();
         if (!(o instanceof Long)) {
             playerExecutor.get(0).execute(() -> consumer.accept(playerIds));
@@ -534,6 +537,7 @@ public class Mdb {
                 Long playerId = (Long) key;
                 MdbPlayerInfo mdbPlayerInfo = mdbPlayerMap.get(playerId);
                 if (mdbPlayerInfo == null) {
+                    logger.warn("mdb flush finish callback miss player info key {}", key);
                     return;
                 }
 
@@ -565,6 +569,7 @@ public class Mdb {
                 Long playerId = (Long) key;
                 MdbPlayerInfo mdbPlayerInfo = mdbPlayerMap.get(playerId);
                 if (mdbPlayerInfo == null) {
+                    logger.warn("mdb load finish callback miss player info key {}", key);
                     return;
                 }
 
