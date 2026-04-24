@@ -145,7 +145,7 @@ public class TestMdb2 {
 		xbean.logic.Player player = table.logic.Player.get(playerId);
 		player.setLevel(player.getLevel() + 1);
 		if(player.getLevel() == 3){
-			Mdb.getInstance().flush(playerId, true, null);
+			Mdb.getInstance().flush(playerId, null, System.currentTimeMillis());
 			return true;
 		}
 		return false;

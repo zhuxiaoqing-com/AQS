@@ -110,6 +110,60 @@ AtomicInteger 可以解决;modify autointr(); checkpoint的时候,将其compareA
 改一下试试;
 
 
+Loadmemory 和flush做异步立刻 业务上层会有维护状态的  比如logic服务器维护数据库玩家列表 先load标记load状态 然后flush标记. ,
+flush状态 一般离线30分钟后才进行flush   lobby也要有玩家数据 flush以后才通知lobby删除
+当然如果删除的时候玩家已经在线了 那就不删除映射  记录玩家离线时间 lobby透传到logic
+logic flush结束以后将离线时间和玩家id发送到lb  和lb里的数据一致 并且玩家离线 就删除 否则不做处理
+
+
+
+Logic如果还在某个状态 下个状态已经过来了的时候怎么办。
+1无视玩家的进入地图协议 让玩家等一下
+2帮玩家排队
+直接无视吧，如果是load的时候下线了的话 就在load结束的时候检测下 是否离线了 离线了 就切换为waitflush状态
+
+上面的玩家状态如果是放到Mdb的话,就先mdb存玩家数据,
+暂定有  wait_load;load_ing;load_finish;wait_flush;flush_ing;flush_finish;
+load的时候
+    没有数据：设置为wait_load状态，异步进行load;异步Load开始设置load_ing状态;load_finish以后回调load_finish接口;
+    wait_load;不处理;直接return;
+    load_ing;不处理;直接return;
+    load_finish;直接就调用load_finish接口;可能会发送了两次玩家进入游戏;当然进入游戏那里会判断是否重复进入游戏了;(根据玩家在线列表)
+        这里会有异步,因为load_finish是异步调用的;所以如果是load_finish没事 直接调用就行了;
+    wait_flush;直接设置为load_finish;回调load_finish接口;用atomicInteger;设置为load_finish; 失败的话肯定是flush_ing状态;直接重新调用;
+    flush_ing;return 错误码;进行像客户端提示说正在加载数据中请稍后重试;
+    flush_finish;理论上应该没有这个状态,flush完成以后就会将数据从Map里删除;当然会有回调接口;
+
+flush的时候：
+    没有数据;不处理;warn警告
+    wait_load;删除map数据;用atomicInteger将其修改为flush_finish;然后回调flush_finish; 失败的话肯定是load_ing;重新调用整个方法;
+    load_ing;预约flush，在玩家数据里记录一个离线时间;load结束的时候如果有离线时间,就应该主动调用flush; 直接预约数据;然后重新获取atomicInteger;已经是load_finish;的话执行load_finish;
+    load_finish;异步进行flush，将状态修改为wait_flush，等待flush;atomicInteger不会修改失败;因为设置wait_flush肯定是在玩家线程的;
+    wait_flush;直接不处理;修改离线时间;
+    flush_ing;直接不处理;修改离线时间;
+    flush_finish;不处理;
+
+感觉弄个线程专门处理下好像也可以;
+load flush 就已经包含了 上线  和下线;传入数据;
+然后抛到一个线程里处理;就算定时开始了 说要进行修改状态了;也是在那个单线程里面的;
+
+load的时候
+    没有数据：设置为wait_load状态，异步进行load;异步Load开始设置load_ing状态;load_finish以后回调load_finish接口;
+    wait_load;不处理;直接return;
+    load_ing;不处理;直接return;
+    load_finish;不处理;因为已经上线了;
+    wait_flush;直接设置为load_finish;
+    flush_ing;错误码;进行像客户端提示说正在加载数据中请稍后重试;
+    flush_finish;不会有这个状态;flush_ing结束后直接就删数据了;
+
+flush的时候：
+    没有数据;不处理;warn警告
+    wait_load;删除map数据;
+    load_ing;预约flush，在玩家数据里记录一个离线时间;load结束的时候如果有离线时间,就应该主动调用flush;
+    load_finish;异步进行flush，将状态修改为wait_flush
+    wait_flush;直接不处理;修改离线时间;
+    flush_ing;直接不处理;修改离线时间;
+    flush_finish;不处理;
 
 
 

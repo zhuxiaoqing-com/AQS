@@ -7,6 +7,7 @@ import xbean.logic.Player;
 
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class TestBagFlushGet {
@@ -84,12 +85,36 @@ public class TestBagFlushGet {
     }
 
     private static void flushSync(long key) {
+        Mdb.getInstance().setPlayerFlushDelayMill(0L);
+        AtomicBoolean loadSuccess = new AtomicBoolean(false);
+        AtomicReference<Exception> loadError = new AtomicReference<>(null);
+        AtomicInteger loadCallbackCount = new AtomicInteger();
+
+        Mdb.getInstance().loadPlayerAllTableToMemory(key, true, (playerInfo, allSuccess, exception) -> {
+            loadCallbackCount.incrementAndGet();
+            loadSuccess.set(allSuccess);
+            loadError.set(exception);
+        });
+        waitUntil(() -> loadCallbackCount.get() > 0);
+        if (loadError.get() != null) {
+            throw new RuntimeException("load exception key=" + key, loadError.get());
+        }
+        if (!loadSuccess.get()) {
+            throw new IllegalStateException("load failed key=" + key);
+        }
+
         AtomicBoolean success = new AtomicBoolean(false);
         AtomicReference<Exception> error = new AtomicReference<>(null);
+        AtomicInteger callbackCount = new AtomicInteger();
 
-        Mdb.getInstance().flush(key, true, (flushKey, allSuccess, exception) -> {
+        Mdb.getInstance().flush(key, (playerInfo, allSuccess, exception) -> {
+            callbackCount.incrementAndGet();
             success.set(allSuccess);
             error.set(exception);
+        }, System.currentTimeMillis());
+        waitUntil(() -> {
+            Mdb.getInstance().tick();
+            return callbackCount.get() > 0;
         });
 
         if (error.get() != null) {
@@ -98,5 +123,21 @@ public class TestBagFlushGet {
         if (!success.get()) {
             throw new IllegalStateException("flush failed key=" + key);
         }
+    }
+
+    private static void waitUntil(BooleanSupplier condition) {
+        long deadline = System.currentTimeMillis() + 3000L;
+        while (!condition.getAsBoolean() && System.currentTimeMillis() < deadline) {
+            try {
+                Thread.sleep(10L);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    private interface BooleanSupplier {
+        boolean getAsBoolean();
     }
 }

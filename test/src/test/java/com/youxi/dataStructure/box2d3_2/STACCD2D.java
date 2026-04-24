@@ -5,7 +5,7 @@ package com.youxi.dataStructure.box2d3_2;
  * @Description: CCD2D
  * @Date 2025/8/22 13:59
  **/
-public class CCD2D {
+public class STACCD2D {
 
     // ---------------- Vec2 ----------------
     public static class Vec2 {
