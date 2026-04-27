@@ -1,0 +1,15 @@
+# This is Git's per-user configuration file.
+[user]
+	name = zhuxiaoqing
+	email = 1079622162@qq.com
+# Please adapt and uncomment the following lines:
+#	name = 111111
+#	email = 111111@qq.com
+[http "https://github.com"]
+    proxy = http://127.0.0.1:7897
+[http "https://gitee.com"]
+    proxy = http://127.0.0.1:7897
+#[credential "https://gitee.com"]
+#	provider = generic
+[credential "https://gitee.com"]
+	provider = generic

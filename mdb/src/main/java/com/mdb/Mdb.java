@@ -194,7 +194,7 @@ public class Mdb {
                         continue;
                     }
                     logger.info("玩家mdb加载表数据 playerId {} table {}", key, table.getName());
-                    table.get(key);
+                    table.loadToCache(key);
                 }
             }
             timeCostPrint.print();
@@ -487,6 +487,23 @@ public class Mdb {
             return this.checker.canOperate(key);
         }
         return true;
+    }
+
+    public boolean canSupportFlushOperate(Object key, String tableName, String operation) {
+        if (!(key instanceof Long)) {
+            return true;
+        }
+        Long playerId = (Long) key;
+        MdbPlayerInfo mdbPlayerInfo = mdbPlayerMap.get(playerId);
+        if (mdbPlayerInfo != null && mdbPlayerInfo.getState() == MdbPlayerInfo.load_finish) {
+            return true;
+        }
+        logger.error("玩家mdb操作不允许 playerId {} table {} operation {} state {}",
+                playerId,
+                tableName,
+                operation,
+                mdbPlayerInfo == null ? "null" : MdbPlayerInfo.stateName(mdbPlayerInfo.getState()));
+        return false;
     }
 
     public long getPlayerFlushDelayMill() {

@@ -38,6 +38,15 @@ public abstract class TTable<K, V> {
     private long allCountGetMiss = 0;
 
     public V get(K key) {
+        checkSupportFlushOperate(key, "get");
+        return getOrLoadToCache(key);
+    }
+
+    public V loadToCache(K key) {
+        return getOrLoadToCache(key);
+    }
+
+    private V getOrLoadToCache(K key) {
         Lock lockey = Lockkeys.getLockey(getName(), key);
         lockey.getReadLock().lock();
         try {
@@ -92,6 +101,7 @@ public abstract class TTable<K, V> {
         if (value == null) {
             throw new NullPointerException("value is null");
         }
+        checkSupportFlushOperate(key, immediately ? "add_immediately" : "add");
         Lock lockey = Lockkeys.getLockey(getName(), key);
         lockey.getWriteLock().lock();
         try {
@@ -111,6 +121,7 @@ public abstract class TTable<K, V> {
     }
 
     public boolean remove(K key) {
+        checkSupportFlushOperate(key, "remove");
         Lock lockey = Lockkeys.getLockey(getName(), key);
         lockey.getWriteLock().lock();
         try {
@@ -132,6 +143,17 @@ public abstract class TTable<K, V> {
             lockey.getWriteLock().unlock();
         }
         return true;
+    }
+
+    private void checkSupportFlushOperate(K key, String operation) {
+        if (!isSupportFlush()) {
+            return;
+        }
+        if (Mdb.getInstance().canSupportFlushOperate(key, getName(), operation)) {
+            return;
+        }
+        throw new IllegalStateException(
+                "player mdb data not loaded, table=" + getName() + ", operation=" + operation + ", key=" + key);
     }
 
 
