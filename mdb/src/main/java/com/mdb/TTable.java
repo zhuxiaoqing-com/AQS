@@ -205,6 +205,17 @@ public abstract class TTable<K, V> {
     }
 
 
+    public void deleteCache(K key) {
+        Lock lockey = Lockkeys.getLockey(this.getName(), key);
+        lockey.getWriteLock().lock();
+        try {
+            findFailCache.invalidate(key);
+            cache.remove(key);
+        } finally {
+            lockey.getWriteLock().unlock();
+        }
+    }
+
     public void checkpoint(long checkPointCount,
                            HashMap<String, String> addCache, HashMap<String, String> modifyCache, HashMap<String, String> removeCache,
                            List<TRecord> addTRecordCache, List<TRecord> modifyTRecordCache, List<TRecord> removeTRecordCache,boolean strictCheck
