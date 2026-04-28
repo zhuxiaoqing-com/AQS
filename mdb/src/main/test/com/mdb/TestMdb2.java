@@ -8,15 +8,17 @@ import java.util.List;
 import java.util.Random;
 
 public class TestMdb2 {
+	private static Mdb mdb;
 	
 	static final List<Long> playerIds = new ArrayList<Long>();
 
 	public static void main(String[] args) throws Exception {
 		//Mdb.configLog();
 		Mdb.configLog();
-		MdbMetadata mdb = new MdbMetadata();
-		mdb.initialize(XMLUtils.getRootElement(TestMdb.inputXml));
-		Mdb.getInstance().start(mdb);
+		MdbMetadata metadata = new MdbMetadata();
+		metadata.initialize(XMLUtils.getRootElement(TestMdb.inputXml));
+		mdb = new Mdb();
+		mdb.start(metadata);
 		
 		long max = 100000;
 		
@@ -102,16 +104,16 @@ public class TestMdb2 {
 
 		System.err.println("回车退出");
 		System.in.read();
-		Mdb.getInstance().close();
+		mdb.close();
 		System.exit(-1);
 	}
 	
 	static void getData(long playerId){
-		xbean.logic.Player player = table.logic.Player.get(playerId);
+		xbean.logic.Player player = table.logic.Player.get(mdb, playerId);
 		if (player == null) {
 			player = new xbean.logic.Player();
 			player.setPlayerId(playerId);
-			table.logic.Player.add(playerId, player);
+			table.logic.Player.add(mdb, playerId, player);
 		}
 		player.setLevel(0);
 //		
@@ -143,10 +145,10 @@ public class TestMdb2 {
 	
 	
 	static boolean upData(long playerId){
-		xbean.logic.Player player = table.logic.Player.get(playerId);
+		xbean.logic.Player player = table.logic.Player.get(mdb, playerId);
 		player.setLevel(player.getLevel() + 1);
 		if(player.getLevel() == 3){
-			Mdb.getInstance().flush(playerId, null, System.currentTimeMillis());
+			mdb.flush(playerId, null, System.currentTimeMillis());
 			return true;
 		}
 		return false;

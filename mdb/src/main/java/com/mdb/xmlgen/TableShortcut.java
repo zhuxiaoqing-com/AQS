@@ -32,26 +32,29 @@ class TableShortcut {
 
 			ps.println("package table." + mdbMetadata.getName() + ";");
 			ps.println();
+			ps.println("import com.mdb.Mdb;");
+			ps.println("import com.mdb.TTable;");
+			ps.println();
 			ps.println("public class " + classname + " {");
 			ps.println("	private " + classname + "() {");
 			ps.println("	}");
 			ps.println();
 
-			ps.println("	public static boolean add(" + K + " key, " + V + " value) {");
-			makeFind(mdbMetadata.getName(),ps, V,"add",false);
-			ps.println("		return _Tables_.instance." + name + ".insert(key, value) != null;");
+			ps.println("	public static boolean add(Mdb mdb, " + K + " key, " + V + " value) {");
+			ps.println("		TTable" + KV + " tTable = mdb.getTTable(_Tables_." + classname + ".class);");
+			ps.println("		return tTable.add(key, value);");
 			ps.println("	}");
 			ps.println();
 
-			ps.println("	public static boolean add(" + K + " key, " + V + " value, boolean immediately) {");
-			makeFind(mdbMetadata.getName(),ps, V,"add immediately ",true);
-			ps.println("		return _Tables_.instance." + name + ".insert(key, value, immediately) != null;");
+			ps.println("	public static boolean add(Mdb mdb, " + K + " key, " + V + " value, boolean immediately) {");
+			ps.println("		TTable" + KV + " tTable = mdb.getTTable(_Tables_." + classname + ".class);");
+			ps.println("		return tTable.add(key, value, immediately);");
 			ps.println("	}");
 			ps.println();
 
-			ps.println("	public static " + V + " get(" + K + " key) {");
-			makeFind(mdbMetadata.getName(),ps, V,"get",false);
-			ps.println("		return _Tables_.instance." + name + ".get(key);");
+			ps.println("	public static " + V + " get(Mdb mdb, " + K + " key) {");
+			ps.println("		TTable" + KV + " tTable = mdb.getTTable(_Tables_." + classname + ".class);");
+			ps.println("		return tTable.get(key);");
 			ps.println("	}");
 			ps.println();
 
@@ -61,29 +64,13 @@ class TableShortcut {
 			ps.println("	}");
 			ps.println();*/
 
-			ps.println("	public static boolean remove(" + K + " key) {");
-			makeFind(mdbMetadata.getName(),ps, V,"remove",false);
-			ps.println("		return _Tables_.instance." + name + ".delete(key);");
-			ps.println("	}");
-			ps.println();
-
-			ps.println("	public static com.mdb.TTable" + KV + " getTable() {");
-			ps.println("		return _Tables_.instance." + name + ";");
+			ps.println("	public static boolean remove(Mdb mdb, " + K + " key) {");
+			ps.println("		TTable" + KV + " tTable = mdb.getTTable(_Tables_." + classname + ".class);");
+			ps.println("		return tTable.remove(key);");
 			ps.println("	}");
 			ps.println();
 
 			ps.println("}");
 		}
-	}
-	
-	void makeFind(String mdbName,PrintStream ps,String V, String function,boolean immediately){
-		/*if(mdbName.indexOf("logic") != -1){
-			if(immediately == true){
-				ps.println("		if (!com.mdb.Mdb.getInstance().canOperate(key) && immediately == false)");
-			}else{
-				ps.println("		if (!com.mdb.Mdb.getInstance().canOperate(key))");
-			}
-			ps.println("			throw new RuntimeException(\"Invalid Operation " + V + " "+function+" key:\" + key);");
-		}*/
 	}
 }

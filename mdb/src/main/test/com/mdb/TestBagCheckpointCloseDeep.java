@@ -26,6 +26,7 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 public class TestBagCheckpointCloseDeep {
     private static final String INPUT_XML = "mdb\\src\\main\\mdb.xml";
+    private static Mdb mdb;
     private static final int KEY_COUNT = 64;
     private static final int WORKER_COUNT = 6;
     private static final int READER_COUNT = 3;
@@ -85,7 +86,7 @@ public class TestBagCheckpointCloseDeep {
             Random r = new Random(BASE_SEED ^ 0x5A5A5A5AL);
             while (!stopCheckpoint.get()) {
                 try {
-                    Mdb.getInstance().checkpoint.checkpoint(System.currentTimeMillis(), false);
+                    mdb.checkpoint.checkpoint(System.currentTimeMillis(), false);
                     try {
                         Thread.sleep(60 + r.nextInt(90));
                     } catch (InterruptedException ignore) {
@@ -142,8 +143,8 @@ public class TestBagCheckpointCloseDeep {
         }
 
         // 收尾：显式跑几次 checkpoint，覆盖连续 checkpoint 场景
-        Mdb.getInstance().checkpoint.checkpoint(System.currentTimeMillis(), false);
-        Mdb.getInstance().checkpoint.checkpoint(System.currentTimeMillis(), false);
+        mdb.checkpoint.checkpoint(System.currentTimeMillis(), false);
+        mdb.checkpoint.checkpoint(System.currentTimeMillis(), false);
     }
 
     private static void runWorker(int workerIndex, List<Long> keys, Object[] keyLocks, Map<Long, Bag> expected,
@@ -169,7 +170,7 @@ public class TestBagCheckpointCloseDeep {
         try {
             for (int i = 0; i < OPS_PER_READER; i++) {
                 long key = keys.get(r.nextInt(keys.size()));
-                Bag bag = table.logic.Bag.get(key);
+                Bag bag = table.logic.Bag.get(mdb, key);
                 if (bag != null) {
                     touchBagReadOnly(bag, r);
                 }
@@ -184,7 +185,7 @@ public class TestBagCheckpointCloseDeep {
         try {
             for (int i = 0; i < OPS_PER_SERIALIZER; i++) {
                 long key = keys.get(r.nextInt(keys.size()));
-                Bag bag = table.logic.Bag.get(key);
+                Bag bag = table.logic.Bag.get(mdb, key);
                 if (bag == null) {
                     continue;
                 }
@@ -209,17 +210,17 @@ public class TestBagCheckpointCloseDeep {
         int op = r.nextInt(100);
 
         if (op < 10) {
-            table.logic.Bag.remove(key);
+            table.logic.Bag.remove(mdb, key);
             expected.remove(key);
             return;
         }
 
-        Bag bag = table.logic.Bag.get(key);
+        Bag bag = table.logic.Bag.get(mdb, key);
 
         if (bag == null || op < 22) {
             Bag newBag = newRandomBag(key, r);
-            table.logic.Bag.add(key, newBag);
-            Bag current = table.logic.Bag.get(key);
+            table.logic.Bag.add(mdb, key, newBag);
+            Bag current = table.logic.Bag.get(mdb, key);
             if (current == null) {
                 throw new IllegalStateException("bag add then get null key=" + key);
             }
@@ -239,11 +240,11 @@ public class TestBagCheckpointCloseDeep {
         for (int i = 0; i < keys.size(); i++) {
             long key = keys.get(i);
             synchronized (keyLocks[i]) {
-                Bag bag = table.logic.Bag.get(key);
+                Bag bag = table.logic.Bag.get(mdb, key);
                 if (bag == null && r.nextInt(100) < 65) {
                     Bag newBag = newRandomBag(key, r);
-                    table.logic.Bag.add(key, newBag);
-                    bag = table.logic.Bag.get(key);
+                    table.logic.Bag.add(mdb, key, newBag);
+                    bag = table.logic.Bag.get(mdb, key);
                 }
 
                 if (bag == null) {
@@ -252,7 +253,7 @@ public class TestBagCheckpointCloseDeep {
                 }
 
                 if (r.nextInt(100) < 20) {
-                    table.logic.Bag.remove(key);
+                    table.logic.Bag.remove(mdb, key);
                     expected.remove(key);
                     continue;
                 }
@@ -273,8 +274,8 @@ public class TestBagCheckpointCloseDeep {
             long key = keys.get(i);
             synchronized (keyLocks[i]) {
                 Bag bag = newRandomBag(key, r);
-                table.logic.Bag.add(key, bag);
-                Bag current = table.logic.Bag.get(key);
+                table.logic.Bag.add(mdb, key, bag);
+                Bag current = table.logic.Bag.get(mdb, key);
                 if (current == null) {
                     throw new IllegalStateException("initialize add fail key=" + key);
                 }
@@ -298,7 +299,7 @@ public class TestBagCheckpointCloseDeep {
 
         for (long key : keys) {
             Bag expect = expected.get(key);
-            Bag actual = table.logic.Bag.get(key);
+            Bag actual = table.logic.Bag.get(mdb, key);
 
             if (expect == null) {
                 if (actual != null) {
@@ -665,14 +666,15 @@ public class TestBagCheckpointCloseDeep {
     }
 
     private static void startMdb() throws Exception {
-        MdbMetadata mdb = new MdbMetadata();
-        mdb.initialize(XMLUtils.getRootElement(INPUT_XML));
-        Mdb.getInstance().start(mdb);
+        MdbMetadata metadata = new MdbMetadata();
+        metadata.initialize(XMLUtils.getRootElement(INPUT_XML));
+        mdb = new Mdb();
+        mdb.start(metadata);
     }
 
     private static void safeClose() {
         try {
-            Mdb.getInstance().close();
+            mdb.close();
         } catch (Throwable t) {
             throw new RuntimeException("close failed", t);
         }

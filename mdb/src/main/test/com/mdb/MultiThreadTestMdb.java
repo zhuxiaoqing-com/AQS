@@ -16,6 +16,7 @@ import java.util.concurrent.*;
  *
  */
 public class MultiThreadTestMdb {
+	private static Mdb mdb;
 
 	private static boolean devMode = true;
 
@@ -36,9 +37,10 @@ public class MultiThreadTestMdb {
 	private static void testMdb() throws Exception {
 
 		Mdb.configLog();
-		MdbMetadata mdb = new MdbMetadata();
-		mdb.initialize(XMLUtils.getRootElement(TestMdb.inputXml));
-		Mdb.getInstance().start(mdb);
+		MdbMetadata metadata = new MdbMetadata();
+		metadata.initialize(XMLUtils.getRootElement(TestMdb.inputXml));
+		mdb = new Mdb();
+		mdb.start(metadata);
 
 		ScheduledThreadPoolExecutor poolExecutor = ConcurrentEnvironment.getInstance().newScheduledThreadPool("mdb.1111",
 				1);
@@ -72,7 +74,7 @@ public class MultiThreadTestMdb {
 			@Override
 			public void run() {
 				logger.error("{}TMD 终于退出来了", "mazj");
-				Mdb.getInstance().close();
+				mdb.close();
 			}
 
 		});
@@ -91,13 +93,13 @@ public class MultiThreadTestMdb {
 	private static void randomAccess() {
 		int rand = ThreadLocalRandom.current().nextInt(1, 3);
 		long id = ThreadLocalRandom.current().nextInt(1, 10000);
-		Player p = table.logic.Player.get(id);
+		Player p = table.logic.Player.get(mdb, id);
 //		System.err.println("remote get : " + p);
 		if (rand % 2 == 0) {
 			// write,
 			if (p == null) {
 				p = new Player();
-				table.logic.Player.add(id, p);
+				table.logic.Player.add(mdb, id, p);
 			}
 		}
 

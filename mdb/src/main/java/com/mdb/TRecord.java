@@ -141,7 +141,7 @@ public class TRecord<K, V> {
      *          flush;
      *          clearCache;
      */
-    public String isModified(boolean strictCheck) {
+    public String isModified(Mdb mdb, boolean strictCheck) {
         // 这里不用单独在判断 add remove; 因为在new对象的时候已经将version自增了
       /*  switch (getState()) {
             case ADD:
@@ -167,7 +167,7 @@ public class TRecord<K, V> {
         }
 
         // 没有开启严格检测
-        if(!Mdb.getInstance().isStrictCheckOpen()) {
+        if(!mdb.isStrictCheckOpen()) {
             return null;
         }
 

@@ -29,12 +29,14 @@ public class MdbAsyncFlushTest {
     @Before
     public void setUp() {
         resetMdb();
-        mdb = Mdb.getInstance();
+        mdb = new Mdb();
         mdb.setPlayerFlushDelayMill(0L);
+        mdb.accessDBScheduler = ConcurrentEnvironment.getInstance().newScheduledThreadPool("mdb.scheduler", 1);
         initPlayerExecutorsForTest();
         storage = new FakeStorageEngine();
 
         Tables tables = new Tables();
+        tables.mdb = mdb;
         tables.storage = storage;
 
         table = new PlayerTable();
@@ -76,8 +78,11 @@ public class MdbAsyncFlushTest {
     @Test
     public void flushShouldPersistLoadedPlayerOnTick() {
         long key = 2001L;
-        table.add(key, player(key, 11, "async"));
+        storage.replace("player", FastJson.toJSONString(key), FastJson.toJSONString(player(key, 10, "load")));
         loadPlayer(key);
+        Player loaded = table.get(key);
+        loaded.setLevel(11);
+        loaded.setPlayerName("async");
 
         AtomicBoolean callbackSuccess = new AtomicBoolean(false);
         AtomicReference<Exception> callbackError = new AtomicReference<>();
@@ -102,8 +107,12 @@ public class MdbAsyncFlushTest {
     @Test
     public void loadAgainDuringFlushWaitShouldCancelFlush() {
         long key = 2002L;
-        table.add(key, player(key, 12, "cancel"));
+        String originalJson = FastJson.toJSONString(player(key, 10, "load"));
+        storage.replace("player", FastJson.toJSONString(key), originalJson);
         loadPlayer(key);
+        Player loaded = table.get(key);
+        loaded.setLevel(12);
+        loaded.setPlayerName("cancel");
         mdb.setPlayerFlushDelayMill(60_000L);
 
         AtomicInteger flushCallbackCount = new AtomicInteger();
@@ -121,7 +130,7 @@ public class MdbAsyncFlushTest {
         waitUntil(() -> loadCallbackCount.get() == 1);
         mdb.tick(System.currentTimeMillis() + 60_000L);
 
-        assertNull(storage.getStored("player", "2002"));
+        assertEquals(originalJson, storage.getStored("player", "2002"));
         assertEquals(1, table.getCacheList().size());
         assertEquals(0, flushCallbackCount.get());
     }
@@ -164,8 +173,12 @@ public class MdbAsyncFlushTest {
     @Test
     public void flushFailureShouldKeepDirtyRecordForRetry() {
         long key = 2004L;
-        table.add(key, player(key, 14, "retry"));
+        String originalJson = FastJson.toJSONString(player(key, 10, "load"));
+        storage.replace("player", FastJson.toJSONString(key), originalJson);
         loadPlayer(key);
+        Player loaded = table.get(key);
+        loaded.setLevel(14);
+        loaded.setPlayerName("retry");
 
         AtomicBoolean firstSuccess = new AtomicBoolean(true);
         AtomicReference<Exception> firstError = new AtomicReference<>();
@@ -182,7 +195,7 @@ public class MdbAsyncFlushTest {
 
         tickUntil(() -> callbackCount.get() == 1);
         assertFalse(firstSuccess.get());
-        assertNull(storage.getStored("player", "2004"));
+        assertEquals(originalJson, storage.getStored("player", "2004"));
         assertEquals(1, table.getCacheList().size());
         assertNull(firstError.get());
 
@@ -241,6 +254,7 @@ public class MdbAsyncFlushTest {
 
     private void useTable(PlayerTable newTable) {
         Tables tables = new Tables();
+        tables.mdb = mdb;
         tables.storage = storage;
         newTable.setTables(tables);
         tables.add(newTable);
@@ -282,9 +296,11 @@ public class MdbAsyncFlushTest {
     }
 
     private void resetMdb() {
-        Mdb instance = Mdb.getInstance();
-        instance.running = true;
-        instance.close();
+        if (mdb == null) {
+            return;
+        }
+        mdb.running = true;
+        mdb.close();
     }
 
     @SuppressWarnings("unchecked")
@@ -292,7 +308,7 @@ public class MdbAsyncFlushTest {
         try {
             Field field = Mdb.class.getDeclaredField("playerExecutor");
             field.setAccessible(true);
-            List<ThreadPoolExecutor> executors = (List<ThreadPoolExecutor>) field.get(null);
+            List<ThreadPoolExecutor> executors = (List<ThreadPoolExecutor>) field.get(mdb);
             if (!executors.isEmpty()) {
                 return;
             }
@@ -310,7 +326,7 @@ public class MdbAsyncFlushTest {
         try {
             Field field = Mdb.class.getDeclaredField("mdbPlayerMap");
             field.setAccessible(true);
-            Map<Long, MdbPlayerInfo> playerMap = (Map<Long, MdbPlayerInfo>) field.get(null);
+            Map<Long, MdbPlayerInfo> playerMap = (Map<Long, MdbPlayerInfo>) field.get(mdb);
             playerMap.put(key, playerInfo);
         } catch (Exception e) {
             throw new AssertionError("put player info for test failed", e);
@@ -364,7 +380,7 @@ public class MdbAsyncFlushTest {
         private final CountDownLatch releaseGet = new CountDownLatch(1);
 
         @Override
-        public Player get(Long key) {
+        public Player loadToCache(Long key) {
             getStarted.countDown();
             try {
                 if (!releaseGet.await(1, TimeUnit.SECONDS)) {
@@ -374,7 +390,7 @@ public class MdbAsyncFlushTest {
                 Thread.currentThread().interrupt();
                 throw new AssertionError(e);
             }
-            return super.get(key);
+            return super.loadToCache(key);
         }
 
         void awaitGetStarted() {

@@ -13,6 +13,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class TestBagFlushGet {
     private static final String INPUT_XML = "mdb\\src\\main\\mdb.xml";
+    private static Mdb mdb;
 
     public static void main(String[] args) throws Exception {
         Mdb.configLog();
@@ -24,10 +25,10 @@ public class TestBagFlushGet {
             fillAllFields(key, bag);
             String beforeJson = FastJson.toJSONString(bag);
 
-            table.logic.Bag.add(key, bag);
+            table.logic.Bag.add(mdb, key, bag);
             flushSync(key);
 
-            Bag actual = table.logic.Bag.get(key);
+            Bag actual = table.logic.Bag.get(mdb, key);
             String afterJson = FastJson.toJSONString(actual);
 
             System.out.println("beforeJson=" + beforeJson);
@@ -39,14 +40,15 @@ public class TestBagFlushGet {
 
             System.out.println("TestBagFlushGet ok, key=" + key);
         } finally {
-            Mdb.getInstance().close();
+            mdb.close();
         }
     }
 
     private static void startMdb() throws Exception {
-        MdbMetadata mdb = new MdbMetadata();
-        mdb.initialize(XMLUtils.getRootElement(INPUT_XML));
-        Mdb.getInstance().start(mdb);
+        MdbMetadata metadata = new MdbMetadata();
+        metadata.initialize(XMLUtils.getRootElement(INPUT_XML));
+        mdb = new Mdb();
+        mdb.start(metadata);
     }
 
     private static void fillAllFields(long key, Bag bag) {
@@ -86,12 +88,12 @@ public class TestBagFlushGet {
     }
 
     private static void flushSync(long key) {
-        Mdb.getInstance().setPlayerFlushDelayMill(0L);
+        mdb.setPlayerFlushDelayMill(0L);
         AtomicBoolean loadSuccess = new AtomicBoolean(false);
         AtomicReference<Exception> loadError = new AtomicReference<>(null);
         AtomicInteger loadCallbackCount = new AtomicInteger();
 
-        Mdb.getInstance().loadPlayerAllTableToMemory(key, true, (playerInfo, allSuccess, exception) -> {
+        mdb.loadPlayerAllTableToMemory(key, true, (playerInfo, allSuccess, exception) -> {
             loadCallbackCount.incrementAndGet();
             loadSuccess.set(allSuccess);
             loadError.set(exception);
@@ -108,13 +110,13 @@ public class TestBagFlushGet {
         AtomicReference<Exception> error = new AtomicReference<>(null);
         AtomicInteger callbackCount = new AtomicInteger();
 
-        Mdb.getInstance().flush(key, (playerInfo, allSuccess, exception) -> {
+        mdb.flush(key, (playerInfo, allSuccess, exception) -> {
             callbackCount.incrementAndGet();
             success.set(allSuccess);
             error.set(exception);
         }, System.currentTimeMillis());
         waitUntil(() -> {
-            Mdb.getInstance().tick();
+            mdb.tick();
             return callbackCount.get() > 0;
         });
 

@@ -1,3 +1,4 @@
+/*
 package com.mdb;
 
 import com.mdb.exception.MdbError;
@@ -5,14 +6,16 @@ import com.mdb.exception.MdbError;
 import java.util.concurrent.atomic.AtomicLong;
 
 public abstract class XBean_2 {
-    /**
+    */
+/**
      * 版本号 用来替代modify
      *
      * 每次checkpoint将版本号+1; 版本号怎么弄呢? checkpoint可以统一共用每次开始的时候将 版本号+1;
      * 然后sleep(1000) 将等待异步全部修改完成,防止我再执行清理的时候,有线程异步版本号还没设置进去导致出问题;
      * 然后对比版本号 版本号>=之前的就设置,防止有数据很久没同步,如果就==的时候设置的话,会有数据每次都在checkpoint临界值的时候修改,
      *     导致一直没有同步到数据库;
-     */
+     *//*
+
     private long version0;
     private long version1;
     private final AtomicLong version = new AtomicLong(0); // 来个Long 省的每次checkpoint的时候都有变化,导致没法重置为0,integer溢出；
@@ -29,20 +32,24 @@ public abstract class XBean_2 {
     }
 
 
-    /**
+    */
+/**
      * 谁变化就谁调用该方法
-     */
+     *//*
+
     public void makeModify() {
         long checkPointCount = Mdb.getInstance().getCheckPointCount();
         parentMakeModify(checkPointCount);
-      /*  setVersion(checkPointCount);
+      */
+/*  setVersion(checkPointCount);
         if (_parent != null && _parent != this) {
             _parent.parentMakeModify(checkPointCount);
         }
         if (_parent == null) {
             // 设置新版本号
             version.set(version.get() + 1);
-        }*/
+        }*//*
+
 
     }
 
@@ -93,9 +100,11 @@ public abstract class XBean_2 {
         if (version.get() > 0) {
             return true;
         }
-        /*if (checkVersion(checkVersion)) {
+        */
+/*if (checkVersion(checkVersion)) {
             return true;
-        }*/
+        }*//*
+
         if(Mdb.getInstance().isxBeanDetailCheck()) {
             boolean fieldAndModify = checkFieldVersion(checkVersion);
             if (fieldAndModify) {
@@ -108,7 +117,8 @@ public abstract class XBean_2 {
 
 
 
-    /**
+    */
+/**
      * 应该先检测子类的是不是有修改过的  如果有的话就返回true 并且报错, 都没有就继续调用子类的checkFieldVersion
      * 例子：
      *      if(child.checkVersion(checkPointCount){
@@ -125,7 +135,8 @@ public abstract class XBean_2 {
      * 这里检测有点问题;因为没有用双modify,
      *
      * @return 有field的版本号>=checkVersion return true  否则返回false
-     */
+     *//*
+
     public abstract boolean checkFieldVersion(long checkPointCount);
 
     public void setParent(XBean_2 parent) {
@@ -144,3 +155,4 @@ public abstract class XBean_2 {
         return version;
     }
 }
+*/
