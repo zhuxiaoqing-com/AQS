@@ -1,6 +1,5 @@
 package com.mdb.collection;
 
-import com.mdb.Mdb;
 import com.mdb.XBean;
 import com.mdb.exception.MdbError;
 
@@ -24,34 +23,10 @@ public class TrackedQueue<E> extends XBean implements Queue<E> {
         setParent(_xp_);
     }
 
-    @Override
+/*    @Override
     public boolean checkFieldVersion(long checkPointCount) {
-        readLock.lock();
-        try {
-            if (delegate.isEmpty()) {
-                return false;
-            }
-            E first = delegate.peek();
-            if (!(first instanceof XBean)) {
-                return false;
-            }
-            for (E e : delegate) {
-                if (((XBean) e).checkVersion(checkPointCount)) {
-                    Mdb.logger.error("checkFieldVersion checkVersion true checkPointCount {} currVersion {} class {} ",
-                            checkPointCount, findVersion(checkPointCount), getClass().getName(), new RuntimeException());
-                    return true;
-                }
-            }
-            for (E e : delegate) {
-                if (((XBean) e).checkFieldVersion(checkPointCount)) {
-                    return true;
-                }
-            }
-            return false;
-        } finally {
-            readLock.unlock();
-        }
-    }
+        return false;
+    }*/
 
     private void markModified(ModifyType type, Object value) {
         makeModify();

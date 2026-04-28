@@ -10,19 +10,21 @@ import java.io.File;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class TestFlush {
+	private static Mdb mdb;
 
 	public static void main(String[] args) throws Exception {
 		Mdb.configLog();
-		MdbMetadata mdb = new MdbMetadata();
-		mdb.initialize(XMLUtils.getRootElement(TestMdb.inputXml));
-		Mdb.getInstance().start(mdb);
+		MdbMetadata metadata = new MdbMetadata();
+		metadata.initialize(XMLUtils.getRootElement(TestMdb.inputXml));
+		mdb = new Mdb();
+		mdb.start(metadata);
 		//Thread.sleep(3000L);
 
 		long key = 10000L;
-		Bag bag = table.logic.Bag.get(key);
+		Bag bag = table.logic.Bag.get(mdb, key);
 		if(bag == null) {
 			bag = new Bag();
-			table.logic.Bag.add(key, bag);
+			table.logic.Bag.add(mdb, key, bag);
 		}
 
 		int i = ThreadLocalRandom.current().nextInt(100000);
@@ -57,7 +59,7 @@ public class TestFlush {
 
 
 		Thread.sleep(1000L);
-		Mdb.getInstance().checkpoint.checkpoint(System.currentTimeMillis(), false);
+		mdb.checkpoint.checkpoint(System.currentTimeMillis(), false);
 		//Mdb.getInstance().flush(key, null);
 
 		System.err.println("回车退出 random : " + i);

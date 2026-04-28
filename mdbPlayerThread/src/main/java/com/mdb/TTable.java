@@ -187,7 +187,7 @@ public abstract class TTable<K, V> {
             TRecord<K, V> kvtRecord = cache.remove(key);
             // !=null 并且修改过
             if (kvtRecord != null) {
-                String valueJson = kvtRecord.isModified(true);
+                String valueJson = kvtRecord.isModified(getMdb(), true);
                 if (valueJson != null) {
                     boolean flush = kvtRecord.flush("flush", valueJson);
                     if (!flush) {
@@ -260,7 +260,7 @@ public abstract class TTable<K, V> {
                  */
                 long old = valueVersion.get();
                 int state = kvtRecord.getState();
-                String valueJson = kvtRecord.isModified(checkPointCount, strictCheck);
+                String valueJson = kvtRecord.isModified(getMdb(), strictCheck);
                 if (valueJson == null) {
                     continue;
                 }
@@ -397,7 +397,7 @@ public abstract class TTable<K, V> {
                     }
                     cache.remove(kvtRecord.getKey());
                     // 没有修改过就不用同步到数据库
-                    String valueJson = kvtRecord.isModified(true);
+                    String valueJson = kvtRecord.isModified(getMdb(), true);
                     if (valueJson == null) {
                         continue;
                     }
@@ -445,6 +445,10 @@ public abstract class TTable<K, V> {
             return "";
         }
         return meta.getSerializeLogicThreadName();
+    }
+
+    Mdb getMdb() {
+        return tables.getMdb();
     }
 
     public void setTables(Tables tables) {

@@ -6,12 +6,14 @@ import java.util.Random;
 
 public class TestMdb {
 	public static String inputXml = "mdb\\src\\main\\mdb.xml";
+	private static Mdb mdb;
 	public static void main(String[] args) throws Exception {
 		//Mdb.configLog();
 		Mdb.configLog();
-		MdbMetadata mdb = new MdbMetadata();
-		mdb.initialize(XMLUtils.getRootElement(inputXml));
-		Mdb.getInstance().start(mdb);
+		MdbMetadata metadata = new MdbMetadata();
+		metadata.initialize(XMLUtils.getRootElement(inputXml));
+		mdb = new Mdb();
+		mdb.start(metadata);
 //		Thread.sleep(3000L);
 		
 		long max = 1000;
@@ -43,7 +45,7 @@ public class TestMdb {
 		
 		
 		for(int i=0;i<100;i++){
-			Mdb.getInstance().flush(new Random().nextInt(20), true, null);
+			mdb.flush(new Random().nextInt(20), true, null);
 		}
 		
 		
@@ -57,7 +59,7 @@ public class TestMdb {
 						e.printStackTrace();
 					}
 					for(long pid = 1;pid < 20;pid++){
-						xbean.logic.Bag3 p = table.logic.Bag3.get(pid);
+						xbean.logic.Bag3 p = table.logic.Bag3.get(mdb, pid);
 						p.setBagtest(new Random().nextInt());
 					}
 				}
@@ -75,7 +77,7 @@ public class TestMdb {
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-				xbean.logic.Player p = table.logic.Player.get(1L);
+				xbean.logic.Player p = table.logic.Player.get(mdb, 1L);
 				p.setLevel(11112);
 				
 			}
@@ -89,39 +91,39 @@ public class TestMdb {
 
 		System.err.println("回车退出");
 		System.in.read();
-		Mdb.getInstance().close();
+		mdb.close();
 		System.exit(-1);
 	}
 	
 	static void getData(long playerId){
-		xbean.logic.Player player = table.logic.Player.get(playerId);
+		xbean.logic.Player player = table.logic.Player.get(mdb, playerId);
 		if (player == null) {
 			player = new xbean.logic.Player();
 			player.setPlayerId(playerId);
-			table.logic.Player.add(playerId, player);
+			table.logic.Player.add(mdb, playerId, player);
 		}
 		
-		xbean.logic.Bag1 b1 = table.logic.Bag1.get(playerId);
+		xbean.logic.Bag1 b1 = table.logic.Bag1.get(mdb, playerId);
 		if (b1 == null) {
 			b1 = new xbean.logic.Bag1();
 			b1.setPlayerId(playerId);
-			table.logic.Bag1.add(playerId, b1);
+			table.logic.Bag1.add(mdb, playerId, b1);
 		}
 		
 		
-		xbean.logic.Bag2 b2 = table.logic.Bag2.get(playerId);
+		xbean.logic.Bag2 b2 = table.logic.Bag2.get(mdb, playerId);
 		if (b2 == null) {
 			b2 = new xbean.logic.Bag2();
 			b2.setPlayerId(playerId);
-			table.logic.Bag2.add(playerId, b2);
+			table.logic.Bag2.add(mdb, playerId, b2);
 		}
 		
 		
-		xbean.logic.Bag3 b3 = table.logic.Bag3.get(playerId);
+		xbean.logic.Bag3 b3 = table.logic.Bag3.get(mdb, playerId);
 		if (b3 == null) {
 			b3 = new xbean.logic.Bag3();
 			b3.setPlayerId(playerId);
-			table.logic.Bag3.add(playerId, b3);
+			table.logic.Bag3.add(mdb, playerId, b3);
 		}
 		
 	}
@@ -130,18 +132,18 @@ public class TestMdb {
 	
 	static void upData(long playerId){
 		Random random = new Random();
-		xbean.logic.Player player = table.logic.Player.get(playerId);
+		xbean.logic.Player player = table.logic.Player.get(mdb, playerId);
 		player.setLevel(random.nextInt());
 		
-		xbean.logic.Bag1 b1 = table.logic.Bag1.get(playerId);
+		xbean.logic.Bag1 b1 = table.logic.Bag1.get(mdb, playerId);
 		b1.setBagtest(random.nextInt());
 		
 		
-		xbean.logic.Bag2 b2 = table.logic.Bag2.get(playerId);
+		xbean.logic.Bag2 b2 = table.logic.Bag2.get(mdb, playerId);
 		b2.setBagtest(random.nextInt());
 		
 		
-		xbean.logic.Bag3 b3 = table.logic.Bag3.get(playerId);
+		xbean.logic.Bag3 b3 = table.logic.Bag3.get(mdb, playerId);
 		b3.setBagtest(random.nextInt());
 		
 	}

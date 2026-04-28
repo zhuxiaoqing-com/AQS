@@ -118,13 +118,13 @@ public class Declare {
 	}
 
 
-	public static void makeCheckFieldVersion(Collection<? extends Variable> variables, PrintStream ps, String prefix) {
+/*	public static void makeCheckFieldVersion(Collection<? extends Variable> variables, PrintStream ps, String prefix) {
 		ps.println(prefix + "@Override");
 		ps.println(prefix + "public boolean checkFieldVersion(long checkPointCount) {");
 		/*if(new XBean().fieldAnyModify()){
 			Mdb.logger.error("makeFieldAnyModify false fieldModify true class {} ", getClass().getName(), new RuntimeException());
 			return true;
-		}*/
+		}
 
 		variables.forEach(var -> {
 			if(!var.getVarType().isConstType()) {
@@ -148,7 +148,7 @@ public class Declare {
 		ps.println(prefix + "\treturn false;");
 		ps.println(prefix + "}");
 		ps.println();
-	}
+	}*/
 
 
 	public static void makeEquals(Collection<? extends Variable> variables, String name, PrintStream ps,

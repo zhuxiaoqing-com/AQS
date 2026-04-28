@@ -11,30 +11,25 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
 
 import java.io.File;
-import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
 
 public class Mdb {
     public static Logger logger = LoggerFactory.getLogger(Mdb.class.getName());
-    private static Mdb instance = new Mdb();
     private static final String EXECUTOR_NAME = "mdb.scheduler";
     // 统一后的执行器同时承担定时任务和异步 DB 任务，线程数默认沿用原 dbExecutor 配置。
     private static final int EXECUTOR_THREAD_COUNT =
             Integer.getInteger("mdb.scheduler.threads", Integer.getInteger("mdb.db.threads", 6));
     private static final long CLEAR_CACHE_DELAY_SECONDS = 10 * TimeCostPrint.minuteMills / 1000;
 
-    public static Mdb getInstance() {
-        return instance;
-    }
-
-    private Mdb() {
+    public Mdb() {
     }
 
     private volatile CopyOnWriteArrayList<Tables> allTables = new CopyOnWriteArrayList<>(); // 为了支持在一个进程中开启多个mdb
+    private final ConcurrentHashMap<Class<?>, TTable<?, ?>> class2TableMap = new ConcurrentHashMap<>();
 
     // xBean 是否开启全量检测
     private boolean xBeanDetailCheck = false;
@@ -63,17 +58,22 @@ public class Mdb {
             Class<?> tableClass = Class.forName("table." + mdbMetadata.getName() + "._Tables_");
             Constructor<?> constructor = tableClass.getDeclaredConstructor();
             constructor.setAccessible(true);
-            Object table = constructor.newInstance();
+            Object tableOwner = constructor.newInstance();
             Tables tables = new Tables();
             allTables.add(tables);
-            Field[] fields = tableClass.getDeclaredFields();
-            AccessibleObject.setAccessible(fields, true);
-            for (Field field : fields) {
-                Object fieldValue = field.get(table);
-                if (fieldValue instanceof TTable)
-                    tables.add((TTable) fieldValue);
+            Class<?>[] classes = tableClass.getDeclaredClasses();
+            for (Class<?> aClass : classes) {
+                if (!TTable.class.isAssignableFrom(aClass)) {
+                    continue;
+                }
+                TTable<?, ?> tTable = createTableInstance(tableOwner, tableClass, aClass);
+                tables.add(tTable);
+                TTable<?, ?> old = class2TableMap.putIfAbsent(aClass, tTable);
+                if (old != null) {
+                    logger.error("aClass 重复！！！！ {} ", aClass);
+                }
             }
-            tables.open(mdbMetadata);
+            tables.open(this, mdbMetadata);
             logger.warn("{} has {} tables ......", mdbMetadata.getName(), tables.tables.size());
             // checkpoint
             if (checkpoint == null) {
@@ -84,7 +84,7 @@ public class Mdb {
                 scheduler.setContinueExistingPeriodicTasksAfterShutdownPolicy(false);
                 // 任务 cancel 后，立即从队列移除
                 scheduler.setRemoveOnCancelPolicy(true);
-                checkpoint = new Checkpoint();
+                checkpoint = new Checkpoint(this);
                 scheduler.scheduleWithFixedDelay(checkpoint, 0, mdbMetadata.getCheckPointPeriod(), TimeUnit.MILLISECONDS);
                 scheduler.scheduleWithFixedDelay(this::tick, 1, 1, TimeUnit.SECONDS);
                 scheduler.scheduleWithFixedDelay(this::clearCacheRound,
@@ -101,6 +101,19 @@ public class Mdb {
             throw e;
         }
 
+    }
+
+    @SuppressWarnings("unchecked")
+    private TTable<?, ?> createTableInstance(Object tableOwner, Class<?> tableClass, Class<?> nestedTableClass) throws Exception {
+        Constructor<?> tableConstructor;
+        if (Modifier.isStatic(nestedTableClass.getModifiers())) {
+            tableConstructor = nestedTableClass.getDeclaredConstructor();
+            tableConstructor.setAccessible(true);
+            return (TTable<?, ?>) tableConstructor.newInstance();
+        }
+        tableConstructor = nestedTableClass.getDeclaredConstructor(tableClass);
+        tableConstructor.setAccessible(true);
+        return (TTable<?, ?>) tableConstructor.newInstance(tableOwner);
     }
 
 
@@ -231,6 +244,7 @@ public class Mdb {
             }
             allTables.clear();
         }
+        class2TableMap.clear();
 
         running = false;
         logger.info("@@@@@@@@@@@@@@@@  mdb stop end   @@@@@@@@@@@@@@@@");
@@ -288,6 +302,11 @@ public class Mdb {
 
     public List<Tables> getAllTables() {
         return allTables;
+    }
+
+    @SuppressWarnings("unchecked")
+    public <K, V> TTable<K, V> getTTable(Class<? extends TTable<K, V>> clazz) {
+        return (TTable<K, V>) class2TableMap.get(clazz);
     }
 
 

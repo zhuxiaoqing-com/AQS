@@ -28,36 +28,38 @@ public class Tables {
    // protected List<StorageInterface> storages = new ArrayList<>();
 
     protected MdbMetadata mdbMetadata;
+    protected Mdb mdb;
 
     void add(TTable table) {
         if (null != tables.put(table.getName(), table))
             throw new MdbError("duplicate table name " + table.getName());
     }
 
-    public void open(MdbMetadata mdb) {
-        this.mdbMetadata = mdb;
+    public void open(Mdb mdb, MdbMetadata mdbMetadata) {
+        this.mdb = mdb;
+        this.mdbMetadata = mdbMetadata;
         if (null != storage)
-            log.warn("tables opened before {}", mdb.getName());
-        switch (mdb.getDBType()) {
+            log.warn("tables opened before {}", mdbMetadata.getName());
+        switch (mdbMetadata.getDBType()) {
             case MYSQL:
-                LoggerMysql loggerMysql = new LoggerMysql(mdb);
+                LoggerMysql loggerMysql = new LoggerMysql(mdbMetadata);
                 storage = new StorageMysql(loggerMysql);
                 break;
             case MONGO:
-                LoggerMongo loggerMongo = new LoggerMongo(mdb);
+                LoggerMongo loggerMongo = new LoggerMongo(mdbMetadata);
                 storage = new StorageMongo(loggerMongo);
                 break;
         }
 
         for (TTable table : tables.values()) {
-            Table tableMeta = mdb.getTable(table.getName());
+            Table tableMeta = mdbMetadata.getTable(table.getName());
             if (tableMeta == null) {
                 throw new MdbError("table metadata not found: " + table.getName());
             }
             table.setMeta(tableMeta);
             table.setTables(this);
             String serializeLogicThreadName = table.getSerializeLogicThreadName();
-            if(!Mdb.getInstance().getLogicThreadSerializeMap().containsKey(serializeLogicThreadName)) {
+            if(!mdb.getLogicThreadSerializeMap().containsKey(serializeLogicThreadName)) {
                 throw new MdbError("table SerializeLogicThreadName not found tableName: " + table.getName() +" serializeLogicThreadName: " + serializeLogicThreadName);
             }
 
@@ -113,5 +115,13 @@ public class Tables {
 
     public String getName() {
         return mdbMetadata.getName();
+    }
+
+    public MdbMetadata getMdbMetadata() {
+        return mdbMetadata;
+    }
+
+    public Mdb getMdb() {
+        return mdb;
     }
 }

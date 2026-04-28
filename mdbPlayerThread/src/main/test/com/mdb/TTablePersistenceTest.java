@@ -18,6 +18,7 @@ public class TTablePersistenceTest {
     public void setUp() {
         storage = new FakeStorageEngine();
         Tables tables = new Tables();
+        tables.mdb = new Mdb();
         tables.storage = storage;
 
         table = new PlayerTable();

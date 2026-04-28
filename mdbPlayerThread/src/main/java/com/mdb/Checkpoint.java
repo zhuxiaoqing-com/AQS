@@ -11,7 +11,12 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class Checkpoint implements Runnable {
     public static Logger logger = LoggerFactory.getLogger(Checkpoint.class);
+    Mdb mdb;
     private ReentrantLock checkpointMutex = new ReentrantLock();
+
+    public Checkpoint(Mdb mdb) {
+        this.mdb = mdb;
+    }
 
     @Override
     public void run() {
@@ -36,17 +41,17 @@ public class Checkpoint implements Runnable {
 
         // 关闭的时候进行全量检测;可以顺便检测我这个 version 透传问题大不大
         if(close) {
-            Mdb.getInstance().setxBeanDetailCheck(true);
+            mdb.setxBeanDetailCheck(true);
         }
         // 防止同时运行多个checkpoint
         checkpointMutex.lock();
         try {
-            long checkPointCount = Mdb.getInstance().getCheckPointCount();
-            Mdb.getInstance().incrCheckPointCount();
-            logger.info("checkpoint_all Start count: {}", Mdb.getInstance().getCheckPointCount());
+            long checkPointCount = mdb.getCheckPointCount();
+            mdb.incrCheckPointCount();
+            logger.info("checkpoint_all Start count: {}", mdb.getCheckPointCount());
             if (!close) {
                 // 开启了才进行暂停;不然不需要暂停
-                if (Mdb.getInstance().isxBeanDetailCheck()) {
+                if (mdb.isxBeanDetailCheck()) {
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
@@ -58,7 +63,7 @@ public class Checkpoint implements Runnable {
             int addCount = 0;
             int modifyCount = 0;
             int removeCount = 0;
-            for (Tables allTable : Mdb.getInstance().getAllTables()) {
+            for (Tables allTable : mdb.getAllTables()) {
                 for (TTable value : allTable.tables.values()) {
                     addCache.clear();
                     modifyCache.clear();

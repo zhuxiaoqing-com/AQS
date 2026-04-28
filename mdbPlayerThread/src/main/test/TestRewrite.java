@@ -10,17 +10,19 @@ import xbean.logic.Player;
  *
  */
 public class TestRewrite {
+	private static Mdb mdb;
 	public static void main(String[] args) throws Exception {
 
 		Mdb.configLog();
-		MdbMetadata mdb = new MdbMetadata();
-		mdb.initialize(XMLUtils.getRootElement(TestMdb.inputXml));
-		Mdb.getInstance().start(mdb);
+		MdbMetadata metadata = new MdbMetadata();
+		metadata.initialize(XMLUtils.getRootElement(TestMdb.inputXml));
+		mdb = new Mdb();
+		mdb.start(metadata);
 
-		Player p = table.logic.Player.get(1L);
+		Player p = table.logic.Player.get(mdb, 1L);
 		if (p == null) {
 			p = new Player();
-			table.logic.Player.add(1L, p);
+			table.logic.Player.add(mdb, 1L, p);
 		}
 
 		System.err.println("beforeset ");
@@ -41,7 +43,7 @@ public class TestRewrite {
 			@Override
 			public void run() {
 				System.err.println("TMD 终于退出来了");
-				Mdb.getInstance().close();
+				mdb.close();
 			}
 
 		});

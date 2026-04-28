@@ -21,12 +21,6 @@ class TableTables {
 			}
 			ps.println();
 			ps.println("final class _Tables_ {");
-			ps.println("	volatile static _Tables_ instance;");
-			ps.println();
-			ps.println("	private _Tables_ () {");
-			ps.println("		instance = this;");
-			ps.println("	}");
-			ps.println();
 
 			for (Table table : tables)
 				define(table, ps);
@@ -41,7 +35,7 @@ class TableTables {
 		String v = table.getValueType().isXbean() ? table.getValueType().toVarType() : table.getValueType().box();
 		String t = "com.mdb.TTable<" + k + ", " + v + ">";
 
-		ps.println("	class " + StringUtils.upper1(name) + " extends " + t + " {");
+		ps.println("	static class " + StringUtils.upper1(name) + " extends " + t + " {");
 		ps.println("		@Override");
 		ps.println("		public String getName() {");
 		ps.println("			return " + StringUtils.quote(name) + ";");
@@ -59,7 +53,7 @@ class TableTables {
 		ps.println("		}");
 		ps.println();
 
-		
+		/*
 		ps.println("		" + v + " insert(" + k + " key, " + v + " value, boolean immediately) {");
 		ps.println("			return add(key, value, immediately) ? value : null;");
 		ps.println("		}");
@@ -81,6 +75,7 @@ class TableTables {
 		ps.println("			return remove(key);");
 		ps.println("		}");
 		ps.println();
+		*/
 
 		ps.println("		@Override");
 		ps.println("		protected String marshalKey(" + k + " key) {");
@@ -108,7 +103,7 @@ class TableTables {
 		
 		ps.println("	};");
 		ps.println();
-		ps.println("	" + StringUtils.upper1(name) + " " + name + " = new " + StringUtils.upper1(name) + "();");
+		//ps.println("	" + StringUtils.upper1(name) + " " + name + " = new " + StringUtils.upper1(name) + "();");
 		ps.println();
 	}
 }

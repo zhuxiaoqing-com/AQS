@@ -1,6 +1,5 @@
 package com.mdb.collection;
 
-import com.mdb.Mdb;
 import com.mdb.XBean;
 import com.mdb.exception.MdbError;
 
@@ -32,34 +31,10 @@ public class TrackedLockList<E> extends XBean implements List<E>, RandomAccess {
         setParent(_xp_);
     }
 
-    @Override
+/*    @Override
     public boolean checkFieldVersion(long checkPointCount) {
-        readLock.lock();
-        try {
-            if (delegate.isEmpty()) {
-                return false;
-            }
-            E e1 = delegate.get(0);
-            if (!(e1 instanceof XBean)) {
-                return false;
-            }
-            for (E e : delegate) {
-                if (((XBean) e).checkVersion(checkPointCount)) {
-                    Mdb.logger.error("checkFieldVersion checkVersion true checkPointCount {} currVersion {} class {} ",
-                            checkPointCount, findVersion(checkPointCount), getClass().getName(), new RuntimeException());
-                    return true;
-                }
-            }
-            for (E e : delegate) {
-                if (((XBean) e).checkFieldVersion(checkPointCount)) {
-                    return true;
-                }
-            }
-            return false;
-        } finally {
-            readLock.unlock();
-        }
-    }
+        return false;
+    }*/
 
     private void markModified(ModifyType type, Object value) {
         makeModify();

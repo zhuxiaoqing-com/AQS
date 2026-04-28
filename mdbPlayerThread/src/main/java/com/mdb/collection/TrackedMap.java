@@ -1,6 +1,5 @@
 package com.mdb.collection;
 
-import com.mdb.Mdb;
 import com.mdb.XBean;
 
 import java.util.*;
@@ -38,30 +37,9 @@ public class TrackedMap<K, V> extends XBean implements Map<K, V> {
         return false;
     }*/
 
-    public boolean checkFieldVersion(long checkPointCount) {
-        if (delegate.isEmpty()) {
-            return false;
-        }
-        V e1 = delegate.values().iterator().next();
-        if (!(e1 instanceof XBean)) {
-            return false;
-        }
-
-        for (V e : delegate.values()) {
-            if (((XBean) e).checkVersion(checkPointCount)) {
-                Mdb.logger.error("checkFieldVersion checkVersion true checkPointCount {} currVersion {} class {} ",
-                        checkPointCount, findVersion(checkPointCount), getClass().getName(), new RuntimeException());
-                return true;
-            }
-        }
-
-        for (V e : delegate.values()) {
-            if (((XBean) e).checkFieldVersion(checkPointCount)) {
-                return true;
-            }
-        }
+/*    public boolean checkFieldVersion(long checkPointCount) {
         return false;
-    }
+    }*/
 
     /**
      * @param type  type

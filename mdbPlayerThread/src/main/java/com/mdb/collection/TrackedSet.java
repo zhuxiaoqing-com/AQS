@@ -1,6 +1,5 @@
 package com.mdb.collection;
 
-import com.mdb.Mdb;
 import com.mdb.XBean;
 import com.mdb.exception.MdbError;
 
@@ -44,30 +43,10 @@ public class TrackedSet <E> extends XBean implements Set<E> {
         return false;
     }*/
 
-    @Override
+/*    @Override
     public boolean checkFieldVersion(long checkPointCount) {
-        if (delegate.isEmpty()) {
-            return false;
-        }
-        E e1 = delegate.iterator().next();
-        if (!(e1 instanceof XBean)) {
-            return false;
-        }
-        for (E e : delegate) {
-            if (((XBean) e).checkVersion(checkPointCount)) {
-                Mdb.logger.error("checkFieldVersion checkVersion true checkPointCount {} currVersion {} class {} ",
-                        checkPointCount, findVersion(checkPointCount), getClass().getName(), new RuntimeException());
-                return true;
-            }
-        }
-
-        for (E e : delegate) {
-            if (((XBean) e).checkFieldVersion(checkPointCount)) {
-                return true;
-            }
-        }
         return false;
-    }
+    }*/
     /**
      * @param type  type
      * @param value value有个准则就是如果是外面传入进来的，或者需要传出去的需要显示调用setParent; 原本就在里面的可以不调用
