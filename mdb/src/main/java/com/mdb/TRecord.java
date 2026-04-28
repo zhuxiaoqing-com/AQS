@@ -131,10 +131,7 @@ public class TRecord<K, V> {
     }
 
 
-    public String isModified(boolean strictCheck) {
-        long version = Mdb.getInstance().getCheckPointCount();
-        return isModified(version, strictCheck);
-    }
+
     /**
      * todo 可能对比json  可能直接在有修改的时候弄个标记传播上来 然后直接判断那个标记
      * 什么时候重新计算hash;
@@ -144,7 +141,7 @@ public class TRecord<K, V> {
      *          flush;
      *          clearCache;
      */
-    public String isModified(long version, boolean strictCheck) {
+    public String isModified(boolean strictCheck) {
         // 这里不用单独在判断 add remove; 因为在new对象的时候已经将version自增了
       /*  switch (getState()) {
             case ADD:
@@ -163,7 +160,7 @@ public class TRecord<K, V> {
         XBean bean = (XBean) value;
 
         // ① 版本脏检查（快速路径）
-        if (bean.checkModify(version)) {
+        if (bean.checkModify()) {
             String json = marshalValue();
             setHash(json);
             return json;

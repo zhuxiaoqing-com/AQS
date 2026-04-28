@@ -77,13 +77,13 @@ class TableShortcut {
 	}
 	
 	void makeFind(String mdbName,PrintStream ps,String V, String function,boolean immediately){
-		if(mdbName.indexOf("logic") != -1){
+		/*if(mdbName.indexOf("logic") != -1){
 			if(immediately == true){
 				ps.println("		if (!com.mdb.Mdb.getInstance().canOperate(key) && immediately == false)");
 			}else{
 				ps.println("		if (!com.mdb.Mdb.getInstance().canOperate(key))");
 			}
 			ps.println("			throw new RuntimeException(\"Invalid Operation " + V + " "+function+" key:\" + key);");
-		}
+		}*/
 	}
 }

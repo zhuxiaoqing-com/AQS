@@ -24,8 +24,8 @@ public abstract class XBean {
      * 谁变化就谁调用该方法
      */
     public void makeModify() {
-        long checkPointCount = Mdb.getInstance().getCheckPointCount();
-        parentMakeModify(checkPointCount);
+        //long checkPointCount = Mdb.getInstance().getCheckPointCount();
+        parentMakeModify();
       /*  setVersion(checkPointCount);
         if (_parent != null && _parent != this) {
             _parent.parentMakeModify(checkPointCount);
@@ -37,9 +37,9 @@ public abstract class XBean {
 
     }
 
-    private void parentMakeModify(long checkPointCount) {
+    private void parentMakeModify() {
         if (_parent != null && _parent != this) {
-            _parent.parentMakeModify(checkPointCount);
+            _parent.parentMakeModify();
         }
         if(_parent == null) {
             // 设置新版本号
@@ -48,20 +48,20 @@ public abstract class XBean {
     }
 
 
-    public boolean checkModify(long checkVersion) {
+    public boolean checkModify() {
         if (version.get() > 0) {
             return true;
         }
         /*if (checkVersion(checkVersion)) {
             return true;
         }*/
-        if(Mdb.getInstance().isxBeanDetailCheck()) {
+        /*if(Mdb.getInstance().isxBeanDetailCheck()) {
             boolean fieldAndModify = checkFieldVersion(checkVersion);
             if (fieldAndModify) {
                 Mdb.logger.error("top checkFieldVersion class {} ", getClass().getName());
                 return true;
             }
-        }
+        }*/
         return false;
     }
 
@@ -89,28 +89,28 @@ public abstract class XBean {
     public void inheritVersion(AtomicLong version) {
         this.version = version;
     }
-
-    /**
+/*
+    *//**
      *  废弃 xbean_2的方法
-     */
+     *//*
     public boolean checkFieldVersion(long checkPointCount){
         return false;
     }
 
 
-    /**
+    *//**
      * 废弃 xbean_2的方法
-     */
+     *//*
     @Deprecated
     public boolean checkVersion(long checkPointCount) {
         return false;
     }
 
-    /**
+    *//**
      * 废弃 xbean_2的方法
-     */
+     *//*
     @Deprecated
     public long findVersion(long checkPointCount) {
         return 0;
-    }
+    }*/
 }

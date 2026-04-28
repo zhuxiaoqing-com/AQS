@@ -1,7 +1,6 @@
 package com.mdb.collection;
 
 
-import com.mdb.Mdb;
 import com.mdb.XBean;
 import com.mdb.exception.MdbError;
 
@@ -46,6 +45,7 @@ public class TrackedList<E> extends XBean implements List<E>,RandomAccess {
         return false;
     }*/
 
+/*
     @Override
     public boolean checkFieldVersion(long checkPointCount) {
         if (delegate.isEmpty()) {
@@ -70,6 +70,7 @@ public class TrackedList<E> extends XBean implements List<E>,RandomAccess {
         }
         return false;
     }
+*/
 
     /**
      * @param type  type

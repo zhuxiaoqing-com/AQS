@@ -33,7 +33,6 @@ class XbeanFormatter {
 		MdbMetadata mdbMetadata = xbean.getMdbMetadata();
 		ps.println("package xbean." + mdbMetadata.getName() + ";");
 		ps.println("import com.alibaba.fastjson.annotation.JSONField;");
-		ps.println("import com.mdb.Mdb;");
 		ps.println();
 		ps.println();
 		ps.println("public final class " + cls + " extends com.mdb.XBean {");

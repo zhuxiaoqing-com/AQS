@@ -293,7 +293,7 @@ public abstract class TTable<K, V> {
                  */
                 long old = valueVersion.get();
                 int state = kvtRecord.getState();
-                String valueJson = kvtRecord.isModified(checkPointCount, strictCheck);
+                String valueJson = kvtRecord.isModified(strictCheck);
                 if (valueJson == null) {
                     continue;
                 }

@@ -1,6 +1,5 @@
 package com.mdb.collection;
 
-import com.mdb.Mdb;
 import com.mdb.XBean;
 import com.mdb.exception.MdbError;
 
@@ -24,6 +23,7 @@ public class TrackedQueue<E> extends XBean implements Queue<E> {
         setParent(_xp_);
     }
 
+/*
     @Override
     public boolean checkFieldVersion(long checkPointCount) {
         readLock.lock();
@@ -52,6 +52,7 @@ public class TrackedQueue<E> extends XBean implements Queue<E> {
             readLock.unlock();
         }
     }
+*/
 
     private void markModified(ModifyType type, Object value) {
         makeModify();
