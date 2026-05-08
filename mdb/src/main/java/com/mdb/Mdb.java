@@ -49,7 +49,8 @@ public class Mdb {
     // checkPoint前+1
     private volatile long checkPointCount = 0;
 
-    public boolean running = false;
+    public volatile boolean running = false;
+    public volatile boolean close = false;
 
     public Checkpoint checkpoint = null;
     ScheduledThreadPoolExecutor accessDBScheduler;
@@ -96,12 +97,6 @@ public class Mdb {
                         playerExecutor.add(ConcurrentEnvironment.getInstance().newFixedThreadPool("mdb.player.executor." + i, 1));
                     }
                 }
-                // 关闭后，不再执行“延迟任务”（delay/一次性定时）
-                accessDBScheduler.setExecuteExistingDelayedTasksAfterShutdownPolicy(false);
-                // 关闭后，不再继续执行“周期任务”（scheduleAtFixedRate / scheduleWithFixedDelay）
-                accessDBScheduler.setContinueExistingPeriodicTasksAfterShutdownPolicy(false);
-                // 任务 cancel 后，立即从队列移除
-                accessDBScheduler.setRemoveOnCancelPolicy(true);
                 checkpoint = new Checkpoint(this);
                 accessDBScheduler.scheduleWithFixedDelay(checkpoint, 0, mdbMetadata.getCheckPointPeriod(), TimeUnit.MILLISECONDS);
                 accessDBScheduler.scheduleWithFixedDelay(this::tick, 1, 1, TimeUnit.SECONDS);
@@ -396,19 +391,21 @@ public class Mdb {
         if (!force && !running) {
             return;
         }
+        close = true;
         logger.info("@@@@@@@@@@@@@@@@  mdb stop begin   @@@@@@@@@@@@@@@@");
+        shutdownExecutorNow(EXECUTOR_NAME, accessDBScheduler);
+        accessDBScheduler = null;
+        shutdownPlayerExecutors();
         if (checkpoint != null && runCheckpoint) {
             try {
+                logger.info("checkpoint on close begin");
                 checkpoint.checkpoint(System.currentTimeMillis(), true);
+                logger.info("checkpoint on close end");
             } catch (Throwable e) {
                 logger.error("checkpoint on close error", e);
             }
         }
         checkpoint = null;
-
-        shutdownExecutor(EXECUTOR_NAME, accessDBScheduler);
-        accessDBScheduler = null;
-        shutdownPlayerExecutors();
         mdbPlayerMap.clear();
 
         if (allTables.size() > 0) {
@@ -423,20 +420,29 @@ public class Mdb {
         logger.info("@@@@@@@@@@@@@@@@  mdb stop end   @@@@@@@@@@@@@@@@");
     }
 
-    private void shutdownExecutor(String executorName, ExecutorService executor) {
+    private void shutdownExecutorNow(String executorName, ExecutorService executor) {
         if (executor == null) {
             return;
         }
+        logger.info("shutdownNow executor begin name {}", executorName);
         try {
             ConcurrentEnvironment.getInstance().shutdown(executorName);
         } catch (Throwable e) {
             logger.error("shutdown executor error name {}", executorName, e);
-            try {
-                executor.shutdown();
-            } catch (Throwable ex) {
-                logger.error("fallback shutdown executor error name {}", executorName, ex);
-            }
         }
+        try {
+            executor.shutdownNow();
+        } catch (Throwable e) {
+            logger.error("shutdownNow executor error name {}", executorName, e);
+        }
+        try {
+            if (!executor.awaitTermination(60, TimeUnit.SECONDS)) {
+                logger.error("awaitTermination timeout name {} seconds {}", executorName, 60);
+            }
+        } catch (InterruptedException e) {
+            logger.error("awaitTermination interrupted name {} seconds {}", executorName, 60, e);
+        }
+        logger.info("shutdownNow executor end name {}", executorName);
     }
 
     private  synchronized void shutdownPlayerExecutors() {
@@ -445,12 +451,7 @@ public class Mdb {
             if (executor == null) {
                 continue;
             }
-            try {
-                ConcurrentEnvironment.getInstance().shutdown("mdb.player.executor." + i);
-            } catch (Throwable e) {
-                logger.error("shutdown player executor error index {}", i, e);
-                executor.shutdown();
-            }
+            shutdownExecutorNow("mdb.player.executor." + i, executor);
         }
         playerExecutor.clear();
     }

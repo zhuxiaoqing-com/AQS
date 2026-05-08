@@ -66,6 +66,12 @@ public class Checkpoint implements Runnable {
             int modifyCount = 0;
             int removeCount = 0;
             for (Tables allTable : mdb.getAllTables()) {
+                boolean detect = allTable.getStorage().detect();
+                if (!detect) {
+                    logger.error("checkpoint 和数据库的连接已经的断开！！！ tablesName {} ", allTable.getName());
+                    continue;
+                }
+
                 for (TTable value : allTable.tables.values()) {
                     addCache.clear();
                     modifyCache.clear();

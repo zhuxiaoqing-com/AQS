@@ -201,6 +201,11 @@ public abstract class TTable<K, V> {
      *   这里得注意这个问题,flush把checkPoint的覆盖掉了;
      */
     public boolean flush(K key) {
+        // 这里防止close以后，线程还在运行，数据库脏数据
+        if (getMdb().close) {
+            logger.error("flush mdb is close!!! table {} key {}", getName(), key);
+            return false;
+        }
         // 这里还是把锁加上吧 毕竟从cache里删除;保证顺序
         Lock lockey = Lockkeys.getLockey(this.getName(), key);
         lockey.getWriteLock().lock();
@@ -386,6 +391,12 @@ public abstract class TTable<K, V> {
      * 定时把30分钟还没有访问的数据清理
      */
     public void tickClearCache() {
+        // 这里防止close以后，线程还在运行，数据库脏数据
+        if (getMdb().close) {
+            logger.error("tickClearCache mdb is close!!! table {}", getName());
+            return;
+        }
+
         long curNano = System.nanoTime();
         long expairNano = TimeCostPrint.millsNano * TimeCostPrint.minuteMills * 30;
         // 支持flush 说明是玩家个人数据; 不清理让玩家手动调用flush清理
