@@ -225,6 +225,77 @@ public abstract class TTable<K, V> {
         }
     }
 
+    public void checkpointLogicThread(){
+        MdbInterface mdbInterface = getMdb().getMdbInterface();
+        // 线程不符
+        if (!mdbInterface.checkThreadName(getSerializeLogicThreadName())) {
+            return;
+        }
+        //检测那些key可以在该线程
+        Map<K, String> collect = new HashMap<>();
+        for (TRecord<K,V> record : getCacheList()) {
+            K key = record.getKey();
+            if (!mdbInterface.checkKey(key)) {
+                continue;
+            }
+
+            String value = record.isModified(getMdb(), false);
+            if (value == null) {
+                continue;
+            }
+
+            // 设置为没变化
+            record.getValueVersion().set(0);
+            collect.put(key, value);
+        }
+        if (collect.isEmpty()) {
+            return;
+        }
+
+        K k = collect.keySet().stream().findAny().get();
+        // 序列化好了 抛回去 这里需要按key%获取,这里暂时先这么写
+        getMdb().putDBExecutor(getName()+k,a->checkpointMdbSaveDB());
+    }
+
+    public void checkpointMdbSaveDB(){
+        MdbInterface mdbInterface = getMdb().getMdbInterface();
+        // 序列化好了 抛回去
+
+        try {
+            getTables().getStorage().replaceBatch(getName(), addCache);
+        } catch (Exception e) {
+            logger.error("checkpoint addCache fail table {} ", this.getName(), e);
+            // 执行失败
+            for (TRecord tRecord : addTRecordCache) {
+                // 将其重新设置为修改状态
+                tRecord.checkPointFail();
+            }
+        }
+
+        try {
+            getTables().getStorage().replaceBatch(getName(), modifyCache);
+        } catch (Exception e) {
+            logger.error("checkpoint modifyCache fail table {} ", this.getName(), e);
+            // 执行失败
+            for (TRecord tRecord : modifyTRecordCache) {
+                // 将其重新设置为修改状态
+                tRecord.checkPointFail();
+
+            }
+        }
+        try {
+            getTables().getStorage().removeBatch(getName(), removeCache.keySet());
+        } catch (Exception e) {
+            logger.error("checkpoint removeCache fail table {} ", this.getName(), e);
+            // 执行失败
+            for (TRecord tRecord : removeTRecordCache) {
+                // 将其重新设置为修改状态
+                tRecord.checkPointFail();
+            }
+        }
+    }
+
+
 
     private void checkpointMarshal(long checkPointCount,
                                    HashMap<String, String> addCache,

@@ -13,23 +13,27 @@ import org.apache.logging.log4j.core.LoggerContext;
 import java.io.File;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 public class Mdb {
     public static Logger logger = LoggerFactory.getLogger(Mdb.class.getName());
     private static final String EXECUTOR_NAME = "mdb.scheduler";
-    // 统一后的执行器同时承担定时任务和异步 DB 任务，线程数默认沿用原 dbExecutor 配置。
-    private static final int EXECUTOR_THREAD_COUNT =
-            Integer.getInteger("mdb.scheduler.threads", Integer.getInteger("mdb.db.threads", 6));
     private static final long CLEAR_CACHE_DELAY_SECONDS = 10 * TimeCostPrint.minuteMills / 1000;
+    private static final int VISIT_DB_EXECUTOR_THREAD_COUNT = Integer.getInteger("mdb.visit.db.executor", 4);
 
     public Mdb() {
     }
 
     private volatile CopyOnWriteArrayList<Tables> allTables = new CopyOnWriteArrayList<>(); // 为了支持在一个进程中开启多个mdb
     private final ConcurrentHashMap<Class<?>, TTable<?, ?>> class2TableMap = new ConcurrentHashMap<>();
+    private final List<ThreadPoolExecutor> visitDBExecutor = new ArrayList<>();
 
     // xBean 是否开启全量检测
     private boolean xBeanDetailCheck = false;
@@ -77,7 +81,12 @@ public class Mdb {
             logger.warn("{} has {} tables ......", mdbMetadata.getName(), tables.tables.size());
             // checkpoint
             if (checkpoint == null) {
-                scheduler = ConcurrentEnvironment.getInstance().newScheduledThreadPool(EXECUTOR_NAME, EXECUTOR_THREAD_COUNT);
+                scheduler = ConcurrentEnvironment.getInstance().newScheduledThreadPool(EXECUTOR_NAME, 1);
+                if (visitDBExecutor.isEmpty()) {
+                    for (int i = 0; i < VISIT_DB_EXECUTOR_THREAD_COUNT; i++) {
+                        visitDBExecutor.add(ConcurrentEnvironment.getInstance().newFixedThreadPool("mdb.visit.db.executor." + i, 1));
+                    }
+                }
                 // 关闭后，不再执行“延迟任务”（delay/一次性定时）
                 scheduler.setExecuteExistingDelayedTasksAfterShutdownPolicy(false);
                 // 关闭后，不再继续执行“周期任务”（scheduleAtFixedRate / scheduleWithFixedDelay）
@@ -237,6 +246,7 @@ public class Mdb {
 
         shutdownExecutor(EXECUTOR_NAME, scheduler);
         scheduler = null;
+        shutdownVisitDBExecutors();
 
         if (allTables.size() > 0) {
             for (Tables tables : allTables) {
@@ -264,6 +274,22 @@ public class Mdb {
                 logger.error("fallback shutdown executor error name {}", executorName, ex);
             }
         }
+    }
+
+    private synchronized void shutdownVisitDBExecutors() {
+        for (int i = 0; i < visitDBExecutor.size(); i++) {
+            ThreadPoolExecutor executor = visitDBExecutor.get(i);
+            if (executor == null) {
+                continue;
+            }
+            try {
+                ConcurrentEnvironment.getInstance().shutdown("mdb.visit.db.executor." + i);
+            } catch (Throwable e) {
+                logger.error("shutdown visit db executor error index {}", i, e);
+                executor.shutdown();
+            }
+        }
+        visitDBExecutor.clear();
     }
 
 
@@ -324,19 +350,43 @@ public class Mdb {
         return true;
     }
 
+    public void putDBExecutor(Object key, Consumer<Collection> consumer) {
+        putDBExecutor(Collections.singletonList(key), consumer);
+    }
+
+    @SuppressWarnings("unchecked")
+    public void putDBExecutor(Collection keys, Consumer<Collection> consumer) {
+        if (keys.size() <= 0) {
+            return;
+        }
+        if (visitDBExecutor.isEmpty()) {
+            logger.warn("mdb visit db executor is empty, ignore task {}", keys);
+            return;
+        }
+
+        int size = visitDBExecutor.size();
+        Map<Object, List<Long>> collect = ( keys).stream().collect(Collectors.groupingBy(Mdb::hash));
+        for (Map.Entry<Object, List<Long>> entry : collect.entrySet()) {
+            ThreadPoolExecutor threadPoolExecutor = visitDBExecutor.get(Math.floorMod(entry.getKey(), size));
+            threadPoolExecutor.execute(() -> consumer.accept(entry.getValue()));
+        }
+    }
+
+    static final int hash(Object key) {
+        int h;
+        return (key == null) ? 0 : (h = key.hashCode()) ^ (h >>> 16);
+    }
+
     /**
      * 业务线程序列化
      */
-    private Map<String, MdbSerializeInterface> logicThreadSerializeMap = new ConcurrentHashMap<>();
+    private MdbInterface mdbInterface;
 
-    public void registerLogicThreadSerialize(String threadName, MdbSerializeInterface logicThreadSerialize) {
-        if (this.logicThreadSerializeMap.containsKey(threadName)) {
-            throw new MdbError("registerLogicThreadSerialize 一个已经存在的threadName: " +threadName);
-        }
-        this.logicThreadSerializeMap.put(threadName, logicThreadSerialize);
+    public void registerLogicThreadSerialize(MdbInterface logicThreadSerialize) {
+        mdbInterface = logicThreadSerialize;
     }
 
-    public Map<String, MdbSerializeInterface> getLogicThreadSerializeMap() {
-        return logicThreadSerializeMap;
+    public MdbInterface getMdbInterface() {
+        return mdbInterface;
     }
 }

@@ -557,10 +557,10 @@ public class Mdb {
                 mdbPlayerInfo.getPlayerId(), oldFlushStartTime, flushStartTime, reason);
     }
 
-    private void putPlayerThread(Long playerId, Consumer<Collection> consumer) {
+    private void putPlayerThread(Long playerId, Consumer<Collection<Long>> consumer) {
         putPlayerThread(Collections.singletonList(playerId), consumer);
     }
-    private void putPlayerThread(Collection playerIds, Consumer<Collection> consumer) {
+    private void putPlayerThread(Collection<Long> playerIds, Consumer<Collection<Long>> consumer) {
         if (playerIds.size() <= 0) {
             return;
         }
@@ -569,14 +569,15 @@ public class Mdb {
             return;
         }
 
-        Object o = playerIds.stream().findAny().get();
+        /*Object o = playerIds.stream().findAny().get();
         if (!(o instanceof Long)) {
-            playerExecutor.get(0).execute(() -> consumer.accept(playerIds));
+            //playerExecutor.get(0).execute(() -> consumer.accept(playerIds));
+            logger.error("putPlayerThread key not Long ！！！key {} ", o, new RuntimeException());
             return;
-        }
+        }*/
 
         int size = playerExecutor.size();
-        Map<Integer, List<Long>> collect = ((Collection<Long>) playerIds).stream().collect(Collectors.groupingBy(Mdb::hash));
+        Map<Integer, List<Long>> collect = playerIds.stream().collect(Collectors.groupingBy(Mdb::hash));
         for (Map.Entry<Integer, List<Long>> entry : collect.entrySet()) {
             ThreadPoolExecutor threadPoolExecutor = playerExecutor.get(Math.floorMod(entry.getKey(), size));
             threadPoolExecutor.execute(() -> consumer.accept(entry.getValue()));

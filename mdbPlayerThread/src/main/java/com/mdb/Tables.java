@@ -58,10 +58,10 @@ public class Tables {
             }
             table.setMeta(tableMeta);
             table.setTables(this);
-            String serializeLogicThreadName = table.getSerializeLogicThreadName();
+            /*String serializeLogicThreadName = table.getSerializeLogicThreadName();
             if(!mdb.getLogicThreadSerializeMap().containsKey(serializeLogicThreadName)) {
                 throw new MdbError("table SerializeLogicThreadName not found tableName: " + table.getName() +" serializeLogicThreadName: " + serializeLogicThreadName);
-            }
+            }*/
 
         }
 
