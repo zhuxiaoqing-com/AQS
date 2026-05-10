@@ -45,7 +45,8 @@ public class TestMdb {
 		
 		
 		for(int i=0;i<100;i++){
-			mdb.flush(new Random().nextInt(20), true, null);
+			mdb.flush(new Random().nextInt(20), (key, allSuccess, exception) -> {
+			});
 		}
 		
 		

@@ -13,7 +13,7 @@ public interface MdbInterface {
     /**
      * 某个线程执行任务;
      */
-    public void allExecute(String threadName, int index, Runnable runnable);
+    public void execute(String threadName, Object key, Runnable runnable);
 
     /**
      * 当某个业务线程由多个线程组成时候获取改key具体在哪个线程执行;比如role线程由6个业务线程组成;
@@ -27,5 +27,5 @@ public interface MdbInterface {
     /**
      * 单独检测key是否能在该线程执行; checkThreadName和checkKey合并起来就是checkThreadNameAndKey;
      */
-    public boolean checkKey(Object key);
+    public boolean checkKeyBelongCurrThread(Object key);
 }

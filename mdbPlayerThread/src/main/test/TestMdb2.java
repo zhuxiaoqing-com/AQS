@@ -147,7 +147,8 @@ public class TestMdb2 {
 		xbean.logic.Player player = table.logic.Player.get(mdb, playerId);
 		player.setLevel(player.getLevel() + 1);
 		if(player.getLevel() == 3){
-			mdb.flush(playerId, true, null);
+			mdb.flush(playerId, (key, allSuccess, exception) -> {
+			});
 			return true;
 		}
 		return false;

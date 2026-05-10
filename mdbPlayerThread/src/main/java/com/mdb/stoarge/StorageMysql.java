@@ -22,7 +22,8 @@ public class StorageMysql implements StorageEngine {
 	// 批量操作每批的数量
 	private int BATCH_PER_COUNT = Integer.getInteger("mysql.batch.per", 500);
 
-	public static final int COST_MS_WARN = 100;
+	public static final int COST_MS_WARN = Integer.getInteger("mysql.costms.warn", 100);
+	public static final int BATCH_COST_MS_WARN = Integer.getInteger("mysql.costms.warn", 1000*30);
 
 	public StorageMysql(LoggerMysql logger) {
 		this.logger = logger;
@@ -127,7 +128,7 @@ public class StorageMysql implements StorageEngine {
 		} finally {
 			LoggerMysql.release(stmt, conn);
 			long costMs = (long) ((System.nanoTime() - begin) * 1e-6);
-			if (costMs > COST_MS_WARN) {
+			if (costMs > BATCH_COST_MS_WARN) {
 				log.warn("{} batch replace cost: {} ms", dataBaseTableName, (System.nanoTime() - begin) * 1e-6);
 			}
 		}
@@ -173,7 +174,7 @@ public class StorageMysql implements StorageEngine {
 			LoggerMysql.release(stmt, conn);
 
 			long costMs = (long) ((System.nanoTime() - begin) * 1e-6);
-			if (costMs > COST_MS_WARN) {
+			if (costMs > BATCH_COST_MS_WARN) {
 				log.warn("{} batch remove keys cost : {} ms", dataBaseTableName, (System.nanoTime() - begin) * 1e-6);
 			}
 		}

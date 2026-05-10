@@ -1,6 +1,6 @@
 package com.mdb;
 
-import com.mdb.exception.MdbError;
+import com.mdb.entity.ThreeTuple;
 import com.mdb.util.ConcurrentEnvironment;
 import com.mdb.util.TimeCostPrint;
 import com.mdb.xmlgen.xmlparse.MdbMetadata;
@@ -13,11 +13,7 @@ import org.apache.logging.log4j.core.LoggerContext;
 import java.io.File;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -127,10 +123,11 @@ public class Mdb {
 
 
     /**
-     * 加载玩家的所有table到内存
-     * 可以在玩家登录的时候异步调用
+     * 直接玩家线程加载,然后抛到db线程get,然后再回调回来;不管失败;当然如果报错了 就算失败不让进;
+     * 不 这个的直接加载,不然就要吧get方法拆开了;这里要么就直接加载吧;get拆开其cache就有问题;
+     * 感觉不要这个方法算了;
      */
-    public void loadPlayerAllTableToMemory(Object key) {
+   /* public void loadPlayerAllTableToMemory(Object key) {
         logger.info("loadPlayerAllTableToMemory key {}", key);
         try {
             for (Tables allTable : allTables) {
@@ -145,7 +142,7 @@ public class Mdb {
             logger.error("Mdb loadPlayerAllTableToMemory error key {} ", key, e);
             throw new MdbError(e);
         }
-    }
+    }*/
 
     /**
      * flush 失败以后 需要业务层找机会再次调用;
@@ -153,20 +150,21 @@ public class Mdb {
      *
      * 业务层必须有重试功能;
      */
-    public void flush(Object key, boolean sync, MdbFlushCallback callback) {
-        if (sync) {
-            _flush(key, callback);
-            return;
-        }
-
-        scheduler.execute(() -> _flush(key, callback));
+    public void flush(Object key, MdbFlushCallback callback) {
+        flushLogicThread(key, callback);
     }
 
-    private boolean _flush(Object key, MdbFlushCallback callback) {
-        boolean allSuccess = true;
+    /**
+     *  直接本地进行序列化，然后抛到db线程进行存储，然后再抛回来进行删除数据;
+     *  如果在这个期间玩家重新登录的话，那是不是就不应该删除呢?所以来一个function判断是否删除该数据就行了;这个先不弄吧;
+     *  这里flush失败就失败了，clearCache里会保底，这里的clearCache里也会清理可以flush的数据，如果不能清理就麻烦了，比如flush失败以后预约下次flush;
+     *  当然也可以业务层再次预约，看实现;底层只需要保证完善就行;
+     */
+    private void flushLogicThread(Object key, MdbFlushCallback callback) {
+            logger.info("flush flushLogicThread start key {}", key);
+            boolean allSuccess = true;
         try {
-            logger.info("flush start key {}", key);
-            TimeCostPrint timeCostPrint = new TimeCostPrint(logger, 20, "flush");
+            List<ThreeTuple<TRecord, String, String>> jsonList = new ArrayList<>();
             for (Tables allTable : allTables) {
                 boolean detect = allTable.getStorage().detect();
                 if (!detect) {
@@ -176,30 +174,104 @@ public class Mdb {
                 }
                 for (TTable table : allTable.tables.values()) {
                     TTable tt = table;
-                    if (tt.isSupportFlush()) {
-                        // 名义上增加只读锁，其实是flush操作，目的是为了和checkpoint的write锁互斥，同时又保证多玩家在没有checkpoint时flush自己数据能并发执行
-                        tt.readlock.lock();
-                        try {
-                            if (!tt.flush(key)) {
-                                allSuccess = false;
+                    if (!tt.isSupportFlush()) {
+                        continue;
+                    }
+
+                    TRecord tRecord = tt.getTRecordByCache(key);
+                    if (tRecord == null) {
+                        continue;
+                    }
+
+                    // 没有修改过
+                    if (tRecord.isModified(this, false) == null) {
+                        tt.deleteCache(key);
+                        continue;
+                    }
+                    // 修改过了
+                    jsonList.add(new ThreeTuple<>(tRecord, tRecord.marshalKey(), tRecord.marshalValue()));
+                }
+            }
+
+            if (jsonList.isEmpty()) {
+                callback.onFlushOver(key, allSuccess, null);
+                return;
+            }
+            // 抛到DB线程进行存储
+            putDBExecutor(a -> flushMdbSaveDB(jsonList, key, callback));
+        } catch (Exception e) {
+            callback.onFlushOver(key, false, e);
+        }
+    }
+
+    private void flushMdbSaveDB(List<ThreeTuple<TRecord, String, String>> jsonList, Object key, MdbFlushCallback mdbFlushCallback) {
+        logger.info("flush flushMdbSaveDB start key {} jsonListSize {} ", key, jsonList.size());
+
+        boolean allSuccess = true;
+        try {
+            ArrayList<TRecord> successTRecord = new ArrayList<>();
+            for (ThreeTuple<TRecord, String, String> entry : jsonList) {
+                TRecord one = entry.getOne();
+                String jsonKey = entry.getTwo();
+                String jsonValue = entry.getThree();
+
+                boolean flush = one.flush("flush", jsonKey, jsonValue);
+                if (!flush) {
+                    allSuccess = false;
+                    continue;
+                }
+                successTRecord.add(one);
+            }
+
+            logger.info("flush flushMdbSaveDB summary key {} jsonListSize {} successTRecordSize {} ", key, jsonList.size(), successTRecord.size());
+
+            TRecord tRecordByThreaName = jsonList.get(0).getOne();
+            boolean finalAllSuccess = allSuccess;
+            getMdbInterface().execute(tRecordByThreaName.getTable().getSerializeLogicThreadName(), key, () -> {
+                boolean success = finalAllSuccess;
+                // 将保存到mysql成功的进行删除cache;
+                for (TRecord record : successTRecord) {
+                    TRecord currTRecord = record.getTable().getTRecordByCache(record.getKey());
+                    // cache里的不是当前的record了;
+                    if (currTRecord != record) {
+                        success = false;
+                        continue;
+                    }
+                    // 修改过了
+                    if (record.isModified(this, false) != null) {
+                        success = false;
+                        continue;
+                    }
+
+                    record.getTable().deleteCache(record.getKey());
+                }
+
+                if(success) {
+                    // 这里再检查一遍;
+                    for (Tables allTable : allTables) {
+                        for (TTable table : allTable.tables.values()) {
+                            TTable tt = table;
+                            if (!tt.isSupportFlush()) {
+                                continue;
                             }
-                        } finally {
-                            tt.readlock.unlock();
+
+                            TRecord t = tt.getTRecordByCache(key);
+                            if (t == null) {
+                                continue;
+                            }
+                            // 还有没删除的！！！
+                            success = false;
+                            break;
                         }
                     }
                 }
-            }
-            timeCostPrint.print();
-            if (callback != null) {
-                callback.onFlushOver(key, allSuccess, null);
-            }
+                // 这里的success  true;就代表数据库里已经没有改key的数据了;可以更换服务器了;
+                mdbFlushCallback.onFlushOver(key, success, null);
+            });
+
         } catch (Exception e) {
-            // 如果失败抛出异常，业务层应该下次还让玩家再次进入这个进程，不然会有脏数据的问题; 业务层也可以尝试进行重试
-            if (callback != null) {
-                callback.onFlushOver(key, false, e);
-            }
+            mdbFlushCallback.onFlushOver(key, false, e);
         }
-        return allSuccess;
     }
 
 
@@ -350,12 +422,25 @@ public class Mdb {
         return true;
     }
 
-    public void putDBExecutor(Object key, Consumer<Collection> consumer) {
+
+    public void putDBExecutor(Consumer<Collection<?>> consumer) {
+        // 这里暂时这么写,保证每个逻辑线程的数据保证被单个db线程处理;
+        putDBExecutor(Thread.currentThread().getId(), consumer);
+    }
+
+    private void putDBExecutor(Object key, Consumer<Collection<?>> consumer) {
         putDBExecutor(Collections.singletonList(key), consumer);
     }
 
-    @SuppressWarnings("unchecked")
-    public void putDBExecutor(Collection keys, Consumer<Collection> consumer) {
+    /**
+     * mdb模块是通过table的读写锁来保证互斥的;防止出现同一个数据库类，我再存你也在存，防止出现老的数据库覆盖新的数据库类的情况;
+     * flush和checkpoint和clearcache全部互斥;
+     * flush加的是读锁,因为flush一次性有多个人可能会刷新; clearcache加的是写锁,因为读锁已经被flush用了没办法了;checkpoint就不用想了加的肯定是写锁;
+     * 这里不会有老数据库覆盖新数据库的问题;因为flush和clearcache只要运行了就会把cache里的数据删除; checkpoint不删,但是这里只是凑巧而已
+     *
+     * 这里为了解决上面说的问题，将其修改成了将key每次%,保证同key的顺序执行，不会有 脏数据的问题
+     */
+    private void putDBExecutor(Collection<?> keys, Consumer<Collection<?>> consumer) {
         if (keys.size() <= 0) {
             return;
         }
@@ -365,8 +450,8 @@ public class Mdb {
         }
 
         int size = visitDBExecutor.size();
-        Map<Object, List<Long>> collect = ( keys).stream().collect(Collectors.groupingBy(Mdb::hash));
-        for (Map.Entry<Object, List<Long>> entry : collect.entrySet()) {
+        Map<Integer, ? extends List<?>> collect = keys.stream().collect(Collectors.groupingBy(Mdb::hash));
+        for (Map.Entry<Integer, ? extends List<?>> entry : collect.entrySet()) {
             ThreadPoolExecutor threadPoolExecutor = visitDBExecutor.get(Math.floorMod(entry.getKey(), size));
             threadPoolExecutor.execute(() -> consumer.accept(entry.getValue()));
         }

@@ -100,6 +100,10 @@ public class TRecord<K, V> {
         return value;
     }
 
+    public TTable<K, V> getTable() {
+        return table;
+    }
+
     public AtomicLong getValueVersion() {
         return ((XBean) value).findVersionAtomic();
     }
@@ -197,6 +201,9 @@ public class TRecord<K, V> {
 
 
     public void checkpointRefreshState(int _state) {
+        // 设置为没变化
+        getValueVersion().set(0);
+
         switch (_state) {
             case ADD:
                 state.compareAndSet(ADD, GET);
@@ -210,7 +217,7 @@ public class TRecord<K, V> {
     }
 
 
-    boolean flush(String reason, String valueJson) {
+    boolean flush(String reason, String key, String valueJson) {
         try {
             switch (getState()) {
                 case ADD:
@@ -227,8 +234,6 @@ public class TRecord<K, V> {
         } catch (Exception e) {
             // 如果flush时候报错，则清除标识，下次会继续同步
             Mdb.logger.error("TRecord flush error reason {} ", reason, e);
-            // 也设置一个同步失败;
-            checkPointFail();
             return false;
         } finally {
 

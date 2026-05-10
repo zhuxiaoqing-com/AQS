@@ -2,6 +2,7 @@ package com.mdb;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
+import com.mdb.entity.ThreeTuple;
 import com.mdb.util.Lock;
 import com.mdb.util.Lockkeys;
 import com.mdb.util.TimeCostPrint;
@@ -14,6 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.stream.Stream;
 
 public abstract class TTable<K, V> {
     public static final Object defaultValue = new Object();
@@ -172,231 +174,177 @@ public abstract class TTable<K, V> {
         }
     }*/
 
-    /**
-     *  你把 writelock 去掉后，flush 和 checkpointSaveDB 会并发，典型问题是：
-     *   2. flush 写入新值
-     *   3. checkpoint 随后把旧值再写回库（覆盖新值）
-     *   这里得注意这个问题,flush把checkPoint的覆盖掉了;
-     */
-    public boolean flush(K key) {
-        // 这里还是把锁加上吧 毕竟从cache里删除;保证顺序
-        Lock lockey = Lockkeys.getLockey(this.getName(), key);
-        lockey.getWriteLock().lock();
-        try {
-            findFailCache.invalidate(key);
-            TRecord<K, V> kvtRecord = cache.remove(key);
-            // !=null 并且修改过
-            if (kvtRecord != null) {
-                String valueJson = kvtRecord.isModified(getMdb(), true);
-                if (valueJson != null) {
-                    boolean flush = kvtRecord.flush("flush", valueJson);
-                    if (!flush) {
-                        logger.error("flush fail table {} key {} ", this.getName(), key);
-                        // flush失败重新加入cache等待下一次同步flush
-                        cache.put(key, kvtRecord);
-                        return false;
-                    }
-                }
-            }
-        } finally {
-            lockey.getWriteLock().unlock();
-        }
-        return true;
-    }
 
 
-    public void checkpoint(long checkPointCount,
-                           HashMap<String, String> addCache, HashMap<String, String> modifyCache, HashMap<String, String> removeCache,
-                           List<TRecord> addTRecordCache, List<TRecord> modifyTRecordCache, List<TRecord> removeTRecordCache,boolean strictCheck
-    ) {
-        writelock.lock();
-        try {
-            TimeCostPrint timeCostPrint = new TimeCostPrint(logger, 60, "checkpoint_table" + getName());
-            checkpointMarshal(checkPointCount, addCache, modifyCache, removeCache, addTRecordCache, modifyTRecordCache, removeTRecordCache, strictCheck);
-
-            TimeCostPrint saveDBTime = new TimeCostPrint(logger, 30, "checkpoint_table_saveDBTime" + getName());
-            checkpointSaveDB(addCache, modifyCache, removeCache, addTRecordCache, modifyTRecordCache, removeTRecordCache);
-            saveDBTime.print();
-
-            timeCostPrint.print();
-            logger.info("checkpoint_table addCount {} modifyCount {} removeCount {} ", addCache.size(), modifyCache.size(), removeCache.size());
-        } finally {
-            writelock.unlock();
+    public void checkpoint(boolean sync) {
+        logger.info("checkpoint table Start table {} ", getName());
+        MdbInterface mdbInterface = getMdb().getMdbInterface();
+        if(sync) {
+            checkpointLogicThread(sync);
+        } else {
+            mdbInterface.allExecute(() -> checkpointLogicThread(sync));
         }
     }
 
-    public void checkpointLogicThread(){
+    public void checkpointLogicThread(boolean sync){
         MdbInterface mdbInterface = getMdb().getMdbInterface();
         // 线程不符
-        if (!mdbInterface.checkThreadName(getSerializeLogicThreadName())) {
-            return;
+        if (!sync) {
+            if (!mdbInterface.checkThreadName(getSerializeLogicThreadName())) {
+                return;
+            }
         }
+        logger.info("checkpoint checkpointLogicThread table Start table {} ", getName());
+
         //检测那些key可以在该线程
-        Map<K, String> collect = new HashMap<>();
-        for (TRecord<K,V> record : getCacheList()) {
-            K key = record.getKey();
-            if (!mdbInterface.checkKey(key)) {
-                continue;
-            }
+        HashMap<String, String> addCache = new HashMap<>();
+        HashMap<String, String> modifyCache = new HashMap<>();
+        HashMap<String, String> removeCache = new HashMap<>();
 
-            String value = record.isModified(getMdb(), false);
-            if (value == null) {
-                continue;
-            }
+        List<TRecord> addTRecordCache = new ArrayList<>();
+        List<TRecord> modifyTRecordCache = new ArrayList<>();
+        List<TRecord> removeTRecordCache = new ArrayList<>();
 
-            // 设置为没变化
-            record.getValueVersion().set(0);
-            collect.put(key, value);
-        }
-        if (collect.isEmpty()) {
-            return;
-        }
-
-        K k = collect.keySet().stream().findAny().get();
-        // 序列化好了 抛回去 这里需要按key%获取,这里暂时先这么写
-        getMdb().putDBExecutor(getName()+k,a->checkpointMdbSaveDB());
-    }
-
-    public void checkpointMdbSaveDB(){
-        MdbInterface mdbInterface = getMdb().getMdbInterface();
-        // 序列化好了 抛回去
-
-        try {
-            getTables().getStorage().replaceBatch(getName(), addCache);
-        } catch (Exception e) {
-            logger.error("checkpoint addCache fail table {} ", this.getName(), e);
-            // 执行失败
-            for (TRecord tRecord : addTRecordCache) {
-                // 将其重新设置为修改状态
-                tRecord.checkPointFail();
-            }
-        }
-
-        try {
-            getTables().getStorage().replaceBatch(getName(), modifyCache);
-        } catch (Exception e) {
-            logger.error("checkpoint modifyCache fail table {} ", this.getName(), e);
-            // 执行失败
-            for (TRecord tRecord : modifyTRecordCache) {
-                // 将其重新设置为修改状态
-                tRecord.checkPointFail();
-
-            }
-        }
-        try {
-            getTables().getStorage().removeBatch(getName(), removeCache.keySet());
-        } catch (Exception e) {
-            logger.error("checkpoint removeCache fail table {} ", this.getName(), e);
-            // 执行失败
-            for (TRecord tRecord : removeTRecordCache) {
-                // 将其重新设置为修改状态
-                tRecord.checkPointFail();
-            }
-        }
-    }
-
-
-
-    private void checkpointMarshal(long checkPointCount,
-                                   HashMap<String, String> addCache,
-                                   HashMap<String, String> modifyCache,
-                                   HashMap<String, String> removeCache,
-                                   List<TRecord> addTRecordCache,
-                                   List<TRecord> modifyTRecordCache,
-                                   List<TRecord> removeTRecordCache
-                                   ,boolean strictCheck
-    ) {
-        try {
-            for (TRecord<K, V> kvtRecord : getCacheList()) {
-                AtomicLong valueVersion = kvtRecord.getValueVersion();
-                /**
-                 * 这里的old比如是1; 然后state是REMOVE;
-                 * 并发state变为ADD; version还是1;这个时候明明是添加，我却将其变成了remove存入了;
-                 * 这里是因为我没有继承version;继承了以后version就会变成2;
-                 * 然后我要把state变成GET;但是version被清空了;
-                 *
-                 * 如果我REMOVE和ADD的时候继承旧的类的version呢？;
-                 * 虽然state错了,不过没事version没问题就行了;
-                 * 我获取old;然后state变化了;这个时候因为state进行增加删除更新;
-                 * 然后old自增了;因为version不一样，所以下一次还是可以继续存储;
-                 *
-                 * 我再addremove里先设置version, 再设置state;可能state变化了，但是old没变化导致state变化了，
-                 * 比如我add设置version;然后checkpoint#getOld(),getState(remove); 然后add里设置state(add);
-                 * 这个时候add就不会再更新到数据库了;
-                 *
-                 * 我再addremove里先设置state, 再设置version;的话就不会有这个问题了;因为version有compareAndSet保证;
-                 *
-                 *
-                 * 下面这里必须先old再state;old保底，这样中途state和json如果变化了;都无所谓，下次再操作就好了,和锁的含义差不多
-                 */
-                long old = valueVersion.get();
-                int state = kvtRecord.getState();
-                String valueJson = kvtRecord.isModified(getMdb(), strictCheck);
-                if (valueJson == null) {
+        for (TRecord<K,V> kvtRecord : getCacheList()) {
+            K key = kvtRecord.getKey();
+            if (!sync) {
+                if (!mdbInterface.checkKeyBelongCurrThread(key)) {
                     continue;
                 }
-                switch (state) {
-                    case TRecord.ADD:
-                        addCache.put(kvtRecord.marshalKey(), valueJson);
-                        addTRecordCache.add(kvtRecord);
-                        break;
-                    case TRecord.GET:
-                        modifyCache.put(kvtRecord.marshalKey(), valueJson);
-                        modifyTRecordCache.add(kvtRecord);
-                        break;
-                    case TRecord.REMOVE:
-                        removeCache.put(kvtRecord.marshalKey(), "");
-                        removeTRecordCache.add(kvtRecord);
-                        break;
-                }
-                valueVersion.compareAndSet(old, 0);// 修改失败就不管了;说明又有修改了
-                // 将add状态刷新成get状态
-                kvtRecord.checkpointRefreshState(state);
             }
-        } catch (Exception e) {
-            logger.error("checkpoint marshal fail table {} ", this.getName(), e);
+
+            String valueJson = kvtRecord.isModified(getMdb(), false);
+            if (valueJson == null) {
+                continue;
+            }
+            int state = kvtRecord.getState();
+            switch (state) {
+                case TRecord.ADD:
+                    addCache.put(kvtRecord.marshalKey(), valueJson);
+                    addTRecordCache.add(kvtRecord);
+                    break;
+                case TRecord.GET:
+                    modifyCache.put(kvtRecord.marshalKey(), valueJson);
+                    modifyTRecordCache.add(kvtRecord);
+                    break;
+                case TRecord.REMOVE:
+                    removeCache.put(kvtRecord.marshalKey(), "");
+                    removeTRecordCache.add(kvtRecord);
+                    break;
+            }
+
+            // 将add状态刷新成get状态
+            kvtRecord.checkpointRefreshState(state);
+        }
+
+        if (addCache.isEmpty() &&
+                modifyCache.isEmpty() &&
+                removeCache.isEmpty()) {
+            return;
+        }
+
+        if(sync) {
+            checkpointMdbSaveDB(addCache,
+                    modifyCache,
+                    removeCache,
+                    addTRecordCache,
+                    modifyTRecordCache,
+                    removeTRecordCache,sync);
+        } else {
+            // 序列化好了 抛回去
+            getMdb().putDBExecutor(a -> checkpointMdbSaveDB(addCache,
+                    modifyCache,
+                    removeCache,
+                    addTRecordCache,
+                    modifyTRecordCache,
+                    removeTRecordCache, sync));
         }
     }
 
-    private void checkpointSaveDB(HashMap<String, String> addCache,
-                                  HashMap<String, String> modifyCache,
-                                  HashMap<String, String> removeCache,
-                                  List<TRecord> addTRecordCache,
-                                  List<TRecord> modifyTRecordCache,
-                                  List<TRecord> removeTRecordCache) {
+    public void checkpointMdbSaveDB(HashMap<String, String> addCache,
+                                      HashMap<String, String> modifyCache,
+                                      HashMap<String, String> removeCache,
+                                      List<TRecord> addTRecordCache,
+                                      List<TRecord> modifyTRecordCache,
+                                      List<TRecord> removeTRecordCache,
+                                    boolean sync
+    ){
+        logger.info("checkpoint checkpointMdbSaveDB table Start table {} addSize {} modifySize {} removeSize {}  ",
+                getName(), addCache.size(), modifyCache.size(), removeCache.size());
+        boolean addSuccess = true;
+        boolean modifySuccess = true;
+        boolean removeSuccess = true;
+
         try {
             getTables().getStorage().replaceBatch(getName(), addCache);
         } catch (Exception e) {
             logger.error("checkpoint addCache fail table {} ", this.getName(), e);
-            // 执行失败
-            for (TRecord tRecord : addTRecordCache) {
-                // 将其重新设置为修改状态
-                tRecord.checkPointFail();
-            }
+            addSuccess = false;
         }
 
         try {
             getTables().getStorage().replaceBatch(getName(), modifyCache);
         } catch (Exception e) {
             logger.error("checkpoint modifyCache fail table {} ", this.getName(), e);
-            // 执行失败
-            for (TRecord tRecord : modifyTRecordCache) {
-                // 将其重新设置为修改状态
-                tRecord.checkPointFail();
-
-            }
+            modifySuccess = false;
         }
+
         try {
             getTables().getStorage().removeBatch(getName(), removeCache.keySet());
         } catch (Exception e) {
             logger.error("checkpoint removeCache fail table {} ", this.getName(), e);
-            // 执行失败
-            for (TRecord tRecord : removeTRecordCache) {
-                // 将其重新设置为修改状态
-                tRecord.checkPointFail();
+            removeSuccess = false;
+        }
+
+        // 全部成功了
+        if (addSuccess && modifySuccess && removeSuccess) {
+            return;
+        }
+
+
+
+        TRecord any = Stream.of(addTRecordCache, modifyTRecordCache, removeTRecordCache)
+                .flatMap(List::stream)
+                .findAny().orElse(null);
+
+        // 抛会逻辑线程恢复数据
+        boolean finalAddSuccess = addSuccess;
+        boolean finalmodifySuccess = modifySuccess;
+        boolean finalremoveSuccess = removeSuccess;
+        Runnable runnable = () -> {
+            // 这里就算logic线程的cache里已经没有数据了也没事,反正只是改了这个类,其他都没改
+            if (!finalAddSuccess) {
+                // 执行失败
+                for (TRecord tRecord : addTRecordCache) {
+                    // 将其重新设置为修改状态
+                    tRecord.checkPointFail();
+                }
             }
+            if (!finalmodifySuccess) {
+                // 执行失败
+                for (TRecord tRecord : modifyTRecordCache) {
+                    // 将其重新设置为修改状态
+                    tRecord.checkPointFail();
+                }
+            }
+            if (!finalremoveSuccess) {
+                // 执行失败
+                for (TRecord tRecord : removeTRecordCache) {
+                    // 将其重新设置为修改状态
+                    tRecord.checkPointFail();
+                }
+            }
+        };
+
+        if (sync) {
+            logger.error("数据库数据同步失败！！！！具体日志 table {} ", this.getName());
+            runnable.run();
+        } else {
+            getMdb().getMdbInterface().execute(getSerializeLogicThreadName(), any.getKey(), runnable);
         }
     }
+
+
 
 
     public static final int TICK_INTERVAL = 1000 * 60;
@@ -424,67 +372,92 @@ public abstract class TTable<K, V> {
      * 定时把30分钟还没有访问的数据清理
      */
     public void tickClearCache() {
+        getMdb().getMdbInterface().allExecute(()->tickClearCacheLogicThread());
+    }
+
+    public void tickClearCacheLogicThread() {
         long curNano = System.nanoTime();
         long expairNano = TimeCostPrint.millsNano * TimeCostPrint.minuteMills * 30;
-        // 支持flush 说明是玩家个人数据; 不清理让玩家手动调用flush清理
-     /*   if (isSupportFlush()) {
-            return;
-        }*/
 
-        logger.info("tickClearCache start tableName {}  ", this.getName());
-        boolean detect = tables.getStorage().detect();
-        if (!detect) {
-            logger.error("tickClearCache 和数据库的连接已经的断开！！！ tablesName {} tableName {} ", tables.getName(), getName());
+        MdbInterface mdbInterface = getMdb().getMdbInterface();
+        // 线程不符
+        if (!mdbInterface.checkThreadName(getSerializeLogicThreadName())) {
             return;
         }
 
-        TimeCostPrint timeCostPrint = new TimeCostPrint(logger, 30, "tickClearCache");
+        logger.info("tickClearCache tickClearCacheLogicThread start tableName {}  ", this.getName());
 
-        writelock.lock();// 和 checkpoint 互斥
-        try {
-            ArrayList<TRecord<K, V>> expireList = new ArrayList<>();
-            for (TRecord<K, V> value : cache.values()) {
-                // 30分钟没访问删除
-                if (curNano - value.getLastAccessTime() > expairNano) {
-                    expireList.add(value);
-                }
+        List<ThreeTuple<TRecord<K, V>, String, String>> expireList = new ArrayList<>();
+        for (TRecord<K, V> kvtRecord : cache.values()) {
+            // 30分钟没访问删除
+            if (curNano - kvtRecord.getLastAccessTime() < expairNano) {
+                continue;
             }
-
-            //这里还没法批量执行;不然如果remove的时候我先remove批量执行,然后我先从cache里吧key删了;
-            // 这个时候刚好这个Key又get了,那这个Key的数据就是有问题的了;
-            for (TRecord<K, V> kvtRecord : expireList) {
-                Lock lockey = Lockkeys.getLockey(getName(), kvtRecord.getKey());
-                // 需要排他 所以要写锁 和 get add remove 互斥;
-                lockey.getWriteLock().lock();
-                try {
-                    TRecord<K, V> mapTRecord = cache.get(kvtRecord.getKey());
-                    // 不是一个对象了
-                    if (mapTRecord != kvtRecord) {
-                        continue;
-                    }
-                    // 30分钟没访问删除
-                    if (curNano - kvtRecord.getLastAccessTime() < expairNano) {
-                        continue;
-                    }
-                    cache.remove(kvtRecord.getKey());
-                    // 没有修改过就不用同步到数据库
-                    String valueJson = kvtRecord.isModified(getMdb(), true);
-                    if (valueJson == null) {
-                        continue;
-                    }
-                    // 刷新失败了 基本是数据库出问题了
-                    if (!kvtRecord.flush("tickClearCache", valueJson)) {
-                        //将对象加回去 等待下次同步
-                        cache.put(kvtRecord.getKey(), kvtRecord);
-                    }
-                } finally {
-                    lockey.getWriteLock().unlock();
-                }
+            if (!mdbInterface.checkKeyBelongCurrThread(kvtRecord.getKey())) {
+                continue;
             }
-        } finally {
-            writelock.unlock();
-            timeCostPrint.print();
+            String valueJson = kvtRecord.isModified(getMdb(), true);
+            if (valueJson == null) {
+                // 没有变化过 直接删除;
+                cache.remove(kvtRecord.getKey());
+                continue;
+            }
+            // 这里先将其设置为没修改过，然后等存好数据库数据以后,再返回，如果还是没修改过，那就进行删除cache，如果修改过了，就不动;
+            kvtRecord.checkpointRefreshState(kvtRecord.getState());
+            expireList.add(new ThreeTuple<>(kvtRecord, kvtRecord.marshalKey(), kvtRecord.marshalValue()));
         }
+
+        if(expireList.isEmpty()) {
+            return;
+        }
+
+        // 抛到DB线程进行存储
+        getMdb().putDBExecutor(a -> tickClearCacheMdbSaveDB(expireList));
+    }
+
+
+
+
+    public void tickClearCacheMdbSaveDB(List<ThreeTuple<TRecord<K, V>, String, String>> expireList){
+        logger.info("tickClearCache tickClearCacheMdbSaveDB start tableName {} expireListSize {} ", this.getName(), expireList.size());
+
+        List<TRecord<K, V>> successRecord = new ArrayList<>();
+        for (ThreeTuple<TRecord<K, V>, String, String> tuple : expireList) {
+            TRecord<K, V> one = tuple.getOne();
+            boolean flush = one.flush("tickClearCache", tuple.getTwo(), tuple.getThree());
+            if(flush){
+                successRecord.add(one);
+            }
+        }
+
+        logger.info("tickClearCache tickClearCacheMdbSaveDB summary tableName {}   expireListSize {}  successRecordSize {}",
+                this.getName(), expireList.size(), successRecord.size());
+
+        if(successRecord.isEmpty()) {
+            return;
+        }
+
+        // 抛会玩家线程进行处理
+        TRecord<K, V> any = expireList.get(0).getOne();
+
+        // 抛会逻辑线程删除cache数据
+        getMdb().getMdbInterface().execute(getSerializeLogicThreadName(), any.getKey(), ()->{
+            // 这里先将其设置为没修改过，然后等存好数据库数据以后,再返回，如果还是没修改过，那就进行删除cache，如果修改过了，就不动;
+            for (TRecord<K, V> savedRecord : successRecord) {
+                TRecord<K, V> currRecord = cache.get(savedRecord.getKey());
+                if(currRecord != savedRecord) {
+                    //logger.error("tickClearCacheMdbSaveDB currRecord!= savedRecord 请查找问题！！！ table {} currRecord {} savedRecord {} ", getName(), currRecord, savedRecord);
+                    continue;
+                }
+
+                // 修改过
+                if(savedRecord.isModified(getMdb(), false) != null){
+                    continue;
+                }
+                // 删除数据
+                cache.remove(savedRecord.getKey());
+            }
+        });
     }
 
 
@@ -528,6 +501,19 @@ public abstract class TTable<K, V> {
 
     public Collection<TRecord<K, V>> getCacheList() {
         return cache.values();
+    }
+
+    public void deleteCache(K key) {
+        findFailCache.invalidate(key);
+        cache.remove(key);
+    }
+
+
+    /**
+     * 仅限于内部使用
+     */
+    public TRecord<K, V> getTRecordByCache(K key) {
+        return cache.get(key);
     }
 
     protected abstract V newValue();
