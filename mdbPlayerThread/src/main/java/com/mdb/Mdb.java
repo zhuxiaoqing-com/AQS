@@ -307,18 +307,19 @@ public class Mdb {
             return;
         }
         logger.info("@@@@@@@@@@@@@@@@  mdb stop begin   @@@@@@@@@@@@@@@@");
+        shutdownExecutorNow(EXECUTOR_NAME, scheduler);
+        scheduler = null;
+        shutdownVisitDBExecutors();
         if (checkpoint != null && runCheckpoint) {
             try {
+                logger.info("checkpoint on close begin");
                 checkpoint.checkpoint(System.currentTimeMillis(), true);
+                logger.info("checkpoint on close end");
             } catch (Throwable e) {
                 logger.error("checkpoint on close error", e);
             }
         }
         checkpoint = null;
-
-        shutdownExecutor(EXECUTOR_NAME, scheduler);
-        scheduler = null;
-        shutdownVisitDBExecutors();
 
         if (allTables.size() > 0) {
             for (Tables tables : allTables) {
@@ -332,20 +333,29 @@ public class Mdb {
         logger.info("@@@@@@@@@@@@@@@@  mdb stop end   @@@@@@@@@@@@@@@@");
     }
 
-    private void shutdownExecutor(String executorName, ExecutorService executor) {
+    private void shutdownExecutorNow(String executorName, ExecutorService executor) {
         if (executor == null) {
             return;
         }
+        logger.info("shutdownNow executor begin name {}", executorName);
         try {
             ConcurrentEnvironment.getInstance().shutdown(executorName);
         } catch (Throwable e) {
             logger.error("shutdown executor error name {}", executorName, e);
-            try {
-                executor.shutdown();
-            } catch (Throwable ex) {
-                logger.error("fallback shutdown executor error name {}", executorName, ex);
-            }
         }
+        try {
+            executor.shutdownNow();
+        } catch (Throwable e) {
+            logger.error("shutdownNow executor error name {}", executorName, e);
+        }
+        try {
+            if (!executor.awaitTermination(60, TimeUnit.SECONDS)) {
+                logger.error("awaitTermination timeout name {} seconds {}", executorName, 60);
+            }
+        } catch (InterruptedException e) {
+            logger.error("awaitTermination interrupted name {} seconds {}", executorName, 60, e);
+        }
+        logger.info("shutdownNow executor end name {}", executorName);
     }
 
     private synchronized void shutdownVisitDBExecutors() {
@@ -354,12 +364,7 @@ public class Mdb {
             if (executor == null) {
                 continue;
             }
-            try {
-                ConcurrentEnvironment.getInstance().shutdown("mdb.visit.db.executor." + i);
-            } catch (Throwable e) {
-                logger.error("shutdown visit db executor error index {}", i, e);
-                executor.shutdown();
-            }
+            shutdownExecutorNow("mdb.visit.db.executor." + i, executor);
         }
         visitDBExecutor.clear();
     }
