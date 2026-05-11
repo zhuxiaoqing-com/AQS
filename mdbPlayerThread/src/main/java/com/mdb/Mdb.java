@@ -39,6 +39,7 @@ public class Mdb {
     private volatile long checkPointCount = 0;
 
     public boolean running = false;
+    private volatile boolean closing = false;
 
     public Checkpoint checkpoint = null;
     ScheduledThreadPoolExecutor scheduler;
@@ -52,6 +53,7 @@ public class Mdb {
 
     public synchronized void start(MdbMetadata mdbMetadata) throws Exception {
         logger.warn("@@@@@@@@@@@@@@@@ mdb start begin @@@@@@@@@@@@@@@@ mdb metadata = " + mdbMetadata.getName());
+        closing = false;
 
         try {
             Class.forName(XBean.class.getName());
@@ -151,6 +153,12 @@ public class Mdb {
      * 业务层必须有重试功能;
      */
     public void flush(Object key, MdbFlushCallback callback) {
+        if (isClosing()) {
+            if (callback != null) {
+                callback.onFlushOver(key, false, new IllegalStateException("mdb is closing"));
+            }
+            return;
+        }
         flushLogicThread(key, callback);
     }
 
@@ -194,13 +202,21 @@ public class Mdb {
             }
 
             if (jsonList.isEmpty()) {
-                callback.onFlushOver(key, allSuccess, null);
+                if (callback != null) {
+                    callback.onFlushOver(key, allSuccess, null);
+                }
                 return;
             }
             // 抛到DB线程进行存储
-            putDBExecutor(a -> flushMdbSaveDB(jsonList, key, callback));
+            if (!putDBExecutor(a -> flushMdbSaveDB(jsonList, key, callback))) {
+                if (callback != null) {
+                    callback.onFlushOver(key, false, new IllegalStateException("mdb is closing"));
+                }
+            }
         } catch (Exception e) {
-            callback.onFlushOver(key, false, e);
+            if (callback != null) {
+                callback.onFlushOver(key, false, e);
+            }
         }
     }
 
@@ -266,11 +282,15 @@ public class Mdb {
                     }
                 }
                 // 这里的success  true;就代表数据库里已经没有改key的数据了;可以更换服务器了;
-                mdbFlushCallback.onFlushOver(key, success, null);
+                if (mdbFlushCallback != null) {
+                    mdbFlushCallback.onFlushOver(key, success, null);
+                }
             });
 
         } catch (Exception e) {
-            mdbFlushCallback.onFlushOver(key, false, e);
+            if (mdbFlushCallback != null) {
+                mdbFlushCallback.onFlushOver(key, false, e);
+            }
         }
     }
 
@@ -306,6 +326,7 @@ public class Mdb {
         if (!force && !running) {
             return;
         }
+        closing = true;
         logger.info("@@@@@@@@@@@@@@@@  mdb stop begin   @@@@@@@@@@@@@@@@");
         shutdownExecutorNow(EXECUTOR_NAME, scheduler);
         scheduler = null;
@@ -428,13 +449,13 @@ public class Mdb {
     }
 
 
-    public void putDBExecutor(Consumer<Collection<?>> consumer) {
+    public boolean putDBExecutor(Consumer<Collection<?>> consumer) {
         // 这里暂时这么写,保证每个逻辑线程的数据保证被单个db线程处理;
-        putDBExecutor(Thread.currentThread().getId(), consumer);
+        return putDBExecutor(Thread.currentThread().getId(), consumer);
     }
 
-    private void putDBExecutor(Object key, Consumer<Collection<?>> consumer) {
-        putDBExecutor(Collections.singletonList(key), consumer);
+    private boolean putDBExecutor(Object key, Consumer<Collection<?>> consumer) {
+        return putDBExecutor(Collections.singletonList(key), consumer);
     }
 
     /**
@@ -445,13 +466,17 @@ public class Mdb {
      *
      * 这里为了解决上面说的问题，将其修改成了将key每次%,保证同key的顺序执行，不会有 脏数据的问题
      */
-    private void putDBExecutor(Collection<?> keys, Consumer<Collection<?>> consumer) {
+    private boolean putDBExecutor(Collection<?> keys, Consumer<Collection<?>> consumer) {
         if (keys.size() <= 0) {
-            return;
+            return true;
+        }
+        if (closing) {
+            logger.warn("mdb is closing, ignore db task {}", keys);
+            return false;
         }
         if (visitDBExecutor.isEmpty()) {
             logger.warn("mdb visit db executor is empty, ignore task {}", keys);
-            return;
+            return false;
         }
 
         int size = visitDBExecutor.size();
@@ -460,6 +485,7 @@ public class Mdb {
             ThreadPoolExecutor threadPoolExecutor = visitDBExecutor.get(Math.floorMod(entry.getKey(), size));
             threadPoolExecutor.execute(() -> consumer.accept(entry.getValue()));
         }
+        return true;
     }
 
     static final int hash(Object key) {
@@ -479,4 +505,9 @@ public class Mdb {
     public MdbInterface getMdbInterface() {
         return mdbInterface;
     }
+
+    public boolean isClosing() {
+        return closing;
+    }
+
 }

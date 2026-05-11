@@ -179,6 +179,10 @@ public abstract class TTable<K, V> {
     public void checkpoint(boolean sync) {
         logger.info("checkpoint table Start table {} ", getName());
         MdbInterface mdbInterface = getMdb().getMdbInterface();
+        if (!sync && getMdb().isClosing()) {
+            logger.info("checkpoint ignore because mdb is closing table {}", getName());
+            return;
+        }
         if(sync) {
             checkpointLogicThread(sync);
         } else {
@@ -252,12 +256,14 @@ public abstract class TTable<K, V> {
                     removeTRecordCache,sync);
         } else {
             // 序列化好了 抛回去
-            getMdb().putDBExecutor(a -> checkpointMdbSaveDB(addCache,
+            if (!getMdb().putDBExecutor(a -> checkpointMdbSaveDB(addCache,
                     modifyCache,
                     removeCache,
                     addTRecordCache,
                     modifyTRecordCache,
-                    removeTRecordCache, sync));
+                    removeTRecordCache, sync))) {
+                restoreCheckpointFail(addTRecordCache, modifyTRecordCache, removeTRecordCache);
+            }
         }
     }
 
@@ -311,30 +317,10 @@ public abstract class TTable<K, V> {
         boolean finalAddSuccess = addSuccess;
         boolean finalmodifySuccess = modifySuccess;
         boolean finalremoveSuccess = removeSuccess;
-        Runnable runnable = () -> {
-            // 这里就算logic线程的cache里已经没有数据了也没事,反正只是改了这个类,其他都没改
-            if (!finalAddSuccess) {
-                // 执行失败
-                for (TRecord tRecord : addTRecordCache) {
-                    // 将其重新设置为修改状态
-                    tRecord.checkPointFail();
-                }
-            }
-            if (!finalmodifySuccess) {
-                // 执行失败
-                for (TRecord tRecord : modifyTRecordCache) {
-                    // 将其重新设置为修改状态
-                    tRecord.checkPointFail();
-                }
-            }
-            if (!finalremoveSuccess) {
-                // 执行失败
-                for (TRecord tRecord : removeTRecordCache) {
-                    // 将其重新设置为修改状态
-                    tRecord.checkPointFail();
-                }
-            }
-        };
+        Runnable runnable = () -> restoreCheckpointFail(
+                finalAddSuccess ? Collections.emptyList() : addTRecordCache,
+                finalmodifySuccess ? Collections.emptyList() : modifyTRecordCache,
+                finalremoveSuccess ? Collections.emptyList() : removeTRecordCache);
 
         if (sync) {
             logger.error("数据库数据同步失败！！！！具体日志 table {} ", this.getName());
@@ -372,6 +358,10 @@ public abstract class TTable<K, V> {
      * 定时把30分钟还没有访问的数据清理
      */
     public void tickClearCache() {
+        if (getMdb().isClosing()) {
+            logger.info("tickClearCache ignore because mdb is closing table {}", getName());
+            return;
+        }
         getMdb().getMdbInterface().allExecute(()->tickClearCacheLogicThread());
     }
 
@@ -412,7 +402,9 @@ public abstract class TTable<K, V> {
         }
 
         // 抛到DB线程进行存储
-        getMdb().putDBExecutor(a -> tickClearCacheMdbSaveDB(expireList));
+        if (!getMdb().putDBExecutor(a -> tickClearCacheMdbSaveDB(expireList))) {
+            restoreTickClearCacheFail(expireList);
+        }
     }
 
 
@@ -458,6 +450,27 @@ public abstract class TTable<K, V> {
                 cache.remove(savedRecord.getKey());
             }
         });
+    }
+
+    private void restoreCheckpointFail(List<TRecord> addTRecordCache,
+                                       List<TRecord> modifyTRecordCache,
+                                       List<TRecord> removeTRecordCache) {
+        // 这里就算logic线程的cache里已经没有数据了也没事,反正只是改了这个类,其他都没改
+        for (TRecord tRecord : addTRecordCache) {
+            tRecord.checkPointFail();
+        }
+        for (TRecord tRecord : modifyTRecordCache) {
+            tRecord.checkPointFail();
+        }
+        for (TRecord tRecord : removeTRecordCache) {
+            tRecord.checkPointFail();
+        }
+    }
+
+    private void restoreTickClearCacheFail(List<ThreeTuple<TRecord<K, V>, String, String>> expireList) {
+        for (ThreeTuple<TRecord<K, V>, String, String> tuple : expireList) {
+            tuple.getOne().checkPointFail();
+        }
     }
 
 
