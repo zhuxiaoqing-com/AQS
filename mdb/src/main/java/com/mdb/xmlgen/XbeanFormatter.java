@@ -66,6 +66,7 @@ class XbeanFormatter {
 
 		ps.println("	public void copyFrom(" + cls + " _o_) {");
 		variables.forEach(var -> Declare.makeDeepCopy(var, ps, "        "));
+		ps.println("		makeModify();");
 		ps.println("	}");
 		ps.println();
 

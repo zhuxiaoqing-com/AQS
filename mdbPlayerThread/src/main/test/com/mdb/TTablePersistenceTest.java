@@ -177,7 +177,7 @@ public class TTablePersistenceTest {
 
         assertNull(storage.getStored("player", "1005"));
         batch.record.checkPointFail();
-        assertNotNull(batch.record.isModified(mdb, false));
+        assertTrue(batch.record.isModified(mdb, false));
     }
 
     private boolean flush(long key) throws Exception {
@@ -206,9 +206,10 @@ public class TTablePersistenceTest {
         TRecord<Long, PlayerBean> record = table.getTRecordByCache(key);
         assertNotNull(record);
 
-        String valueJson = record.isModified(mdb, false);
+        boolean modified = record.isModified(mdb, false);
+        String valueJson = modified ? record.marshalValue() : null;
         int state = record.getState();
-        record.getValueVersion().set(0);
+        ((XBean) record.getValue()).findVersionAtomic().set(0);
         record.checkpointRefreshState(state);
 
         CheckpointBatch<Long, PlayerBean> batch = new CheckpointBatch<Long, PlayerBean>();

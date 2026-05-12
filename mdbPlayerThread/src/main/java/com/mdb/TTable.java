@@ -2,7 +2,7 @@ package com.mdb;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
-import com.mdb.entity.ThreeTuple;
+import com.mdb.entity.FourTuple;
 import com.mdb.util.Lock;
 import com.mdb.util.Lockkeys;
 import com.mdb.util.TimeCostPrint;
@@ -14,7 +14,6 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Stream;
 
 public abstract class TTable<K, V> {
@@ -23,11 +22,6 @@ public abstract class TTable<K, V> {
 
 
     private Table meta;
-
-    private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
-
-    protected ReentrantReadWriteLock.WriteLock writelock = lock.writeLock();
-    protected ReentrantReadWriteLock.ReadLock readlock = lock.readLock();
 
     private Tables tables;
 
@@ -57,7 +51,6 @@ public abstract class TTable<K, V> {
         // 不存在在数据库找个新的 然后返回
         lockey.getWriteLock().lock();
         try {
-            // 找到了 返回
             TRecord<K, V> tRecord = cache.get(key);
             if (tRecord != null) {
                 if (tRecord.isRemoveState()) {
@@ -73,7 +66,6 @@ public abstract class TTable<K, V> {
                 tRecord = new TRecord<>(this, key, null, TRecord.GET);
                 tRecord.onSelect(valueStr);
                 cache.put(key, tRecord);
-
             } else {
                 findFailCache.put(key, defaultValue);
                 // getMiss
@@ -105,7 +97,6 @@ public abstract class TTable<K, V> {
                 cache.put(key, tRecord);
                 findFailCache.invalidate(key);
             }
-
         } finally {
             lockey.getWriteLock().unlock();
         }
@@ -217,10 +208,10 @@ public abstract class TTable<K, V> {
                 }
             }
 
-            String valueJson = kvtRecord.isModified(getMdb(), false);
-            if (valueJson == null) {
+            if (!kvtRecord.isModified(getMdb(), false)) {
                 continue;
             }
+            String valueJson = kvtRecord.marshalValue();
             int state = kvtRecord.getState();
             switch (state) {
                 case TRecord.ADD:
@@ -377,7 +368,7 @@ public abstract class TTable<K, V> {
 
         logger.info("tickClearCache tickClearCacheLogicThread start tableName {}  ", this.getName());
 
-        List<ThreeTuple<TRecord<K, V>, String, String>> expireList = new ArrayList<>();
+        List<FourTuple<TRecord<K, V>, Integer, String, String>> expireList = new ArrayList<>();
         for (TRecord<K, V> kvtRecord : cache.values()) {
             // 30分钟没访问删除
             if (curNano - kvtRecord.getLastAccessTime() < expairNano) {
@@ -386,15 +377,16 @@ public abstract class TTable<K, V> {
             if (!mdbInterface.checkKeyBelongCurrThread(kvtRecord.getKey())) {
                 continue;
             }
-            String valueJson = kvtRecord.isModified(getMdb(), true);
-            if (valueJson == null) {
+            if (!kvtRecord.isModified(getMdb(), true)) {
                 // 没有变化过 直接删除;
                 cache.remove(kvtRecord.getKey());
                 continue;
             }
+            String valueJson = kvtRecord.marshalValue();
             // 这里先将其设置为没修改过，然后等存好数据库数据以后,再返回，如果还是没修改过，那就进行删除cache，如果修改过了，就不动;
-            kvtRecord.checkpointRefreshState(kvtRecord.getState());
-            expireList.add(new ThreeTuple<>(kvtRecord, kvtRecord.marshalKey(), kvtRecord.marshalValue()));
+            int flushState = kvtRecord.getState();
+            kvtRecord.checkpointRefreshState(flushState);
+            expireList.add(new FourTuple<>(kvtRecord, flushState, kvtRecord.marshalKey(), valueJson));
         }
 
         if(expireList.isEmpty()) {
@@ -410,13 +402,13 @@ public abstract class TTable<K, V> {
 
 
 
-    public void tickClearCacheMdbSaveDB(List<ThreeTuple<TRecord<K, V>, String, String>> expireList){
+    public void tickClearCacheMdbSaveDB(List<FourTuple<TRecord<K, V>, Integer, String, String>> expireList){
         logger.info("tickClearCache tickClearCacheMdbSaveDB start tableName {} expireListSize {} ", this.getName(), expireList.size());
 
         List<TRecord<K, V>> successRecord = new ArrayList<>();
-        for (ThreeTuple<TRecord<K, V>, String, String> tuple : expireList) {
+        for (FourTuple<TRecord<K, V>, Integer, String, String> tuple : expireList) {
             TRecord<K, V> one = tuple.getOne();
-            boolean flush = one.flush("tickClearCache", tuple.getTwo(), tuple.getThree());
+            boolean flush = one.flush("tickClearCache", tuple.getTwo(), tuple.getThree(), tuple.getFour());
             if(flush){
                 successRecord.add(one);
             }
@@ -443,7 +435,7 @@ public abstract class TTable<K, V> {
                 }
 
                 // 修改过
-                if(savedRecord.isModified(getMdb(), false) != null){
+                if(savedRecord.isModified(getMdb(), false)){
                     continue;
                 }
                 // 删除数据
@@ -467,8 +459,8 @@ public abstract class TTable<K, V> {
         }
     }
 
-    private void restoreTickClearCacheFail(List<ThreeTuple<TRecord<K, V>, String, String>> expireList) {
-        for (ThreeTuple<TRecord<K, V>, String, String> tuple : expireList) {
+    private void restoreTickClearCacheFail(List<FourTuple<TRecord<K, V>, Integer, String, String>> expireList) {
+        for (FourTuple<TRecord<K, V>, Integer, String, String> tuple : expireList) {
             tuple.getOne().checkPointFail();
         }
     }

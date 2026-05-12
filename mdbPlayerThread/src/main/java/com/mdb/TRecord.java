@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
-
 public class TRecord<K, V> {
     public static final int ADD = 1;
     public static final int REMOVE = 2;
@@ -126,7 +125,7 @@ public class TRecord<K, V> {
             }
             ((XBean)value).findVersionAtomic().set(0);
             // 规范化后再计算 hash，避免 DB 中 JSON 空格/格式差异触发 strictCheck 误报
-            setHash(marshalValue());
+            //setHash(marshalValue());
         } catch (Exception e) {
             Mdb.logger.error("find error tableName {} key {}", table.getName(), key, e);
             throw new MdbError("unmarshal db value failed tableName " + table.getName() + " key " + key, e);
@@ -144,7 +143,7 @@ public class TRecord<K, V> {
      *          flush;
      *          clearCache;
      */
-    public String isModified(Mdb mdb, boolean strictCheck) {
+    public boolean isModified(Mdb mdb, boolean strictCheck) {
         // 这里不用单独在判断 add remove; 因为在new对象的时候已经将version自增了
       /*  switch (getState()) {
             case ADD:
@@ -166,17 +165,18 @@ public class TRecord<K, V> {
         if (bean.checkModify()) {
             String json = marshalValue();
             setHash(json);
-            return json;
+            return true;
         }
+        return false;
 
         // 没有开启严格检测
-        if(!mdb.isStrictCheckOpen()) {
-            return null;
+     /*   if(!mdb.isStrictCheckOpen()) {
+            return false;
         }
 
         // ② 非严格模式：到这里说明没变
         if (!strictCheck) {
-            return null;
+            return false;
         }
 
         // ③ 严格模式：做 hash 检查
@@ -188,10 +188,10 @@ public class TRecord<K, V> {
             if (getValueVersion().get() == 0) {
                 log.warn("strictCheck not equals tableName {} key {}", table.getName(), key);
             }
-            return json;
+            return true;
         }
 
-        return null;
+        return false;*/
     }
 
     private void setHash(String json) {
@@ -217,17 +217,17 @@ public class TRecord<K, V> {
     }
 
 
-    boolean flush(String reason, String key, String valueJson) {
+    boolean flush(String reason, int flushState, String key, String valueJson) {
         try {
-            switch (getState()) {
+            switch (flushState) {
                 case ADD:
-                     table.getTables().getStorage().replace(table.getName(), marshalKey(), valueJson);
+                    table.getTables().getStorage().replace(table.getName(), key, valueJson);
                     return true;
                 case REMOVE:
-                    table.getTables().getStorage().remove(table.getName(), marshalKey());
+                    table.getTables().getStorage().remove(table.getName(), key);
                     return true;
                 case GET:
-                    table.getTables().getStorage().replace(table.getName(), marshalKey(), valueJson);
+                    table.getTables().getStorage().replace(table.getName(), key, valueJson);
                     return true;
             }
 

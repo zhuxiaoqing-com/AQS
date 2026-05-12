@@ -1,6 +1,6 @@
 package com.mdb;
 
-import com.mdb.entity.ThreeTuple;
+import com.mdb.entity.FourTuple;
 import com.mdb.util.ConcurrentEnvironment;
 import com.mdb.util.TimeCostPrint;
 import com.mdb.xmlgen.xmlparse.MdbMetadata;
@@ -172,7 +172,7 @@ public class Mdb {
             logger.info("flush flushLogicThread start key {}", key);
             boolean allSuccess = true;
         try {
-            List<ThreeTuple<TRecord, String, String>> jsonList = new ArrayList<>();
+            List<FourTuple<TRecord, Integer, String, String>> jsonList = new ArrayList<>();
             for (Tables allTable : allTables) {
                 boolean detect = allTable.getStorage().detect();
                 if (!detect) {
@@ -192,12 +192,12 @@ public class Mdb {
                     }
 
                     // 没有修改过
-                    if (tRecord.isModified(this, false) == null) {
+                    if (!tRecord.isModified(this, false)) {
                         tt.deleteCache(key);
                         continue;
                     }
                     // 修改过了
-                    jsonList.add(new ThreeTuple<>(tRecord, tRecord.marshalKey(), tRecord.marshalValue()));
+                    jsonList.add(new FourTuple<>(tRecord, tRecord.getState(), tRecord.marshalKey(), tRecord.marshalValue()));
                 }
             }
 
@@ -220,18 +220,19 @@ public class Mdb {
         }
     }
 
-    private void flushMdbSaveDB(List<ThreeTuple<TRecord, String, String>> jsonList, Object key, MdbFlushCallback mdbFlushCallback) {
+    private void flushMdbSaveDB(List<FourTuple<TRecord, Integer, String, String>> jsonList, Object key, MdbFlushCallback mdbFlushCallback) {
         logger.info("flush flushMdbSaveDB start key {} jsonListSize {} ", key, jsonList.size());
 
         boolean allSuccess = true;
         try {
             ArrayList<TRecord> successTRecord = new ArrayList<>();
-            for (ThreeTuple<TRecord, String, String> entry : jsonList) {
+            for (FourTuple<TRecord, Integer, String, String> entry : jsonList) {
                 TRecord one = entry.getOne();
-                String jsonKey = entry.getTwo();
-                String jsonValue = entry.getThree();
+                int flushState = entry.getTwo();
+                String jsonKey = entry.getThree();
+                String jsonValue = entry.getFour();
 
-                boolean flush = one.flush("flush", jsonKey, jsonValue);
+                boolean flush = one.flush("flush", flushState, jsonKey, jsonValue);
                 if (!flush) {
                     allSuccess = false;
                     continue;
@@ -254,7 +255,7 @@ public class Mdb {
                         continue;
                     }
                     // 修改过了
-                    if (record.isModified(this, false) != null) {
+                    if (record.isModified(this, false)) {
                         success = false;
                         continue;
                     }

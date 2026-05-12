@@ -10,18 +10,12 @@ import org.slf4j.LoggerFactory;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class Tables {
 
     public static final Logger log = LoggerFactory.getLogger(Tables.class);
 
     protected final Map<String, TTable> tables = new LinkedHashMap<>();
-
-    // checkPoint的全局锁
-    private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
-    protected ReentrantReadWriteLock.WriteLock writelock = lock.writeLock();
-    protected ReentrantReadWriteLock.ReadLock readlock = lock.readLock();
 
     protected StorageEngine storage;
 
@@ -74,35 +68,15 @@ public class Tables {
     }
 
     final void close() {
-        writelock.lock();
-        try {
-            tables.values().forEach(table -> table.close());
-            if (null != storage) {
-                storage.close();
-                storage = null;
-            }
-        } finally {
-            writelock.unlock();
+        tables.values().forEach(table -> table.close());
+        if (null != storage) {
+            storage.close();
+            storage = null;
         }
     }
-
-
-    public ReentrantReadWriteLock.WriteLock getWriteLock() {
-        return writelock;
-    }
-
-    public ReentrantReadWriteLock.ReadLock getReadlock() {
-        return readlock;
-    }
-
 
     public TTable getTable(String table) {
-        readlock.lock();
-        try {
-            return tables.get(table);
-        } finally {
-            readlock.unlock();
-        }
+        return tables.get(table);
     }
 
     public StorageEngine getStorage() {
