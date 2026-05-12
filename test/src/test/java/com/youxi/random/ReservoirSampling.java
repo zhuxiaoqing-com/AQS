@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.function.ToDoubleFunction;
 
 /**
  * @author zhuxiaoqing
@@ -85,18 +86,26 @@ n 个元素里，每个元素被抽中的概率都是 k / n
  */
 public class ReservoirSampling {
 
+
+    private static int random(int origin, int i) {
+        // nextInt 默认是[start,end)的，所以这里需要 i+1;变成[start,end]
+        return ThreadLocalRandom.current().nextInt(origin, i+1);
+    }
+
     public Object random1(Collection<Object> list) {
         int i = 0;
         Object ans = null;
         for (Object cur : list) {
             i++;
-            int r = ThreadLocalRandom.current().nextInt(1, i);
+            int r = random(1, i);
             if (r == 1) {
                 ans = cur;
             }
         }
         return ans;
     }
+
+
 
     public List<Object> randomK(Collection<Object> list, int k) {
         List<Object> reservoir = new ArrayList<>();
@@ -108,15 +117,56 @@ public class ReservoirSampling {
             if (i <= k) {
                 reservoir.add(cur);
             } else {
-                int r = ThreadLocalRandom.current().nextInt(1, i);
+                int r = random(1, i);
                 if (r <= k) {
                     // 随机替换水池里的一个元素
-                    int index = ThreadLocalRandom.current().nextInt(0, k - 1);
+                    int index = random(0, k - 1);
                     reservoir.set(index, cur);
                 }
             }
         }
         return reservoir;
+    }
+
+
+    /**
+     * 权重版本的;仿造navmesh dtNavMeshQuery::findRandomPoint里的算法;
+     */
+    public static <T> T weightedReservoirSample(Collection<T> list, ToDoubleFunction<T> weightFn) {
+        double totalWeight = 0.0;
+        T ans = null;
+
+        ThreadLocalRandom random = ThreadLocalRandom.current();
+
+        for (T cur : list) {
+            double weight = weightFn.applyAsDouble(cur);
+
+            // 权重 <= 0 的对象不参与随机
+            if (weight <= 0) {
+                continue;
+            }
+
+            totalWeight += weight;
+
+            /*
+             * u * totalWeight <= weight
+             * u<=area/tsum
+             * 而 u 是 [0, 1) 的随机浮点数
+             *
+             * 如果weight =1;
+             * u * totalWeight <= 1
+             * u <= 1 / totalWeight
+             * 第 i 个有效 tile，以 1 / i 的概率替换答案;
+             * 是一个意思
+             */
+            // 以 weight / totalWeight 的概率替换当前答案
+            double u = random.nextDouble();
+            if (u * totalWeight <= weight) {
+                ans = cur;
+            }
+        }
+
+        return ans;
     }
 
 
