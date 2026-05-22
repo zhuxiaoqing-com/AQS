@@ -45,7 +45,25 @@
 		<variable name="bagtest" type="int" alias="2"/>  
 	</xbean>
 	<table name="bag3" key="long" value="Bag3" cacheCapacity="21" />
-	
+
+
+	<xbean name="DBItemDataDef"> 玩家
+		<variable name="itemSrl" type="long" alias="1"/>
+		<variable name="itemId" type="int" alias="2"/>
+		<variable name="itemName" type="string" alias="3"/>
+	</xbean>
+
+
+	<xbean name="DBPlayerDataDef"> 玩家
+		<variable name="id" type="long" alias="1"/>
+		<variable name="name" type="string" alias="2"/>
+		<variable name="lv" type="int" alias="3"/>
+		<variable name="intIntMap" type="map" key="int" value="int" alias="4"/>
+		<variable name="intList" type="list" value="int" alias="5"/>
+		<variable name="intSet" type="set" value="int" alias="6"/>
+		<variable name="intDBItemMap" type="map" key="int" value="DBItemDataDef" alias="7"/>
+	</xbean>
+
 	<!-- 数据源配置 -->
 	<xi:include href="datasource-local.xml" />
 </mdb>

@@ -50,7 +50,7 @@ public class Xbean extends Type {
 				Variable variable = new Variable(this, e,aliasSet);
 				if (varNameChecker.add(variable.getName()) == false) {
 					// 重复
-					throw new RuntimeException("Duplicate variable name in " + getName());
+					throw new RuntimeException("Duplicate bean name in " + getName() + " variable name in " + variable.getName());
 				}
 				variables.add(variable);
 			}
