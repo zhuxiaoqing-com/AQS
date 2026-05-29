@@ -105,6 +105,19 @@ public class MoveCheck {
      *
      * 速度变化时 也有问题 服务器可能100ms的时候变化了，300ms才通知到客户端
      * 这个不管;速度变化后，直接记录旧的速度，如果新的速度不满足，如果同步时间在变化时的300ms内，就使用旧的速度再校验一次;
+     *
+     *
+     * 总结就是
+     * 1. 服务端先 settleMove(nowMs)，推进自己的权威位置
+     * 2. 计算客户端这段时间理论最大允许距离 allowDist
+     *    - 正常用当前速度
+     *    - 如果刚发生减速，在 graceMs 内允许按旧速度算一部分
+     * 3. 计算客户端实际移动距离 realDist
+     * 4. realDist <= allowDist + normalTolerance：接受
+     * 5. realDist > allowDist + hardTolerance：直接拉回
+     * 6. 中间误差：换算成时间误差，扣时间令牌桶
+     * 7. 令牌够：暂时接受
+     * 8. 令牌不够：拉回/记录异常
      */
 
 
