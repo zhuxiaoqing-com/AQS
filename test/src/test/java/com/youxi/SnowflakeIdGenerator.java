@@ -15,16 +15,16 @@ public final class SnowflakeIdGenerator {
      * | -------------- | --- | ------------------- |
      * | sign           | 1   | 固定 0                |
      * | platform       | 9   | 0~511               |
-     * | playerServerId | 16  | 0~65535             |
-     * | epochSecond    | 28  | 自定义 epoch 起，≈ 8.5 年 |
+     * | playerServerId | 15  | 0~32767             |
+     * | epochSecond    | 29  | 自定义 epoch 起，536,870,912 秒，约 17.02 年回绕一次 |
      * | sequence       | 10  | 秒内 0~1023           |
      *
      */
 
     // ================== bit width ==================
     private static final int PLATFORM_BITS      = 9;   // 平台ID 0~511
-    private static final int PLAYER_SERVER_BITS = 16;  // 服务器ID 0~65535
-    private static final int SECOND_BITS        = 28;  // 秒（相对 epoch 或逻辑秒）
+    private static final int PLAYER_SERVER_BITS = 15;  // 服务器ID 0~32767
+    private static final int SECOND_BITS        = 29;  // com.youxi.SnowflakeIdGenerator#SECOND_BITS，秒（相对 epoch 或逻辑秒），536,870,912 秒，约 17.02 年回绕一次
     private static final int SEQ_BITS           = 10;  // 秒内自增 0~1023
 
     // ================== bit position ==================
