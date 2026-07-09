@@ -646,7 +646,8 @@ public class Test14 {
 
 	public static void main(String[] args) {
 		try {
-			test35();
+			//test35();
+			Runtime.getRuntime().addShutdownHook(new Thread(() -> System.out.println(".....ddfdfsfsf")));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

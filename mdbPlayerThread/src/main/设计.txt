@@ -61,3 +61,6 @@ mdb再把可以处理的key需要的逻辑放入consumer就可以了  flush和lo
 
     checkpoint数据库线程运行完以后，需要回调到逻辑线程 这个怎么回调。。。
     如果是一开始就分好了，有可consumer的消费的话 那确实可以，感觉这个确实是需要呀，consumer可以透传;但是这个是异步访问cache;
+
+
+其实mdbPlayerThread 还可以考虑接入io.asyncer:r2dbc-mysql:1.4.2，非阻塞mysql驱动;
