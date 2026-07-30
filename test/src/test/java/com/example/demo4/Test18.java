@@ -283,6 +283,22 @@ public class Test18 {
             }
         }
 
+    @Test
+    public void test013() throws InterruptedException {
+
+        try {
+            a();
+        }catch (Exception e) {
+            System.out.println("hha");
+            throw e;
+        }
+    }
+
+    void a() {
+        throw new RuntimeException("a");
+    }
+
+
 
    /* ArrayDeque<Integer> queue = new ArrayDeque<>();
 
