@@ -1,5 +1,8 @@
 package com.example.代码优化.design_mode.加减乘除解释器模式;
 
+import com.example.代码优化.design_mode.加减乘除解释器模式.method.ExpressionMethodRegistry;
+import com.example.代码优化.design_mode.加减乘除解释器模式.stack.DoubleStack;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -26,18 +29,19 @@ public final class ExpressionMainTest {
 
         // 括号、一元运算符和空白字符。
         run("嵌套半角括号", ExpressionMainTest::testNestedHalfWidthParentheses);
-        run("嵌套全角括号", ExpressionMainTest::testNestedFullWidthParentheses);
-        run("半角全角括号混合", ExpressionMainTest::testMixedParentheses);
         run("一元正负号", ExpressionMainTest::testUnaryOperators);
         run("连续一元负号", ExpressionMainTest::testRepeatedUnaryMinus);
         run("表达式中的空白", ExpressionMainTest::testWhitespace);
 
         // 变量提供器、变量名收集和已编译表达式重复执行。
         run("ValueProvider 取值", ExpressionMainTest::testValueProvider);
+        run("int、long、double 基础类型", ExpressionMainTest::testPrimitiveNumberTypes);
         run("变量名收集", ExpressionMainTest::testVariableNames);
         run("重复执行同一个表达式", ExpressionMainTest::testRepeatedEvaluation);
-        run("下划线变量名", ExpressionMainTest::testUnderscoreVariable);
+        run("字母开头变量名", ExpressionMainTest::testLetterVariable);
         run("中文变量名", ExpressionMainTest::testChineseVariable);
+        run("m_random 方法", ExpressionMainTest::testRandomFunction);
+        run("注册自定义方法", ExpressionMainTest::testRegisteredMethod);
 
         // 无效输入和运行时错误。
         run("空表达式", ExpressionMainTest::testBlankExpression);
@@ -93,16 +97,6 @@ public final class ExpressionMainTest {
                 "嵌套半角括号计算错误");
     }
 
-    private static void testNestedFullWidthParentheses() {
-        assertDouble(6.0, evaluate("（a + （b + 2））", values("a", 1.0, "b", 3.0)),
-                "嵌套全角括号计算错误");
-    }
-
-    private static void testMixedParentheses() {
-        assertDouble(6.0, evaluate("(a + （b + 2）)", values("a", 1.0, "b", 3.0)),
-                "混合括号计算错误");
-    }
-
     private static void testUnaryOperators() {
         assertDouble(-6.0, evaluate("-2 * 3", values()), "一元负号优先级错误");
         assertDouble(2.0, evaluate("+2", values()), "一元正号计算错误");
@@ -136,10 +130,62 @@ public final class ExpressionMainTest {
         assertDouble(25.0, result, "ValueProvider 计算结果错误");
     }
 
+    private static void testPrimitiveNumberTypes() {
+        SimpleExpression.CompiledExpression expression = SimpleExpression.compile("5 / 2");
+        if (expression.evaluateInt(name -> 0) != 2) {
+            throw new AssertionError("int 除法结果错误");
+        }
+        if (expression.evaluateLong(name -> 0L) != 2L) {
+            throw new AssertionError("long 除法结果错误");
+        }
+        assertDouble(2.5, expression.evaluateDouble(name -> 0.0),
+                "double 除法结果错误");
+
+        if (SimpleExpression.compile("m_random(5, 5)").evaluateInt(name -> 0) != 5) {
+            throw new AssertionError("int m_random 结果错误");
+        }
+        if (SimpleExpression.compile("m_random(5, 5)").evaluateLong(name -> 0L) != 5L) {
+            throw new AssertionError("long m_random 结果错误");
+        }
+        assertDouble(5.0,
+                SimpleExpression.compile("m_random(5, 5)").evaluateDouble(name -> 0.0),
+                "double m_random 结果错误");
+
+        SimpleExpression.CompiledExpression decimal = SimpleExpression.compile("5.9");
+        if (decimal.evaluateInt(name -> 0) != 5) {
+            throw new AssertionError("小数转换 int 结果错误");
+        }
+        if (decimal.evaluateLong(name -> 0L) != 5L) {
+            throw new AssertionError("小数转换 long 结果错误");
+        }
+        assertDouble(5.9, decimal.evaluateDouble(name -> 0.0),
+                "小数保留 double 结果错误");
+
+        SimpleExpression.CompiledExpression overflow =
+                SimpleExpression.compile("9999999999999999999999999999999999999999999999999");
+        if (overflow.evaluateInt(name -> 0) != Integer.MAX_VALUE) {
+            throw new AssertionError("超出 int 范围时应遵循 Java 转换规则");
+        }
+        if (overflow.evaluateLong(name -> 0L) != Long.MAX_VALUE) {
+            throw new AssertionError("超出 long 范围时应遵循 Java 转换规则");
+        }
+
+        assertThrows(ArithmeticException.class,
+                () -> SimpleExpression.compile("2147483647 + 1").evaluateInt(name -> 0),
+                "int 加法溢出应报错");
+        assertThrows(ArithmeticException.class,
+                () -> SimpleExpression.compile("9223372036854775807 + 1").evaluateLong(name -> 0L),
+                "long 加法溢出应报错");
+        assertThrows(ArithmeticException.class,
+                () -> SimpleExpression.compile("x / -1")
+                        .evaluateInt(name -> Integer.MIN_VALUE),
+                "int 除法溢出应报错");
+    }
+
     private static void testVariableNames() {
         SimpleExpression.CompiledExpression expression =
-                SimpleExpression.compile("x + y + x + _damage");
-        assertEquals("[x, y, _damage]", expression.getVariables().toString(),
+                SimpleExpression.compile("x + y + x + damage2");
+        assertEquals("[x, y, damage2]", expression.getVariables().toString(),
                 "变量名或变量顺序错误");
     }
 
@@ -155,14 +201,45 @@ public final class ExpressionMainTest {
         assertDouble(25.0, expression.evaluate(provider), "重复计算错误");
     }
 
-    private static void testUnderscoreVariable() {
-        assertDouble(12.0, evaluate("_attack + 2", values("_attack", 10.0)),
-                "下划线变量解析错误");
+    private static void testLetterVariable() {
+        assertDouble(12.0, evaluate("attack2 + 2", values("attack2", 10.0)),
+                "字母开头变量解析错误");
     }
 
     private static void testChineseVariable() {
         assertDouble(12.0, evaluate("伤害 + 2", values("伤害", 10.0)),
                 "中文变量解析错误");
+    }
+
+    private static void testRandomFunction() {
+        double result = evaluate("m_random(10, 20)", values());
+        if (result < 10.0 || result >= 20.0) {
+            throw new AssertionError("m_random 结果超出范围：" + result);
+        }
+        assertDouble(5.0, evaluate("m_random(5, 5)", values()),
+                "m_random 上下界相等时应返回该值");
+        assertDouble(12.0, evaluate("m_random(value + 1, value + 1)", values("value", 11.0)),
+                "m_random 参数应支持表达式");
+        assertThrows(IllegalArgumentException.class,
+                () -> evaluate("m_random(2, 1)", values()), "m_random 的 min 大于 max 应报错");
+        assertThrows(ExpressionParseException.class,
+                () -> SimpleExpression.compile("m_random(1)"), "m_random 参数个数错误应报错");
+        assertThrows(ExpressionParseException.class,
+                () -> SimpleExpression.compile("random(1, 2)"), "没有 m_ 前缀的方法应报错");
+    }
+
+    private static void testRegisteredMethod() {
+        ExpressionMethodRegistry methods = new ExpressionMethodRegistry()
+                .register("m_square", 1,
+                        (values, arguments) -> arguments[0] * arguments[0]);
+
+        SimpleExpression.CompiledExpression expression =
+                SimpleExpression.compile("m_square(3) + m_square(2)", methods);
+        if (expression.evaluateInt(name -> 0) != 13) {
+            throw new AssertionError("注册的 int 方法执行结果错误");
+        }
+        assertDouble(13.0, expression.evaluateDouble(name -> 0.0),
+                "注册的 double 方法执行结果错误");
     }
 
     private static void testBlankExpression() {
@@ -217,6 +294,10 @@ public final class ExpressionMainTest {
     private static void testUnsupportedCharacter() {
         assertThrows(ExpressionParseException.class,
                 () -> SimpleExpression.compile("1 @ 2"), "不支持的字符应报错");
+        assertThrows(ExpressionParseException.class,
+                () -> SimpleExpression.compile("（1 + 2）"), "全角括号应报错");
+        assertThrows(ExpressionParseException.class,
+                () -> SimpleExpression.compile("_attack + 2"), "下划线变量应报错");
     }
 
     private static void testUnsupportedTernary() {

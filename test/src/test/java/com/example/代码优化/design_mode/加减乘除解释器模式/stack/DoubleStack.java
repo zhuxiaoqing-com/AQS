@@ -1,4 +1,4 @@
-package com.example.代码优化.design_mode.加减乘除解释器模式;
+package com.example.代码优化.design_mode.加减乘除解释器模式.stack;
 
 /**
  * 基于循环数组的原生 double 栈，设计思路参考 ArrayDeque。
@@ -10,17 +10,33 @@ package com.example.代码优化.design_mode.加减乘除解释器模式;
  * 避免取模运算，也避免使用 {@code Double} 装箱。</p>
  */
 public final class DoubleStack {
+    /** 指定同一套 double 栈在执行时采用哪一种数值语义。 */
+    public enum NumericType {
+        INT,
+        LONG,
+        DOUBLE
+    }
+
     /** 循环数组；保留一个空位置用于区分空栈和满栈。 */
     private double[] elements;
     /** 栈首元素下标。 */
     private int head;
     /** 栈尾下一个可写位置。 */
     private int tail;
+    private final NumericType numericType;
 
     public DoubleStack(int initialCapacity) {
+        this(initialCapacity, NumericType.DOUBLE);
+    }
+
+    public DoubleStack(int initialCapacity, NumericType numericType) {
         if (initialCapacity < 0) {
             throw new IllegalArgumentException("初始容量不能小于 0");
         }
+        if (numericType == null) {
+            throw new IllegalArgumentException("数值类型不能为 null");
+        }
+        this.numericType = numericType;
 
         // 至少保留一个空位置，所以数组长度必须大于实际容量。
         int capacity = 2;
@@ -28,6 +44,10 @@ public final class DoubleStack {
             capacity <<= 1;
         }
         elements = new double[capacity];
+    }
+
+    public NumericType getNumericType() {
+        return numericType;
     }
 
     /** 把数值压入栈尾。 */

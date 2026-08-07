@@ -1,5 +1,11 @@
 package com.example.代码优化.design_mode.加减乘除解释器模式;
 
+import com.example.代码优化.design_mode.加减乘除解释器模式.method.ExpressionMethodRegistry;
+import com.example.代码优化.design_mode.加减乘除解释器模式.provider.DoubleValueProvider;
+import com.example.代码优化.design_mode.加减乘除解释器模式.stack.DoubleStack;
+import com.example.代码优化.design_mode.加减乘除解释器模式.provider.IntValueProvider;
+import com.example.代码优化.design_mode.加减乘除解释器模式.provider.LongValueProvider;
+
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -30,35 +36,66 @@ final class Expression {
      */
     public static Expression compile(String source) {
         // 解析和优先级计算全部放在编译阶段，避免每次 evaluate 重复解析字符串。
-        return new ExpressionParser(source).parse();
+        return compile(source, ExpressionMethodRegistry.defaultRegistry());
     }
 
-    /**
-     * 使用变量值计算表达式。
-     *
-     * @param values 变量值提供器
-     * @return 计算结果
-     * @throws IllegalArgumentException 缺少变量值
-     * @throws ArithmeticException 除数为零
-     */
+    static Expression compile(String source, ExpressionMethodRegistry methods) {
+        if (methods == null) {
+            throw new IllegalArgumentException("方法注册表不能为 null");
+        }
+        // 解析阶段只绑定方法描述，实际计算仍然发生在 evaluate 阶段。
+        return new ExpressionParser(source, methods).parse();
+    }
+
+    /** 使用 int 基础类型执行表达式。 */
+    public int evaluateInt(IntValueProvider values) {
+        requireValueProvider(values);
+        return (int) evaluateDouble(name -> values.getValue(name), DoubleStack.NumericType.INT);
+    }
+
+    /** 使用 long 基础类型执行表达式。 */
+    public long evaluateLong(LongValueProvider values) {
+        requireValueProvider(values);
+        return (long) evaluateDouble(name -> values.getValue(name), DoubleStack.NumericType.LONG);
+    }
+
+    /** 使用 double 基础类型执行表达式。 */
+    public double evaluateDouble(DoubleValueProvider values) {
+        requireValueProvider(values);
+        return evaluateDouble(values, DoubleStack.NumericType.DOUBLE);
+    }
+
+    private double evaluateDouble(DoubleValueProvider values, DoubleStack.NumericType numericType) {
+        DoubleStack stack = new DoubleStack(instructions.size(), numericType);
+        for (ExpressionInstruction instruction : instructions) {
+            instruction.applyDouble(stack, values);
+        }
+        requireSingleResult(stack.size());
+        return stack.pop();
+    }
+
+    /** 保留原有 double 变量提供器入口，避免已有调用方必须立即改名。 */
     public double evaluate(ValueProvider values) {
-        // null 提供器无法提供变量值，提前报错比执行到某个变量时再报错更清晰。
+        requireValueProvider(values);
+        return evaluateDouble(name -> {
+            Double value = values.getValue(name);
+            if (value == null) {
+                throw new IllegalArgumentException("没有为变量提供值：" + name);
+            }
+            return value;
+        });
+    }
+
+    private static void requireValueProvider(Object values) {
         if (values == null) {
             throw new IllegalArgumentException("变量值提供器不能为 null");
         }
+    }
 
-        // 后缀指令按顺序执行，DoubleStack 的栈顶保存当前最新的操作数。
-        // 指令数量是执行过程中栈深度的安全上限，用它作为初始容量避免扩容。
-        DoubleStack stack = new DoubleStack(instructions.size());
-        // 每次 evaluate 使用独立栈，因此同一个已编译表达式可以重复、并发计算。
-        for (ExpressionInstruction instruction : instructions) {
-            instruction.apply(stack, values);
+    private static void requireSingleResult(int size) {
+        if (size != 1) {
+            throw new IllegalStateException("表达式执行失败：结果栈中有 " + size + " 个值");
         }
-        // 合法表达式执行结束后必须只剩一个最终结果。
-        if (stack.size() != 1) {
-            throw new IllegalStateException("表达式执行失败：结果栈中有 " + stack.size() + " 个值");
-        }
-        return stack.pop();
     }
 
     /**
