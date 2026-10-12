@@ -14,6 +14,13 @@ public final class NumberInstruction implements ExpressionInstruction {
         }
     }
 
+    public NumberInstruction(double value) {
+        if (Double.isNaN(value) || Double.isInfinite(value)) {
+            throw new IllegalArgumentException("数值必须是有限 double：" + value);
+        }
+        this.value = value;
+    }
+
     @Override
     public void execute(EvaluationContext context) {
         context.push(value);

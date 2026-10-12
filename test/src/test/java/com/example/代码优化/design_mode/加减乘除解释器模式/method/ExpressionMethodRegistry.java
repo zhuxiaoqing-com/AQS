@@ -1,5 +1,8 @@
 package com.example.代码优化.design_mode.加减乘除解释器模式.method;
 
+import com.example.代码优化.design_mode.加减乘除解释器模式.ExpressionValueType;
+
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
@@ -8,24 +11,60 @@ import java.util.concurrent.ConcurrentHashMap;
 public final class ExpressionMethodRegistry {
     private final Map<String, RegisteredMethod> methods = new ConcurrentHashMap<>();
 
-    /**
-     * 注册一个表达式方法。
-     *
-     * @param name 方法名，例如 {@code m_random}
-     * @param argumentCount 方法参数个数
-     * @param implementation 方法实现
-     * @return 当前注册表，便于连续注册
-     */
+    /** 注册参数和返回类型均为 NUMBER 的方法。 */
     public ExpressionMethodRegistry register(String name,
                                               int argumentCount,
                                               ExpressionMethod implementation) {
-        validateName(name);
-        if (argumentCount <= 0) {
-            throw new IllegalArgumentException("方法参数个数必须大于 0");
+        if (argumentCount < 0) {
+            throw new IllegalArgumentException("方法参数个数不能小于 0");
         }
-        Objects.requireNonNull(implementation, "方法实现不能为 null");
-        RegisteredMethod previous = methods.putIfAbsent(
-                name, new RegisteredMethod(argumentCount, implementation));
+        ExpressionValueType[] parameterTypes = new ExpressionValueType[argumentCount];
+        Arrays.fill(parameterTypes, ExpressionValueType.NUMBER);
+        return register(name, parameterTypes, implementation);
+    }
+
+    /** 注册 NUMBER 返回值和显式参数类型的方法。 */
+    public ExpressionMethodRegistry register(String name,
+                                              ExpressionValueType[] parameterTypes,
+                                              ExpressionMethod implementation) {
+        return registerInternal(name, parameterTypes, ExpressionValueType.NUMBER,
+                implementation, null);
+    }
+
+    /** 注册返回 Java boolean 的方法，参数类型可包含 NUMBER 和 BOOLEAN。 */
+    public ExpressionMethodRegistry registerBoolean(String name,
+                                                     ExpressionValueType[] parameterTypes,
+                                                     BooleanExpressionMethod implementation) {
+        return registerInternal(name, parameterTypes, ExpressionValueType.BOOLEAN,
+                null, implementation);
+    }
+
+    /** 便于注册返回 Java boolean 的方法。 */
+    public ExpressionMethodRegistry registerBoolean(String name,
+                                                     BooleanExpressionMethod implementation,
+                                                     ExpressionValueType... parameterTypes) {
+        return registerBoolean(name, parameterTypes, implementation);
+    }
+
+    private ExpressionMethodRegistry registerInternal(String name,
+                                                       ExpressionValueType[] parameterTypes,
+                                                       ExpressionValueType returnType,
+                                                       ExpressionMethod implementation,
+                                                       BooleanExpressionMethod booleanImplementation) {
+        validateName(name);
+        Objects.requireNonNull(parameterTypes, "方法参数类型不能为 null");
+        ExpressionValueType[] signature = parameterTypes.clone();
+        for (ExpressionValueType parameterType : signature) {
+            Objects.requireNonNull(parameterType, "方法参数类型不能为 null");
+        }
+        if (returnType == ExpressionValueType.NUMBER) {
+            Objects.requireNonNull(implementation, "数值方法实现不能为 null");
+        } else {
+            Objects.requireNonNull(booleanImplementation, "布尔方法实现不能为 null");
+        }
+
+        RegisteredMethod previous = methods.putIfAbsent(name,
+                new RegisteredMethod(signature, returnType, implementation, booleanImplementation));
         if (previous != null) {
             throw new IllegalStateException("方法已经注册：" + name);
         }
@@ -59,11 +98,28 @@ public final class ExpressionMethodRegistry {
 
     public static final class RegisteredMethod {
         public final int argumentCount;
+        public final ExpressionValueType returnType;
         public final ExpressionMethod implementation;
+        public final BooleanExpressionMethod booleanImplementation;
+        private final ExpressionValueType[] parameterTypes;
 
-        RegisteredMethod(int argumentCount, ExpressionMethod implementation) {
-            this.argumentCount = argumentCount;
+        RegisteredMethod(ExpressionValueType[] parameterTypes,
+                         ExpressionValueType returnType,
+                         ExpressionMethod implementation,
+                         BooleanExpressionMethod booleanImplementation) {
+            this.argumentCount = parameterTypes.length;
+            this.parameterTypes = parameterTypes;
+            this.returnType = returnType;
             this.implementation = implementation;
+            this.booleanImplementation = booleanImplementation;
+        }
+
+        public ExpressionValueType getParameterType(int index) {
+            return parameterTypes[index];
+        }
+
+        public ExpressionValueType[] getParameterTypes() {
+            return parameterTypes.clone();
         }
     }
 }

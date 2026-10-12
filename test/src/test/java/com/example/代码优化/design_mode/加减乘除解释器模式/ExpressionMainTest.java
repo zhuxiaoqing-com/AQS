@@ -44,6 +44,15 @@ public final class ExpressionMainTest {
         run("m_random 方法", ExpressionMainTest::testRandomFunction);
         run("注册自定义方法", ExpressionMainTest::testRegisteredMethod);
 
+        // 比较、相等、布尔类型与短路控制流。
+        run("取模运算", ExpressionMainTest::testModulo);
+        run("比较和相等运算", ExpressionMainTest::testComparisonsAndEquality);
+        run("布尔逻辑和优先级", ExpressionMainTest::testBooleanLogic);
+        run("变量和方法的静态类型", ExpressionMainTest::testTypedVariablesAndMethods);
+        run("类型错误在编译期拒绝", ExpressionMainTest::testTypeErrors);
+        run("逻辑运算短路", ExpressionMainTest::testShortCircuit);
+        run("按表达式类型选择求值 API", ExpressionMainTest::testTypedEvaluationApi);
+
         // 无效输入和运行时错误。
         run("空表达式", ExpressionMainTest::testBlankExpression);
         run("null 表达式", ExpressionMainTest::testNullExpression);
@@ -321,6 +330,147 @@ public final class ExpressionMainTest {
                 "注册的 double 方法执行结果错误");
     }
 
+    private static void testModulo() {
+        assertDouble(1.0, evaluate("10 % 3", values()), "取模结果错误");
+        assertDouble(-1.0, evaluate("-10 % 3", values()), "取模符号应遵循 Java double 语义");
+        assertThrows(ArithmeticException.class,
+                () -> evaluate("10 % 0", values()), "模数为零应报错");
+    }
+
+    private static void testComparisonsAndEquality() {
+        assertBoolean(true, SimpleExpression.compile("1 < 2").evaluateBoolean(name -> 0.0), "< 错误");
+        assertBoolean(true, SimpleExpression.compile("1 <= 1").evaluateBoolean(name -> 0.0), "<= 错误");
+        assertBoolean(true, SimpleExpression.compile("2 > 1").evaluateBoolean(name -> 0.0), "> 错误");
+        assertBoolean(true, SimpleExpression.compile("2 >= 2").evaluateBoolean(name -> 0.0), ">= 错误");
+        assertBoolean(true, SimpleExpression.compile("1 == 1").evaluateBoolean(name -> 0.0), "数值 == 错误");
+        assertBoolean(true, SimpleExpression.compile("1 != 2").evaluateBoolean(name -> 0.0), "数值 != 错误");
+        assertBoolean(true, SimpleExpression.compile("true == true").evaluateBoolean(name -> 0.0), "布尔 == 错误");
+        assertBoolean(true, SimpleExpression.compile("true != false").evaluateBoolean(name -> 0.0), "布尔 != 错误");
+        assertBoolean(false, SimpleExpression.compile("0.1 + 0.2 == 0.3")
+                .evaluateBoolean(name -> 0.0), "== 应遵循 Java 原始 double 语义");
+    }
+
+    private static void testBooleanLogic() {
+        assertBoolean(true, SimpleExpression.compile("true && true").evaluateBoolean(name -> 0.0), "true && true 错误");
+        assertBoolean(false, SimpleExpression.compile("true && false").evaluateBoolean(name -> 0.0), "true && false 错误");
+        assertBoolean(true, SimpleExpression.compile("false || true").evaluateBoolean(name -> 0.0), "false || true 错误");
+        assertBoolean(false, SimpleExpression.compile("false || false").evaluateBoolean(name -> 0.0), "false || false 错误");
+        assertBoolean(false, SimpleExpression.compile("!true").evaluateBoolean(name -> 0.0), "!true 错误");
+        assertBoolean(true, SimpleExpression.compile("!!true").evaluateBoolean(name -> 0.0), "!!true 错误");
+        assertBoolean(true, SimpleExpression.compile("1 + 2 > 2 && 5 < 10")
+                .evaluateBoolean(name -> 0.0), "混合表达式优先级错误");
+        assertBoolean(true, SimpleExpression.compile("!(1 > 2) && (1 > 2 || 3 < 4)")
+                .evaluateBoolean(name -> 0.0), "括号和逻辑优先级错误");
+        assertBoolean(true, SimpleExpression.compile("true || false && false")
+                .evaluateBoolean(name -> 0.0), "&& 应先于 ||");
+
+        EvaluationContext context = new EvaluationContext(
+                1, NumericMode.DOUBLE, name -> 0.0);
+        context.pushBoolean(true);
+        assertDouble(1.0, context.pop(), "pushBoolean 应在 double 栈写入 1.0");
+        context.pushBoolean(false);
+        assertBoolean(false, context.popBoolean(), "popBoolean 应读取 false");
+    }
+
+    private static void testTypedVariablesAndMethods() {
+        Map<String, ExpressionValueType> variableTypes = new LinkedHashMap<>();
+        variableTypes.put("v_attack", ExpressionValueType.NUMBER);
+        variableTypes.put("v_dead", ExpressionValueType.BOOLEAN);
+        variableTypes.put("v_hp", ExpressionValueType.NUMBER);
+        ExpressionMethodRegistry methods = new ExpressionMethodRegistry()
+                .registerBoolean("m_isDead",
+                        (values, arguments) -> arguments[0] == 1.0,
+                        ExpressionValueType.NUMBER)
+                .registerBoolean("m_isFalse",
+                        (values, arguments) -> arguments[0] == 0.0,
+                        ExpressionValueType.BOOLEAN);
+
+        SimpleExpression.CompiledExpression expression = SimpleExpression.compile(
+                "v_attack * 2 > 100 && !v_dead && v_hp > 0",
+                methods,
+                variableTypes::get);
+        assertBoolean(true, expression.evaluateBoolean(name -> {
+            switch (name) {
+                case "v_attack": return 60.0;
+                case "v_dead": return 0.0;
+                case "v_hp": return 10.0;
+                default: throw new IllegalArgumentException("未知变量：" + name);
+            }
+        }), "类型化变量表达式结果错误");
+
+        SimpleExpression.CompiledExpression methodExpression = SimpleExpression.compile(
+                "m_isDead(1) && v_hp > 0", methods, variableTypes::get);
+        assertBoolean(true, methodExpression.evaluateBoolean(name -> 10.0), "BOOLEAN 方法返回类型错误");
+
+        SimpleExpression.CompiledExpression booleanArgument = SimpleExpression.compile(
+                "m_isFalse(v_dead)", methods, variableTypes::get);
+        assertBoolean(true, booleanArgument.evaluateBoolean(name -> 0.0),
+                "BOOLEAN 方法参数类型校验或执行错误");
+    }
+
+    private static void testTypeErrors() {
+        ExpressionMethodRegistry methods = new ExpressionMethodRegistry()
+                .register("m_number", 1, (values, arguments) -> arguments[0])
+                .registerBoolean("m_boolean",
+                        (values, arguments) -> true, ExpressionValueType.NUMBER);
+        assertThrows(ExpressionParseException.class, () -> SimpleExpression.compile("true + 1"),
+                "BOOLEAN 不能参与加法");
+        assertThrows(ExpressionParseException.class, () -> SimpleExpression.compile("10 && 20"),
+                "NUMBER 不能参与逻辑与");
+        assertThrows(ExpressionParseException.class, () -> SimpleExpression.compile("!100"),
+                "NUMBER 不能用于逻辑非");
+        assertThrows(ExpressionParseException.class, () -> SimpleExpression.compile("true > false"),
+                "BOOLEAN 不能参与大小比较");
+        assertThrows(ExpressionParseException.class, () -> SimpleExpression.compile("1 == true"),
+                "NUMBER 和 BOOLEAN 不能比较相等");
+        assertThrows(ExpressionParseException.class, () -> SimpleExpression.compile("m_number(true)", methods),
+                "方法参数类型应在编译期校验");
+        assertThrows(ExpressionParseException.class, () -> SimpleExpression.compile("m_boolean(1) + 2", methods),
+                "BOOLEAN 方法返回值不能参与加法");
+
+        Map<String, ExpressionValueType> types = new LinkedHashMap<>();
+        types.put("v_dead", ExpressionValueType.BOOLEAN);
+        assertThrows(ExpressionParseException.class,
+                () -> SimpleExpression.compile("v_dead + 100", types::get),
+                "BOOLEAN 变量不能参与加法");
+        assertThrows(ExpressionParseException.class,
+                () -> SimpleExpression.compile("v_unknown + 1", types::get),
+                "缺少变量类型应在编译期报错");
+    }
+
+    private static void testShortCircuit() {
+        final int[] calls = {0};
+        ExpressionMethodRegistry methods = new ExpressionMethodRegistry()
+                .registerBoolean("m_throw", (values, arguments) -> {
+                    calls[0]++;
+                    throw new IllegalStateException("方法不应执行");
+                });
+
+        assertBoolean(false, SimpleExpression.compile("false && m_throw()", methods)
+                .evaluateBoolean(name -> 0.0), "false && 右侧应短路");
+        assertBoolean(true, SimpleExpression.compile("true || m_throw()", methods)
+                .evaluateBoolean(name -> 0.0), "true || 右侧应短路");
+        assertBoolean(false, SimpleExpression.compile("0 != 0 && 100 / 0 > 1")
+                .evaluateBoolean(name -> 0.0), "&& 短路应跳过除零表达式");
+        assertBoolean(true, SimpleExpression.compile("1 == 1 || 100 / 0 > 1")
+                .evaluateBoolean(name -> 0.0), "|| 短路应跳过除零表达式");
+        assertEquals("0", String.valueOf(calls[0]), "短路时不应调用右侧方法");
+    }
+
+    private static void testTypedEvaluationApi() {
+        SimpleExpression.CompiledExpression number = SimpleExpression.compile("1 + 2");
+        SimpleExpression.CompiledExpression bool = SimpleExpression.compile("1 < 2");
+        assertDouble(3.0, number.evaluateNumber(name -> 0.0), "evaluateNumber 结果错误");
+        if (number.getType() != ExpressionValueType.NUMBER
+                || bool.getType() != ExpressionValueType.BOOLEAN) {
+            throw new AssertionError("表达式返回类型错误");
+        }
+        assertThrows(IllegalStateException.class, () -> number.evaluateBoolean(name -> 0.0),
+                "NUMBER 表达式不能调用 evaluateBoolean");
+        assertThrows(IllegalStateException.class, () -> bool.evaluateNumber(name -> 0.0),
+                "BOOLEAN 表达式不能调用 evaluateNumber");
+    }
+
     private static void testBlankExpression() {
         assertThrows(ExpressionParseException.class,
                 () -> SimpleExpression.compile(""), "空表达式应报错");
@@ -381,6 +531,20 @@ public final class ExpressionMainTest {
                 () -> SimpleExpression.compile("attack + 2"), "无 v_ 前缀变量应报错");
         assertThrows(ExpressionParseException.class,
                 () -> SimpleExpression.compile("v_ + 2"), "变量前缀后缺少名称应报错");
+        assertThrows(ExpressionParseException.class,
+                () -> SimpleExpression.compile("true && 1"), "单独的逻辑类型不匹配应编译失败");
+        assertThrows(ExpressionParseException.class,
+                () -> SimpleExpression.compile("true & false"), "单独的 & 应报错");
+        assertThrows(ExpressionParseException.class,
+                () -> SimpleExpression.compile("true | false"), "单独的 | 应报错");
+        assertThrows(ExpressionParseException.class,
+                () -> SimpleExpression.compile("1 = 1"), "单独的 = 应报错");
+        assertThrows(ExpressionParseException.class,
+                () -> SimpleExpression.compile("&& true"), "表达式开头的 && 应报错");
+        assertThrows(ExpressionParseException.class,
+                () -> SimpleExpression.compile("true ||"), "结尾的 || 应报错");
+        assertThrows(ExpressionParseException.class,
+                () -> SimpleExpression.compile("1 <"), "结尾的比较运算符应报错");
     }
 
     private static void testUnsupportedTernary() {
@@ -487,6 +651,12 @@ public final class ExpressionMainTest {
 
     private static void assertDouble(double expected, double actual, String message) {
         if (Math.abs(expected - actual) > 0.000000001d) {
+            throw new AssertionError(message + "，期望：" + expected + "，实际：" + actual);
+        }
+    }
+
+    private static void assertBoolean(boolean expected, boolean actual, String message) {
+        if (expected != actual) {
             throw new AssertionError(message + "，期望：" + expected + "，实际：" + actual);
         }
     }

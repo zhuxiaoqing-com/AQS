@@ -40,8 +40,18 @@ public final class EvaluationContext {
         stack.push(value);
     }
 
+    /** 以语言层 BOOLEAN 写入布尔值，底层 DoubleStack 使用 0.0 / 1.0 编码。 */
+    public void pushBoolean(boolean value) {
+        push(value ? 1.0 : 0.0);
+    }
+
     public double pop() {
         return stack.pop();
+    }
+
+    /** 读取编译期已保证为 BOOLEAN 的栈值。 */
+    public boolean popBoolean() {
+        return pop() != 0.0;
     }
 
     public double peek() {
