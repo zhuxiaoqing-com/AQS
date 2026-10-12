@@ -14,7 +14,8 @@ import java.util.Set;
  * <p>推荐在配置加载阶段调用 {@link #compile(String)}，运行时根据目标基础类型调用
  * {@link CompiledExpression#evaluateInt(IntValueProvider)}、
  * {@link CompiledExpression#evaluateLong(LongValueProvider)} 或
- * {@link CompiledExpression#evaluateDouble(DoubleValueProvider)}。</p>
+ * {@link CompiledExpression#evaluateDouble(DoubleValueProvider)}。表达式执行统一使用 double
+ * 运算；INT 和 LONG 模式分别在每次入栈时转换为 int 和 long。</p>
  */
 public final class SimpleExpression {
     private static final ExpressionMethodRegistry DEFAULT_METHODS =

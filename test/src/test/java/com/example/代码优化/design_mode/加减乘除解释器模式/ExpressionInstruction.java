@@ -1,9 +1,6 @@
 package com.example.代码优化.design_mode.加减乘除解释器模式;
 
-import com.example.代码优化.design_mode.加减乘除解释器模式.provider.DoubleValueProvider;
-import com.example.代码优化.design_mode.加减乘除解释器模式.stack.DoubleStack;
-
-/** 表达式后缀指令，统一使用 double 栈执行。 */
+/** 表达式后缀指令，运行时依赖统一从执行上下文获取。 */
 public interface ExpressionInstruction {
-    void applyDouble(DoubleStack stack, DoubleValueProvider values);
+    void execute(EvaluationContext context);
 }

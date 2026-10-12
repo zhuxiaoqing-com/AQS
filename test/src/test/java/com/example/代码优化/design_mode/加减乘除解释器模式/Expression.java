@@ -2,7 +2,6 @@ package com.example.代码优化.design_mode.加减乘除解释器模式;
 
 import com.example.代码优化.design_mode.加减乘除解释器模式.method.ExpressionMethodRegistry;
 import com.example.代码优化.design_mode.加减乘除解释器模式.provider.DoubleValueProvider;
-import com.example.代码优化.design_mode.加减乘除解释器模式.stack.DoubleStack;
 import com.example.代码优化.design_mode.加减乘除解释器模式.provider.IntValueProvider;
 import com.example.代码优化.design_mode.加减乘除解释器模式.provider.LongValueProvider;
 
@@ -50,28 +49,29 @@ final class Expression {
     /** 使用 int 基础类型执行表达式。 */
     public int evaluateInt(IntValueProvider values) {
         requireValueProvider(values);
-        return (int) evaluateDouble(name -> values.getValue(name), DoubleStack.NumericType.INT);
+        return (int) evaluate(name -> values.getValue(name), NumericMode.INT);
     }
 
-    /** 使用 long 基础类型执行表达式。 */
+    /** 使用 long 入栈语义执行；double 底层无法保证超大 long 的精度。 */
     public long evaluateLong(LongValueProvider values) {
         requireValueProvider(values);
-        return (long) evaluateDouble(name -> values.getValue(name), DoubleStack.NumericType.LONG);
+        return (long) evaluate(name -> values.getValue(name), NumericMode.LONG);
     }
 
     /** 使用 double 基础类型执行表达式。 */
     public double evaluateDouble(DoubleValueProvider values) {
         requireValueProvider(values);
-        return evaluateDouble(values, DoubleStack.NumericType.DOUBLE);
+        return evaluate(values, NumericMode.DOUBLE);
     }
 
-    private double evaluateDouble(DoubleValueProvider values, DoubleStack.NumericType numericType) {
-        DoubleStack stack = new DoubleStack(instructions.size(), numericType);
+    private double evaluate(DoubleValueProvider values, NumericMode numericMode) {
+        EvaluationContext context = new EvaluationContext(
+                instructions.size(), numericMode, values);
         for (ExpressionInstruction instruction : instructions) {
-            instruction.applyDouble(stack, values);
+            instruction.execute(context);
         }
-        requireSingleResult(stack.size());
-        return stack.pop();
+        requireSingleResult(context.size());
+        return context.pop();
     }
 
     /** 保留原有 double 变量提供器入口，避免已有调用方必须立即改名。 */

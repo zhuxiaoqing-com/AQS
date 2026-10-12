@@ -36,6 +36,7 @@ public final class ExpressionMainTest {
         // 变量提供器、变量名收集和已编译表达式重复执行。
         run("ValueProvider 取值", ExpressionMainTest::testValueProvider);
         run("int、long、double 基础类型", ExpressionMainTest::testPrimitiveNumberTypes);
+        run("INT、LONG 和 DOUBLE 入栈语义", ExpressionMainTest::testNumericModePush);
         run("变量名收集", ExpressionMainTest::testVariableNames);
         run("重复执行同一个表达式", ExpressionMainTest::testRepeatedEvaluation);
         run("v_ 前缀变量名", ExpressionMainTest::testLetterVariable);
@@ -170,16 +171,94 @@ public final class ExpressionMainTest {
             throw new AssertionError("超出 long 范围时应遵循 Java 转换规则");
         }
 
-        assertThrows(ArithmeticException.class,
-                () -> SimpleExpression.compile("2147483647 + 1").evaluateInt(name -> 0),
-                "int 加法溢出应报错");
-        assertThrows(ArithmeticException.class,
-                () -> SimpleExpression.compile("9223372036854775807 + 1").evaluateLong(name -> 0L),
-                "long 加法溢出应报错");
-        assertThrows(ArithmeticException.class,
-                () -> SimpleExpression.compile("v_x / -1")
-                        .evaluateInt(name -> Integer.MIN_VALUE),
-                "int 除法溢出应报错");
+        if (SimpleExpression.compile("2147483647 + 1").evaluateInt(name -> 0)
+                != Integer.MAX_VALUE) {
+            throw new AssertionError("INT 入栈应遵循 double 转 int 的 Java 转换规则");
+        }
+        if (SimpleExpression.compile("9223372036854775807 + 1").evaluateLong(name -> 0L)
+                != Long.MAX_VALUE) {
+            throw new AssertionError("long 兼容接口应遵循 double 转 long 的 Java 转换规则");
+        }
+        if (SimpleExpression.compile("v_x / -1").evaluateInt(name -> Integer.MIN_VALUE)
+                != Integer.MAX_VALUE) {
+            throw new AssertionError("INT 模式应在除法结果入栈时转换为 int");
+        }
+    }
+
+    private static void testNumericModePush() {
+        if (SimpleExpression.compile("5 / 2").evaluateInt(name -> 0) != 2) {
+            throw new AssertionError("INT 的 5 / 2 结果错误");
+        }
+        assertDouble(2.5, SimpleExpression.compile("5 / 2").evaluateDouble(name -> 0.0),
+                "DOUBLE 的 5 / 2 结果错误");
+
+        if (SimpleExpression.compile("5 / 2 * 2").evaluateInt(name -> 0) != 4) {
+            throw new AssertionError("INT 应在除法结果重新入栈时舍去小数");
+        }
+        if (SimpleExpression.compile("5 / 2 * 2").evaluateLong(name -> 0L) != 4L) {
+            throw new AssertionError("long 入口应在每一步整数结果入栈时舍去小数");
+        }
+        if (SimpleExpression.compile("2147483647 + 2 - 1").evaluateLong(name -> 0L)
+                != 2147483648L) {
+            throw new AssertionError("LONG 模式应保留超出 int 范围但仍在 long 范围内的中间值");
+        }
+        assertDouble(5.0,
+                SimpleExpression.compile("5 / 2 * 2").evaluateDouble(name -> 0.0),
+                "DOUBLE 的连续除乘结果错误");
+
+        if (SimpleExpression.compile("2147483647 + 2 - 1").evaluateInt(name -> 0)
+                != Integer.MAX_VALUE - 1) {
+            throw new AssertionError("INT 模式应在每一步入栈时转换为 int");
+        }
+
+        if (SimpleExpression.compile("5.9 * 2").evaluateInt(name -> 0) != 10) {
+            throw new AssertionError("INT 的小数字面量应在入栈时转换");
+        }
+        assertDouble(11.8, SimpleExpression.compile("5.9 * 2").evaluateDouble(name -> 0.0),
+                "DOUBLE 的小数乘法结果错误");
+
+        if (SimpleExpression.compile("10 / 3 * 3").evaluateInt(name -> 0) != 9) {
+            throw new AssertionError("INT 的每步除法结果应在入栈时转换");
+        }
+        assertDouble(10.0,
+                SimpleExpression.compile("10 / 3 * 3").evaluateDouble(name -> 0.0),
+                "DOUBLE 的连续除乘结果错误");
+
+        if (SimpleExpression.compile("(5.9 + 2.8) * 2.5").evaluateInt(name -> 0) != 14) {
+            throw new AssertionError("INT 的多个计算步骤应各自在入栈时转换");
+        }
+        assertDouble(21.75,
+                SimpleExpression.compile("(5.9 + 2.8) * 2.5").evaluateDouble(name -> 0.0),
+                "DOUBLE 的括号小数计算结果错误");
+
+        EvaluationContext intContext = new EvaluationContext(
+                1, NumericMode.INT, name -> 5.9);
+        new VariableInstruction("v_a").execute(intContext);
+        assertDouble(5.0, intContext.pop(), "INT 变量值没有经过上下文转换");
+
+        EvaluationContext doubleContext = new EvaluationContext(
+                1, NumericMode.DOUBLE, name -> 5.9);
+        new VariableInstruction("v_a").execute(doubleContext);
+        assertDouble(5.9, doubleContext.pop(), "DOUBLE 变量值不应丢失小数");
+
+        ExpressionMethodRegistry methods = new ExpressionMethodRegistry()
+                .register("m_fraction", 1, (values, arguments) -> arguments[0] + 0.9);
+        SimpleExpression.CompiledExpression methodExpression =
+                SimpleExpression.compile("m_fraction(5.9) * 2", methods);
+        if (methodExpression.evaluateInt(name -> 0) != 10) {
+            throw new AssertionError("INT 方法返回值应通过上下文转换后入栈");
+        }
+        assertDouble(13.6, methodExpression.evaluateDouble(name -> 0.0),
+                "DOUBLE 方法返回值不应丢失小数");
+
+        SimpleExpression.CompiledExpression variableExpression =
+                SimpleExpression.compile("v_a / v_b * v_b");
+        if (variableExpression.evaluateInt(name -> "v_a".equals(name) ? 5 : 2) != 4) {
+            throw new AssertionError("INT 变量参与连续除乘的结果错误");
+        }
+        assertDouble(5.9,
+                variableExpression.evaluateDouble(name -> "v_a".equals(name) ? 5.9 : 2.8),
+                "DOUBLE 变量参与连续除乘的结果错误");
     }
 
     private static void testVariableNames() {

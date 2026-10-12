@@ -1,8 +1,5 @@
 package com.example.代码优化.design_mode.加减乘除解释器模式;
 
-import com.example.代码优化.design_mode.加减乘除解释器模式.provider.DoubleValueProvider;
-import com.example.代码优化.design_mode.加减乘除解释器模式.stack.DoubleStack;
-
 final class VariableInstruction implements ExpressionInstruction {
     private final String name;
 
@@ -12,7 +9,7 @@ final class VariableInstruction implements ExpressionInstruction {
     }
 
     @Override
-    public void applyDouble(DoubleStack stack, DoubleValueProvider values) {
-        stack.push(values.getValue(name));
+    public void execute(EvaluationContext context) {
+        context.push(context.values().getValue(name));
     }
 }
