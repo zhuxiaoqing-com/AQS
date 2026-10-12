@@ -48,6 +48,7 @@ public final class ExpressionMainTest {
         run("取模运算", ExpressionMainTest::testModulo);
         run("比较和相等运算", ExpressionMainTest::testComparisonsAndEquality);
         run("布尔逻辑和优先级", ExpressionMainTest::testBooleanLogic);
+        run("BOOLEAN 参数传入自定义方法", ExpressionMainTest::testBooleanMethodArgument);
         run("变量和方法的静态类型", ExpressionMainTest::testTypedVariablesAndMethods);
         run("类型错误在编译期拒绝", ExpressionMainTest::testTypeErrors);
         run("逻辑运算短路", ExpressionMainTest::testShortCircuit);
@@ -406,6 +407,30 @@ public final class ExpressionMainTest {
                 "m_isFalse(v_dead)", methods, variableTypes::get);
         assertBoolean(true, booleanArgument.evaluateBoolean(name -> 0.0),
                 "BOOLEAN 方法参数类型校验或执行错误");
+    }
+
+    private static void testBooleanMethodArgument() {
+        ExpressionMethodRegistry methods = new ExpressionMethodRegistry()
+                .registerBoolean("m_canAttack",
+                        (values, arguments) -> arguments[0] == 1.0
+                                && arguments[1] > 0.0
+                                && arguments[2] == 1.0,
+                        ExpressionValueType.BOOLEAN,
+                        ExpressionValueType.NUMBER,
+                        ExpressionValueType.BOOLEAN);
+
+        assertBoolean(true,
+                SimpleExpression.compile("m_canAttack(true, 100, true)", methods)
+                        .evaluateBoolean(name -> 0.0),
+                "BOOLEAN、NUMBER、BOOLEAN 参数应按声明顺序传入方法");
+        assertBoolean(false,
+                SimpleExpression.compile("m_canAttack(false, 100, true)", methods)
+                        .evaluateBoolean(name -> 0.0),
+                "false 应以 0.0 传入方法");
+        assertBoolean(false,
+                SimpleExpression.compile("m_canAttack(true, 0, true)", methods)
+                        .evaluateBoolean(name -> 0.0),
+                "NUMBER 参数应保持在第二个位置");
     }
 
     private static void testTypeErrors() {
