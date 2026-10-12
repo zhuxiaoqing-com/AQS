@@ -38,7 +38,7 @@ public final class ExpressionMainTest {
         run("int、long、double 基础类型", ExpressionMainTest::testPrimitiveNumberTypes);
         run("变量名收集", ExpressionMainTest::testVariableNames);
         run("重复执行同一个表达式", ExpressionMainTest::testRepeatedEvaluation);
-        run("字母开头变量名", ExpressionMainTest::testLetterVariable);
+        run("v_ 前缀变量名", ExpressionMainTest::testLetterVariable);
         run("中文变量名", ExpressionMainTest::testChineseVariable);
         run("m_random 方法", ExpressionMainTest::testRandomFunction);
         run("注册自定义方法", ExpressionMainTest::testRegisteredMethod);
@@ -93,7 +93,7 @@ public final class ExpressionMainTest {
     }
 
     private static void testNestedHalfWidthParentheses() {
-        assertDouble(6.0, evaluate("(a + (b + 2))", values("a", 1.0, "b", 3.0)),
+        assertDouble(6.0, evaluate("(v_a + (v_b + 2))", values("v_a", 1.0, "v_b", 3.0)),
                 "嵌套半角括号计算错误");
     }
 
@@ -114,18 +114,18 @@ public final class ExpressionMainTest {
 
     private static void testValueProvider() {
         ValueProvider provider = name -> {
-            if ("x".equals(name)) {
+            if ("v_x".equals(name)) {
                 return 10.0;
             }
-            if ("y".equals(name)) {
+            if ("v_y".equals(name)) {
                 return 5.0;
             }
-            if ("d".equals(name)) {
+            if ("v_d".equals(name)) {
                 return 20.0;
             }
             return null;
         };
-        double result = SimpleExpression.compile("(x + 2 * 2) + y + (d * 3 / 10)")
+        double result = SimpleExpression.compile("(v_x + 2 * 2) + v_y + (v_d * 3 / 10)")
                 .evaluate(provider);
         assertDouble(25.0, result, "ValueProvider 计算结果错误");
     }
@@ -177,23 +177,23 @@ public final class ExpressionMainTest {
                 () -> SimpleExpression.compile("9223372036854775807 + 1").evaluateLong(name -> 0L),
                 "long 加法溢出应报错");
         assertThrows(ArithmeticException.class,
-                () -> SimpleExpression.compile("x / -1")
+                () -> SimpleExpression.compile("v_x / -1")
                         .evaluateInt(name -> Integer.MIN_VALUE),
                 "int 除法溢出应报错");
     }
 
     private static void testVariableNames() {
         SimpleExpression.CompiledExpression expression =
-                SimpleExpression.compile("x + y + x + damage2");
-        assertEquals("[x, y, damage2]", expression.getVariables().toString(),
+                SimpleExpression.compile("v_x + v_y + v_x + v_damage2");
+        assertEquals("[v_x, v_y, v_damage2]", expression.getVariables().toString(),
                 "变量名或变量顺序错误");
     }
 
     private static void testRepeatedEvaluation() {
         final double[] values = {1.0, 2.0};
         SimpleExpression.CompiledExpression expression =
-                SimpleExpression.compile("x * 2 + y");
-        ValueProvider provider = name -> "x".equals(name) ? values[0] : values[1];
+                SimpleExpression.compile("v_x * 2 + v_y");
+        ValueProvider provider = name -> "v_x".equals(name) ? values[0] : values[1];
 
         assertDouble(4.0, expression.evaluate(provider), "第一次计算错误");
         values[0] = 10.0;
@@ -202,12 +202,12 @@ public final class ExpressionMainTest {
     }
 
     private static void testLetterVariable() {
-        assertDouble(12.0, evaluate("attack2 + 2", values("attack2", 10.0)),
+        assertDouble(12.0, evaluate("v_attack2 + 2", values("v_attack2", 10.0)),
                 "字母开头变量解析错误");
     }
 
     private static void testChineseVariable() {
-        assertDouble(12.0, evaluate("伤害 + 2", values("伤害", 10.0)),
+        assertDouble(12.0, evaluate("v_伤害 + 2", values("v_伤害", 10.0)),
                 "中文变量解析错误");
     }
 
@@ -218,7 +218,7 @@ public final class ExpressionMainTest {
         }
         assertDouble(5.0, evaluate("m_random(5, 5)", values()),
                 "m_random 上下界相等时应返回该值");
-        assertDouble(12.0, evaluate("m_random(value + 1, value + 1)", values("value", 11.0)),
+        assertDouble(12.0, evaluate("m_random(v_value + 1, v_value + 1)", values("v_value", 11.0)),
                 "m_random 参数应支持表达式");
         assertThrows(IllegalArgumentException.class,
                 () -> evaluate("m_random(2, 1)", values()), "m_random 的 min 大于 max 应报错");
@@ -254,14 +254,14 @@ public final class ExpressionMainTest {
 
     private static void testTrailingOperator() {
         assertThrows(ExpressionParseException.class,
-                () -> SimpleExpression.compile("x +"), "结尾运算符应报错");
+                () -> SimpleExpression.compile("v_x +"), "结尾运算符应报错");
     }
 
     private static void testMissingOperator() {
         assertThrows(ExpressionParseException.class,
                 () -> SimpleExpression.compile("1 2"), "操作数之间缺少运算符应报错");
         assertThrows(ExpressionParseException.class,
-                () -> SimpleExpression.compile("a(b)"), "变量和左括号之间缺少运算符应报错");
+                () -> SimpleExpression.compile("v_a(v_b)"), "变量和左括号之间缺少运算符应报错");
     }
 
     private static void testOperatorMissingOperand() {
@@ -298,11 +298,15 @@ public final class ExpressionMainTest {
                 () -> SimpleExpression.compile("（1 + 2）"), "全角括号应报错");
         assertThrows(ExpressionParseException.class,
                 () -> SimpleExpression.compile("_attack + 2"), "下划线变量应报错");
+        assertThrows(ExpressionParseException.class,
+                () -> SimpleExpression.compile("attack + 2"), "无 v_ 前缀变量应报错");
+        assertThrows(ExpressionParseException.class,
+                () -> SimpleExpression.compile("v_ + 2"), "变量前缀后缺少名称应报错");
     }
 
     private static void testUnsupportedTernary() {
         assertThrows(ExpressionParseException.class,
-                () -> SimpleExpression.compile("a ? b : c"), "三目运算暂不支持");
+                () -> SimpleExpression.compile("v_a ? v_b : v_c"), "三目运算暂不支持");
     }
 
     private static void testScientificNotation() {
@@ -332,7 +336,7 @@ public final class ExpressionMainTest {
 
     private static void testMissingVariable() {
         assertThrows(IllegalArgumentException.class,
-                () -> evaluate("x + 1", values()), "缺少变量值应报错");
+                () -> evaluate("v_x + 1", values()), "缺少变量值应报错");
     }
 
     private static void testDivisionByZero() {
@@ -341,9 +345,9 @@ public final class ExpressionMainTest {
     }
 
     private static void testVariableSetReadOnly() {
-        SimpleExpression.CompiledExpression expression = SimpleExpression.compile("x + y");
+        SimpleExpression.CompiledExpression expression = SimpleExpression.compile("v_x + v_y");
         assertThrows(UnsupportedOperationException.class,
-                () -> expression.getVariables().add("z"), "变量集合不应该允许修改");
+                () -> expression.getVariables().add("v_z"), "变量集合不应该允许修改");
     }
 
     private static void testDoubleStackLifo() {

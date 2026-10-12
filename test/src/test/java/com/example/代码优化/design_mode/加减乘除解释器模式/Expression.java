@@ -30,7 +30,7 @@ final class Expression {
     /**
      * 编译表达式。
      *
-     * @param source 表达式，例如 {@code (x + 2 * 2) + y + (d * 3 / 10)}
+     * @param source 表达式，例如 {@code (v_x + 2 * 2) + v_y + (v_d * 3 / 10)}
      * @return 可重复执行的已编译表达式
      * @throws ExpressionParseException 表达式语法错误
      */

@@ -53,7 +53,7 @@ public final class ExpressionMethodRegistry {
                 .register("m_random", 2, new RandomInstruction());
     }
 
-    static ExpressionMethodRegistry defaultRegistry() {
+    public static ExpressionMethodRegistry defaultRegistry() {
         return withDefaults();
     }
 

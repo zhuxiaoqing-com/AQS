@@ -252,12 +252,15 @@ public final class ExpressionParser {
             // 数字必须以数字字符开头，支持整数和普通小数，例如 12、1.5。
             return readNumber(tokenPosition);
         }
-        // 变量必须以字母开头，方法必须以 m_ 开头；两者分开读取。
+        // 方法和变量分别使用 m_、v_ 前缀，避免表达式中的名称含义不明确。
         if (Character.isLetter(current)) {
             if (isMethodPrefix()) {
                 return readMethod(tokenPosition);
             }
-            return readVariable(tokenPosition);
+            if (isVariablePrefix()) {
+                return readVariable(tokenPosition);
+            }
+            throw error("标识符必须以 m_（方法）或 v_（变量）开头", tokenPosition);
         }
 
         // 非数字、变量的字符只占一个字符，先推进读取位置再分类。
@@ -307,6 +310,12 @@ public final class ExpressionParser {
                 && source.charAt(position + 1) == '_';
     }
 
+    private boolean isVariablePrefix() {
+        return source.charAt(position) == 'v'
+                && position + 1 < source.length()
+                && source.charAt(position + 1) == '_';
+    }
+
     /** 读取 m_ 开头的方法名。 */
     private Token readMethod(int tokenPosition) {
         int start = position;
@@ -327,9 +336,14 @@ public final class ExpressionParser {
         return Token.function(source.substring(start, position), tokenPosition);
     }
 
-    /** 读取普通变量名；变量名只允许字母和数字。 */
+    /** 读取 v_ 开头的变量名；名称必须以字母开头，后续可包含字母和数字。 */
     private Token readVariable(int tokenPosition) {
-        int start = position++;
+        int start = position;
+        position += 2;
+        if (position >= source.length() || !Character.isLetter(source.charAt(position))) {
+            throw error("变量前缀 v_ 后必须跟字母开头的名称", tokenPosition);
+        }
+        position++;
         while (position < source.length()) {
             char current = source.charAt(position);
             if (!Character.isLetterOrDigit(current)) {
